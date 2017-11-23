@@ -14,7 +14,6 @@ import io.sarl.core.DefaultContextInteractions
 import java.util.Collection
 import java.Math.*
 
-
 /* Du mal à réutiliser une classe vecteur java, malgré l'import il veut pas reconnaitre le type de la variable, je passe par cette classe en attendant  */
 class Vecteur{
 	var x : double
@@ -92,7 +91,7 @@ agent Boids {
 	 */
 
 	on Initialize {
-		info("Boids agent was started.")
+		info("A Boid agent was started.")
 		emit(new IsStarted())
 	}
 	

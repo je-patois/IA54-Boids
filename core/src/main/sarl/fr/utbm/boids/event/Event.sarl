@@ -5,6 +5,8 @@ import java.util.Collection
 /* event pour prévenir l'environnement que le Boids est lancé */
 event IsStarted 
 
+event MakeTheFiestaBegin
+
 event DemandeDeplacement{
 	
 	var otherBoids : Collection<Boids>

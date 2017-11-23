@@ -1,7 +1,5 @@
 package fr.utbm.boids.core;
 
-import com.google.common.base.Objects;
-import fr.utbm.boids.core.DemandeDeplacement;
 import fr.utbm.boids.core.IsStarted;
 import fr.utbm.boids.core.Vecteur;
 import io.sarl.core.DefaultContextInteractions;
@@ -27,7 +25,7 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlSpecification("0.6")
 @SarlElementType(17)
 @SuppressWarnings("all")
-public class Boids extends Agent {
+public class Screen extends Agent {
   private Vecteur position;
   
   private Vecteur vitesse;
@@ -41,47 +39,6 @@ public class Boids extends Agent {
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     IsStarted _isStarted = new IsStarted();
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_isStarted);
-  }
-  
-  @SyntheticMember
-  private void $behaviorUnit$DemandeDeplacement$1(final DemandeDeplacement occurrence) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nType mismatch: cannot convert from Vecteur to Vecteur");
-  }
-  
-  /**
-   * Création des fonctions comportementales du Boids
-   */
-  protected Vecteur separation(final Collection<Boids> otherBoids) {
-    Vecteur force = null;
-    Vecteur tmp = null;
-    double len = 0;
-    Vecteur _vecteur = new Vecteur(0, 0);
-    force = _vecteur;
-    Vecteur _vecteur_1 = new Vecteur(0, 0);
-    tmp = _vecteur_1;
-    for (final Boids boids : otherBoids) {
-      if (((!Objects.equal(boids, null)) && (boids.groupe == this.groupe))) {
-        tmp.setXY(this.position);
-        tmp.moins(boids.position);
-        len = tmp.length();
-        tmp.fois((1 / (len * len)));
-        force.plus(tmp);
-      }
-    }
-    return force;
-  }
-  
-  @Pure
-  protected void cohesion() {
-  }
-  
-  @Pure
-  protected void alignement() {
-  }
-  
-  @Pure
-  protected void repulsion() {
   }
   
   @Extension
@@ -125,14 +82,6 @@ public class Boids extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Initialize$0(occurrence));
   }
   
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$DemandeDeplacement(final DemandeDeplacement occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$DemandeDeplacement$1(occurrence));
-  }
-  
   @Override
   @Pure
   @SyntheticMember
@@ -143,7 +92,7 @@ public class Boids extends Agent {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    Boids other = (Boids) obj;
+    Screen other = (Screen) obj;
     if (other.groupe != this.groupe)
       return false;
     return super.equals(obj);
@@ -160,20 +109,20 @@ public class Boids extends Agent {
   }
   
   @SyntheticMember
-  public Boids(final UUID parentID, final UUID agentID) {
+  public Screen(final UUID parentID, final UUID agentID) {
     super(parentID, agentID);
   }
   
   @SyntheticMember
   @Inject
   @Deprecated
-  public Boids(final BuiltinCapacitiesProvider provider, final UUID parentID, final UUID agentID) {
+  public Screen(final BuiltinCapacitiesProvider provider, final UUID parentID, final UUID agentID) {
     super(provider, parentID, agentID);
   }
   
   @SyntheticMember
   @Inject
-  public Boids(final UUID parentID, final UUID agentID, final DynamicSkillProvider skillProvider) {
+  public Screen(final UUID parentID, final UUID agentID, final DynamicSkillProvider skillProvider) {
     super(parentID, agentID, skillProvider);
   }
 }

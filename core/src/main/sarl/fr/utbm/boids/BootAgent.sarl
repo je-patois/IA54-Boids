@@ -1,7 +1,7 @@
 /** 
  * 
  */
-package fr.utbm.boids
+package fr.utbm.boids.core
 
 import io.sarl.core.AgentKilled
 import io.sarl.core.AgentSpawned
@@ -12,24 +12,51 @@ import io.sarl.core.Initialize
 import io.sarl.core.Logging
 import io.sarl.core.MemberJoined
 import io.sarl.core.MemberLeft
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Lifecycle
+
 /** 
- * @author Exige
+ * @author Exige and Zilliqman
  * 
  */
 agent BootAgent {
-	uses Logging
+	uses Logging, DefaultContextInteractions, Lifecycle
+	
+	//nb de fils nés
+	var sons = 0;
 
 	on Initialize {
-		// Event trigger before the agent begin to live or to be used.
-		// You should put all the initialization statements in this block of code.
 		info("The agent was started.")
+		spawn(Environment)
+		spawn(GUI)
+		spawn(Scheduler)
+		spawn(Screen)
 	}
 
 	on Destroy {
-		// Event trigger when the agent is destroyed from the system.
-		// You should put all the resource releasing statements in this block of code.
 		info("The agent was stopped.")
 	}
+
+	on IsStarted {
+		//un fils est né
+		sons += 1
+		
+		/* Si tous les fils, sont nés, la fête peut commencer!  */
+		if(sons == 4){
+			emit(new MakeTheFiestaBegin())
+			killMe()
+		}
+	}
+
+
+
+
+
+
+
+
+
+
 
 	on AgentSpawned {
 		// A new agent has been spawned in our context.
