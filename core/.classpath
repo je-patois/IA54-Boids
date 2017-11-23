@@ -49,6 +49,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Java/jre1.8.0_151/lib/ext/jfxrt.jar"/>
-	<classpathentry kind="con" path="io.sarl.eclipse.launching.SARL_SUPPORT"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
