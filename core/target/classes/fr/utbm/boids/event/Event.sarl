@@ -1,0 +1,31 @@
+package fr.utbm.boids.core
+
+import java.util.Collection
+
+/* event pour prévenir l'environnement que le Boids est lancé */
+event IsStarted 
+
+event DemandeDeplacement{
+	
+	var otherBoids : Collection<Boids>
+	
+	new (pos : Vecteur, otherBoids : Collection<Boids>){
+		this.otherBoids = otherBoids
+	}
+	
+	new (x : int, y : int, otherBoids : Collection<Boids>) {
+		this.otherBoids = otherBoids
+	}
+}
+
+event ResultatDeplacement {
+	var position : Vecteur
+
+	new (pos : Vecteur) {
+		this.position = pos
+	}
+
+	new (x : int, y : int) {
+		this.position.setXY(x, y)
+	}
+}
