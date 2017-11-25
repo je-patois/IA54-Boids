@@ -1,0 +1,235 @@
+
+package fr.utbm.boids.core
+
+import io.sarl.core.AgentKilled
+import io.sarl.core.AgentSpawned
+import io.sarl.core.ContextJoined
+import io.sarl.core.ContextLeft
+import io.sarl.core.Destroy
+import io.sarl.core.Initialize
+import io.sarl.core.Logging
+import io.sarl.core.MemberJoined
+import io.sarl.core.MemberLeft
+import io.sarl.core.DefaultContextInteractions
+import java.util.Collection
+import java.Math.*
+
+/* Du mal à réutiliser une classe vecteur java, malgré l'import il veut pas reconnaitre le type de la variable, je passe par cette classe en attendant  */
+class Vecteur{
+	var x : double
+	var y : double
+	
+	new (x : double, y : double){
+		this.x = x
+		this.y = y 
+	}
+	
+	new (){
+		this.x = 0
+		this.y = 0
+	}
+	
+	def setX (x : double) : void{
+		this.x = x
+	}
+	
+	def setY (y : double) : void{
+		this.y = y
+	}
+	
+	def setXY(x : double, y :double) : void{
+		this.x = x
+		this.y = y
+	}
+	
+	def setXY (vec : Vecteur) : void {
+		x = vec.getX()
+		y = vec.getY()
+	}
+	
+	def getX () : double  {
+		return x
+	}
+	
+	def getY() : double{
+		return y
+	}
+	
+	def moins (vec : Vecteur){
+		this.x = this.x - vec.x
+		this.y = this.y - vec.y 
+	}
+
+	def plus(vec : Vecteur) {
+		this.x = this.x + vec.x
+		this.y = this.y + vec.y
+	}
+
+	def fois(a : double) {
+		this.x = x * a
+		this.y = y * a
+	}
+	
+	def length () : double {
+		return Math.sqrt (x*x + y*y)
+	}
+	
+	
+}
+
+agent Boids {
+	uses Logging, DefaultContextInteractions
+	
+	
+	var position : Vecteur
+	var vitesse : Vecteur
+	var groupe : int 
+	
+	
+	/*
+	 * gestion des évènements
+	 */
+
+	on Initialize {
+		info("A Boid agent was started.")
+		emit(new IsStarted())
+	}
+	
+	
+	on DemandeDeplacement {
+		
+		/* on récupère la liste des autres boids  */
+		var otherBoids = occurrence.otherBoids
+		
+		/* On suppose que le Boids que je suis a été supprimé de la liste */
+		
+		
+		if (otherBoids != null){
+			var force : Vecteur
+			var influence : Vecteur
+			
+			force = new Vecteur(0,0)
+			
+			/* on applique la séparation */
+			force = separation (otherBoids)
+			
+			/* on applique la cohésion */
+			cohesion()
+			
+			/* on applique l'alignement */
+			alignement()
+			
+			/* on applique la répulsion */
+			repulsion()
+			
+			/* on applique la force résultant de la détection des obstacles */
+			
+			//TODO
+			
+		}
+		
+		
+		/* on renvoie la nouvelle position du Boids */
+		/*emit(new ResultatDeplacement(position))*/
+	}
+	
+	
+	/* 
+	 * Création des fonctions comportementales du Boids
+	 */
+	
+	def separation(otherBoids : Collection<Boids>) : Vecteur{
+		
+		var force : Vecteur
+		var tmp : Vecteur 
+		var len : double
+
+		force = new Vecteur(0, 0)
+		tmp = new Vecteur(0,0)
+		
+		for (boids: otherBoids) {
+			if  (boids != null && boids.groupe == this.groupe ){
+				tmp.setXY(position)
+				tmp.moins(boids.position)
+				len = tmp.length()
+				tmp.fois(1/(len*len))
+				force.plus(tmp)
+			}
+		}
+		
+		return force
+		
+	}
+
+	
+	def cohesion() : void {
+		
+	}
+	
+	def alignement () : void {
+		
+	}
+	
+	def repulsion () : void {
+		
+	}
+
+	/*def think(otherBoids : Collection<Boids>) : void {
+		if (perception != null) {
+			
+			
+			if(groupe.separationOn)
+		        {
+			    separation(force,perception);
+			    force.fois(groupe.separationForce);
+			    influence.plus(force);
+			}
+	
+			if(groupe.cohesionOn)
+			{
+			    cohesion(force,perception);
+			    force.fois(groupe.cohesionForce);
+			    influence.plus(force);
+			}
+			
+			if(groupe.alignementOn)
+			{
+			    alignement(force,perception);
+			    force.fois(groupe.alignementForce);
+			    influence.plus(force);
+			}
+	
+			if(groupe.repulsionOn)
+			{
+			    repulsion(force,perception);
+			    force.fois(groupe.repulsionForce);
+			    influence.plus(force);
+			}
+			
+			if(!traversMurs)
+			{
+			    obstacles(force);
+			    force.fois(Boid.obstaclesForce);
+			    influence.plus(force);
+			}
+			
+			//TKS: ajout d'une force de déplacement
+			//influence.plus(new Vector2d(10,10));
+	
+			// on borne la force appliquee.
+			if (influence.length() > groupe.maxForce)
+			{
+				influence.normaliser();
+				influence.fois(groupe.maxForce);
+			}
+			
+			// contribution de la masse.
+			influence.fois( 1 / groupe.masse );
+			
+			//Agir : envoyer l'influence à l'environnement
+			act(influence);
+		}
+	}*/
+
+	
+}
