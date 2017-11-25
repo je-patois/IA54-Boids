@@ -1,0 +1,65 @@
+package fr.utbm.boids.events
+
+import java.util.Collection
+import fr.utbm.boids.Boids
+import fr.utbm.boids.Vecteur
+
+/* event pour prévenir l'environnement que le Boids est lancé */
+event IsStarted 
+
+event MakeTheFiestaBegin
+
+event DemandeDeplacement{
+	
+	var otherBoids : Collection<Boids>
+	
+	new (pos : Vecteur, otherBoids : Collection<Boids>){
+		this.otherBoids = otherBoids
+	}
+	
+	new (x : int, y : int, otherBoids : Collection<Boids>) {
+		this.otherBoids = otherBoids
+	}
+}
+
+event ResultatDeplacement {
+	var position : Vecteur
+
+	new (pos : Vecteur) {
+		this.position = pos
+	}
+
+	new (x : int, y : int) {
+		this.position.setXY(x, y)
+	}
+}
+
+event StartingSimulation {
+	val nombreDePopulations : int
+	val nombreDeBoidsParPopulation : int
+	val visionBoids : int
+	
+	new(nombreDePopulations : int, nombreDeBoidsParPopulation : int, visionBoids : int) {
+		this.nombreDePopulations = nombreDePopulations
+		this.nombreDeBoidsParPopulation = nombreDeBoidsParPopulation
+		this.visionBoids = visionBoids
+	}
+}
+
+event EndSimulation
+
+event AgentLeft
+
+
+
+
+
+/* Events of the GUI only */
+
+event BtnLaunch
+
+event BtnShutdown
+
+
+
+
