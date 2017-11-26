@@ -1,0 +1,5 @@
+package fr.utbm.boids
+
+final class Configuration {
+
+}
