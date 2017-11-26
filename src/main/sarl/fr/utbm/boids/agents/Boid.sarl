@@ -1,0 +1,149 @@
+package fr.utbm.boids.agents
+
+import io.sarl.core.Initialize
+import io.sarl.core.Logging
+import io.sarl.core.DefaultContextInteractions
+import fr.utbm.boids.Vector
+import java.util.Collection
+import fr.utbm.boids.events.IsStarted
+import fr.utbm.boids.events.DemandeDeplacement
+
+agent Boids {
+	uses Logging, DefaultContextInteractions
+
+	var position : Vector
+	var vitesse : Vector
+	var groupe : int
+	/*
+	 * gestion des évènements
+	 */
+	on Initialize {
+		info("A Boid agent was started.")
+		emit(new IsStarted())
+	}
+
+	on DemandeDeplacement {
+			/* on récupère la liste des autres boids
+			 */
+		var otherBoids = occurrence.otherBoids
+		/* On suppose que le Boids que je suis a été supprimé de la liste
+		 */
+		if (otherBoids != null) {
+			var force : Vector
+			var influence : Vector
+
+			force = new Vector(0, 0)
+			/* on applique la séparation */
+			force = separation(otherBoids)
+			/* on applique la cohésion
+			 */
+			cohesion()
+			/* on applique l'alignement
+			 */
+			alignement()
+			/* on applique la répulsion
+			 */
+			repulsion()
+		/* on applique la force résultant de la détection des obstacles
+		 */
+			// TODO
+		}
+		
+		
+		/* on renvoie la nouvelle position du Boids
+	 */
+	/* emit(new ResultatDeplacement(position))
+	 */
+	}
+	/* 
+	 * Création des fonctions comportementales du Boids
+	 */
+	def separation(otherBoids : Collection<Boids>) : Vector {
+
+		var force : Vector
+		var tmp : Vector
+		var len : double
+
+		force = new Vector(0, 0)
+		tmp = new Vector(0, 0)
+
+		for (boids : otherBoids) {
+			if (boids != null && boids.groupe == this.groupe) {
+				tmp.setXY(position)
+				tmp.moins(boids.position)
+				len = tmp.length()
+				tmp.fois(1 / (len * len))
+				force.plus(tmp)
+			}
+		}
+
+		return force
+
+	}
+
+	def cohesion() : void {
+	}
+
+	def alignement() : void {
+	}
+
+	def repulsion() : void {
+	}
+/* def think(otherBoids : Collection<Boids>) : void {
+		if (perception != null) {
+ * 
+ * 
+ * if(groupe.separationOn)
+ * {
+ * separation(force,perception);
+ * force.fois(groupe.separationForce);
+ * influence.plus(force);
+ * }
+ * 
+ * if(groupe.cohesionOn)
+ * {
+ * cohesion(force,perception);
+ * force.fois(groupe.cohesionForce);
+ * influence.plus(force);
+ * }
+ * 
+ * if(groupe.alignementOn)
+ * {
+ * alignement(force,perception);
+ * force.fois(groupe.alignementForce);
+ * influence.plus(force);
+ * }
+ * 
+ * if(groupe.repulsionOn)
+ * {
+ * repulsion(force,perception);
+ * force.fois(groupe.repulsionForce);
+ * influence.plus(force);
+ * }
+ * 
+ * if(!traversMurs)
+ * {
+ * obstacles(force);
+ * force.fois(Boid.obstaclesForce);
+ * influence.plus(force);
+ * }
+ * 
+ * //TKS: ajout d'une force de déplacement
+ * //influence.plus(new Vector2d(10,10));
+ * 
+ * // on borne la force appliquee.
+ * if (influence.length() > groupe.maxForce)
+ * {
+ * influence.normaliser();
+ * influence.fois(groupe.maxForce);
+ * }
+ * 
+ * // contribution de la masse.
+ * influence.fois( 1 / groupe.masse );
+ * 
+ * //Agir : envoyer l'influence à l'environnement
+ * act(influence);
+ * }
+ * }
+ */
+}

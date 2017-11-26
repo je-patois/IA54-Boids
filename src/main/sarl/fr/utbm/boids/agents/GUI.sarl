@@ -1,0 +1,56 @@
+package fr.utbm.boids.agents
+
+import io.sarl.core.Initialize
+import io.sarl.core.Logging
+import io.sarl.core.DefaultContextInteractions
+import fr.utbm.boids.events.MakeTheFiestaBegin
+import fr.utbm.boids.events.IsStarted
+import fr.utbm.boids.events.BtnLaunch
+import fr.utbm.boids.events.StartingSimulation
+import fr.utbm.boids.events.EndSimulation
+import fr.utbm.boids.events.BtnShutdown
+import io.sarl.core.Lifecycle
+import fr.utbm.boids.events.AgentLeft
+
+agent GUI {
+	uses Logging, DefaultContextInteractions, Lifecycle
+
+	
+	
+	/*
+	 * gestion des évènements
+	 */
+
+	on Initialize {
+		loggingName = "GUI"
+		info("The GUI is started.")
+		emit(new IsStarted())
+	}
+	
+	on MakeTheFiestaBegin {
+		info("Début de la fiesta")
+		
+		
+		/* TODO Delete fake simu launcher */
+		emit(new BtnLaunch());
+	}
+	
+	on BtnLaunch {
+		val nbPop = 3
+		val nbBoids = 20
+		val visionBoids = 10
+		emit(new StartingSimulation(nbPop, nbBoids, visionBoids))
+	}
+	
+	/* TODO William : BtnShutdown */
+	
+	on BtnShutdown {
+		val AgentsAlive = 0
+		/* initialiser au nombre de fils dans context et space */
+		emit(new EndSimulation())
+	}
+	
+	on AgentLeft {
+		if(/*tout seul dans context*/true){}
+	}
+}
