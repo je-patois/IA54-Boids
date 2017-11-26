@@ -6,9 +6,12 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.boids.gui.BoidsFxViewerController">
    <children>
-      <Button fx:id="start_button" layoutX="674.0" layoutY="67.0" mnemonicParsing="false" onAction="#startSimu" text="Start" />
-      <ScrollBar fx:id="boids_quantity_input" layoutX="649.0" layoutY="128.0" min="1.0" onMouseEntered="#actionBoidsQuantityDisplay" />
+      <Button fx:id="start_button" layoutX="699.0" layoutY="487.0" mnemonicParsing="false" onAction="#startSimu" text="Start" />
+      <ScrollBar fx:id="boids_quantity_input" layoutX="649.0" layoutY="128.0" min="1.0" onMouseEntered="#actionBoidsQuantityDisplay" value="1.0" />
       <Label fx:id="boids_quantity_display" layoutX="740.0" layoutY="146.0" text="1" />
       <Label layoutX="649.0" layoutY="107.0" prefHeight="21.0" prefWidth="100.0" text="%BoidsQuantityLabel" />
+      <ScrollBar fx:id="map_selection_input" layoutX="649.0" layoutY="195.0" max="2.0" min="1.0" onMouseEntered="#actionMapSelectionDisplay" value="1.0" />
+      <Label layoutX="649.0" layoutY="174.0" prefHeight="21.0" prefWidth="100.0" text="%MapSelectionLabel" />
+      <Label fx:id="map_selection_display" layoutX="740.0" layoutY="213.0" text="1" />
    </children>
 </Pane>

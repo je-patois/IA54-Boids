@@ -5,9 +5,11 @@ import fr.utbm.boids.agents.Boids
 import fr.utbm.boids.Vector
 
 event ConfigureSimulation {
+	val mapSelection : int
 	val boidsQuantity : int
 	
-	new(bQ : int) {
+	new(mS : int, bQ : int) {
+		mapSelection = mS
 		boidsQuantity = bQ
 	}
 }

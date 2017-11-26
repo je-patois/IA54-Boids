@@ -10,9 +10,12 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(14)
 @SuppressWarnings("all")
 public class ConfigureSimulation extends Event {
+  public final int mapSelection;
+  
   public final int boidsQuantity;
   
-  public ConfigureSimulation(final int bQ) {
+  public ConfigureSimulation(final int mS, final int bQ) {
+    this.mapSelection = mS;
     this.boidsQuantity = bQ;
   }
   
@@ -27,6 +30,8 @@ public class ConfigureSimulation extends Event {
     if (getClass() != obj.getClass())
       return false;
     ConfigureSimulation other = (ConfigureSimulation) obj;
+    if (other.mapSelection != this.mapSelection)
+      return false;
     if (other.boidsQuantity != this.boidsQuantity)
       return false;
     return super.equals(obj);
@@ -38,6 +43,7 @@ public class ConfigureSimulation extends Event {
   public int hashCode() {
     int result = super.hashCode();
     final int prime = 31;
+    result = prime * result + this.mapSelection;
     result = prime * result + this.boidsQuantity;
     return result;
   }
@@ -49,10 +55,11 @@ public class ConfigureSimulation extends Event {
   @Pure
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
+    result.append("mapSelection  = ").append(this.mapSelection);
     result.append("boidsQuantity  = ").append(this.boidsQuantity);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 2549230971L;
+  private final static long serialVersionUID = 1082573255L;
 }

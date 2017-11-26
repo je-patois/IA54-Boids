@@ -26,6 +26,7 @@ abstract agent FxBootAgent {
 			UUID::randomUUID
 		)
 		^space.register(asEventListener)
+		FxApplication::eventSpaceCandidate = ^space
 		execute [Application::launch(this.fxApplicationType)]
 	}
 

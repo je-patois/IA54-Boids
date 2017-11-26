@@ -83,16 +83,6 @@ public class GUI extends Agent {
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_endSimulation);
   }
   
-  @SyntheticMember
-  private void $behaviorUnit$void$4(final /* AgentKilled */Object occurrence) {
-    int _AgentsAlive = this.AgentsAlive;
-    this.AgentsAlive = (_AgentsAlive - 1);
-    if ((this.AgentsAlive == 0)) {
-      Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
-      _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.killMe();
-    }
-  }
-  
   @Extension
   @ImportedCapacityFeature(Logging.class)
   @SyntheticMember
@@ -170,13 +160,6 @@ public class GUI extends Agent {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MakeTheFiestaBegin$1(occurrence));
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$void(final /* AgentKilled */Object occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nAgentKilled cannot be resolved to a type.");
   }
   
   /**

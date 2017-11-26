@@ -31,9 +31,21 @@ public class BoidsFxViewerController extends FxViewerController {
   @FXML
   private Button start_button;
   
+  @FXML
+  private Label map_selection_display;
+  
+  @FXML
+  private ScrollBar map_selection_input;
+  
   @Pure
   public int getBoidsQuantity() {
     double _value = this.boids_quantity_input.getValue();
+    return ((int) _value);
+  }
+  
+  @Pure
+  public int getMapSelection() {
+    double _value = this.map_selection_input.getValue();
     return ((int) _value);
   }
   
@@ -41,8 +53,9 @@ public class BoidsFxViewerController extends FxViewerController {
   protected Boolean startSimu() {
     boolean _xblockexpression = false;
     {
+      int _mapSelection = this.getMapSelection();
       int _boidsQuantity = this.getBoidsQuantity();
-      ConfigureSimulation event = new ConfigureSimulation(_boidsQuantity);
+      ConfigureSimulation event = new ConfigureSimulation(_mapSelection, _boidsQuantity);
       boolean _xifexpression = false;
       if ((!this.launched)) {
         boolean _xblockexpression_1 = false;
@@ -69,6 +82,14 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_quantity_display.setText(String.format("%.0f", Double.valueOf(this.boids_quantity_input.getValue())));
     };
     this.boids_quantity_input.valueProperty().addListener(_function);
+  }
+  
+  @FXML
+  protected void actionMapSelectionDisplay() {
+    final InvalidationListener _function = (Observable it) -> {
+      this.map_selection_display.setText(String.format("%.0f", Double.valueOf(this.map_selection_input.getValue())));
+    };
+    this.map_selection_input.valueProperty().addListener(_function);
   }
   
   @Override

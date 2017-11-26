@@ -54,10 +54,10 @@ agent GUI {
 		emit(new EndSimulation())
 	}
 
-	on AgentKilled {
+	/*on AgentKilled {
 		AgentsAlive -= 1
 		if (AgentsAlive == 0){
 			killMe
 		}
-	}
+	}*/
 }

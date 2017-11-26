@@ -17,13 +17,20 @@ class BoidsFxViewerController extends FxViewerController {
 	@FXML var boids_quantity_display : Label
 	@FXML var boids_quantity_input : ScrollBar
 	@FXML var start_button : Button
+	@FXML var map_selection_display : Label
+	@FXML var map_selection_input : ScrollBar
+	
 
 	def getBoidsQuantity : int {
 		boids_quantity_input.value as int
 	}
+	
+	def getMapSelection : int {
+		map_selection_input.value as int
+	}
 
 	@FXML protected def startSimu {
-		var ^event = new ConfigureSimulation(this.boidsQuantity)
+		var ^event = new ConfigureSimulation(this.mapSelection, this.boidsQuantity)
 		if (!launched) {
 			startAgentApplication() [
 				emitToAgents(^event)
@@ -38,6 +45,12 @@ class BoidsFxViewerController extends FxViewerController {
 	@FXML protected def actionBoidsQuantityDisplay {
 		boids_quantity_input.valueProperty().addListener [
 			boids_quantity_display.setText(String.format("%.0f", boids_quantity_input.getValue()));
+		];
+	}
+
+	@FXML protected def actionMapSelectionDisplay {
+		map_selection_input.valueProperty().addListener [
+			map_selection_display.setText(String.format("%.0f", map_selection_input.getValue()));
 		];
 	}
 	

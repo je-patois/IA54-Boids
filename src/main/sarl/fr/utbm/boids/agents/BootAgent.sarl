@@ -7,25 +7,30 @@ import io.sarl.core.InnerContextAccess
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.ConfigureSimulation
 import fr.utbm.boids.events.CreateMap
+import fr.utbm.boids.gui.BoidsFxViewerController
+import io.sarl.core.Behaviors
 
 agent BootAgent {
-	uses Logging, InnerContextAccess, Lifecycle
+	uses Logging, Behaviors, InnerContextAccess, Lifecycle
 	
-	var map : int = 0
+	var map : int
 	var boidsQuantity : int
 	var exited : boolean = false
 
 	on Initialize {
 		loggingName = "BootAgent-" + this.ID
-		if(!occurrence.parameters.empty)
-			this.map = occurrence.parameters.get(0) as Integer
+		var ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
+		ctrl.UISpace.register(asEventListener)
 		info("Starting simulation with map " + this.map)
 		info("Configuration of the environment...")
 	}
 	
 	on ConfigureSimulation {
 		this.boidsQuantity = occurrence.boidsQuantity
-		info(this.boidsQuantity)
+		this.map = occurrence.mapSelection
+		info('Map: ' + this.map)
+		info('Boids quantity: ' + this.boidsQuantity)
+		
 	}
 	
 	on CreateMap {
