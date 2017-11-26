@@ -5,20 +5,24 @@ import javafx.fxml.FXML
 import fr.utbm.boids.events.ConfigureSimulation
 //import javafx.scene.control.Label
 import javafx.scene.control.ScrollBar
+import javafx.scene.control.Button
+import fr.utbm.boids.agents.BootAgent
+import javafx.scene.control.Label
 
 class BoidsFxViewerController extends FxViewerController {
 
 	var launched = false
 	var mapCreated = false
 
-	//@FXML var boids_quantity_display : Label
+	@FXML var boids_quantity_display : Label
 	@FXML var boids_quantity_input : ScrollBar
+	@FXML var start_button : Button
 
 	def getBoidsQuantity : int {
 		boids_quantity_input.value as int
 	}
 
-	@FXML protected def actionSetup {
+	@FXML protected def startSimu {
 		var ^event = new ConfigureSimulation(this.boidsQuantity)
 		if (!launched) {
 			startAgentApplication() [
@@ -30,4 +34,11 @@ class BoidsFxViewerController extends FxViewerController {
 			emitToAgents(^event)
 		}
 	}
+
+	@FXML protected def actionBoidsQuantityDisplay {
+		boids_quantity_input.valueProperty().addListener [
+			boids_quantity_display.setText(String.format("%.0f", boids_quantity_input.getValue()));
+		];
+	}
+	
 }

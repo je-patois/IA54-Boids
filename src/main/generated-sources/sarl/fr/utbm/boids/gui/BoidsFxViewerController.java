@@ -5,7 +5,11 @@ import fr.utbm.boids.gui.fx.FxViewerController;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
 import org.eclipse.xtext.xbase.lib.Pure;
@@ -19,7 +23,13 @@ public class BoidsFxViewerController extends FxViewerController {
   private boolean mapCreated = false;
   
   @FXML
+  private Label boids_quantity_display;
+  
+  @FXML
   private ScrollBar boids_quantity_input;
+  
+  @FXML
+  private Button start_button;
   
   @Pure
   public int getBoidsQuantity() {
@@ -28,7 +38,7 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @FXML
-  protected Boolean actionSetup() {
+  protected Boolean startSimu() {
     boolean _xblockexpression = false;
     {
       int _boidsQuantity = this.getBoidsQuantity();
@@ -51,6 +61,14 @@ public class BoidsFxViewerController extends FxViewerController {
       _xblockexpression = _xifexpression;
     }
     return Boolean.valueOf(_xblockexpression);
+  }
+  
+  @FXML
+  protected void actionBoidsQuantityDisplay() {
+    final InvalidationListener _function = (Observable it) -> {
+      this.boids_quantity_display.setText(String.format("%.0f", Double.valueOf(this.boids_quantity_input.getValue())));
+    };
+    this.boids_quantity_input.valueProperty().addListener(_function);
   }
   
   @Override

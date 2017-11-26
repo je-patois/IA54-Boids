@@ -57,6 +57,8 @@ public class BootAgent extends Agent {
   @SyntheticMember
   private void $behaviorUnit$ConfigureSimulation$1(final ConfigureSimulation occurrence) {
     this.boidsQuantity = occurrence.boidsQuantity;
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(Integer.valueOf(this.boidsQuantity));
   }
   
   @SyntheticMember

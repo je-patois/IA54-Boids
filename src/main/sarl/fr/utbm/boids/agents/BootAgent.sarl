@@ -25,6 +25,7 @@ agent BootAgent {
 	
 	on ConfigureSimulation {
 		this.boidsQuantity = occurrence.boidsQuantity
+		info(this.boidsQuantity)
 	}
 	
 	on CreateMap {

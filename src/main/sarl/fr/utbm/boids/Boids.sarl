@@ -15,4 +15,5 @@ agent Boids extends FxBootAgent {
 	def getApplicationBootAgentType : Class<? extends Agent> {
 		typeof(BootAgent)
 	}
+	
 }
