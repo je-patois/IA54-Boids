@@ -13,8 +13,18 @@ import fr.utbm.boids.events.IsStarted
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.EndSimulation
-import fr.utbm.boids.events.AgentLeft
 
+/** 
+ * @author Zilliqman
+ * 
+ */
+ 
+ /*
+  * Il va falloir avoir des tableaux d'obstacles et de boids
+  * 
+  * Peut-être vaut-il mieux faire 2 tableaux (1 pour les obstacles et 1 pour les boids)
+  */
+ 
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle
 
@@ -29,7 +39,7 @@ agent Environment {
 	}
 
 	on Destroy {
-		emit (new AgentLeft)
+		
 	}
 
 	on AgentSpawned {

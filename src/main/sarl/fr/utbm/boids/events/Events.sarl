@@ -58,9 +58,10 @@ event StartingSimulation {
 
 event EndSimulation
 
-event AgentLeft
-/* Events of the GUI only
- */
+
+
+/* Events of the GUI only */
+
 event BtnLaunch
 
 event BtnShutdown

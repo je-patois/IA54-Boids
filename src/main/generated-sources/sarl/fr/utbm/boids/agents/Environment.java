@@ -1,6 +1,5 @@
 package fr.utbm.boids.agents;
 
-import fr.utbm.boids.events.AgentLeft;
 import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.IsStarted;
 import io.sarl.core.AgentKilled;
@@ -31,6 +30,11 @@ import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Inline;
 import org.eclipse.xtext.xbase.lib.Pure;
 
+/**
+ * Il va falloir avoir des tableaux d'obstacles et de boids
+ * 
+ * Peut-être vaut-il mieux faire 2 tableaux (1 pour les obstacles et 1 pour les boids)
+ */
 @SarlSpecification("0.6")
 @SarlElementType(17)
 @SuppressWarnings("all")
@@ -54,9 +58,6 @@ public class Environment extends Agent {
   
   @SyntheticMember
   private void $behaviorUnit$Destroy$2(final Destroy occurrence) {
-    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    AgentLeft _agentLeft = new AgentLeft();
-    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_agentLeft);
   }
   
   @SyntheticMember

@@ -7,7 +7,7 @@ import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.IsStarted
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.EndSimulation
-import fr.utbm.boids.events.AgentLeft
+
 
 agent Scheduler {
 	uses Logging, DefaultContextInteractions, Lifecycle
@@ -33,7 +33,6 @@ agent Scheduler {
 	}
 
 	on Destroy {
-		emit(new AgentLeft)
 	}
 	
 }

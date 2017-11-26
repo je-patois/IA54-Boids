@@ -10,13 +10,15 @@ import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.EndSimulation
 import fr.utbm.boids.events.BtnShutdown
 import io.sarl.core.Lifecycle
-import fr.utbm.boids.events.AgentLeft
+import java.util.UUID
+import java.util.TreeSet
+import io.sarl.core.Schedules
 
 agent GUI {
-	uses Logging, DefaultContextInteractions, Lifecycle
+	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
 
-	
-	
+	/* -1 if not exiting the app // +x if we quit the app and x agents are alive */
+	var AgentsAlive = -1 
 	/*
 	 * gestion des évènements
 	 */
@@ -35,22 +37,27 @@ agent GUI {
 		emit(new BtnLaunch());
 	}
 	
+	/* TODO William */
 	on BtnLaunch {
 		val nbPop = 3
 		val nbBoids = 20
 		val visionBoids = 10
 		emit(new StartingSimulation(nbPop, nbBoids, visionBoids))
+		in(10000)[
+			emit(new BtnShutdown)
+		]
 	}
 	
-	/* TODO William : BtnShutdown */
-	
 	on BtnShutdown {
-		val AgentsAlive = 0
+		AgentsAlive = 3
 		/* initialiser au nombre de fils dans context et space */
 		emit(new EndSimulation())
 	}
-	
-	on AgentLeft {
-		if(/*tout seul dans context*/true){}
+
+	on AgentKilled {
+		AgentsAlive -= 1
+		if (AgentsAlive == 0){
+			killMe
+		}
 	}
 }

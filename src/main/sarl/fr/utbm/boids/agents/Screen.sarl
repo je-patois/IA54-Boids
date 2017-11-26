@@ -7,7 +7,6 @@ import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.IsStarted
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.EndSimulation
-import fr.utbm.boids.events.AgentLeft
 
 agent Screen {
 	uses Logging, DefaultContextInteractions, Lifecycle
@@ -33,7 +32,7 @@ agent Screen {
 	}
 
 	on Destroy {
-		emit(new AgentLeft)
+
 	}
 	
 }

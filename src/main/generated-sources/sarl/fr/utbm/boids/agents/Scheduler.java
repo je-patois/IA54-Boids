@@ -1,6 +1,5 @@
 package fr.utbm.boids.agents;
 
-import fr.utbm.boids.events.AgentLeft;
 import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.IsStarted;
 import io.sarl.core.DefaultContextInteractions;
@@ -54,9 +53,6 @@ public class Scheduler extends Agent {
   
   @SyntheticMember
   private void $behaviorUnit$Destroy$2(final Destroy occurrence) {
-    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    AgentLeft _agentLeft = new AgentLeft();
-    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_agentLeft);
   }
   
   @Extension
