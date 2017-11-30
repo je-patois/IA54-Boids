@@ -13,6 +13,9 @@ import fr.utbm.boids.events.IsStarted
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.EndSimulation
+import java.util.Collection
+import fr.utbm.boids.events.StartingSimulation
+import java.util.ArrayList
 
 /** 
  * @author Zilliqman
@@ -27,11 +30,35 @@ import fr.utbm.boids.events.EndSimulation
  
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle
+	
+	var boidsList : Collection<Boid>
+	var nombreDePopulations : int
+	var nombreDeBoidsParPopulation : int
+	var visionBoids : int  
+	var distanceBoids : int 
 
 	on Initialize {
 		loggingName = "Environment"
 		info("The Environment is started.")
 		emit(new IsStarted())
+	}
+	
+	on StartingSimulation {
+		this.nombreDeBoidsParPopulation = occurrence.nombreDeBoidsParPopulation
+		this.nombreDePopulations = occurrence.nombreDePopulations
+		this.visionBoids = occurrence.visionBoids
+		
+		boidsList = new ArrayList()
+		
+		info ("ready to start ")
+		
+		for (var i = 0; i< this.nombreDePopulations; i++ ){
+			for (var j = 0 ; j < this.nombreDeBoidsParPopulation; j++){
+				//TODO à voir comment gérer une liste de boids
+				spawn (Boid, i, visionBoids, distanceBoids)
+			}
+		}
+		
 	}
 
 	on EndSimulation {

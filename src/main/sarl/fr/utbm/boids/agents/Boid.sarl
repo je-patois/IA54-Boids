@@ -20,8 +20,16 @@ agent Boid {
 	/*
 	 * gestion des évènements
 	 */
+	 
+	 
 	on Initialize {
+		loggingName = "Boid"
 		info("A Boid agent was started.")
+		groupe =  new Integer(occurrence.parameters.get(0) as Integer)
+		angleVisibilite = new Integer (occurrence.parameters.get(1) as Integer)
+		distanceVisibilite = new Integer (occurrence.parameters.get(2) as Integer)
+		
+		info ("group " + groupe)
 		emit(new IsStarted())
 	}
 
@@ -125,7 +133,7 @@ agent Boid {
 	 	var tmp : Vector
 	 	var tmp2 : Vector
 	 	
-	 	tmp = new Vector(b.getPosition)
+	 	tmp = new Vector(b.position)
 	 	tmp.moins(position)
 	 	
 	 	// Si le boids est trop loin, on ne le voit pas 
@@ -150,7 +158,7 @@ agent Boid {
 	 * Création des fonctions comportementales du Boids
 	 */
 	 
-	 
+	//TODO test si non utilisation du test du groupe à une influence
 	def separation(otherBoids : Collection<Boid>) : Vector {
 
 		var force : Vector
@@ -161,7 +169,7 @@ agent Boid {
 		tmp = new Vector(0, 0)
 
 		for (boid : otherBoids) {
-			if (boid != null && boid.getGroupe == this.groupe && visible(boid)) {
+			if (boid != null && boid.groupe == this.groupe && visible(boid)) {
 				tmp.setXY(position)
 				tmp.moins(boid.position)
 				len = tmp.length()
@@ -182,9 +190,9 @@ agent Boid {
 		force = new Vector(0,0)
 		
 		for (boid : otherBoids) {
-			if (boid != null && boid.getGroupe == this.groupe && visible(boid)){
+			if (boid != null && boid.groupe == this.groupe && visible(boid)){
 				nbTot++
-				force.plus(boid.getPosition())
+				force.plus(boid.position)
 			}
 		}
 		
@@ -208,9 +216,9 @@ agent Boid {
 		tmp = new Vector(0,0)
 		
 		for (boid : otherBoids){
-			if (boid != null && boid.getGroupe == this.groupe && visible(boid)) {
+			if (boid != null && boid.groupe == this.groupe && visible(boid)) {
 				nbTot++
-				tmp.setXY(boid.getVitesse)
+				tmp.setXY(boid.vitesse)
 				tmp.fois(1/tmp.length)
 				force.plus(tmp)
 			}
@@ -234,9 +242,9 @@ agent Boid {
 		tmp = new Vector(0,0)
 		
 		for (boid : otherBoids){
-			if (boid != null && boid.getGroupe != this.groupe && visible(boid)){
+			if (boid != null && boid.groupe != this.groupe && visible(boid)){
 				tmp.setXY(this.position)
-				tmp.moins(boid.getPosition)
+				tmp.moins(boid.position)
 				len = tmp.length
 				tmp.fois(1/(len*len))
 				force.plus(tmp)

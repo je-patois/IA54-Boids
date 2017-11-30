@@ -9,9 +9,11 @@ import fr.utbm.boids.events.ConfigureSimulation
 import fr.utbm.boids.events.CreateMap
 import fr.utbm.boids.gui.BoidsFxViewerController
 import io.sarl.core.Behaviors
+import io.sarl.core.DefaultContextInteractions
+import fr.utbm.boids.events.StartingSimulation
 
 agent BootAgent {
-	uses Logging, Behaviors, InnerContextAccess, Lifecycle
+	uses Logging, Behaviors, InnerContextAccess, Lifecycle, DefaultContextInteractions
 	
 	var map : int
 	var boidsQuantity : int
@@ -23,6 +25,8 @@ agent BootAgent {
 		ctrl.UISpace.register(asEventListener)
 		info("Starting simulation with map " + this.map)
 		info("Configuration of the environment...")
+
+		spawn(Environment, boidsQuantity) 
 	}
 	
 	on ConfigureSimulation {
@@ -30,7 +34,7 @@ agent BootAgent {
 		this.map = occurrence.mapSelection
 		info('Map: ' + this.map)
 		info('Boids quantity: ' + this.boidsQuantity)
-		
+		emit (new StartingSimulation(2,boidsQuantity,10))	//TODO ramener les deux autres paramètres par l'interface
 	}
 	
 	on CreateMap {
