@@ -10,6 +10,11 @@ class Vector {
 		this.y = y 
 	}
 	
+	new (v : Vector){
+		this.x = v.getX
+		this.y = v.getY
+	}
+	
 	new (){
 		this.x = 0
 		this.y = 0
@@ -58,6 +63,17 @@ class Vector {
 	
 	def length () : double {
 		return Math.sqrt (x*x + y*y)
+	}
+	
+	def normaliser() : void {
+		this.x = this.x/this.length
+		this.y = this.y/this.length
+	}
+	
+	
+	// ici this et vec doivent être normaliser
+	def point (vec : Vector) : double{
+		return Math.acos(this.x*vec.x + this.y*vec.y)
 	}
 	
 	

@@ -1,7 +1,7 @@
 package fr.utbm.boids.events
 
 import java.util.Collection
-import fr.utbm.boids.agents.Boids
+import fr.utbm.boids.agents.Boid
 import fr.utbm.boids.Vector
 
 event ConfigureSimulation {
@@ -23,13 +23,13 @@ event MakeTheFiestaBegin
 
 event DemandeDeplacement {
 
-	var otherBoids : Collection<Boids>
+	var otherBoids : Collection<Boid>
 
-	new (pos : Vector, otherBoids : Collection<Boids>) {
+	new (pos : Vector, otherBoids : Collection<Boid>) {
 		this.otherBoids = otherBoids
 	}
 
-	new (x : int, y : int, otherBoids : Collection<Boids>) {
+	new (x : int, y : int, otherBoids : Collection<Boid>) {
 		this.otherBoids = otherBoids
 	}
 }
