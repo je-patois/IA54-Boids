@@ -37,12 +37,12 @@ agent GUI {
 		emit(new BtnLaunch());
 	}
 	
-	/* TODO William */
 	on BtnLaunch {
 		val nbPop = 3
 		val nbBoids = 20
 		val visionBoids = 10
-		emit(new StartingSimulation(nbPop, nbBoids, visionBoids))
+		val freqRafraichissement = 50
+		emit(new StartingSimulation(nbPop, nbBoids, visionBoids, freqRafraichissement))
 		in(10000)[
 			emit(new BtnShutdown)
 		]

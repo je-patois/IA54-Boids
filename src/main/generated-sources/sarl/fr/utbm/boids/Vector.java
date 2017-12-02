@@ -21,6 +21,11 @@ public class Vector {
     this.y = y;
   }
   
+  public Vector(final Vector v) {
+    this.x = v.getX();
+    this.y = v.getY();
+  }
+  
   public Vector() {
     this.x = 0;
     this.y = 0;
@@ -84,6 +89,25 @@ public class Vector {
   @Pure
   public double length() {
     return Math.sqrt(((this.x * this.x) + (this.y * this.y)));
+  }
+  
+  public Vector normaliser(final int vitMax) {
+    double _length = this.length();
+    double _divide = (this.x / _length);
+    this.x = _divide;
+    double _length_1 = this.length();
+    double _divide_1 = (this.y / _length_1);
+    this.y = _divide_1;
+    double _x = this.x;
+    this.x = (_x * vitMax);
+    double _y = this.y;
+    this.y = (_y * vitMax);
+    return this;
+  }
+  
+  @Pure
+  public double point(final Vector vec) {
+    return Math.acos(((this.x * vec.x) + (this.y * vec.y)));
   }
   
   @Override

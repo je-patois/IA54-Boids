@@ -7,7 +7,7 @@ import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.IsStarted
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.EndSimulation
-
+import fr.utbm.boids.events.StartingSimulation
 
 agent Scheduler {
 	uses Logging, DefaultContextInteractions, Lifecycle
@@ -17,6 +17,8 @@ agent Scheduler {
 	var vitesse : Vecteur*/
 	var groupe : int 
 	
+	//fréquence de rafraichissement en millisecondes
+	var freqRafraichissement : int
 	
 	/*
 	 * gestion des évènements
@@ -26,6 +28,10 @@ agent Scheduler {
 		loggingName = "Scheduler"
 		info("The Scheduler is started.")
 		emit(new IsStarted())
+	}
+
+	on  StartingSimulation {
+		this.freqRafraichissement = occurrence.freqRafraichissement
 	}
 
 	on EndSimulation {

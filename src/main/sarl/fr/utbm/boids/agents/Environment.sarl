@@ -4,6 +4,7 @@ import io.sarl.core.AgentKilled
 import io.sarl.core.AgentSpawned
 import io.sarl.core.ContextJoined
 import io.sarl.core.ContextLeft
+import io.sarl.core.InnerContextAccess
 import io.sarl.core.Destroy
 import io.sarl.core.Initialize
 import io.sarl.core.Logging
@@ -16,6 +17,11 @@ import fr.utbm.boids.events.EndSimulation
 import java.util.Collection
 import fr.utbm.boids.events.StartingSimulation
 import java.util.ArrayList
+import java.util.TreeSet
+import java.util.UUID
+import fr.utbm.boids.Vector
+import fr.utbm.boids.events.StartPosition
+import fr.utbm.boids.events.ResultatDeplacement
 
 /** 
  * @author Zilliqman
@@ -29,13 +35,22 @@ import java.util.ArrayList
   */
  
 agent Environment {
-	uses Logging, DefaultContextInteractions, Lifecycle
+	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess
 	
-	var boidsList : Collection<Boid>
+	var boidsList : Collection<UUID>
 	var nombreDePopulations : int
 	var nombreDeBoidsParPopulation : int
 	var visionBoids : int  
-	var distanceBoids : int 
+	var distanceBoids : int
+	var boidsGrid : Collection<Boid>
+	var superBoids : boolean
+	
+	
+	//TODO amener ici la largeur et la hauteur de la carte/écran
+	var largeur : int
+	var hauteur : int
+	
+
 
 	on Initialize {
 		loggingName = "Environment"
@@ -55,10 +70,77 @@ agent Environment {
 		for (var i = 0; i< this.nombreDePopulations; i++ ){
 			for (var j = 0 ; j < this.nombreDeBoidsParPopulation; j++){
 				//TODO à voir comment gérer une liste de boids
-				spawn (Boid, i, visionBoids, distanceBoids)
+				
+				//spawn (Boid, i, visionBoids, distanceBoids)
+				val newBoid = spawnInContext(Boid, innerContext, i, visionBoids, distanceBoids)
+				boidsList.add(newBoid)
 			}
 		}
+
+		hauteur = 50	//TODO envoyer la taille de la map
+		largeur = 50
+
+		innerContext.defaultSpace.emit(ID, new StartPosition())
+	}
+
+	on ResultatDeplacement {
+		var accept = true
 		
+		occurrence.position = estDansLaCarte(occurrence.position)
+		
+		/*
+		//TODO RESOUDRE BUG
+		//tests
+		var test : Boid
+		info(occurrence.boid)
+		test = occurrence.boid
+		var doesItWork = this.boidsGrid.add(test)	//BUG ICI : add
+		info(doesItWork) 							//Uncaught exception: null
+		
+		// vérifier sortie de map
+		info(boidsGrid)
+		
+		for (boid : boidsGrid){
+			info("premier tour")
+			//on vérifie si le boid ne veut pas aller à un endroit ou il y a déjà un boid
+			if (boid.position.x == occurrence.position.x && boid.position.y == occurrence.position.y) { // vérifier collision obstacles
+				accept = false
+				boidsGrid.remove(occurrence.boid)
+			}
+		}
+		//fin tests
+		*/
+		
+		
+		if(accept){
+			emit(new ResultatDeplacement(occurrence.position, occurrence.boid))
+		} else {
+			//TODO resolution des problèmes de collision interBoids
+			
+			//TODO supprimer acceptation collisions
+			emit(new ResultatDeplacement(occurrence.position, occurrence.boid))
+		}
+	}
+
+	def estDansLaCarte(v : Vector) : Vector {	//TODO rajouter tests murs ICI
+		var positionX = v.getX()
+		var positionY = v.getY()
+		
+		if (positionX > largeur) {
+			positionX -= 2 * largeur
+		}
+		if (positionX < -largeur) {
+			positionX += 2 * largeur
+		}
+		if (positionY > hauteur) {
+			positionY -= 2 * hauteur
+		}
+		if (positionY < -hauteur) {
+			positionY += 2 * hauteur
+		}
+		
+		var newPosition = new Vector(positionX, positionY)
+		return newPosition
 	}
 
 	on EndSimulation {

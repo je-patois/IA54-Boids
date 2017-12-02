@@ -2,6 +2,7 @@ package fr.utbm.boids.agents;
 
 import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.IsStarted;
+import fr.utbm.boids.events.StartingSimulation;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Destroy;
 import io.sarl.core.Initialize;
@@ -34,6 +35,8 @@ public class Scheduler extends Agent {
    */
   private int groupe;
   
+  private int freqRafraichissement;
+  
   @SyntheticMember
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
@@ -46,13 +49,18 @@ public class Scheduler extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$1(final EndSimulation occurrence) {
+  private void $behaviorUnit$StartingSimulation$1(final StartingSimulation occurrence) {
+    this.freqRafraichissement = occurrence.freqRafraichissement;
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$EndSimulation$2(final EndSimulation occurrence) {
     Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
     _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.killMe();
   }
   
   @SyntheticMember
-  private void $behaviorUnit$Destroy$2(final Destroy occurrence) {
+  private void $behaviorUnit$Destroy$3(final Destroy occurrence) {
   }
   
   @Extension
@@ -116,7 +124,7 @@ public class Scheduler extends Agent {
   private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$1(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$2(occurrence));
   }
   
   @SyntheticMember
@@ -124,7 +132,15 @@ public class Scheduler extends Agent {
   private void $guardEvaluator$Destroy(final Destroy occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Destroy$2(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Destroy$3(occurrence));
+  }
+  
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$StartingSimulation(final StartingSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartingSimulation$1(occurrence));
   }
   
   @Override
@@ -140,6 +156,8 @@ public class Scheduler extends Agent {
     Scheduler other = (Scheduler) obj;
     if (other.groupe != this.groupe)
       return false;
+    if (other.freqRafraichissement != this.freqRafraichissement)
+      return false;
     return super.equals(obj);
   }
   
@@ -150,6 +168,7 @@ public class Scheduler extends Agent {
     int result = super.hashCode();
     final int prime = 31;
     result = prime * result + this.groupe;
+    result = prime * result + this.freqRafraichissement;
     return result;
   }
   

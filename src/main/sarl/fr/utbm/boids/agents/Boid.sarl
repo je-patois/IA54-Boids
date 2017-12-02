@@ -3,10 +3,13 @@ package fr.utbm.boids.agents
 import io.sarl.core.Initialize
 import io.sarl.core.Logging
 import io.sarl.core.DefaultContextInteractions
-import fr.utbm.boids.Vector
 import java.util.Collection
 import fr.utbm.boids.events.IsStarted
 import fr.utbm.boids.events.DemandeDeplacement
+import fr.utbm.boids.events.StartPosition
+import fr.utbm.boids.events.ResultatDeplacement
+import fr.utbm.boids.Vector
+import java.util.Random
 
 agent Boid {
 	uses Logging, DefaultContextInteractions
@@ -14,6 +17,7 @@ agent Boid {
 	var position : Vector
 	var vitesse : Vector
 	var groupe : int
+	var groupeVitesseMax : int
 	var angleVisibilite : int 			// défini dans Boid car chauqe individu peut avoir des caractéristiques différentes (dépendant de sa famille et de sa morfologie)
 	var distanceVisibilite : int 
 	
@@ -32,20 +36,37 @@ agent Boid {
 		info ("group " + groupe)
 		emit(new IsStarted())
 	}
+	
+	on StartPosition {
+		var maPosition : Vector
+		val rnd = new Random()
+		var x = rnd.nextInt()
+		var y = rnd.nextInt()
+		info("X, Y \n" + x + " " + y)
+		x %= 50
+		y = y % 50
+		info("X, Y \n" + x + " " + y)
+		maPosition = new Vector(x, y)
+		emit(new ResultatDeplacement(maPosition, this))
+	}
 
+	on ResultatDeplacement {
+		this.position = occurrence.position
+	}
+	
 	on DemandeDeplacement {
 		
 		/* 
 		 * on récupère la liste des autres boids
 		 */
 		var otherBoids = occurrence.otherBoids
-		
+		var forceTot : Vector
 		/* 		 / \
 		 *		/ !	\	 On suppose que le Boids que je suis a été supprimé de la liste
 		 *	   /_____\
 		 */	   
 		if (otherBoids != null) {
-			var forceTot : Vector
+			
 
 			forceTot = new Vector(0, 0)
 			
@@ -66,11 +87,17 @@ agent Boid {
 			// TODO
 		}
 		
+		/*
+		 * if(forceTot.length > this.group.vitesseMax){
+		 * 	normaliser(forceTot, this.group.maxVitesse)
+		 * 
+		 */
+		
 		
 		// on peut renvoyer la force à l'environnement ... ou 
 		
 		//on renvoie la nouvelle position du Boids
-		//emit(new ResultatDeplacement(position))
+		emit(new ResultatDeplacement(forceTot, this))
 	 
 	}
 	
@@ -142,10 +169,11 @@ agent Boid {
 	 	}
 	 	
 	 	tmp2 = new Vector(vitesse)
-	 	tmp2.normaliser
+	 	
+	 	tmp2.normaliser(this.groupeVitesseMax)
 	 	
 	 	// pas dans le code du prof mais pourtant le vecteur doit l'être pour que la formule marche et ça me parraît pas être "logique" tmp soit déjà normaliser
-	 	tmp.normaliser 
+	 	tmp.normaliser(this.groupeVitesseMax)
 	 	
 	 	if (tmp2.point(tmp) < angleVisibilite) {
 	 		return false
@@ -153,6 +181,7 @@ agent Boid {
 	 	
 	 	return true
 	 }
+	 
 	
 	/* 
 	 * Création des fonctions comportementales du Boids

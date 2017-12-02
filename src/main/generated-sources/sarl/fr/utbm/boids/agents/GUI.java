@@ -63,8 +63,9 @@ public class GUI extends Agent {
     final int nbPop = 3;
     final int nbBoids = 20;
     final int visionBoids = 10;
+    final int freqRafraichissement = 50;
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    StartingSimulation _startingSimulation = new StartingSimulation(nbPop, nbBoids, visionBoids);
+    StartingSimulation _startingSimulation = new StartingSimulation(nbPop, nbBoids, visionBoids, freqRafraichissement);
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_startingSimulation);
     Schedules _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER = this.$castSkill(Schedules.class, (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = this.$getSkill(Schedules.class)) : this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
     final Procedure1<Agent> _function = (Agent it) -> {
@@ -162,9 +163,6 @@ public class GUI extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MakeTheFiestaBegin$1(occurrence));
   }
   
-  /**
-   * TODO William
-   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$BtnLaunch(final BtnLaunch occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {

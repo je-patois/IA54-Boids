@@ -16,10 +16,13 @@ public class StartingSimulation extends Event {
   
   public final int visionBoids;
   
-  public StartingSimulation(final int nombreDePopulations, final int nombreDeBoidsParPopulation, final int visionBoids) {
+  public final int freqRafraichissement;
+  
+  public StartingSimulation(final int nombreDePopulations, final int nombreDeBoidsParPopulation, final int visionBoids, final int freqRafraichissement) {
     this.nombreDePopulations = nombreDePopulations;
     this.nombreDeBoidsParPopulation = nombreDeBoidsParPopulation;
     this.visionBoids = visionBoids;
+    this.freqRafraichissement = freqRafraichissement;
   }
   
   @Override
@@ -39,6 +42,8 @@ public class StartingSimulation extends Event {
       return false;
     if (other.visionBoids != this.visionBoids)
       return false;
+    if (other.freqRafraichissement != this.freqRafraichissement)
+      return false;
     return super.equals(obj);
   }
   
@@ -51,6 +56,7 @@ public class StartingSimulation extends Event {
     result = prime * result + this.nombreDePopulations;
     result = prime * result + this.nombreDeBoidsParPopulation;
     result = prime * result + this.visionBoids;
+    result = prime * result + this.freqRafraichissement;
     return result;
   }
   
@@ -64,9 +70,10 @@ public class StartingSimulation extends Event {
     result.append("nombreDePopulations  = ").append(this.nombreDePopulations);
     result.append("nombreDeBoidsParPopulation  = ").append(this.nombreDeBoidsParPopulation);
     result.append("visionBoids  = ").append(this.visionBoids);
+    result.append("freqRafraichissement  = ").append(this.freqRafraichissement);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = -4098534001L;
+  private final static long serialVersionUID = -445387195L;
 }

@@ -36,31 +36,35 @@ event DemandeDeplacement {
 
 event ResultatDeplacement {
 	var position : Vector
+	var boid : Boid
 
-	new (pos : Vector) {
+	new (pos : Vector, boid :Boid) {
 		this.position = pos
+		this.boid = boid
 	}
 
-	new (x : int, y : int) {
+	/*new (x : int, y : int) {
 		this.position.setXY(x, y)
-	}
+	}*/
 }
 
 event StartingSimulation {
 	val nombreDePopulations : int
 	val nombreDeBoidsParPopulation : int
 	val visionBoids : int
+	val freqRafraichissement : int
 
-	new(nombreDePopulations : int, nombreDeBoidsParPopulation : int, visionBoids : int) {
+	new(nombreDePopulations : int, nombreDeBoidsParPopulation : int, visionBoids : int, freqRafraichissement : int) {
 		this.nombreDePopulations = nombreDePopulations
 		this.nombreDeBoidsParPopulation = nombreDeBoidsParPopulation
 		this.visionBoids = visionBoids
+		this.freqRafraichissement = freqRafraichissement
 	}
 }
 
+event StartPosition
+
 event EndSimulation
-
-
 
 /* Events of the GUI only */
 

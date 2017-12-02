@@ -34,7 +34,7 @@ agent BootAgent {
 		this.map = occurrence.mapSelection
 		info('Map: ' + this.map)
 		info('Boids quantity: ' + this.boidsQuantity)
-		emit (new StartingSimulation(2,boidsQuantity,10))	//TODO ramener les deux autres paramètres par l'interface
+		emit (new StartingSimulation(2,boidsQuantity,10,50))	//TODO ramener les deux autres paramètres par l'interface
 	}
 	
 	on CreateMap {
