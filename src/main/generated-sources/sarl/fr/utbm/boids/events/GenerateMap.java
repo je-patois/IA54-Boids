@@ -9,14 +9,14 @@ import io.sarl.lang.core.Event;
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
-public class CreateMap extends Event {
+public class GenerateMap extends Event {
   @SyntheticMember
-  public CreateMap() {
+  public GenerateMap() {
     super();
   }
   
   @SyntheticMember
-  public CreateMap(final Address source) {
+  public GenerateMap(final Address source) {
     super(source);
   }
   

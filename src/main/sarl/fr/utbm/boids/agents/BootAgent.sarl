@@ -6,11 +6,11 @@ import fr.utbm.boids.gui.fx.EndSimulation
 import io.sarl.core.InnerContextAccess
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.ConfigureSimulation
-import fr.utbm.boids.events.CreateMap
 import fr.utbm.boids.gui.BoidsFxViewerController
 import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.StartingSimulation
+import fr.utbm.boids.events.GenerateMap
 
 agent BootAgent {
 	uses Logging, Behaviors, InnerContextAccess, Lifecycle, DefaultContextInteractions
@@ -18,27 +18,29 @@ agent BootAgent {
 	var map : int
 	var boidsQuantity : int
 	var exited : boolean = false
+	var ctrl : BoidsFxViewerController = null;
 
 	on Initialize {
 		loggingName = "BootAgent-" + this.ID
-		var ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
+		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
 		ctrl.UISpace.register(asEventListener)
-		info("Starting simulation with map " + this.map)
-		info("Configuration of the environment...")
-
 		spawn(Environment, boidsQuantity) 
+		info("Starting simulation")
 	}
 	
 	on ConfigureSimulation {
+		info("Configuration of the environment...") 
 		this.boidsQuantity = occurrence.boidsQuantity
 		this.map = occurrence.mapSelection
 		info('Map: ' + this.map)
 		info('Boids quantity: ' + this.boidsQuantity)
 		emit (new StartingSimulation(2,boidsQuantity,10,50))	//TODO ramener les deux autres paramètres par l'interface
+		wake(new GenerateMap())
 	}
 	
-	on CreateMap {
-		
+	on GenerateMap {
+		info('Generating map ' + this.map);
+		ctrl.buildMap(this.map)
 	}
 
 	on EndSimulation [!hasMemberAgent] {

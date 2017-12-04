@@ -14,7 +14,8 @@ event ConfigureSimulation {
 	}
 }
 
-event CreateMap
+event GenerateMap
+
 /* event pour prévenir l'environnement que le Boids est lancé
  */
 event IsStarted

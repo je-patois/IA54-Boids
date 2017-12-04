@@ -3,22 +3,32 @@ package fr.utbm.boids.gui
 import fr.utbm.boids.gui.fx.FxViewerController
 import javafx.fxml.FXML
 import fr.utbm.boids.events.ConfigureSimulation
-//import javafx.scene.control.Label
+import javafx.scene.control.Label
 import javafx.scene.control.ScrollBar
 import javafx.scene.control.Button
-import fr.utbm.boids.agents.BootAgent
-import javafx.scene.control.Label
+import javafx.scene.shape.Polyline
+import javafx.scene.Group
+import javafx.scene.layout.Pane
+
+import static extension javafx.util.Duration.*
+import javafx.scene.text.Text
+import javafx.scene.shape.Circle
+import javafx.application.Platform
+import javafx.scene.shape.Polygon
 
 class BoidsFxViewerController extends FxViewerController {
 
 	var launched = false
 	var mapCreated = false
 
+	//@FXML var draw_zone : Canvas
+	@FXML var myGroup : Group
 	@FXML var boids_quantity_display : Label
 	@FXML var boids_quantity_input : ScrollBar
 	@FXML var start_button : Button
 	@FXML var map_selection_display : Label
 	@FXML var map_selection_input : ScrollBar
+	@FXML var myPane : Pane
 	
 
 	def getBoidsQuantity : int {
@@ -37,9 +47,43 @@ class BoidsFxViewerController extends FxViewerController {
 			]
 			launched = true
 			mapCreated = false
+			start_button.disable = true
+			boids_quantity_input.disable = true
+			map_selection_input.disable = true
 		} else {
 			emitToAgents(^event)
 		}
+	}
+	
+	def buildMap(map : int) {
+
+		var command = new Runnable() {
+			@Override
+			def run() {
+				// Map 1: vide
+				if (map == 2) {
+					var centralObstacle : Polygon = new Polygon()
+					centralObstacle.getPoints().addAll(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0,
+						225.0)
+					myPane.getChildren().add(0, centralObstacle)
+					var uObstacle : Polygon = new Polygon();
+					/* uObstacle.getPoints().addAll(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 640.0, 225.0, 620.0, 255.0,
+						660.0, 130.0, 665.0, 75.0, 620.0, 90.0, 580.0, 250.0, 580.0, 215.0, 605.0, 80.0) */
+					uObstacle.getPoints().addAll(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0,
+						660.0, 130.0, 665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0, 605.0, 80.0)
+					myPane.getChildren().add(0, uObstacle);
+					var stairObstacle : Polygon = new Polygon();
+					stairObstacle.getPoints().addAll(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0);
+					myPane.getChildren().add(0, stairObstacle);
+				}
+			}
+		};
+
+		if (Platform.isFxApplicationThread()) {
+			command.run();
+		} else {
+			Platform.runLater(command);
+		}	
 	}
 
 	@FXML protected def actionBoidsQuantityDisplay {
@@ -53,5 +97,7 @@ class BoidsFxViewerController extends FxViewerController {
 			map_selection_display.setText(String.format("%.0f", map_selection_input.getValue()));
 		];
 	}
+
+	
 	
 }
