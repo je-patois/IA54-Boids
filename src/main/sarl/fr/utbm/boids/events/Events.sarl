@@ -3,6 +3,7 @@ package fr.utbm.boids.events
 import java.util.Collection
 import fr.utbm.boids.agents.Boid
 import fr.utbm.boids.Vector
+import java.util.UUID
 
 event ConfigureSimulation {
 	val mapSelection : int
@@ -15,6 +16,16 @@ event ConfigureSimulation {
 		boidsQuantity = bQ
 		boidsPopulation = bP
 		boidsVision = bV
+	}
+}
+
+event MapParameters {
+	val mapWidth : int
+	val mapHeight : int
+	
+	new(width : int, height : int) {
+		mapWidth = width
+		mapHeight = height
 	}
 }
 
@@ -76,3 +87,11 @@ event EndSimulation
 event BtnLaunch
 
 event BtnShutdown
+
+event ListVar {
+	val list : Collection<UUID>
+	
+	new(list: Collection<UUID>) {
+		this.list = list
+	}
+}

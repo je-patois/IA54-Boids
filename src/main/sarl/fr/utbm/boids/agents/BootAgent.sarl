@@ -11,6 +11,10 @@ import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.GenerateMap
+import fr.utbm.boids.events.MapParameters
+import java.util.UUID
+import java.util.Collection
+import fr.utbm.boids.events.ListVar
 
 agent BootAgent {
 	uses Logging, Behaviors, InnerContextAccess, Lifecycle, DefaultContextInteractions
@@ -21,6 +25,7 @@ agent BootAgent {
 	var boidsVision : int
 	var exited : boolean = false
 	var ctrl : BoidsFxViewerController = null;
+	var boidsList: Collection<UUID>
 
 	on Initialize {
 		loggingName = "BootAgent-" + this.ID
@@ -40,6 +45,7 @@ agent BootAgent {
 		info('Boids quantity: ' + this.boidsQuantity)
 		info('Boids population: ' + this.boidsPopulation)
 		info('Boids vision: ' + this.boidsVision)
+		emit (new MapParameters(ctrl.mapWidth, ctrl.mapHeight))
 		emit (new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
 		wake(new GenerateMap())
 	}
@@ -48,6 +54,11 @@ agent BootAgent {
 		info('Generating map...');
 		ctrl.buildMap(this.map)
 	}
+	
+	/*on ListVar {
+		this.boidsList = occurrence.list
+		ctrl.updateGraphics(boidsList);
+	}*/
 
 	on EndSimulation [!hasMemberAgent] {
 		info("The simulation has ended.")

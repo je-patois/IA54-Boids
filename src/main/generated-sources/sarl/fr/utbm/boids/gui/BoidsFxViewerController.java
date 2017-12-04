@@ -5,9 +5,14 @@ import fr.utbm.boids.gui.fx.FxViewerController;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
+import java.util.Collection;
+import java.util.UUID;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
@@ -15,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Polygon;
+import javafx.util.Duration;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
 import org.eclipse.xtext.xbase.lib.Pure;
 
@@ -83,6 +89,18 @@ public class BoidsFxViewerController extends FxViewerController {
     return ((int) _value);
   }
   
+  @Pure
+  public int getMapWidth() {
+    double _width = this.myPane.getWidth();
+    return ((int) _width);
+  }
+  
+  @Pure
+  public int getMapHeight() {
+    double _height = this.myPane.getHeight();
+    return ((int) _height);
+  }
+  
   @FXML
   protected void startSimu() {
     int _mapSelection = this.getMapSelection();
@@ -138,6 +156,16 @@ public class BoidsFxViewerController extends FxViewerController {
     }
   }
   
+  public void updateGraphics(final Collection<UUID> list) {
+    Duration _seconds = Duration.seconds(0.03);
+    PauseTransition wait = new PauseTransition(_seconds);
+    final EventHandler<ActionEvent> _function = (ActionEvent it) -> {
+      wait.playFromStart();
+    };
+    wait.setOnFinished(_function);
+    wait.play();
+  }
+  
   @FXML
   protected void actionBoidsQuantityDisplay() {
     final InvalidationListener _function = (Observable it) -> {
@@ -174,17 +202,29 @@ public class BoidsFxViewerController extends FxViewerController {
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    BoidsFxViewerController other = (BoidsFxViewerController) obj;
+    if (other.launched != this.launched)
+      return false;
+    if (other.mapCreated != this.mapCreated)
+      return false;
+    return super.equals(obj);
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    int result = super.hashCode();
+    final int prime = 31;
+    result = prime * result + (this.launched ? 1231 : 1237);
+    result = prime * result + (this.mapCreated ? 1231 : 1237);
+    return result;
   }
   
   @SyntheticMember

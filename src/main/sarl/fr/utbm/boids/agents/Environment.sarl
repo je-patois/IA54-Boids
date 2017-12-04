@@ -22,6 +22,8 @@ import java.util.UUID
 import fr.utbm.boids.Vector
 import fr.utbm.boids.events.StartPosition
 import fr.utbm.boids.events.ResultatDeplacement
+import fr.utbm.boids.events.MapParameters
+import fr.utbm.boids.events.ListVar
 
 /** 
  * @author Zilliqman
@@ -46,7 +48,6 @@ agent Environment {
 	var superBoids : boolean
 	
 	
-	//TODO amener ici la largeur et la hauteur de la carte/écran
 	var largeur : int
 	var hauteur : int
 	
@@ -56,6 +57,12 @@ agent Environment {
 		loggingName = "Environment"
 		info("The Environment is started.")
 		emit(new IsStarted())
+		//emit(new ListVar(boidsList))
+	}
+	
+	on MapParameters {
+		this.largeur = occurrence.mapWidth
+		this.hauteur = occurrence.mapHeight
 	}
 	
 	on StartingSimulation {
@@ -77,8 +84,8 @@ agent Environment {
 			}
 		}
 
-		hauteur = 50	//TODO envoyer la taille de la map
-		largeur = 50
+		// hauteur = 50
+		// largeur = 50
 
 		innerContext.defaultSpace.emit(ID, new StartPosition())
 	}
