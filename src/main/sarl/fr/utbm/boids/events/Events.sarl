@@ -7,10 +7,14 @@ import fr.utbm.boids.Vector
 event ConfigureSimulation {
 	val mapSelection : int
 	val boidsQuantity : int
+	val boidsPopulation : int
+	val boidsVision : int
 	
-	new(mS : int, bQ : int) {
+	new(mS : int, bQ : int, bP : int, bV : int) {
 		mapSelection = mS
 		boidsQuantity = bQ
+		boidsPopulation = bP
+		boidsVision = bV
 	}
 }
 

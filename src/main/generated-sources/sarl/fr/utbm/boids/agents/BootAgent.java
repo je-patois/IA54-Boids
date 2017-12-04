@@ -2,12 +2,8 @@ package fr.utbm.boids.agents;
 
 import fr.utbm.boids.agents.Environment;
 import fr.utbm.boids.events.ConfigureSimulation;
-<<<<<<< Updated upstream
-import fr.utbm.boids.events.CreateMap;
-import fr.utbm.boids.events.StartingSimulation;
-=======
 import fr.utbm.boids.events.GenerateMap;
->>>>>>> Stashed changes
+import fr.utbm.boids.events.StartingSimulation;
 import fr.utbm.boids.gui.BoidsFxViewerController;
 import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.core.Behaviors;
@@ -41,6 +37,10 @@ public class BootAgent extends Agent {
   
   private int boidsQuantity;
   
+  private int boidsPopulation;
+  
+  private int boidsVision;
+  
   private boolean exited = false;
   
   private BoidsFxViewerController ctrl = null;
@@ -55,16 +55,10 @@ public class BootAgent extends Agent {
     this.ctrl = ((BoidsFxViewerController) _get);
     Behaviors _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER = this.$castSkill(Behaviors.class, (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS == null || this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS = this.$getSkill(Behaviors.class)) : this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
     this.ctrl.getUISpace().register(_$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER.asEventListener());
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-<<<<<<< Updated upstream
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(("Starting simulation with map " + Integer.valueOf(this.map)));
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info("Configuration of the environment...");
     Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
     _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.spawn(Environment.class, Integer.valueOf(this.boidsQuantity));
-=======
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("Starting simulation");
->>>>>>> Stashed changes
   }
   
   @SyntheticMember
@@ -73,26 +67,28 @@ public class BootAgent extends Agent {
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Configuration of the environment...");
     this.boidsQuantity = occurrence.boidsQuantity;
     this.map = occurrence.mapSelection;
+    this.boidsPopulation = occurrence.boidsPopulation;
+    this.boidsVision = occurrence.boidsVision;
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-<<<<<<< Updated upstream
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(("Boids quantity: " + Integer.valueOf(this.boidsQuantity)));
-    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    StartingSimulation _startingSimulation = new StartingSimulation(2, this.boidsQuantity, 10, 50);
-    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_startingSimulation);
-=======
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(("Map: " + Integer.valueOf(this.map)));
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(("Boids quantity: " + Integer.valueOf(this.boidsQuantity)));
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(("Boids population: " + Integer.valueOf(this.boidsPopulation)));
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4.info(("Boids vision: " + Integer.valueOf(this.boidsVision)));
+    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
+    StartingSimulation _startingSimulation = new StartingSimulation(this.boidsPopulation, this.boidsQuantity, this.boidsVision, 50);
+    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_startingSimulation);
     Behaviors _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER = this.$castSkill(Behaviors.class, (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS == null || this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS = this.$getSkill(Behaviors.class)) : this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
     GenerateMap _generateMap = new GenerateMap();
     _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER.wake(_generateMap);
->>>>>>> Stashed changes
   }
   
   @SyntheticMember
   private void $behaviorUnit$GenerateMap$2(final GenerateMap occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("Generating map " + Integer.valueOf(this.map)));
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Generating map...");
     this.ctrl.buildMap(this.map);
   }
   
@@ -254,6 +250,10 @@ public class BootAgent extends Agent {
       return false;
     if (other.boidsQuantity != this.boidsQuantity)
       return false;
+    if (other.boidsPopulation != this.boidsPopulation)
+      return false;
+    if (other.boidsVision != this.boidsVision)
+      return false;
     if (other.exited != this.exited)
       return false;
     return super.equals(obj);
@@ -267,6 +267,8 @@ public class BootAgent extends Agent {
     final int prime = 31;
     result = prime * result + this.map;
     result = prime * result + this.boidsQuantity;
+    result = prime * result + this.boidsPopulation;
+    result = prime * result + this.boidsVision;
     result = prime * result + (this.exited ? 1231 : 1237);
     return result;
   }

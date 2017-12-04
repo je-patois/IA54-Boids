@@ -20,8 +20,7 @@ class BoidsFxViewerController extends FxViewerController {
 
 	var launched = false
 	var mapCreated = false
-
-	//@FXML var draw_zone : Canvas
+	
 	@FXML var myGroup : Group
 	@FXML var boids_quantity_display : Label
 	@FXML var boids_quantity_input : ScrollBar
@@ -29,6 +28,10 @@ class BoidsFxViewerController extends FxViewerController {
 	@FXML var map_selection_display : Label
 	@FXML var map_selection_input : ScrollBar
 	@FXML var myPane : Pane
+	@FXML var boids_population_display : Label
+	@FXML var boids_population_input : ScrollBar
+	@FXML var boids_vision_display : Label
+	@FXML var boids_vision_input : ScrollBar
 	
 
 	def getBoidsQuantity : int {
@@ -38,9 +41,17 @@ class BoidsFxViewerController extends FxViewerController {
 	def getMapSelection : int {
 		map_selection_input.value as int
 	}
-
+	
+	def getBoidsPopulation : int {
+		boids_population_input.value as int
+	}
+	
+	def getBoidsVision : int {
+		boids_vision_input.value as int
+	}
+ 
 	@FXML protected def startSimu {
-		var ^event = new ConfigureSimulation(this.mapSelection, this.boidsQuantity)
+		var ^event = new ConfigureSimulation(this.mapSelection, this.boidsQuantity, this.boidsPopulation, this.boidsVision)
 		if (!launched) {
 			startAgentApplication() [
 				emitToAgents(^event)
@@ -50,6 +61,8 @@ class BoidsFxViewerController extends FxViewerController {
 			start_button.disable = true
 			boids_quantity_input.disable = true
 			map_selection_input.disable = true
+			boids_population_input.disable = true
+			boids_vision_input.disable = true
 		} else {
 			emitToAgents(^event)
 		}
@@ -98,6 +111,16 @@ class BoidsFxViewerController extends FxViewerController {
 		];
 	}
 
-	
+	@FXML protected def actionPopulationDisplay {
+		boids_population_input.valueProperty().addListener [
+			boids_population_display.setText(String.format("%.0f", boids_population_input.getValue()));
+		];
+	}
+
+	@FXML protected def actionBoidsVisionDisplay {
+		boids_vision_input.valueProperty().addListener [
+			boids_vision_display.setText(String.format("%.0f", boids_vision_input.getValue()));
+		];
+	}
 	
 }

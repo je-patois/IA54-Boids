@@ -17,6 +17,8 @@ agent BootAgent {
 	
 	var map : int
 	var boidsQuantity : int
+	var boidsPopulation : int
+	var boidsVision : int
 	var exited : boolean = false
 	var ctrl : BoidsFxViewerController = null;
 
@@ -32,14 +34,18 @@ agent BootAgent {
 		info("Configuration of the environment...") 
 		this.boidsQuantity = occurrence.boidsQuantity
 		this.map = occurrence.mapSelection
+		this.boidsPopulation = occurrence.boidsPopulation
+		this.boidsVision = occurrence.boidsVision;
 		info('Map: ' + this.map)
 		info('Boids quantity: ' + this.boidsQuantity)
-		emit (new StartingSimulation(2,boidsQuantity,10,50))	//TODO ramener les deux autres paramètres par l'interface
+		info('Boids population: ' + this.boidsPopulation)
+		info('Boids vision: ' + this.boidsVision)
+		emit (new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
 		wake(new GenerateMap())
 	}
 	
 	on GenerateMap {
-		info('Generating map ' + this.map);
+		info('Generating map...');
 		ctrl.buildMap(this.map)
 	}
 

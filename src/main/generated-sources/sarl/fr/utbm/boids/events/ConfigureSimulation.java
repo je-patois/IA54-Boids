@@ -14,9 +14,15 @@ public class ConfigureSimulation extends Event {
   
   public final int boidsQuantity;
   
-  public ConfigureSimulation(final int mS, final int bQ) {
+  public final int boidsPopulation;
+  
+  public final int boidsVision;
+  
+  public ConfigureSimulation(final int mS, final int bQ, final int bP, final int bV) {
     this.mapSelection = mS;
     this.boidsQuantity = bQ;
+    this.boidsPopulation = bP;
+    this.boidsVision = bV;
   }
   
   @Override
@@ -34,6 +40,10 @@ public class ConfigureSimulation extends Event {
       return false;
     if (other.boidsQuantity != this.boidsQuantity)
       return false;
+    if (other.boidsPopulation != this.boidsPopulation)
+      return false;
+    if (other.boidsVision != this.boidsVision)
+      return false;
     return super.equals(obj);
   }
   
@@ -45,6 +55,8 @@ public class ConfigureSimulation extends Event {
     final int prime = 31;
     result = prime * result + this.mapSelection;
     result = prime * result + this.boidsQuantity;
+    result = prime * result + this.boidsPopulation;
+    result = prime * result + this.boidsVision;
     return result;
   }
   
@@ -57,9 +69,11 @@ public class ConfigureSimulation extends Event {
     StringBuilder result = new StringBuilder(super.attributesToString());
     result.append("mapSelection  = ").append(this.mapSelection);
     result.append("boidsQuantity  = ").append(this.boidsQuantity);
+    result.append("boidsPopulation  = ").append(this.boidsPopulation);
+    result.append("boidsVision  = ").append(this.boidsVision);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 1082573255L;
+  private final static long serialVersionUID = 654767120L;
 }

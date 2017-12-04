@@ -47,6 +47,18 @@ public class BoidsFxViewerController extends FxViewerController {
   @FXML
   private Pane myPane;
   
+  @FXML
+  private Label boids_population_display;
+  
+  @FXML
+  private ScrollBar boids_population_input;
+  
+  @FXML
+  private Label boids_vision_display;
+  
+  @FXML
+  private ScrollBar boids_vision_input;
+  
   @Pure
   public int getBoidsQuantity() {
     double _value = this.boids_quantity_input.getValue();
@@ -59,11 +71,25 @@ public class BoidsFxViewerController extends FxViewerController {
     return ((int) _value);
   }
   
+  @Pure
+  public int getBoidsPopulation() {
+    double _value = this.boids_population_input.getValue();
+    return ((int) _value);
+  }
+  
+  @Pure
+  public int getBoidsVision() {
+    double _value = this.boids_vision_input.getValue();
+    return ((int) _value);
+  }
+  
   @FXML
   protected void startSimu() {
     int _mapSelection = this.getMapSelection();
     int _boidsQuantity = this.getBoidsQuantity();
-    ConfigureSimulation event = new ConfigureSimulation(_mapSelection, _boidsQuantity);
+    int _boidsPopulation = this.getBoidsPopulation();
+    int _boidsVision = this.getBoidsVision();
+    ConfigureSimulation event = new ConfigureSimulation(_mapSelection, _boidsQuantity, _boidsPopulation, _boidsVision);
     if ((!this.launched)) {
       final Procedure0 _function = () -> {
         this.emitToAgents(event);
@@ -74,6 +100,8 @@ public class BoidsFxViewerController extends FxViewerController {
       this.start_button.setDisable(true);
       this.boids_quantity_input.setDisable(true);
       this.map_selection_input.setDisable(true);
+      this.boids_population_input.setDisable(true);
+      this.boids_vision_input.setDisable(true);
     } else {
       this.emitToAgents(event);
     }
@@ -126,33 +154,37 @@ public class BoidsFxViewerController extends FxViewerController {
     this.map_selection_input.valueProperty().addListener(_function);
   }
   
+  @FXML
+  protected void actionPopulationDisplay() {
+    final InvalidationListener _function = (Observable it) -> {
+      this.boids_population_display.setText(String.format("%.0f", Double.valueOf(this.boids_population_input.getValue())));
+    };
+    this.boids_population_input.valueProperty().addListener(_function);
+  }
+  
+  @FXML
+  protected void actionBoidsVisionDisplay() {
+    final InvalidationListener _function = (Observable it) -> {
+      this.boids_vision_display.setText(String.format("%.0f", Double.valueOf(this.boids_vision_input.getValue())));
+    };
+    this.boids_vision_input.valueProperty().addListener(_function);
+  }
+  
   @Override
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    BoidsFxViewerController other = (BoidsFxViewerController) obj;
-    if (other.launched != this.launched)
-      return false;
-    if (other.mapCreated != this.mapCreated)
-      return false;
-    return super.equals(obj);
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    int result = super.hashCode();
-    final int prime = 31;
-    result = prime * result + (this.launched ? 1231 : 1237);
-    result = prime * result + (this.mapCreated ? 1231 : 1237);
-    return result;
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
   }
   
   @SyntheticMember
