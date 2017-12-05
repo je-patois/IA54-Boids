@@ -24,6 +24,7 @@ import fr.utbm.boids.events.StartPosition
 import fr.utbm.boids.events.ResultatDeplacement
 import fr.utbm.boids.events.MapParameters
 import fr.utbm.boids.events.ListVar
+import fr.utbm.boids.events.BoidsPositions
 
 /** 
  * @author Zilliqman
@@ -46,7 +47,8 @@ agent Environment {
 	var distanceBoids : int
 	var boidsGrid : Collection<Boid>
 	var superBoids : boolean
-	
+	//var boids : Object[]
+	var grid : Object[]
 	
 	var largeur : int
 	var hauteur : int
@@ -179,10 +181,23 @@ agent Environment {
 	on MemberJoined {
 		// Event trigger when an agent joins one of our shared super-holons.
 		// Sent to all members of the considered super-holon.
+		/*if(occurrence.agentType == 'Boid') {
+			this.boidsGrid.add(occurrence.)
+		}*/
 	}
 
 	on MemberLeft {
 		// Event trigger when an agent leaves one of our shared super-holons.
 		// Sent to all members of the considered super-holon.
+	}
+
+	/*on AllBoidsCreated {
+		boids = getDefaultContext().defaultSpace.participants.toArray;
+		info(boids)
+		boids.get(2).
+	}*/
+	
+	on BoidsPositions {
+		this.grid = occurrence.grid
 	}
 }

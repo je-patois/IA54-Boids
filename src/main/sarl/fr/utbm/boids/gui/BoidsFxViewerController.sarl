@@ -112,7 +112,7 @@ class BoidsFxViewerController extends FxViewerController {
 		var wait = new PauseTransition(0.03.seconds)
 
 		wait.onFinished = [
-			// Ramener une liste de boids
+			// Ramener une liste de boids ou alors la liste des positions
 			wait.playFromStart
 		]
 		wait.play

@@ -93,5 +93,15 @@ event ListVar {
 	
 	new(list: Collection<UUID>) {
 		this.list = list
+	}	
+}
+
+// event AllBoidsCreated
+
+event BoidsPositions {
+	val grid : Object[]
+	
+	new(grid: Object[]) {
+		this.grid = grid
 	}
 }
