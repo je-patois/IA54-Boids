@@ -10,6 +10,7 @@ import fr.utbm.boids.events.StartPosition
 import fr.utbm.boids.events.ResultatDeplacement
 import fr.utbm.boids.Vector
 import java.util.Random
+import fr.utbm.boids.events.ValidationDeplacement
 
 agent Boid {
 	uses Logging, DefaultContextInteractions
@@ -26,7 +27,6 @@ agent Boid {
 	/*
 	 * gestion des évènements
 	 */
-	 
 	 
 	on Initialize {
 		loggingName = "Boid"
@@ -48,7 +48,7 @@ agent Boid {
 		val rnd = new Random()
 		var x = rnd.nextInt()
 		var y = rnd.nextInt()
-		info("X, Y \n" + x + " " + y)
+		//info("X, Y \n" + x + " " + y)
 		x %= 50
 		y = y % 50
 		info("X, Y \n" + x + " " + y)
@@ -57,9 +57,10 @@ agent Boid {
 	}
 
 	// Si le déplacement est validé, on enregistre la nouvelle position du Boids, ainsi que sa nouvelle vitesse
-	on ResultatDeplacement {
+	on ValidationDeplacement {
 		this.position = occurrence.position
 		vitesse = newVitesse
+		info("Validation de la position")
 	}
 	
 	on DemandeDeplacement {

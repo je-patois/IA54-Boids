@@ -72,6 +72,14 @@ event ResultatDeplacement {
 	}*/
 }
 
+event ValidationDeplacement{
+	var position : Vector
+	
+	new (pos : Vector){
+		this.position = pos
+	}
+}
+
 event StartingSimulation {
 	val nombreDePopulations : int
 	val nombreDeBoidsParPopulation : int

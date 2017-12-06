@@ -79,5 +79,9 @@ class Vector {
 		return Math.acos(this.x*vec.x + this.y*vec.y)
 	}
 	
+	def toString() : String{
+		return "x : " + this.x + " ,y : " + this.y + "   "
+	}
+	
 	
 }

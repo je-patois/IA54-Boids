@@ -29,6 +29,9 @@ import fr.utbm.boids.events.NeedDataBoids
 import fr.utbm.boids.events.SendDataBoids
 import io.sarl.util.Scopes
 import fr.utbm.boids.events.BoidsToDisplay
+import fr.utbm.boids.events.ValidationDeplacement
+import java.util.Map
+import java.util.HashMap
 
 /** 
  * @author Zilliqman
@@ -49,12 +52,13 @@ agent Environment {
 	var nombreDeBoidsParPopulation : int
 	var visionBoids : int  
 	var distanceBoids : int
-	var boidsGrid : Collection<Boid>	//liste des boids ayant mis leurs coordonnées à jour à l'étape i
+	//var boidsGrid : Collection<Boid>	//liste des boids ayant mis leurs coordonnées à jour à l'étape i
+	var boidsGrid : Map<Vector, UUID>
 	var superBoids : boolean
 	//var boids : Object[]
 	var grid : Object[]
 	var boidsUpdated : int
-	
+	var verrou : boolean
 	var largeur : int
 	var hauteur : int
 	
@@ -64,6 +68,7 @@ agent Environment {
 		loggingName = "Environment"
 		info("The Environment is started.")
 		emit(new IsStarted("Environment", null))
+		verrou = false
 		//emit(new IsStarted())
 		//emit(new ListVar(boidsList))
 	}
@@ -84,7 +89,9 @@ agent Environment {
 		this.nombreDeBoidsParPopulation = occurrence.nombreDeBoidsParPopulation
 		this.nombreDePopulations = occurrence.nombreDePopulations
 		this.visionBoids = occurrence.visionBoids
-		
+
+		//this.boidsGrid = new ArrayList<Boid>()
+		this.boidsGrid = new HashMap<Vector, UUID>
 		boidsList = new ArrayList()
 		
 		info ("ready to start ")
@@ -93,7 +100,6 @@ agent Environment {
 			for (var j = 0 ; j < this.nombreDeBoidsParPopulation; j++){
 				//TODO à voir comment gérer une liste de boids
 				
-				//spawn (Boid, i, visionBoids, distanceBoids)
 				spawnInContext(Boid, innerContext, i, visionBoids, distanceBoids)
 				//boidsList.add(newBoid)
 			}
@@ -109,54 +115,78 @@ agent Environment {
 	on ResultatDeplacement {
 		info("l'env recoit les coordonnées")
 		boidsUpdated += 1
-		var accept = true
+		//var accept = true
+		var accept = false
 		
 		occurrence.position = estDansLaCarte(occurrence.position)
 		
-		/*
+		while (verrou){
+			Thread.sleep(100)
+		}
+		
+		verrou = true
+		
+		// remplace le commentaire ci-dessous, fait la même chose plus simplement, par contre Boid remplacer par UUID même si on en fait rien pour l'instant
+		if (!this.boidsGrid.containsKey(occurrence.position)) {
+			this.boidsGrid.put(occurrence.position, occurrence.boid.ID)
+			accept = true
+		}
+		
+		
+		/* 
 		//TODO RESOUDRE BUG
 		//tests
 		var test : Boid
-		info(occurrence.boid)
+		//info(occurrence.boid)
 		test = occurrence.boid
-		/*var doesItWork = */
-		
-		/*this.boidsGrid.add(test)	//BUG ICI : add
-		info(doesItWork) 							//Uncaught exception: null
+		info ("position : "  + test.position.x)
+		/* var doesItWork =
+
+		this.boidsGrid.add(test)	//BUG ICI : add
+		//info(doesItWork) 							//Uncaught exception: null
 		
 		// vérifier sortie de map
-		//info(boidsGrid)
+		info(boidsGrid)
 		
 		for (boid : boidsGrid){
 			info("premier tour")
 			//on vérifie si le boid ne veut pas aller à un endroit ou il y a déjà un boid
+			info (boid)
 			if (boid.position.x == occurrence.position.x && boid.position.y == occurrence.position.y) { // vérifier collision obstacles
 				accept = false
 				boidsGrid.remove(occurrence.boid)
-			}
+		
 		}
-		//fin tests
 		*/
+		//fin tests
+		
 		
 		
 		if (accept) {
-			emit(new ResultatDeplacement(occurrence.position, occurrence.boid), Scopes.addresses(occurrence.source)
-			)
+			// emit(new ResultatDeplacement(occurrence.position, occurrence.boid), Scopes.addresses(occurrence.source)
+			emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
 		} else {
 			//TODO resolution des problèmes de collision interBoids
 			
 			//TODO supprimer acceptation collisions
 			emit(new ResultatDeplacement(occurrence.position, occurrence.boid), Scopes.addresses(occurrence.source))
 		}
-		info(boidsUpdated)
+		//info(boidsUpdated)
+		info (boidsGrid)
+		
+		verrou = false
+		
 	}
 	
+	
+	//TODO reprendre l'envoi des boids avec la MAP
 	on NeedDataBoids{
 		if(this.boidsUpdated == boidsList.length){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
 			info("J'apprends que le Scheduler veut de nouvelles coordonnées")
-			emit(new SendDataBoids(this.boidsGrid))	//de quoi afficher les boids
+			//emit(new SendDataBoids(this.boidsGrid))	//de quoi afficher les boids
 			info(boidsGrid)
-			emit(new BoidsToDisplay(boidsGrid))
+			//emit(new BoidsToDisplay(boidsGrid))
+			this.boidsGrid = new HashMap<Vector,UUID>
 		}
 	}
 
