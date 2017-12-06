@@ -64,7 +64,7 @@ agent Environment {
 		loggingName = "Environment"
 		info("The Environment is started.")
 		emit(new IsStarted("Environment", null))
-		emit(new IsStarted())
+		//emit(new IsStarted())
 		//emit(new ListVar(boidsList))
 	}
 	

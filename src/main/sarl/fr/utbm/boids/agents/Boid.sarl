@@ -16,8 +16,10 @@ agent Boid {
 
 	var position : Vector
 	var vitesse : Vector
+	var newVitesse : Vector
 	var groupe : int
 	var groupeVitesseMax : int
+	var masse : int
 	var angleVisibilite : int // défini dans Boid car chauqe individu peut avoir des caractéristiques différentes (dépendant de sa famille et de sa morfologie)
 	var distanceVisibilite : int 
 	
@@ -32,6 +34,10 @@ agent Boid {
 		groupe =  new Integer(occurrence.parameters.get(0) as Integer)
 		angleVisibilite = new Integer (occurrence.parameters.get(1) as Integer)
 		distanceVisibilite = new Integer (occurrence.parameters.get(2) as Integer)
+		
+		// TODO ramener groupeVitesseMax et masse par une demande utilisateur
+		groupeVitesseMax = 10
+		masse = 2
 		
 		info ("group " + groupe)
 		emit(new IsStarted("Boid", this))
@@ -50,8 +56,10 @@ agent Boid {
 		emit(new ResultatDeplacement(maPosition, this))
 	}
 
+	// Si le déplacement est validé, on enregistre la nouvelle position du Boids, ainsi que sa nouvelle vitesse
 	on ResultatDeplacement {
 		this.position = occurrence.position
+		vitesse = newVitesse
 	}
 	
 	on DemandeDeplacement {
@@ -84,7 +92,7 @@ agent Boid {
 			
 			//on applique la force résultant de la détection des obstacles
 		 
-			// TODO
+			// TODO appliquer force obstacle
 		}
 		
 		/*
@@ -93,11 +101,8 @@ agent Boid {
 		 * 
 		 */
 		
-		
-		// on peut renvoyer la force à l'environnement ... ou 
-		
 		//on renvoie la nouvelle position du Boids
-		emit(new ResultatDeplacement(forceTot, this))
+		emit(new ResultatDeplacement(appliquerForce(forceTot), this))
 	 
 	}
 	
@@ -283,4 +288,33 @@ agent Boid {
 		return force
 	}
 	
+	
+	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
+	def appliquerForce (force : Vector) : Vector{
+		
+		var newPosition : Vector
+		
+		// f = ma => a =f/m
+		
+		var acceleration : Vector 
+		
+		acceleration = new Vector(force)
+		acceleration.fois(1/masse)
+		
+		newVitesse = new Vector(vitesse)
+		newVitesse.plus(acceleration)
+		
+		//bornage de la vitesse
+		if (newVitesse.length > groupeVitesseMax){
+			newVitesse.normaliser(1)
+			newVitesse.fois(groupeVitesseMax)
+		}
+		
+		//maj position
+		newPosition = new Vector(position)
+		newPosition.plus(newVitesse)
+		
+		return newPosition
+		
+	}
 }
