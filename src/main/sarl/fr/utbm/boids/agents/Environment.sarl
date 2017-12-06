@@ -25,6 +25,10 @@ import fr.utbm.boids.events.ResultatDeplacement
 import fr.utbm.boids.events.MapParameters
 import fr.utbm.boids.events.ListVar
 import fr.utbm.boids.events.BoidsPositions
+import fr.utbm.boids.events.NeedDataBoids
+import fr.utbm.boids.events.SendDataBoids
+import io.sarl.util.Scopes
+import fr.utbm.boids.events.BoidsToDisplay
 
 /** 
  * @author Zilliqman
@@ -40,15 +44,16 @@ import fr.utbm.boids.events.BoidsPositions
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess
 	
-	var boidsList : Collection<UUID>
+	var boidsList : Collection<Boid>	//liste complète des boids
 	var nombreDePopulations : int
 	var nombreDeBoidsParPopulation : int
 	var visionBoids : int  
 	var distanceBoids : int
-	var boidsGrid : Collection<Boid>
+	var boidsGrid : Collection<Boid>	//liste des boids ayant mis leurs coordonnées à jour à l'étape i
 	var superBoids : boolean
 	//var boids : Object[]
 	var grid : Object[]
+	var boidsUpdated : int
 	
 	var largeur : int
 	var hauteur : int
@@ -58,6 +63,7 @@ agent Environment {
 	on Initialize {
 		loggingName = "Environment"
 		info("The Environment is started.")
+		emit(new IsStarted("Environment", null))
 		emit(new IsStarted())
 		//emit(new ListVar(boidsList))
 	}
@@ -67,7 +73,14 @@ agent Environment {
 		this.hauteur = occurrence.mapHeight
 	}
 	
+	on IsStarted {
+		if(occurrence.type == "Boid"){
+			boidsList.add(occurrence.me)
+		}
+	}
+	
 	on StartingSimulation {
+		info("HO")
 		this.nombreDeBoidsParPopulation = occurrence.nombreDeBoidsParPopulation
 		this.nombreDePopulations = occurrence.nombreDePopulations
 		this.visionBoids = occurrence.visionBoids
@@ -81,11 +94,12 @@ agent Environment {
 				//TODO à voir comment gérer une liste de boids
 				
 				//spawn (Boid, i, visionBoids, distanceBoids)
-				val newBoid = spawnInContext(Boid, innerContext, i, visionBoids, distanceBoids)
-				boidsList.add(newBoid)
+				spawnInContext(Boid, innerContext, i, visionBoids, distanceBoids)
+				//boidsList.add(newBoid)
 			}
 		}
 
+		boidsUpdated = 0
 		// hauteur = 50
 		// largeur = 50
 
@@ -93,6 +107,8 @@ agent Environment {
 	}
 
 	on ResultatDeplacement {
+		info("l'env recoit les coordonnées")
+		boidsUpdated += 1
 		var accept = true
 		
 		occurrence.position = estDansLaCarte(occurrence.position)
@@ -103,11 +119,13 @@ agent Environment {
 		var test : Boid
 		info(occurrence.boid)
 		test = occurrence.boid
-		var doesItWork = this.boidsGrid.add(test)	//BUG ICI : add
+		/*var doesItWork = */
+		
+		/*this.boidsGrid.add(test)	//BUG ICI : add
 		info(doesItWork) 							//Uncaught exception: null
 		
 		// vérifier sortie de map
-		info(boidsGrid)
+		//info(boidsGrid)
 		
 		for (boid : boidsGrid){
 			info("premier tour")
@@ -121,13 +139,24 @@ agent Environment {
 		*/
 		
 		
-		if(accept){
-			emit(new ResultatDeplacement(occurrence.position, occurrence.boid))
+		if (accept) {
+			emit(new ResultatDeplacement(occurrence.position, occurrence.boid), Scopes.addresses(occurrence.source)
+			)
 		} else {
 			//TODO resolution des problèmes de collision interBoids
 			
 			//TODO supprimer acceptation collisions
-			emit(new ResultatDeplacement(occurrence.position, occurrence.boid))
+			emit(new ResultatDeplacement(occurrence.position, occurrence.boid), Scopes.addresses(occurrence.source))
+		}
+		info(boidsUpdated)
+	}
+	
+	on NeedDataBoids{
+		if(this.boidsUpdated == boidsList.length){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
+			info("J'apprends que le Scheduler veut de nouvelles coordonnées")
+			emit(new SendDataBoids(this.boidsGrid))	//de quoi afficher les boids
+			info(boidsGrid)
+			emit(new BoidsToDisplay(boidsGrid))
 		}
 	}
 

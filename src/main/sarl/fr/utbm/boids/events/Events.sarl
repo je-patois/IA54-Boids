@@ -33,7 +33,15 @@ event GenerateMap
 
 /* event pour prévenir l'environnement que le Boids est lancé
  */
-event IsStarted
+event IsStarted {
+	var type : String
+	var me : Boid
+	
+	new (typeEntity : String, Me : Boid){
+		this.type = typeEntity
+		this.me = Me
+	}
+}
 
 event MakeTheFiestaBegin
 
@@ -103,5 +111,23 @@ event BoidsPositions {
 	
 	new(grid: Object[]) {
 		this.grid = grid
+	}
+}
+
+event NeedDataBoids
+
+event SendDataBoids {
+	var lesBoids : Collection<Boid>
+	
+	new(boids : Collection<Boid>){
+		this.lesBoids = boids
+	}
+}
+
+event BoidsToDisplay {
+	var boids : Collection<Boid>
+	
+	new(BoidsToDisplay : Collection<Boid>){
+		this.boids = BoidsToDisplay
 	}
 }

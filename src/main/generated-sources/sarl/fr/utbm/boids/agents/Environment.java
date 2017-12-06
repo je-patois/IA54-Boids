@@ -1,12 +1,16 @@
 package fr.utbm.boids.agents;
 
+import com.google.common.base.Objects;
 import fr.utbm.boids.Vector;
 import fr.utbm.boids.agents.Boid;
 import fr.utbm.boids.events.BoidsPositions;
+import fr.utbm.boids.events.BoidsToDisplay;
 import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.IsStarted;
 import fr.utbm.boids.events.MapParameters;
+import fr.utbm.boids.events.NeedDataBoids;
 import fr.utbm.boids.events.ResultatDeplacement;
+import fr.utbm.boids.events.SendDataBoids;
 import fr.utbm.boids.events.StartPosition;
 import fr.utbm.boids.events.StartingSimulation;
 import io.sarl.core.AgentKilled;
@@ -31,10 +35,12 @@ import io.sarl.lang.core.BuiltinCapacitiesProvider;
 import io.sarl.lang.core.DynamicSkillProvider;
 import io.sarl.lang.core.Skill;
 import io.sarl.lang.util.ClearableReference;
+import io.sarl.util.Scopes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 import javax.inject.Inject;
+import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Inline;
 import org.eclipse.xtext.xbase.lib.Pure;
@@ -48,7 +54,7 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(17)
 @SuppressWarnings("all")
 public class Environment extends Agent {
-  private Collection<UUID> boidsList;
+  private Collection<Boid> boidsList;
   
   private int nombreDePopulations;
   
@@ -64,19 +70,16 @@ public class Environment extends Agent {
   
   private Object[] grid;
   
+  private int boidsUpdated;
+  
   private int largeur;
   
   private int hauteur;
   
   @SyntheticMember
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName("Environment");
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("The Environment is started.");
-    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    IsStarted _isStarted = new IsStarted();
-    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_isStarted);
+    throw new Error("Unresolved compilation problems:"
+      + "\nInvalid number of arguments. The constructor IsStarted(String, Boid) is not applicable without arguments");
   }
   
   @SyntheticMember
@@ -86,41 +89,73 @@ public class Environment extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$StartingSimulation$2(final StartingSimulation occurrence) {
+  private void $behaviorUnit$IsStarted$2(final IsStarted occurrence) {
+    boolean _equals = Objects.equal(occurrence.type, "Boid");
+    if (_equals) {
+      this.boidsList.add(occurrence.me);
+    }
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$StartingSimulation$3(final StartingSimulation occurrence) {
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("HO");
     this.nombreDeBoidsParPopulation = occurrence.nombreDeBoidsParPopulation;
     this.nombreDePopulations = occurrence.nombreDePopulations;
     this.visionBoids = occurrence.visionBoids;
-    ArrayList<UUID> _arrayList = new ArrayList<UUID>();
+    ArrayList<Boid> _arrayList = new ArrayList<Boid>();
     this.boidsList = _arrayList;
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("ready to start ");
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("ready to start ");
     for (int i = 0; (i < this.nombreDePopulations); i++) {
       for (int j = 0; (j < this.nombreDeBoidsParPopulation); j++) {
-        {
-          Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
-          InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-          final UUID newBoid = _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.spawnInContext(Boid.class, _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext(), Integer.valueOf(i), Integer.valueOf(this.visionBoids), Integer.valueOf(this.distanceBoids));
-          this.boidsList.add(newBoid);
-        }
+        Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
+        InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+        _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.spawnInContext(Boid.class, _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext(), Integer.valueOf(i), Integer.valueOf(this.visionBoids), Integer.valueOf(this.distanceBoids));
       }
     }
+    this.boidsUpdated = 0;
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
     StartPosition _startPosition = new StartPosition();
     _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _startPosition, null);
   }
   
   @SyntheticMember
-  private void $behaviorUnit$ResultatDeplacement$3(final ResultatDeplacement occurrence) {
+  private void $behaviorUnit$ResultatDeplacement$4(final ResultatDeplacement occurrence) {
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("l\'env recoit les coordonnées");
+    int _boidsUpdated = this.boidsUpdated;
+    this.boidsUpdated = (_boidsUpdated + 1);
     boolean accept = true;
     occurrence.position = this.estDansLaCarte(occurrence.position);
     if (accept) {
       DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
       ResultatDeplacement _resultatDeplacement = new ResultatDeplacement(occurrence.position, occurrence.boid);
-      _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_resultatDeplacement);
+      _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_resultatDeplacement, Scopes.addresses(occurrence.getSource()));
     } else {
       DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER_1 = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
       ResultatDeplacement _resultatDeplacement_1 = new ResultatDeplacement(occurrence.position, occurrence.boid);
-      _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER_1.emit(_resultatDeplacement_1);
+      _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER_1.emit(_resultatDeplacement_1, Scopes.addresses(occurrence.getSource()));
+    }
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(Integer.valueOf(this.boidsUpdated));
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$NeedDataBoids$5(final NeedDataBoids occurrence) {
+    int _length = ((Object[])Conversions.unwrapArray(this.boidsList, Object.class)).length;
+    boolean _equals = (this.boidsUpdated == _length);
+    if (_equals) {
+      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("J\'apprends que le Scheduler veut de nouvelles coordonnées");
+      DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
+      SendDataBoids _sendDataBoids = new SendDataBoids(this.boidsGrid);
+      _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_sendDataBoids);
+      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(this.boidsGrid);
+      DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER_1 = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
+      BoidsToDisplay _boidsToDisplay = new BoidsToDisplay(this.boidsGrid);
+      _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER_1.emit(_boidsToDisplay);
     }
   }
   
@@ -149,41 +184,41 @@ public class Environment extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$4(final EndSimulation occurrence) {
+  private void $behaviorUnit$EndSimulation$6(final EndSimulation occurrence) {
     Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
     _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.killMe();
   }
   
   @SyntheticMember
-  private void $behaviorUnit$Destroy$5(final Destroy occurrence) {
+  private void $behaviorUnit$Destroy$7(final Destroy occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$AgentSpawned$6(final AgentSpawned occurrence) {
+  private void $behaviorUnit$AgentSpawned$8(final AgentSpawned occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$AgentKilled$7(final AgentKilled occurrence) {
+  private void $behaviorUnit$AgentKilled$9(final AgentKilled occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$ContextJoined$8(final ContextJoined occurrence) {
+  private void $behaviorUnit$ContextJoined$10(final ContextJoined occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$ContextLeft$9(final ContextLeft occurrence) {
+  private void $behaviorUnit$ContextLeft$11(final ContextLeft occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$MemberJoined$10(final MemberJoined occurrence) {
+  private void $behaviorUnit$MemberJoined$12(final MemberJoined occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$MemberLeft$11(final MemberLeft occurrence) {
+  private void $behaviorUnit$MemberLeft$13(final MemberLeft occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$BoidsPositions$12(final BoidsPositions occurrence) {
+  private void $behaviorUnit$BoidsPositions$14(final BoidsPositions occurrence) {
     this.grid = occurrence.grid;
   }
   
@@ -252,7 +287,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$MemberLeft(final MemberLeft occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MemberLeft$11(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MemberLeft$13(occurrence));
   }
   
   @SyntheticMember
@@ -260,7 +295,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$StartingSimulation(final StartingSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartingSimulation$2(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartingSimulation$3(occurrence));
   }
   
   @SyntheticMember
@@ -268,7 +303,15 @@ public class Environment extends Agent {
   private void $guardEvaluator$AgentSpawned(final AgentSpawned occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$AgentSpawned$6(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$AgentSpawned$8(occurrence));
+  }
+  
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$IsStarted(final IsStarted occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$IsStarted$2(occurrence));
   }
   
   @SyntheticMember
@@ -276,7 +319,15 @@ public class Environment extends Agent {
   private void $guardEvaluator$ResultatDeplacement(final ResultatDeplacement occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ResultatDeplacement$3(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ResultatDeplacement$4(occurrence));
+  }
+  
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$NeedDataBoids(final NeedDataBoids occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$NeedDataBoids$5(occurrence));
   }
   
   @SyntheticMember
@@ -284,7 +335,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$AgentKilled(final AgentKilled occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$AgentKilled$7(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$AgentKilled$9(occurrence));
   }
   
   @SyntheticMember
@@ -292,7 +343,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$MemberJoined(final MemberJoined occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MemberJoined$10(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MemberJoined$12(occurrence));
   }
   
   @SyntheticMember
@@ -315,7 +366,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$BoidsPositions(final BoidsPositions occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsPositions$12(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsPositions$14(occurrence));
   }
   
   @SyntheticMember
@@ -323,7 +374,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$4(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$6(occurrence));
   }
   
   @SyntheticMember
@@ -331,7 +382,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$ContextLeft(final ContextLeft occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ContextLeft$9(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ContextLeft$11(occurrence));
   }
   
   @SyntheticMember
@@ -347,7 +398,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$ContextJoined(final ContextJoined occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ContextJoined$8(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ContextJoined$10(occurrence));
   }
   
   @SyntheticMember
@@ -355,7 +406,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$Destroy(final Destroy occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Destroy$5(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Destroy$7(occurrence));
   }
   
   @Override
@@ -379,6 +430,8 @@ public class Environment extends Agent {
       return false;
     if (other.superBoids != this.superBoids)
       return false;
+    if (other.boidsUpdated != this.boidsUpdated)
+      return false;
     if (other.largeur != this.largeur)
       return false;
     if (other.hauteur != this.hauteur)
@@ -397,6 +450,7 @@ public class Environment extends Agent {
     result = prime * result + this.visionBoids;
     result = prime * result + this.distanceBoids;
     result = prime * result + (this.superBoids ? 1231 : 1237);
+    result = prime * result + this.boidsUpdated;
     result = prime * result + this.largeur;
     result = prime * result + this.hauteur;
     return result;

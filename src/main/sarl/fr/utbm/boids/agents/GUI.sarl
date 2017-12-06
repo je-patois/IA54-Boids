@@ -26,7 +26,7 @@ agent GUI {
 	on Initialize {
 		loggingName = "GUI"
 		info("The GUI is started.")
-		emit(new IsStarted())
+		emit(new IsStarted("GUI", null))
 	}
 	
 	on MakeTheFiestaBegin {
@@ -41,7 +41,7 @@ agent GUI {
 		val nbPop = 3
 		val nbBoids = 20
 		val visionBoids = 10
-		val freqRafraichissement = 50
+		val freqRafraichissement = 1
 		emit(new StartingSimulation(nbPop, nbBoids, visionBoids, freqRafraichissement))
 		in(10000)[
 			emit(new BtnShutdown)

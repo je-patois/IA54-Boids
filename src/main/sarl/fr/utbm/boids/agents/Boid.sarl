@@ -34,7 +34,7 @@ agent Boid {
 		distanceVisibilite = new Integer (occurrence.parameters.get(2) as Integer)
 		
 		info ("group " + groupe)
-		emit(new IsStarted())
+		emit(new IsStarted("Boid", this))
 	}
 	
 	on StartPosition {

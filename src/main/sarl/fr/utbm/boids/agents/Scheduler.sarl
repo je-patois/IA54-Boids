@@ -8,17 +8,22 @@ import fr.utbm.boids.events.IsStarted
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.EndSimulation
 import fr.utbm.boids.events.StartingSimulation
+import fr.utbm.boids.events.NeedDataBoids
+import io.sarl.core.Schedules
+import fr.utbm.boids.events.SendDataBoids
+import fr.utbm.boids.events.BoidsToDisplay
 
 agent Scheduler {
-	uses Logging, DefaultContextInteractions, Lifecycle
+	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
 	
 	/*
 	var position : Vecteur
 	var vitesse : Vecteur*/
 	var groupe : int 
+	var online : boolean //if the simulation is online or not
 	
 	//fréquence de rafraichissement en millisecondes
-	var freqRafraichissement : int
+	var freqRafraichissement : long
 	
 	/*
 	 * gestion des évènements
@@ -27,14 +32,41 @@ agent Scheduler {
 	on Initialize {
 		loggingName = "Scheduler"
 		info("The Scheduler is started.")
-		emit(new IsStarted())
+		emit(new IsStarted("Scheduler", null))
 	}
 
-	on  StartingSimulation {
-		this.freqRafraichissement = occurrence.freqRafraichissement
+	on StartingSimulation {
+		info("HEY")
+		online = true
+		this.freqRafraichissement = occurrence.freqRafraichissement * 1000
+		info(freqRafraichissement)
+
+		in(this.freqRafraichissement) [
+			info("je demande")
+			emit(new NeedDataBoids())
+		]
+		
+		/*while(online){		//need synchronized?
+			in(this.freqRafraichissement)[
+				info("je demande")
+				emit(new NeedDataBoids())
+			]
+		}*/
+	}
+
+	on SendDataBoids{
+		info(occurrence.lesBoids)
+	}
+	
+	on BoidsToDisplay{
+		info("j'ai reçu des boids à afficher : " + occurrence.boids)
+		for(mesBoids : occurrence.boids){
+			//info(mesBoids.position)
+		}
 	}
 
 	on EndSimulation {
+		online = false
 		killMe
 	}
 
