@@ -33,7 +33,6 @@ agent Boid {
 	
 	on InitBoidBody {
 		this.body = occurrence.body
-		info("body value is ok")
 		emit(new BoidBodyInitialized())
 	}
 	
@@ -120,10 +119,12 @@ agent Boid {
 	 	
 	 	tmp2 = new Vector(this.body.vitesse)
 	 	
-	 	tmp2.normaliser(this.body.groupeVitesseMax)
+	 	tmp2.normaliser()
+	 	//tmp2.fois(this.body.groupeVitesseMax)			//TODO m'expliquer pourquoi normaliser avait été changé et pourquoi on voulait faire une multiplication par la vitesseMax
 	 	
 	 	// pas dans le code du prof mais pourtant le vecteur doit l'être pour que la formule marche et ça me parraît pas être "logique" tmp soit déjà normaliser
-	 	tmp.normaliser(this.body.groupeVitesseMax)
+	 	tmp.normaliser()
+	 	//tmp.fois(this.body.groupeVitesseMax)
 	 	
 	 	if (tmp2.point(tmp) < this.body.angleVisibilite) {
 	 		return false
@@ -251,7 +252,7 @@ agent Boid {
 		
 		//bornage de la vitesse
 		if (this.body.newVitesse.length > this.body.groupeVitesseMax){
-			this.body.newVitesse.normaliser(1)
+			this.body.newVitesse.normaliser()
 			this.body.newVitesse.fois(this.body.groupeVitesseMax)
 		}
 		
