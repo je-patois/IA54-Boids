@@ -11,18 +11,15 @@ import fr.utbm.boids.events.ResultatDeplacement
 import fr.utbm.boids.Vector
 import java.util.Random
 import fr.utbm.boids.events.ValidationDeplacement
+import fr.utbm.boids.BoidBody
+import fr.utbm.boids.events.InitBoidBody
+import fr.utbm.boids.events.BoidBodyInitialized
+import io.sarl.util.Scopes
 
 agent Boid {
 	uses Logging, DefaultContextInteractions
 
-	var position : Vector
-	var vitesse : Vector
-	var newVitesse : Vector
-	var groupe : int
-	var groupeVitesseMax : int
-	var masse : int
-	var angleVisibilite : int // défini dans Boid car chauqe individu peut avoir des caractéristiques différentes (dépendant de sa famille et de sa morfologie)
-	var distanceVisibilite : int 
+	var body : BoidBody
 	
 	/*
 	 * gestion des évènements
@@ -31,16 +28,13 @@ agent Boid {
 	on Initialize {
 		loggingName = "Boid"
 		info("A Boid agent was started.")
-		groupe =  new Integer(occurrence.parameters.get(0) as Integer)
-		angleVisibilite = new Integer (occurrence.parameters.get(1) as Integer)
-		distanceVisibilite = new Integer (occurrence.parameters.get(2) as Integer)
-		
-		// TODO ramener groupeVitesseMax et masse par une demande utilisateur
-		groupeVitesseMax = 10
-		masse = 2
-		
-		info ("group " + groupe)
-		emit(new IsStarted("Boid", this))
+		emit(new IsStarted("Boid"))
+	}
+	
+	on InitBoidBody {
+		this.body = occurrence.body
+		info("body value is ok")
+		emit(new BoidBodyInitialized())
 	}
 	
 	on StartPosition {
@@ -53,13 +47,13 @@ agent Boid {
 		y = y % 50
 		info("X, Y \n" + x + " " + y)
 		maPosition = new Vector(x, y)
-		emit(new ResultatDeplacement(maPosition, this))
+		emit(new ResultatDeplacement(maPosition))
 	}
 
 	// Si le déplacement est validé, on enregistre la nouvelle position du Boids, ainsi que sa nouvelle vitesse
 	on ValidationDeplacement {
-		this.position = occurrence.position
-		vitesse = newVitesse
+		this.body.position = occurrence.position
+		this.body.vitesse = this.body.newVitesse
 		info("Validation de la position")
 	}
 	
@@ -103,85 +97,35 @@ agent Boid {
 		 */
 		
 		//on renvoie la nouvelle position du Boids
-		emit(new ResultatDeplacement(appliquerForce(forceTot), this))
+		emit(new ResultatDeplacement(appliquerForce(forceTot)))
 	 
 	}
-	
-	
-	/*
-	 * GETTER
-	 */
-	 
-	 def getPosition() : Vector {
-	 	return this.position
-	 }
-	 
-	 def getVitesse() : Vector {
-	 	return this.vitesse
-	 }
-	 
-	 def getGroupe () : int {
-	 	return this.groupe
-	 }
-	 
-	 def getAngleVisibilite () : int {
-	 	return this.angleVisibilite
-	 }
-
-	def getDistanceVisibilite() : int {
-		return this.distanceVisibilite
-	}
-	
-	 /*
-	  * SETTER 
-	  */
-	  
-	def setPosition (p : Vector) : void{
-	  	this.position = p
-	}
-	  
-	def setVitesse (v : Vector) : void {
-	  	this.vitesse = v
-	}
-	  
-	def setGroupe (i : int) : void {
-	 	this.groupe = i
-	}
-	  
-	def setAngleVisibilite (i : int) : void {
-	  	this.angleVisibilite = i
-	}
-
-	def setDistanceVisibilite(i : int) : void {
-		this.distanceVisibilite = i
-	}
-	
 	
 	/*
 	 * fonction qui permet de déterminer si le boids en question est visible dans notre perception
 	 */
 	 
-	 def visible (b : Boid) : boolean{
+	 def visible (b : BoidBody) : boolean{
 	 	
 	 	var tmp : Vector
 	 	var tmp2 : Vector
 	 	
 	 	tmp = new Vector(b.position)
-	 	tmp.moins(position)
+	 	tmp.moins(this.body.position)
 	 	
 	 	// Si le boids est trop loin, on ne le voit pas 
-	 	if (tmp.length() > this.distanceVisibilite){
+	 	if (tmp.length() > this.body.distanceVisibilite){
 	 		return false
 	 	}
 	 	
-	 	tmp2 = new Vector(vitesse)
+	 	tmp2 = new Vector(this.body.vitesse)
 	 	
-	 	tmp2.normaliser(this.groupeVitesseMax)
+	 	tmp2.normaliser(this.body.groupeVitesseMax)
 	 	
 	 	// pas dans le code du prof mais pourtant le vecteur doit l'être pour que la formule marche et ça me parraît pas être "logique" tmp soit déjà normaliser
-	 	tmp.normaliser(this.groupeVitesseMax)
+	 	tmp.normaliser(this.body.groupeVitesseMax)
 	 	
-	 	if (tmp2.point(tmp) < angleVisibilite) {
+	 	if (tmp2.point(tmp) < this.body.angleVisibilite) {
 	 		return false
 	 	}
 	 	
@@ -194,7 +138,7 @@ agent Boid {
 	 */
 	 
 	//TODO test si non utilisation du test du groupe à une influence
-	def separation(otherBoids : Collection<Boid>) : Vector {
+	def separation(otherBoids : Collection<BoidBody>) : Vector {
 
 		var force : Vector
 		var tmp : Vector
@@ -204,8 +148,8 @@ agent Boid {
 		tmp = new Vector(0, 0)
 
 		for (boid : otherBoids) {
-			if (boid != null && boid.groupe == this.groupe && visible(boid)) {
-				tmp.setXY(position)
+			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
+				tmp.setXY(this.body.position)
 				tmp.moins(boid.position)
 				len = tmp.length()
 				tmp.fois(1 / (len * len))
@@ -217,7 +161,7 @@ agent Boid {
 
 	}
 
-	def cohesion(otherBoids : Collection<Boid>) : Vector {
+	def cohesion(otherBoids : Collection<BoidBody>) : Vector {
 		
 		var nbTot = 0 
 		var force : Vector 
@@ -225,7 +169,7 @@ agent Boid {
 		force = new Vector(0,0)
 		
 		for (boid : otherBoids) {
-			if (boid != null && boid.groupe == this.groupe && visible(boid)){
+			if (boid != null && boid.groupe == this.body.groupe && visible(boid)){
 				nbTot++
 				force.plus(boid.position)
 			}
@@ -233,7 +177,7 @@ agent Boid {
 		
 		if (nbTot > 0){
 			force.fois(1/nbTot)
-			force.moins(this.position)
+			force.moins(this.body.position)
 		}
 		
 		return force
@@ -241,7 +185,7 @@ agent Boid {
 	
 	
 
-	def alignement(otherBoids : Collection<Boid>) : Vector {
+	def alignement(otherBoids : Collection<BoidBody>) : Vector {
 		
 		var nbTot = 0 
 		var force : Vector
@@ -251,7 +195,7 @@ agent Boid {
 		tmp = new Vector(0,0)
 		
 		for (boid : otherBoids){
-			if (boid != null && boid.groupe == this.groupe && visible(boid)) {
+			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
 				nbTot++
 				tmp.setXY(boid.vitesse)
 				tmp.fois(1/tmp.length)
@@ -267,7 +211,7 @@ agent Boid {
 		
 	}
 
-	def repulsion(otherBoids : Collection<Boid>) : Vector {
+	def repulsion(otherBoids : Collection<BoidBody>) : Vector {
 		
 		var force : Vector
 		var tmp : Vector
@@ -277,8 +221,8 @@ agent Boid {
 		tmp = new Vector(0,0)
 		
 		for (boid : otherBoids){
-			if (boid != null && boid.groupe != this.groupe && visible(boid)){
-				tmp.setXY(this.position)
+			if (boid != null && boid.groupe != this.body.groupe && visible(boid)){
+				tmp.setXY(this.body.position)
 				tmp.moins(boid.position)
 				len = tmp.length
 				tmp.fois(1/(len*len))
@@ -300,20 +244,20 @@ agent Boid {
 		var acceleration : Vector 
 		
 		acceleration = new Vector(force)
-		acceleration.fois(1/masse)
+		acceleration.fois(1/this.body.masse)
 		
-		newVitesse = new Vector(vitesse)
-		newVitesse.plus(acceleration)
+		this.body.newVitesse = new Vector(this.body.vitesse)
+		this.body.newVitesse.plus(acceleration)
 		
 		//bornage de la vitesse
-		if (newVitesse.length > groupeVitesseMax){
-			newVitesse.normaliser(1)
-			newVitesse.fois(groupeVitesseMax)
+		if (this.body.newVitesse.length > this.body.groupeVitesseMax){
+			this.body.newVitesse.normaliser(1)
+			this.body.newVitesse.fois(this.body.groupeVitesseMax)
 		}
 		
 		//maj position
-		newPosition = new Vector(position)
-		newPosition.plus(newVitesse)
+		newPosition = new Vector(this.body.position)
+		newPosition.plus(this.body.newVitesse)
 		
 		return newPosition
 		

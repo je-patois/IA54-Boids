@@ -32,13 +32,13 @@ agent Scheduler {
 	on Initialize {
 		loggingName = "Scheduler"
 		info("The Scheduler is started.")
-		emit(new IsStarted("Scheduler", null))
+		emit(new IsStarted("Scheduler"))
 	}
 
 	on StartingSimulation {
 		info("HEY")
 		online = true
-		this.freqRafraichissement = occurrence.freqRafraichissement * 1000
+		this.freqRafraichissement = occurrence.freqRafraichissement * 10
 		info(freqRafraichissement)
 
 		in(this.freqRafraichissement) [

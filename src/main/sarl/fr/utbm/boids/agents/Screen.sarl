@@ -24,7 +24,7 @@ agent Screen {
 	on Initialize {
 		loggingName = "Screen"
 		info("The Screen is started.")
-		emit(new IsStarted("Screen", null))
+		emit(new IsStarted("Screen"))
 	}
 
 	on EndSimulation {

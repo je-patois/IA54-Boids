@@ -32,6 +32,9 @@ import fr.utbm.boids.events.BoidsToDisplay
 import fr.utbm.boids.events.ValidationDeplacement
 import java.util.Map
 import java.util.HashMap
+import fr.utbm.boids.BoidBody
+import fr.utbm.boids.events.InitBoidBody
+import fr.utbm.boids.events.BoidBodyInitialized
 
 /** 
  * @author Zilliqman
@@ -47,7 +50,7 @@ import java.util.HashMap
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess
 	
-	var boidsList : Collection<Boid>	//liste complète des boids
+	var boidsList : Map<UUID,BoidBody>	//liste complète des corps de boids
 	var nombreDePopulations : int
 	var nombreDeBoidsParPopulation : int
 	var visionBoids : int  
@@ -67,7 +70,7 @@ agent Environment {
 	on Initialize {
 		loggingName = "Environment"
 		info("The Environment is started.")
-		emit(new IsStarted("Environment", null))
+		emit(new IsStarted("Environment"))
 		verrou = false
 		//emit(new IsStarted())
 		//emit(new ListVar(boidsList))
@@ -78,30 +81,26 @@ agent Environment {
 		this.hauteur = occurrence.mapHeight
 	}
 	
-	on IsStarted {
-		if(occurrence.type == "Boid"){
-			boidsList.add(occurrence.me)
-		}
-	}
-	
 	on StartingSimulation {
 		info("HO")
+		
+		//TODO suppr param inutiles
 		this.nombreDeBoidsParPopulation = occurrence.nombreDeBoidsParPopulation
 		this.nombreDePopulations = occurrence.nombreDePopulations
 		this.visionBoids = occurrence.visionBoids
 
 		//this.boidsGrid = new ArrayList<Boid>()
 		this.boidsGrid = new HashMap<Vector, UUID>
-		boidsList = new ArrayList()
+		this.boidsList = new HashMap()
 		
 		info ("ready to start ")
 		
 		for (var i = 0; i< this.nombreDePopulations; i++ ){
 			for (var j = 0 ; j < this.nombreDeBoidsParPopulation; j++){
-				//TODO à voir comment gérer une liste de boids
 				
-				spawnInContext(Boid, innerContext, i, visionBoids, distanceBoids)
-				//boidsList.add(newBoid)
+				var tempBody = new BoidBody (i,10,2,visionBoids, distanceBoids)		//TODO récupérer masse et vmax depuis l'interface utilisateur (param 2 et 3)
+				var id = spawnInContext(Boid, innerContext)
+				this.boidsList.put(id, tempBody)
 			}
 		}
 
@@ -109,6 +108,18 @@ agent Environment {
 		// hauteur = 50
 		// largeur = 50
 
+		
+	}
+
+	on IsStarted {
+		if (occurrence.type == "Boid") {
+			// Quand le Boid est démarré, on lui donne son body
+			innerContext.defaultSpace.emit(occurrence.source.UUID,new InitBoidBody(this.boidsList.get(occurrence.source.UUID)))
+		}
+	}
+	
+	on BoidBodyInitialized {
+		// Quand le Boid a initialisé son body, on le start
 		innerContext.defaultSpace.emit(ID, new StartPosition())
 	}
 
@@ -128,7 +139,7 @@ agent Environment {
 		
 		// remplace le commentaire ci-dessous, fait la même chose plus simplement, par contre Boid remplacer par UUID même si on en fait rien pour l'instant
 		if (!this.boidsGrid.containsKey(occurrence.position)) {
-			this.boidsGrid.put(occurrence.position, occurrence.boid.ID)
+			this.boidsGrid.put(occurrence.position, occurrence.source.UUID)
 			accept = true
 		}
 		
@@ -169,7 +180,7 @@ agent Environment {
 			//TODO resolution des problèmes de collision interBoids
 			
 			//TODO supprimer acceptation collisions
-			emit(new ResultatDeplacement(occurrence.position, occurrence.boid), Scopes.addresses(occurrence.source))
+			emit(new ResultatDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
 		}
 		//info(boidsUpdated)
 		info (boidsGrid)
@@ -181,7 +192,7 @@ agent Environment {
 	
 	//TODO reprendre l'envoi des boids avec la MAP
 	on NeedDataBoids{
-		if(this.boidsUpdated == boidsList.length){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
+		if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
 			info("J'apprends que le Scheduler veut de nouvelles coordonnées")
 			//emit(new SendDataBoids(this.boidsGrid))	//de quoi afficher les boids
 			info(boidsGrid)

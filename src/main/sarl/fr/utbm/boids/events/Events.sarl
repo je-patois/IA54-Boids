@@ -4,6 +4,7 @@ import java.util.Collection
 import fr.utbm.boids.agents.Boid
 import fr.utbm.boids.Vector
 import java.util.UUID
+import fr.utbm.boids.BoidBody
 
 event ConfigureSimulation {
 	val mapSelection : int
@@ -35,11 +36,9 @@ event GenerateMap
  */
 event IsStarted {
 	var type : String
-	var me : Boid
 	
-	new (typeEntity : String, Me : Boid){
+	new (typeEntity : String){
 		this.type = typeEntity
-		this.me = Me
 	}
 }
 
@@ -47,24 +46,22 @@ event MakeTheFiestaBegin
 
 event DemandeDeplacement {
 
-	var otherBoids : Collection<Boid>
+	var otherBoids : Collection<BoidBody>
 
-	new (pos : Vector, otherBoids : Collection<Boid>) {
+	new (pos : Vector, otherBoids : Collection<BoidBody>) {
 		this.otherBoids = otherBoids
 	}
 
-	new (x : int, y : int, otherBoids : Collection<Boid>) {
+	new (x : int, y : int, otherBoids : Collection<BoidBody>) {
 		this.otherBoids = otherBoids
 	}
 }
 
 event ResultatDeplacement {
 	var position : Vector
-	var boid : Boid
 
-	new (pos : Vector, boid :Boid) {
+	new (pos : Vector) {
 		this.position = pos
-		this.boid = boid
 	}
 
 	/*new (x : int, y : int) {
@@ -139,3 +136,14 @@ event BoidsToDisplay {
 		this.boids = BoidsToDisplay
 	}
 }
+
+
+event InitBoidBody{
+	var body : BoidBody
+	
+	new (body : BoidBody){
+		this.body = body
+	}
+}
+
+event BoidBodyInitialized

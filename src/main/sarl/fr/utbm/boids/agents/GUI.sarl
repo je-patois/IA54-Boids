@@ -26,7 +26,7 @@ agent GUI {
 	on Initialize {
 		loggingName = "GUI"
 		info("The GUI is started.")
-		emit(new IsStarted("GUI", null))
+		emit(new IsStarted("GUI"))
 	}
 	
 	on MakeTheFiestaBegin {

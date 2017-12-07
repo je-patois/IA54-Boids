@@ -1,0 +1,23 @@
+package fr.utbm.boids
+
+class EnvObjet {
+	
+	var position : Vector
+	
+	/* 
+	 * GETTER
+	 */
+	 
+	def getPosition() : Vector {
+		return this.position
+	}
+	
+	/* 
+	 * SETTER
+	 */
+	 
+	def setPosition(p : Vector) : void {
+		this.position = p
+	}
+	
+}

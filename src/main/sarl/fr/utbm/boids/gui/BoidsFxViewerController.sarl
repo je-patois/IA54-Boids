@@ -34,7 +34,7 @@ class BoidsFxViewerController extends FxViewerController {
 	@FXML var boids_vision_display : Label
 	@FXML var boids_vision_input : ScrollBar
 	
-
+	
 	def getBoidsQuantity : int {
 		boids_quantity_input.value as int
 	}
