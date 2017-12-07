@@ -11,11 +11,11 @@ import javafx.scene.layout.Pane
 import javafx.application.Platform
 import javafx.scene.shape.Polygon
 import javafx.animation.PauseTransition
-import java.util.Collection
-import java.util.UUID
 
 import static extension javafx.util.Duration.*
-
+import fr.utbm.boids.BoidBody
+import java.util.Collection
+import javafx.scene.shape.Circle
 
 class BoidsFxViewerController extends FxViewerController {
 
@@ -96,7 +96,7 @@ class BoidsFxViewerController extends FxViewerController {
 					myPane.getChildren().add(0, uObstacle);
 					var stairObstacle : Polygon = new Polygon();
 					stairObstacle.getPoints().addAll(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0);
-					myPane.getChildren().add(0, stairObstacle);
+				 	myPane.getChildren().add(0, stairObstacle);
 				}
 			}
 		};
@@ -108,14 +108,24 @@ class BoidsFxViewerController extends FxViewerController {
 		}	
 	}
 	
-	def updateGraphics(list: Collection<UUID>) {
+	def updateGraphics(list: Collection<BoidBody>) {
 		var wait = new PauseTransition(0.03.seconds)
-
+		wait.playFromStart
+		
 		wait.onFinished = [
-			// Ramener une liste de boids ou alors la liste des positions
-			wait.playFromStart
+			
+			// TODO reduire taille de la partie d'affichage pour les boids + mettre une couleur en fonction du groupe + remplacer cercle par triangle
+			for (boid : list){
+				var cercle = new Circle()
+				cercle.setCenterX(boid.position.x + getMapWidth / 2);
+				cercle.setCenterY(boid.position.y + getMapHeight/2); 
+				cercle.setRadius(10.0f);
+				myPane.getChildren().add(0,cercle)
+			}
+			
 		]
 		wait.play
+		
 	}
 
 	@FXML protected def actionBoidsQuantityDisplay {

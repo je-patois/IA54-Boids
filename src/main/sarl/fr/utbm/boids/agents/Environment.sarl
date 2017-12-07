@@ -59,6 +59,7 @@ agent Environment {
 	on Initialize {
 		loggingName = "Environment"
 		info("The Environment is started.")
+		boidsUpdated = 0
 		emit(new IsStarted("Environment"))
 		//emit(new IsStarted())
 		//emit(new ListVar(boidsList))
@@ -86,10 +87,6 @@ agent Environment {
 			}
 		}
 
-		boidsUpdated = 0
-		// hauteur = 50
-		// largeur = 50
-
 	}
 
 	on IsStarted {
@@ -101,7 +98,7 @@ agent Environment {
 	
 	on BoidBodyInitialized {
 		// Quand le Boid a initialisé son body, on le start
-		innerContext.defaultSpace.emit(ID,new StartPosition(), Scopes.addresses(occurrence.source))
+		innerContext.defaultSpace.emit(ID,new StartPosition(this.hauteur, this.largeur), Scopes.addresses(occurrence.source))
 	}
 
 
@@ -109,6 +106,9 @@ agent Environment {
 	on ResultatDeplacement {
 		info("l'env recoit les coordonnées")
 		boidsUpdated += 1
+		
+		info ("maintenant updated = " + boidsUpdated)
+		
 		var accept = false
 		
 		occurrence.position = estDansLaCarte(occurrence.position)
@@ -120,24 +120,24 @@ agent Environment {
 				this.boidsGrid.put(occurrence.position, occurrence.source.UUID)
 				accept = true
 			}
-			
-			if (accept) {
-				emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
-			} else {
-				//TODO resolution des problèmes de collision interBoids
-				
-				//TODO supprimer acceptation collisions
-				emit(new ResultatDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
-			}
-			//info(boidsUpdated)
-			//info (boidsGrid)
+		
 		}
+			
+		if (accept) {
+			emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
+		} else {
+			//TODO resolution des problèmes de collision interBoids
+			
+			//TODO supprimer acceptation collisions
+			emit(new ResultatDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
+		}
+		//info(boidsUpdated)
+		//info (boidsGrid)
 
 		
 	}
 	
 	
-	//TODO reprendre l'envoi des boids avec la MAP
 	on NeedDataBoids{
 		info ("demande de rafraichissement : " + this.boidsUpdated)
 		if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
@@ -155,10 +155,11 @@ agent Environment {
 	
 				// remise à zéro de la liste des changements
 				this.boidsGrid = new HashMap<Vector, UUID>
+				this.boidsUpdated = 0 
 			}
 			
 			// envoi des nouveaux corps des boids
-			emit(new BoidsToDisplay(boidsList))
+			emit(new BoidsToDisplay(this.boidsList))
 			
 			/*info ("j'affiche les nouveaux corps")
 			info (boidsList)*/

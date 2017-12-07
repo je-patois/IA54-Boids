@@ -12,11 +12,13 @@ import fr.utbm.boids.events.NeedDataBoids
 import io.sarl.core.Schedules
 import fr.utbm.boids.events.SendDataBoids
 import fr.utbm.boids.events.BoidsToDisplay
+import fr.utbm.boids.gui.BoidsFxViewerController
 
 agent Scheduler {
 	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
 	
-	var online : boolean //if the simulation is online or not
+	var online : boolean // if the simulation is online or not
+	var ctrl : BoidsFxViewerController = null
 	
 	//fréquence de rafraichissement en millisecondes
 	var freqRafraichissement : long
@@ -28,13 +30,14 @@ agent Scheduler {
 	on Initialize {
 		loggingName = "Scheduler"
 		info("The Scheduler is started.")
+		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
 		emit(new IsStarted("Scheduler"))
 	}
 
 	on StartingSimulation {
 		info("HEY")
 		online = true
-		this.freqRafraichissement = occurrence.freqRafraichissement * 10
+		this.freqRafraichissement = occurrence.freqRafraichissement * 100
 		info(freqRafraichissement)
 
 		in(this.freqRafraichissement) [
@@ -59,6 +62,7 @@ agent Scheduler {
 		for (mesBoids : occurrence.boids.entrySet) {
 			info("boid position : " + mesBoids.value.position)
 		}
+		ctrl.updateGraphics(occurrence.boids.values)
 	}
 
 	on EndSimulation {

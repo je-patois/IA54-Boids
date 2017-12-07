@@ -41,8 +41,10 @@ agent Boid {
 		var x = rnd.nextInt()
 		var y = rnd.nextInt()
 		//info("X, Y \n" + x + " " + y)
-		x %= 50
-		y = y % 50
+		//x %= 50
+		// y = y % 50
+		x %= (occurrence.largeur/2)
+		y = y % (occurrence.hauteur/2)
 		info("X, Y \n" + x + " " + y)
 		maPosition = new Vector(x, y)
 		emit(new ResultatDeplacement(maPosition))

@@ -92,7 +92,15 @@ event StartingSimulation {
 	}
 }
 
-event StartPosition
+event StartPosition {
+	var hauteur : int 
+	var largeur : int 
+	
+	new (h : int, l : int ){
+		this.hauteur = h
+		this.largeur = l
+	}
+}
 
 event EndSimulation
 

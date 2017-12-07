@@ -31,7 +31,7 @@ agent BootAgent {
 		ctrl.UISpace.register(asEventListener)
 		spawn(Environment, boidsQuantity) 
 		info("Starting simulation")
-		spawn(Scheduler)
+		spawn(Scheduler,ctrl)
 	}
 	
 	on ConfigureSimulation {
