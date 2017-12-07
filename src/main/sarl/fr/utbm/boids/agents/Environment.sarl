@@ -47,12 +47,10 @@ agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess
 	
 	var boidsList : Map<UUID,BoidBody>	//liste complète des corps de boids
-	//var boidsGrid : Collection<Boid>	//liste des boids ayant mis leurs coordonnées à jour à l'étape i
 	var boidsGrid : Map<Vector, UUID>
 	var superBoids : boolean
 	var grid : Object[]
 	var boidsUpdated : int
-	var verrou : boolean
 	var largeur : int
 	var hauteur : int
 	
@@ -62,7 +60,6 @@ agent Environment {
 		loggingName = "Environment"
 		info("The Environment is started.")
 		emit(new IsStarted("Environment"))
-		verrou = false
 		//emit(new IsStarted())
 		//emit(new ListVar(boidsList))
 	}
@@ -74,10 +71,7 @@ agent Environment {
 	
 	on StartingSimulation {
 		info("HO")
-		
-		//TODO suppr param inutiles
 
-		//this.boidsGrid = new ArrayList<Boid>()
 		this.boidsGrid = new HashMap<Vector, UUID>
 		this.boidsList = new HashMap<UUID, BoidBody>
 		
@@ -101,14 +95,12 @@ agent Environment {
 	on IsStarted {
 		if (occurrence.type == "Boid") {
 			// Quand le Boid est démarré, on lui donne son body
-			//innerContext.defaultSpace.emit(occurrence.source.UUID,new InitBoidBody(this.boidsList.get(occurrence.source.UUID)))
 			innerContext.defaultSpace.emit(ID,new InitBoidBody(this.boidsList.get(occurrence.source.UUID)), Scopes.addresses(occurrence.source))
 		}
 	}
 	
 	on BoidBodyInitialized {
 		// Quand le Boid a initialisé son body, on le start
-		// innerContext.defaultSpace.emit(occurrence.source.UUID, new StartPosition())
 		innerContext.defaultSpace.emit(ID,new StartPosition(), Scopes.addresses(occurrence.source))
 	}
 
@@ -121,30 +113,26 @@ agent Environment {
 		
 		occurrence.position = estDansLaCarte(occurrence.position)
 		
-		while (verrou){
-			Thread.sleep(100)
-		}
+		synchronized (boidsGrid){
 		
-		verrou = true
-		
-		// on regarde si la position est libre 
-		if (!this.boidsGrid.containsKey(occurrence.position)) {
-			this.boidsGrid.put(occurrence.position, occurrence.source.UUID)
-			accept = true
-		}
-		
-		if (accept) {
-			emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
-		} else {
-			//TODO resolution des problèmes de collision interBoids
+			// on regarde si la position est libre 
+			if (!this.boidsGrid.containsKey(occurrence.position)) {
+				this.boidsGrid.put(occurrence.position, occurrence.source.UUID)
+				accept = true
+			}
 			
-			//TODO supprimer acceptation collisions
-			emit(new ResultatDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
+			if (accept) {
+				emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
+			} else {
+				//TODO resolution des problèmes de collision interBoids
+				
+				//TODO supprimer acceptation collisions
+				emit(new ResultatDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
+			}
+			//info(boidsUpdated)
+			//info (boidsGrid)
 		}
-		//info(boidsUpdated)
-		//info (boidsGrid)
-		
-		verrou = false
+
 		
 	}
 	
@@ -158,14 +146,16 @@ agent Environment {
 			//emit(new SendDataBoids(this.boidsGrid))	//de quoi afficher les boids
 			
 			// on met à jour les positions des boids dans leurs corps (elem.key => Vector, elem.value => UUID
-			for (elem : this.boidsGrid.entrySet){
-				var modifBody = this.boidsList.get(elem.value)
-				modifBody.position = elem.key 
-				this.boidsList.put(elem.value, modifBody)
+			synchronized (boidsGrid){
+				for (elem : this.boidsGrid.entrySet){
+					var modifBody = this.boidsList.get(elem.value)
+					modifBody.position = elem.key 
+					this.boidsList.put(elem.value, modifBody)
+				}
+	
+				// remise à zéro de la liste des changements
+				this.boidsGrid = new HashMap<Vector, UUID>
 			}
-
-			// remise à zéro de la liste des changements
-			this.boidsGrid = new HashMap<Vector, UUID>
 			
 			// envoi des nouveaux corps des boids
 			emit(new BoidsToDisplay(boidsList))
