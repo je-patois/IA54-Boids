@@ -20,4 +20,9 @@ class EnvObjet {
 		this.position = p
 	}
 	
+	@SuppressWarnings("equals_with_null")
+	def toString() : String {
+		if (this.position != null) return "position : " + this.position.toString else return ""
+	}
+	
 }

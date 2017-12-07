@@ -12,12 +12,6 @@ agent Screen {
 	uses Logging, DefaultContextInteractions, Lifecycle
 	
 	/*
-	var position : Vecteur
-	var vitesse : Vecteur*/
-	var groupe : int 
-	
-	
-	/*
 	 * gestion des évènements
 	 */
 

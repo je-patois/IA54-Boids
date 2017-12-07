@@ -14,7 +14,6 @@ import fr.utbm.boids.events.ValidationDeplacement
 import fr.utbm.boids.BoidBody
 import fr.utbm.boids.events.InitBoidBody
 import fr.utbm.boids.events.BoidBodyInitialized
-import io.sarl.util.Scopes
 
 agent Boid {
 	uses Logging, DefaultContextInteractions
@@ -56,6 +55,7 @@ agent Boid {
 		info("Validation de la position")
 	}
 	
+	@SuppressWarnings("equals_with_null")
 	on DemandeDeplacement {
 		
 		/* 
@@ -63,14 +63,15 @@ agent Boid {
 		 */
 		var otherBoids = occurrence.otherBoids
 		var forceTot : Vector
+
+		forceTot = new Vector(0, 0)
+		
 		/* 		 / \
 		 *		/ !	\	 On suppose que le Boids que je suis a été supprimé de la liste
 		 *	   /_____\
 		 */	   
 		if (otherBoids != null) {
 			
-
-			forceTot = new Vector(0, 0)
 			
 			//on applique la séparation 
 			forceTot.plus(separation(otherBoids))
@@ -88,12 +89,6 @@ agent Boid {
 		 
 			// TODO appliquer force obstacle
 		}
-		
-		/*
-		 * if(forceTot.length > this.group.vitesseMax){
-		 * 	normaliser(forceTot, this.group.maxVitesse)
-		 * 
-		 */
 		
 		//on renvoie la nouvelle position du Boids
 		emit(new ResultatDeplacement(appliquerForce(forceTot)))
@@ -139,6 +134,7 @@ agent Boid {
 	 */
 	 
 	//TODO test si non utilisation du test du groupe à une influence
+	@SuppressWarnings("equals_with_null")
 	def separation(otherBoids : Collection<BoidBody>) : Vector {
 
 		var force : Vector
@@ -162,6 +158,7 @@ agent Boid {
 
 	}
 
+	@SuppressWarnings("equals_with_null")
 	def cohesion(otherBoids : Collection<BoidBody>) : Vector {
 		
 		var nbTot = 0 
@@ -186,6 +183,7 @@ agent Boid {
 	
 	
 
+	@SuppressWarnings("equals_with_null")
 	def alignement(otherBoids : Collection<BoidBody>) : Vector {
 		
 		var nbTot = 0 
@@ -212,6 +210,7 @@ agent Boid {
 		
 	}
 
+	@SuppressWarnings("equals_with_null")
 	def repulsion(otherBoids : Collection<BoidBody>) : Vector {
 		
 		var force : Vector

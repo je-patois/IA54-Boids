@@ -5,6 +5,7 @@ import fr.utbm.boids.agents.Boid
 import fr.utbm.boids.Vector
 import java.util.UUID
 import fr.utbm.boids.BoidBody
+import java.util.Map
 
 event ConfigureSimulation {
 	val mapSelection : int
@@ -130,9 +131,9 @@ event SendDataBoids {
 }
 
 event BoidsToDisplay {
-	var boids : Collection<Boid>
+	var boids : Map<UUID,BoidBody>
 	
-	new(BoidsToDisplay : Collection<Boid>){
+	new(BoidsToDisplay : Map<UUID, BoidBody>) {
 		this.boids = BoidsToDisplay
 	}
 }

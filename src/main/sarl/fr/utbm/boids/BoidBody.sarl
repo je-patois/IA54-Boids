@@ -15,6 +15,7 @@ class BoidBody extends EnvObjet{
 	new (groupe : int, groupeVitesseMax : int, masse : int, angleVisibilite : int, distanceVisibilite : int){
 		this.groupe = groupe
 		this.groupeVitesseMax = groupeVitesseMax
+		this.masse = masse
 		this.angleVisibilite = angleVisibilite
 		this.distanceVisibilite = distanceVisibilite
 	}
@@ -83,4 +84,21 @@ class BoidBody extends EnvObjet{
 		this.masse = m
 	}
 
+
+	@SuppressWarnings("equals_with_null")
+	def toString () : String{
+		
+		var retour : String 
+		
+		retour = super.toString
+		retour += if (this.vitesse != null) ", vitesse : " + this.vitesse.toString else "" 
+		retour += if (this.newVitesse != null) ", newVitesse : " + this.newVitesse.toString else ""
+		retour += ", groupe : " + this.groupe
+		retour += ", groupeVitesseMax : " + this.groupeVitesseMax
+		retour += ", masse : " + this.masse
+		retour += ", angleVisibilite : " + this.angleVisibilite
+		retour += ", distanceVisibilite : " + this.distanceVisibilite
+		
+		return retour
+	}
 }

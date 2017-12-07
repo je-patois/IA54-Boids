@@ -12,10 +12,6 @@ import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.GenerateMap
 import fr.utbm.boids.events.MapParameters
-import java.util.UUID
-import java.util.Collection
-import fr.utbm.boids.events.ListVar
-import io.sarl.core.MemberJoined
 import fr.utbm.boids.events.BoidsPositions
 
 agent BootAgent {
@@ -27,7 +23,6 @@ agent BootAgent {
 	var boidsVision : int
 	var exited : boolean = false
 	var ctrl : BoidsFxViewerController = null;
-	var boidsList: Collection<UUID>
 	var grid : Object[]
 
 	on Initialize {

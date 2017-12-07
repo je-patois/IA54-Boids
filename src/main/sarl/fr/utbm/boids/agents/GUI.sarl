@@ -9,13 +9,11 @@ import fr.utbm.boids.events.BtnLaunch
 import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.EndSimulation
 import fr.utbm.boids.events.BtnShutdown
-import io.sarl.core.Lifecycle
-import java.util.UUID
-import java.util.TreeSet
+
 import io.sarl.core.Schedules
 
 agent GUI {
-	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
+	uses Logging, DefaultContextInteractions, Schedules
 
 	/* -1 if not exiting the app // +x if we quit the app and x agents are alive */
 	var AgentsAlive = -1 

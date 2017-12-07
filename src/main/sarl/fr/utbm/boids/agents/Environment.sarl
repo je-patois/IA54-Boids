@@ -36,10 +36,6 @@ import fr.utbm.boids.BoidBody
 import fr.utbm.boids.events.InitBoidBody
 import fr.utbm.boids.events.BoidBodyInitialized
 
-/** 
- * @author Zilliqman
- * 
- */
  
  /*
   * Il va falloir avoir des tableaux d'obstacles et de boids
@@ -51,14 +47,9 @@ agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess
 	
 	var boidsList : Map<UUID,BoidBody>	//liste complète des corps de boids
-	var nombreDePopulations : int
-	var nombreDeBoidsParPopulation : int
-	var visionBoids : int  
-	var distanceBoids : int
 	//var boidsGrid : Collection<Boid>	//liste des boids ayant mis leurs coordonnées à jour à l'étape i
 	var boidsGrid : Map<Vector, UUID>
 	var superBoids : boolean
-	//var boids : Object[]
 	var grid : Object[]
 	var boidsUpdated : int
 	var verrou : boolean
@@ -85,20 +76,17 @@ agent Environment {
 		info("HO")
 		
 		//TODO suppr param inutiles
-		this.nombreDeBoidsParPopulation = occurrence.nombreDeBoidsParPopulation
-		this.nombreDePopulations = occurrence.nombreDePopulations
-		this.visionBoids = occurrence.visionBoids
 
 		//this.boidsGrid = new ArrayList<Boid>()
 		this.boidsGrid = new HashMap<Vector, UUID>
-		this.boidsList = new HashMap()
+		this.boidsList = new HashMap<UUID, BoidBody>
 		
 		info ("ready to start ")
 		
-		for (var i = 0; i< this.nombreDePopulations; i++ ){
-			for (var j = 0 ; j < this.nombreDeBoidsParPopulation; j++){
+		for (var i = 0; i< occurrence.nombreDePopulations; i++){
+			for (var j = 0 ; j < occurrence.nombreDeBoidsParPopulation; j++){
 				
-				var tempBody = new BoidBody (i,10,2,visionBoids, distanceBoids)		//TODO récupérer masse et vmax depuis l'interface utilisateur (param 2 et 3)
+				var tempBody = new BoidBody (i,10,2,occurrence.visionBoids, 50)		//TODO récupérer masse, vmax et distance de vision depuis l'interface utilisateur (param 2 et 3 et 5)
 				var id = spawnInContext(Boid, innerContext)
 				this.boidsList.put(id, tempBody)
 			}
@@ -108,25 +96,27 @@ agent Environment {
 		// hauteur = 50
 		// largeur = 50
 
-		
 	}
 
 	on IsStarted {
 		if (occurrence.type == "Boid") {
 			// Quand le Boid est démarré, on lui donne son body
-			innerContext.defaultSpace.emit(occurrence.source.UUID,new InitBoidBody(this.boidsList.get(occurrence.source.UUID)))
+			//innerContext.defaultSpace.emit(occurrence.source.UUID,new InitBoidBody(this.boidsList.get(occurrence.source.UUID)))
+			innerContext.defaultSpace.emit(ID,new InitBoidBody(this.boidsList.get(occurrence.source.UUID)), Scopes.addresses(occurrence.source))
 		}
 	}
 	
 	on BoidBodyInitialized {
 		// Quand le Boid a initialisé son body, on le start
-		innerContext.defaultSpace.emit(ID, new StartPosition())
+		// innerContext.defaultSpace.emit(occurrence.source.UUID, new StartPosition())
+		innerContext.defaultSpace.emit(ID,new StartPosition(), Scopes.addresses(occurrence.source))
 	}
 
+
+	//TODO Si à l'initialisation deux boids spawn au même endroit, il faut relancer un spawn
 	on ResultatDeplacement {
 		info("l'env recoit les coordonnées")
 		boidsUpdated += 1
-		//var accept = true
 		var accept = false
 		
 		occurrence.position = estDansLaCarte(occurrence.position)
@@ -137,44 +127,13 @@ agent Environment {
 		
 		verrou = true
 		
-		// remplace le commentaire ci-dessous, fait la même chose plus simplement, par contre Boid remplacer par UUID même si on en fait rien pour l'instant
+		// on regarde si la position est libre 
 		if (!this.boidsGrid.containsKey(occurrence.position)) {
 			this.boidsGrid.put(occurrence.position, occurrence.source.UUID)
 			accept = true
 		}
 		
-		
-		/* 
-		//TODO RESOUDRE BUG
-		//tests
-		var test : Boid
-		//info(occurrence.boid)
-		test = occurrence.boid
-		info ("position : "  + test.position.x)
-		/* var doesItWork =
-
-		this.boidsGrid.add(test)	//BUG ICI : add
-		//info(doesItWork) 							//Uncaught exception: null
-		
-		// vérifier sortie de map
-		info(boidsGrid)
-		
-		for (boid : boidsGrid){
-			info("premier tour")
-			//on vérifie si le boid ne veut pas aller à un endroit ou il y a déjà un boid
-			info (boid)
-			if (boid.position.x == occurrence.position.x && boid.position.y == occurrence.position.y) { // vérifier collision obstacles
-				accept = false
-				boidsGrid.remove(occurrence.boid)
-		
-		}
-		*/
-		//fin tests
-		
-		
-		
 		if (accept) {
-			// emit(new ResultatDeplacement(occurrence.position, occurrence.boid), Scopes.addresses(occurrence.source)
 			emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
 		} else {
 			//TODO resolution des problèmes de collision interBoids
@@ -183,7 +142,7 @@ agent Environment {
 			emit(new ResultatDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
 		}
 		//info(boidsUpdated)
-		info (boidsGrid)
+		//info (boidsGrid)
 		
 		verrou = false
 		
@@ -192,12 +151,28 @@ agent Environment {
 	
 	//TODO reprendre l'envoi des boids avec la MAP
 	on NeedDataBoids{
+		info ("demande de rafraichissement : " + this.boidsUpdated)
 		if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
 			info("J'apprends que le Scheduler veut de nouvelles coordonnées")
+			
 			//emit(new SendDataBoids(this.boidsGrid))	//de quoi afficher les boids
-			info(boidsGrid)
-			//emit(new BoidsToDisplay(boidsGrid))
-			this.boidsGrid = new HashMap<Vector,UUID>
+			
+			// on met à jour les positions des boids dans leurs corps (elem.key => Vector, elem.value => UUID
+			for (elem : this.boidsGrid.entrySet){
+				var modifBody = this.boidsList.get(elem.value)
+				modifBody.position = elem.key 
+				this.boidsList.put(elem.value, modifBody)
+			}
+
+			// remise à zéro de la liste des changements
+			this.boidsGrid = new HashMap<Vector, UUID>
+			
+			// envoi des nouveaux corps des boids
+			emit(new BoidsToDisplay(boidsList))
+			
+			/*info ("j'affiche les nouveaux corps")
+			info (boidsList)*/
+			
 		}
 	}
 
