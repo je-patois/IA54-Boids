@@ -43,7 +43,15 @@ agent Scheduler {
 		in(this.freqRafraichissement) [
 			info("je demande")
 			emit(new NeedDataBoids())
+
+			in(this.freqRafraichissement) [
+				info("je redemande")
+			emit(new NeedDataBoids())
+			]
+			
 		]
+		
+
 		
 		/*while(online){		//need synchronized?
 			in(this.freqRafraichissement)[

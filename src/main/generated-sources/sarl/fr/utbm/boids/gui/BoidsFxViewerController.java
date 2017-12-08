@@ -1,12 +1,12 @@
 package fr.utbm.boids.gui;
 
+import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.gui.fx.FxViewerController;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import java.util.Collection;
-import java.util.UUID;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.util.Duration;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
@@ -156,11 +157,28 @@ public class BoidsFxViewerController extends FxViewerController {
     }
   }
   
-  public void updateGraphics(final Collection<UUID> list) {
+  public void updateGraphics(final Collection<BoidBody> list) {
     Duration _seconds = Duration.seconds(0.03);
     PauseTransition wait = new PauseTransition(_seconds);
+    wait.playFromStart();
     final EventHandler<ActionEvent> _function = (ActionEvent it) -> {
-      wait.playFromStart();
+      for (final BoidBody boid : list) {
+        {
+          Circle cercle = new Circle();
+          double _x = boid.getPosition().getX();
+          int _mapWidth = this.getMapWidth();
+          int _divide = (_mapWidth / 2);
+          double _plus = (_x + _divide);
+          cercle.setCenterX(_plus);
+          double _y = boid.getPosition().getY();
+          int _mapHeight = this.getMapHeight();
+          int _divide_1 = (_mapHeight / 2);
+          double _plus_1 = (_y + _divide_1);
+          cercle.setCenterY(_plus_1);
+          cercle.setRadius(10.0f);
+          this.myPane.getChildren().add(0, cercle);
+        }
+      }
     };
     wait.setOnFinished(_function);
     wait.play();

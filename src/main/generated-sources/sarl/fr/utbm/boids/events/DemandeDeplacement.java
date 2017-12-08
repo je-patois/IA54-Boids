@@ -1,7 +1,7 @@
 package fr.utbm.boids.events;
 
+import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Vector;
-import fr.utbm.boids.agents.Boid;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
@@ -13,14 +13,17 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(14)
 @SuppressWarnings("all")
 public class DemandeDeplacement extends Event {
-  public Collection<Boid> otherBoids;
+  public Collection<BoidBody> otherBoids;
   
-  public DemandeDeplacement(final Vector pos, final Collection<Boid> otherBoids) {
+  public DemandeDeplacement(final Vector pos, final Collection<BoidBody> otherBoids) {
     this.otherBoids = otherBoids;
   }
   
-  public DemandeDeplacement(final int x, final int y, final Collection<Boid> otherBoids) {
+  public DemandeDeplacement(final int x, final int y, final Collection<BoidBody> otherBoids) {
     this.otherBoids = otherBoids;
+  }
+  
+  public DemandeDeplacement() {
   }
   
   @Override
@@ -50,5 +53,5 @@ public class DemandeDeplacement extends Event {
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 780105604L;
+  private final static long serialVersionUID = -878605055L;
 }

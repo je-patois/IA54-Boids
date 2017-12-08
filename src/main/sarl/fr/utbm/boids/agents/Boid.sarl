@@ -73,7 +73,7 @@ agent Boid {
 		 *	   /_____\
 		 */	   
 		if (otherBoids != null) {
-			
+			//TODO ici rajouter vitesse de départ du boids
 			
 			//on applique la séparation 
 			forceTot.plus(separation(otherBoids))
@@ -239,17 +239,25 @@ agent Boid {
 	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
 	def appliquerForce (force : Vector) : Vector{
 		
+		info("on arrive la")
+		
 		var newPosition : Vector
 		
 		// f = ma => a =f/m
 		
-		var acceleration : Vector 
+		var acceleration : Vector
 		
 		acceleration = new Vector(force)
 		acceleration.fois(1/this.body.masse)
 		
+		info("acceleration : " + acceleration)
+		this.body.vitesse = new Vector(5, 5)
+		info("bodyVitesse : " + this.body.vitesse)
+		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)
+		
+		info("nouvelle vitesse : " + this.body.newVitesse)
 		
 		//bornage de la vitesse
 		if (this.body.newVitesse.length > this.body.groupeVitesseMax){
@@ -260,7 +268,7 @@ agent Boid {
 		//maj position
 		newPosition = new Vector(this.body.position)
 		newPosition.plus(this.body.newVitesse)
-		
+		info(newPosition)
 		return newPosition
 		
 	}

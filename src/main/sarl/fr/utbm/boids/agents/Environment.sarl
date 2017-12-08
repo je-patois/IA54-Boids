@@ -35,9 +35,10 @@ import java.util.HashMap
 import fr.utbm.boids.BoidBody
 import fr.utbm.boids.events.InitBoidBody
 import fr.utbm.boids.events.BoidBodyInitialized
+import io.sarl.lang.core.Address
+import fr.utbm.boids.events.DemandeDeplacement
 
- 
- /*
+/*
   * Il va falloir avoir des tableaux d'obstacles et de boids
   * 
   * Peut-être vaut-il mieux faire 2 tableaux (1 pour les obstacles et 1 pour les boids)
@@ -48,6 +49,7 @@ agent Environment {
 	
 	var boidsList : Map<UUID,BoidBody>	//liste complète des corps de boids
 	var boidsGrid : Map<Vector, UUID>
+	var boidsAddresses : Map<UUID, Address>
 	var superBoids : boolean
 	var grid : Object[]
 	var boidsUpdated : int
@@ -75,6 +77,7 @@ agent Environment {
 
 		this.boidsGrid = new HashMap<Vector, UUID>
 		this.boidsList = new HashMap<UUID, BoidBody>
+		this.boidsAddresses = new HashMap<UUID, Address>
 		
 		info ("ready to start ")
 		
@@ -86,13 +89,13 @@ agent Environment {
 				this.boidsList.put(id, tempBody)
 			}
 		}
-
 	}
 
 	on IsStarted {
 		if (occurrence.type == "Boid") {
 			// Quand le Boid est démarré, on lui donne son body
 			innerContext.defaultSpace.emit(ID,new InitBoidBody(this.boidsList.get(occurrence.source.UUID)), Scopes.addresses(occurrence.source))
+			boidsAddresses.put(occurrence.source.UUID, occurrence.source)
 		}
 	}
 	
@@ -163,6 +166,14 @@ agent Environment {
 			
 			/*info ("j'affiche les nouveaux corps")
 			info (boidsList)*/
+			
+			//On se prépare pour la prochaine itération
+			this.boidsUpdated = 0
+			boidsAddresses.forEach[id, address|
+				info("REGARDER ICI IIIIIIIIIIIIIIIIIIIIIIIII")
+				info(id + " " + address)
+				innerContext.defaultSpace.emit(id, new DemandeDeplacement(), Scopes.addresses(address))
+			]
 			
 		}
 	}

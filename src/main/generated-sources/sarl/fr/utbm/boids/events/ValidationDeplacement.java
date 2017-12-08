@@ -1,22 +1,20 @@
 package fr.utbm.boids.events;
 
-import fr.utbm.boids.BoidBody;
+import fr.utbm.boids.Vector;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Event;
-import java.util.Map;
-import java.util.UUID;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
-public class BoidsToDisplay extends Event {
-  public Map<UUID, BoidBody> boids;
+public class ValidationDeplacement extends Event {
+  public Vector position;
   
-  public BoidsToDisplay(final Map<UUID, BoidBody> BoidsToDisplay) {
-    this.boids = BoidsToDisplay;
+  public ValidationDeplacement(final Vector pos) {
+    this.position = pos;
   }
   
   @Override
@@ -35,16 +33,16 @@ public class BoidsToDisplay extends Event {
   }
   
   /**
-   * Returns a String representation of the BoidsToDisplay event's attributes only.
+   * Returns a String representation of the ValidationDeplacement event's attributes only.
    */
   @SyntheticMember
   @Pure
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
-    result.append("boids  = ").append(this.boids);
+    result.append("position  = ").append(this.position);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = -1889683984L;
+  private final static long serialVersionUID = -107835186L;
 }

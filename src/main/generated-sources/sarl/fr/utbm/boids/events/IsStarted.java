@@ -1,6 +1,5 @@
 package fr.utbm.boids.events;
 
-import fr.utbm.boids.agents.Boid;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
@@ -17,11 +16,8 @@ import org.eclipse.xtext.xbase.lib.Pure;
 public class IsStarted extends Event {
   public String type;
   
-  public Boid me;
-  
-  public IsStarted(final String typeEntity, final Boid Me) {
+  public IsStarted(final String typeEntity) {
     this.type = typeEntity;
-    this.me = Me;
   }
   
   @Override
@@ -59,10 +55,9 @@ public class IsStarted extends Event {
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
     result.append("type  = ").append(this.type);
-    result.append("me  = ").append(this.me);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 374931455L;
+  private final static long serialVersionUID = 185545343L;
 }

@@ -1,7 +1,6 @@
 package fr.utbm.boids.events;
 
 import fr.utbm.boids.Vector;
-import fr.utbm.boids.agents.Boid;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
@@ -14,11 +13,8 @@ import org.eclipse.xtext.xbase.lib.Pure;
 public class ResultatDeplacement extends Event {
   public Vector position;
   
-  public Boid boid;
-  
-  public ResultatDeplacement(final Vector pos, final Boid boid) {
+  public ResultatDeplacement(final Vector pos) {
     this.position = pos;
-    this.boid = boid;
   }
   
   @Override
@@ -44,10 +40,9 @@ public class ResultatDeplacement extends Event {
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
     result.append("position  = ").append(this.position);
-    result.append("boid  = ").append(this.boid);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 2678165252L;
+  private final static long serialVersionUID = -107835186L;
 }
