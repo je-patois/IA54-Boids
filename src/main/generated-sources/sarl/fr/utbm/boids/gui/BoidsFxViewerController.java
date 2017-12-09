@@ -1,18 +1,20 @@
 package fr.utbm.boids.gui;
 
+import com.google.common.util.concurrent.AtomicDouble;
+import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.gui.fx.FxViewerController;
+import fr.utbm.boids.util.Coordinates;
+import fr.utbm.boids.util.LineTool;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
-import java.util.Collection;
-import java.util.UUID;
-import javafx.animation.PauseTransition;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
@@ -20,8 +22,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Polygon;
-import javafx.util.Duration;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 @SarlSpecification("0.6")
@@ -33,37 +36,55 @@ public class BoidsFxViewerController extends FxViewerController {
   private boolean mapCreated = false;
   
   @FXML
+  private Pane main_pane;
+  
+  @FXML
   private Group myGroup;
-  
-  @FXML
-  private Label boids_quantity_display;
-  
-  @FXML
-  private ScrollBar boids_quantity_input;
   
   @FXML
   private Button start_button;
   
   @FXML
-  private Label map_selection_display;
+  private Label boids_quantity_label;
+  
+  @FXML
+  private Label map_selection_label;
+  
+  @FXML
+  private Label boids_population_label;
+  
+  @FXML
+  private Label boids_vision_label;
+  
+  @FXML
+  private ScrollBar boids_quantity_input;
   
   @FXML
   private ScrollBar map_selection_input;
   
   @FXML
-  private Pane myPane;
+  private ScrollBar boids_population_input;
+  
+  @FXML
+  private ScrollBar boids_vision_input;
+  
+  @FXML
+  private Label boids_quantity_display;
+  
+  @FXML
+  private Label map_selection_display;
   
   @FXML
   private Label boids_population_display;
   
   @FXML
-  private ScrollBar boids_population_input;
-  
-  @FXML
   private Label boids_vision_display;
   
-  @FXML
-  private ScrollBar boids_vision_input;
+  private List<Obstacle> obstacles;
+  
+  private List<Polygon> polygons;
+  
+  private List<List<Coordinates>> polygonsCoordinates;
   
   @Pure
   public int getBoidsQuantity() {
@@ -91,13 +112,13 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @Pure
   public int getMapWidth() {
-    double _width = this.myPane.getWidth();
+    double _width = this.main_pane.getWidth();
     return ((int) _width);
   }
   
   @Pure
   public int getMapHeight() {
-    double _height = this.myPane.getHeight();
+    double _height = this.main_pane.getHeight();
     return ((int) _height);
   }
   
@@ -120,6 +141,7 @@ public class BoidsFxViewerController extends FxViewerController {
       this.map_selection_input.setDisable(true);
       this.boids_population_input.setDisable(true);
       this.boids_vision_input.setDisable(true);
+      this.hideUI();
     } else {
       this.emitToAgents(event);
     }
@@ -134,17 +156,39 @@ public class BoidsFxViewerController extends FxViewerController {
       @Override
       public void run() {
         if ((map == 2)) {
-          Polygon centralObstacle = new Polygon();
-          centralObstacle.getPoints().addAll(Double.valueOf(250.0), Double.valueOf(200.0), Double.valueOf(365.0), Double.valueOf(250.0), Double.valueOf(400.0), Double.valueOf(300.0), Double.valueOf(325.0), Double.valueOf(400.0), Double.valueOf(205.0), 
-            Double.valueOf(225.0));
-          BoidsFxViewerController.this.myPane.getChildren().add(0, centralObstacle);
-          Polygon uObstacle = new Polygon();
-          uObstacle.getPoints().addAll(Double.valueOf(605.0), Double.valueOf(80.0), Double.valueOf(675.0), Double.valueOf(65.0), Double.valueOf(680.0), Double.valueOf(125.0), Double.valueOf(650.0), Double.valueOf(220.0), Double.valueOf(630.0), Double.valueOf(250.0), 
-            Double.valueOf(660.0), Double.valueOf(130.0), Double.valueOf(665.0), Double.valueOf(75.0), Double.valueOf(615.0), Double.valueOf(95.0), Double.valueOf(560.0), Double.valueOf(240.0), Double.valueOf(560.0), Double.valueOf(205.0), Double.valueOf(605.0), Double.valueOf(80.0));
-          BoidsFxViewerController.this.myPane.getChildren().add(0, uObstacle);
-          Polygon stairObstacle = new Polygon();
-          stairObstacle.getPoints().addAll(Double.valueOf(450.0), Double.valueOf(450.0), Double.valueOf(575.0), Double.valueOf(500.0), Double.valueOf(575.0), Double.valueOf(420.0), Double.valueOf(700.0), Double.valueOf(500.0), Double.valueOf(590.0), Double.valueOf(450.0), Double.valueOf(590.0), Double.valueOf(520.0));
-          BoidsFxViewerController.this.myPane.getChildren().add(0, stairObstacle);
+          ArrayList<Polygon> _arrayList = new ArrayList<Polygon>();
+          BoidsFxViewerController.this.polygons = _arrayList;
+          ArrayList<List<Coordinates>> _arrayList_1 = new ArrayList<List<Coordinates>>();
+          BoidsFxViewerController.this.polygonsCoordinates = _arrayList_1;
+          ArrayList<Obstacle> _arrayList_2 = new ArrayList<Obstacle>();
+          BoidsFxViewerController.this.obstacles = _arrayList_2;
+          Polygon _polygon = new Polygon(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0, 
+            225.0);
+          BoidsFxViewerController.this.polygons.add(_polygon);
+          Polygon _polygon_1 = new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0, 
+            665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0, 605.0, 80.0);
+          BoidsFxViewerController.this.polygons.add(_polygon_1);
+          Polygon _polygon_2 = new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0);
+          BoidsFxViewerController.this.polygons.add(_polygon_2);
+          final Consumer<Polygon> _function = (Polygon p) -> {
+            BoidsFxViewerController.this.main_pane.getChildren().add(0, p);
+            BoidsFxViewerController.this.polygonsCoordinates.add(BoidsFxViewerController.this.generateCoordinates(p));
+          };
+          BoidsFxViewerController.this.polygons.forEach(_function);
+          System.out.println("Affichage de polygonsCoordinates");
+          final Procedure2<List<Coordinates>, Integer> _function_1 = (List<Coordinates> pc, Integer index) -> {
+            System.out.println(("Polygon #" + Integer.valueOf(index)));
+            final Consumer<Coordinates> _function_2 = (Coordinates c) -> {
+              System.out.println(c.toString());
+            };
+            pc.forEach(_function_2);
+          };
+          IterableExtensions.<List<Coordinates>>forEach(BoidsFxViewerController.this.polygonsCoordinates, _function_1);
+          BoidsFxViewerController.this.generateObstacles();
+          final Consumer<Obstacle> _function_2 = (Obstacle o) -> {
+            System.out.println(o.toString());
+          };
+          BoidsFxViewerController.this.obstacles.forEach(_function_2);
         }
       }
     };
@@ -156,16 +200,58 @@ public class BoidsFxViewerController extends FxViewerController {
     }
   }
   
-  public void updateGraphics(final Collection<UUID> list) {
-    Duration _seconds = Duration.seconds(0.03);
-    PauseTransition wait = new PauseTransition(_seconds);
-    final EventHandler<ActionEvent> _function = (ActionEvent it) -> {
-      wait.playFromStart();
+  @Pure
+  public List<Coordinates> generateCoordinates(final Polygon p) {
+    AtomicDouble abscissa = new AtomicDouble();
+    List<Coordinates> coordinates = new ArrayList<Coordinates>();
+    final Procedure2<Double, Integer> _function = (Double ordered, Integer index) -> {
+      if (((index % 2) == 0)) {
+        abscissa.set((ordered).doubleValue());
+      } else {
+        double _get = abscissa.get();
+        double _doubleValue = ordered.doubleValue();
+        Coordinates _coordinates = new Coordinates(_get, _doubleValue);
+        coordinates.add(_coordinates);
+      }
     };
-    wait.setOnFinished(_function);
-    wait.play();
+    IterableExtensions.<Double>forEach(p.getPoints(), _function);
+    return coordinates;
   }
   
+  public void generateObstacles() {
+    final Consumer<List<Coordinates>> _function = (List<Coordinates> p) -> {
+      List<LineTool> lines = new ArrayList<LineTool>();
+      final Procedure2<Coordinates, Integer> _function_1 = (Coordinates c, Integer index) -> {
+        if ((index != 0)) {
+          Coordinates _get = p.get((index - 1));
+          LineTool line = new LineTool(_get, c);
+          line.computeLineEquation();
+          lines.add(line);
+        }
+      };
+      IterableExtensions.<Coordinates>forEach(p, _function_1);
+      Coordinates _last = IterableExtensions.<Coordinates>last(p);
+      Coordinates _get = p.get(0);
+      LineTool line = new LineTool(_last, _get);
+      line.computeLineEquation();
+      lines.add(line);
+      Obstacle _obstacle = new Obstacle(lines);
+      this.obstacles.add(_obstacle);
+    };
+    this.polygonsCoordinates.forEach(_function);
+  }
+  
+  /**
+   * def updateGraphics(list: Collection<UUID>) : void {
+   * var wait = new PauseTransition(0.03.seconds)
+   * 
+   * wait.onFinished = [
+   * // Ramener une liste de boids ou alors la liste des positions
+   * wait.playFromStart
+   * ]
+   * wait.play
+   * }
+   */
   @FXML
   protected void actionBoidsQuantityDisplay() {
     final InvalidationListener _function = (Observable it) -> {
@@ -196,6 +282,22 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_vision_display.setText(String.format("%.0f", Double.valueOf(this.boids_vision_input.getValue())));
     };
     this.boids_vision_input.valueProperty().addListener(_function);
+  }
+  
+  public void hideUI() {
+    this.boids_quantity_input.setVisible(false);
+    this.map_selection_input.setVisible(false);
+    this.boids_population_input.setVisible(false);
+    this.boids_vision_input.setVisible(false);
+    this.boids_quantity_display.setVisible(false);
+    this.map_selection_display.setVisible(false);
+    this.boids_population_display.setVisible(false);
+    this.boids_vision_display.setVisible(false);
+    this.boids_quantity_label.setVisible(false);
+    this.map_selection_label.setVisible(false);
+    this.boids_population_label.setVisible(false);
+    this.boids_vision_label.setVisible(false);
+    this.start_button.setVisible(false);
   }
   
   @Override

@@ -1,0 +1,47 @@
+package fr.utbm.boids.util
+
+class LineTool {
+
+	private var a : Coordinates
+	private var b : Coordinates
+	private var coef : double
+	private var ordered : double
+
+	new() {
+
+	}
+
+	new(a : Coordinates, b : Coordinates) {
+		this.a = a
+		this.b = b
+	}
+
+	def getA() : Coordinates {
+		return this.a
+	}
+
+	def setA(a : Coordinates) : void {
+		this.a = a
+	}
+
+	def getB() : Coordinates {
+	}
+
+	def setB(b : Coordinates) : void {
+		this.b = b
+	}
+
+	def toString() : String {
+		return 'Line: [A(' + this.a.x + ', ' + this.a.y + '), B(' + this.b.x + ', ' + this.b.y + '), Equation: y = ' +
+			this.coef + 'x + ' + ordered + ']'
+	}	
+	
+	def computeLineEquation() : void {
+		this.coef = (this.a.y - this.b.y) / (this.a.x - this.b.x)
+		
+		if(Double.isInfinite(this.coef))
+			this.coef = 0
+			
+		this.ordered = this.a.y - this.coef * this.a.x
+	}
+}

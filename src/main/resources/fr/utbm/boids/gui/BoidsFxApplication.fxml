@@ -7,19 +7,19 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="myPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.boids.gui.BoidsFxViewerController">
+<Pane fx:id="main_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.boids.gui.BoidsFxViewerController">
    <children>
       <Button fx:id="start_button" layoutX="699.0" layoutY="487.0" mnemonicParsing="false" onAction="#startSimu" text="Start" />
       <ScrollBar fx:id="boids_quantity_input" layoutX="649.0" layoutY="128.0" max="1000.0" min="1.0" onMouseEntered="#actionBoidsQuantityDisplay" value="1.0" />
       <Label fx:id="boids_quantity_display" layoutX="740.0" layoutY="146.0" text="1" />
-      <Label layoutX="649.0" layoutY="107.0" prefHeight="21.0" prefWidth="100.0" text="%BoidsQuantityLabel" />
+      <Label fx:id="boids_quantity_label" layoutX="649.0" layoutY="107.0" prefHeight="21.0" prefWidth="100.0" text="%BoidsQuantityLabel" />
       <ScrollBar fx:id="map_selection_input" layoutX="649.0" layoutY="311.0" max="2.0" min="1.0" onMouseEntered="#actionMapSelectionDisplay" value="1.0" />
-      <Label layoutX="649.0" layoutY="290.0" prefHeight="21.0" prefWidth="100.0" text="%MapSelectionLabel" />
+      <Label fx:id="map_selection_label" layoutX="649.0" layoutY="290.0" prefHeight="21.0" prefWidth="100.0" text="%MapSelectionLabel" />
       <Label fx:id="map_selection_display" layoutX="740.0" layoutY="329.0" text="1" />
-      <Label layoutX="649.0" layoutY="167.0" prefHeight="21.0" prefWidth="100.0" text="%BoidsPopulationQuantityLabel" />
+      <Label fx:id="boids_population_label" layoutX="649.0" layoutY="167.0" prefHeight="21.0" prefWidth="100.0" text="%BoidsPopulationQuantityLabel" />
       <ScrollBar fx:id="boids_population_input" layoutX="644.0" layoutY="188.0" max="5.0" min="1.0" onMouseEntered="#actionPopulationDisplay" prefHeight="18.0" prefWidth="110.0" value="2.0" />
       <Label fx:id="boids_population_display" layoutX="744.0" layoutY="206.0" prefHeight="21.0" prefWidth="8.0" text="2" textAlignment="RIGHT" />
-      <Label layoutX="644.0" layoutY="227.0" prefHeight="21.0" prefWidth="110.0" text="%BoidsVisionLabel" />
+      <Label fx:id="boids_vision_label" layoutX="644.0" layoutY="227.0" prefHeight="21.0" prefWidth="110.0" text="%BoidsVisionLabel" />
       <ScrollBar fx:id="boids_vision_input" layoutX="644.0" layoutY="248.0" max="800.0" onMouseEntered="#actionBoidsVisionDisplay" prefHeight="18.0" prefWidth="110.0" unitIncrement="10.0" value="10.0" />
       <Label fx:id="boids_vision_display" layoutX="740.0" layoutY="266.0" text="10" />
    </children>

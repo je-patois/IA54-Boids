@@ -1,0 +1,47 @@
+package fr.utbm.boids.util
+
+class Coordinates {
+	
+	private var x : double
+	private var y : double
+	
+	new() {
+		this.x = 0
+		this.y = 0
+	}
+	
+	new(x : double, y : double) {
+		this.x = x
+		this.y = y
+	}
+	
+	new(c : Coordinates) {
+		this.x = c.x
+		this.y = c.y
+	}
+	
+	def getX() : double {
+		return this.x
+	}
+	
+	def setX(x : double) : void {
+		this.x = x
+	}
+	
+	def getY(): double {
+		return this.y
+	}
+	
+	def setY(y : double) : void {
+		this.y = y
+	}
+
+	def setCoordinates(c : Coordinates) : void {
+		this.x = c.x
+		this.y = c.y
+	}
+	
+	def toString() : String {
+		return '(' + this.x + ', ' + this.y + ')' 
+	}
+} 

@@ -1,0 +1,31 @@
+package fr.utbm.boids.environment
+
+import fr.utbm.boids.util.LineTool
+import java.util.List
+
+// import fr.utbm.boids.util.EnvironmentInfos
+
+class Obstacle {
+	
+	var lines : List<LineTool>
+	
+	new() {
+		
+	}	
+	
+	new(lines : List<LineTool>) {
+		this.lines = lines
+	}
+	
+	/*def getInfos() : EnvironmentInfos {
+		return this.infos
+	}
+	
+	def setInfos(infos : EnvironmentInfos) : void {
+		this.infos = infos
+	}*/
+	
+	def toString() : String {
+		return 'Obstacle: ' + this.lines.toString() + ''
+	}
+}
