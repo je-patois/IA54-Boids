@@ -1,11 +1,8 @@
 package fr.utbm.boids.gui;
 
-<<<<<<< HEAD
 import com.google.common.util.concurrent.AtomicDouble;
-import fr.utbm.boids.environment.Obstacle;
-=======
 import fr.utbm.boids.BoidBody;
->>>>>>> master
+import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.gui.fx.FxViewerController;
 import fr.utbm.boids.util.Coordinates;
@@ -13,14 +10,10 @@ import fr.utbm.boids.util.LineTool;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
-<<<<<<< HEAD
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
-=======
-import java.util.Collection;
-import javafx.animation.PauseTransition;
->>>>>>> master
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -49,7 +42,13 @@ public class BoidsFxViewerController extends FxViewerController {
   private Pane main_pane;
   
   @FXML
-  private Group myGroup;
+  private Group boids_group;
+  
+  @FXML
+  private Pane UI_pane;
+  
+  @FXML
+  private Group obstacle_group;
   
   @FXML
   private Button start_button;
@@ -146,12 +145,8 @@ public class BoidsFxViewerController extends FxViewerController {
       this.startAgentApplication(_function);
       this.launched = true;
       this.mapCreated = false;
-      this.start_button.setDisable(true);
-      this.boids_quantity_input.setDisable(true);
-      this.map_selection_input.setDisable(true);
-      this.boids_population_input.setDisable(true);
-      this.boids_vision_input.setDisable(true);
-      this.hideUI();
+      this.toggleUIState();
+      this.toggleUIVisibility();
     } else {
       this.emitToAgents(event);
     }
@@ -181,7 +176,7 @@ public class BoidsFxViewerController extends FxViewerController {
           Polygon _polygon_2 = new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0);
           BoidsFxViewerController.this.polygons.add(_polygon_2);
           final Consumer<Polygon> _function = (Polygon p) -> {
-            BoidsFxViewerController.this.main_pane.getChildren().add(0, p);
+            BoidsFxViewerController.this.obstacle_group.getChildren().add(0, p);
             BoidsFxViewerController.this.polygonsCoordinates.add(BoidsFxViewerController.this.generateCoordinates(p));
           };
           BoidsFxViewerController.this.polygons.forEach(_function);
@@ -210,7 +205,6 @@ public class BoidsFxViewerController extends FxViewerController {
     }
   }
   
-<<<<<<< HEAD
   @Pure
   public List<Coordinates> generateCoordinates(final Polygon p) {
     AtomicDouble abscissa = new AtomicDouble();
@@ -223,29 +217,6 @@ public class BoidsFxViewerController extends FxViewerController {
         double _doubleValue = ordered.doubleValue();
         Coordinates _coordinates = new Coordinates(_get, _doubleValue);
         coordinates.add(_coordinates);
-=======
-  public void updateGraphics(final Collection<BoidBody> list) {
-    Duration _seconds = Duration.seconds(0.03);
-    PauseTransition wait = new PauseTransition(_seconds);
-    wait.playFromStart();
-    final EventHandler<ActionEvent> _function = (ActionEvent it) -> {
-      for (final BoidBody boid : list) {
-        {
-          Circle cercle = new Circle();
-          double _x = boid.getPosition().getX();
-          int _mapWidth = this.getMapWidth();
-          int _divide = (_mapWidth / 2);
-          double _plus = (_x + _divide);
-          cercle.setCenterX(_plus);
-          double _y = boid.getPosition().getY();
-          int _mapHeight = this.getMapHeight();
-          int _divide_1 = (_mapHeight / 2);
-          double _plus_1 = (_y + _divide_1);
-          cercle.setCenterY(_plus_1);
-          cercle.setRadius(10.0f);
-          this.myPane.getChildren().add(0, cercle);
-        }
->>>>>>> master
       }
     };
     IterableExtensions.<Double>forEach(p.getPoints(), _function);
@@ -275,17 +246,42 @@ public class BoidsFxViewerController extends FxViewerController {
     this.polygonsCoordinates.forEach(_function);
   }
   
-  /**
-   * def updateGraphics(list: Collection<UUID>) : void {
-   * var wait = new PauseTransition(0.03.seconds)
-   * 
-   * wait.onFinished = [
-   * // Ramener une liste de boids ou alors la liste des positions
-   * wait.playFromStart
-   * ]
-   * wait.play
-   * }
-   */
+  public void updateGraphics(final Collection<BoidBody> list) {
+    abstract class __BoidsFxViewerController_1 implements Runnable {
+      public abstract void run();
+    }
+    
+    __BoidsFxViewerController_1 command = new __BoidsFxViewerController_1() {
+      @Override
+      public void run() {
+        BoidsFxViewerController.this.boids_group.getChildren().clear();
+        for (final BoidBody boid : list) {
+          {
+            Circle cercle = new Circle();
+            double _x = boid.getPosition().getX();
+            int _mapWidth = BoidsFxViewerController.this.getMapWidth();
+            int _divide = (_mapWidth / 2);
+            double _plus = (_x + _divide);
+            cercle.setCenterX(_plus);
+            double _y = boid.getPosition().getY();
+            int _mapHeight = BoidsFxViewerController.this.getMapHeight();
+            int _divide_1 = (_mapHeight / 2);
+            double _plus_1 = (_y + _divide_1);
+            cercle.setCenterY(_plus_1);
+            cercle.setRadius(10.0f);
+            BoidsFxViewerController.this.boids_group.getChildren().add(0, cercle);
+          }
+        }
+      }
+    };
+    boolean _isFxApplicationThread = Platform.isFxApplicationThread();
+    if (_isFxApplicationThread) {
+      command.run();
+    } else {
+      Platform.runLater(command);
+    }
+  }
+  
   @FXML
   protected void actionBoidsQuantityDisplay() {
     final InvalidationListener _function = (Observable it) -> {
@@ -318,20 +314,51 @@ public class BoidsFxViewerController extends FxViewerController {
     this.boids_vision_input.valueProperty().addListener(_function);
   }
   
-  public void hideUI() {
-    this.boids_quantity_input.setVisible(false);
-    this.map_selection_input.setVisible(false);
-    this.boids_population_input.setVisible(false);
-    this.boids_vision_input.setVisible(false);
-    this.boids_quantity_display.setVisible(false);
-    this.map_selection_display.setVisible(false);
-    this.boids_population_display.setVisible(false);
-    this.boids_vision_display.setVisible(false);
-    this.boids_quantity_label.setVisible(false);
-    this.map_selection_label.setVisible(false);
-    this.boids_population_label.setVisible(false);
-    this.boids_vision_label.setVisible(false);
-    this.start_button.setVisible(false);
+  public void toggleUIState() {
+    boolean _isDisable = this.start_button.isDisable();
+    boolean _equals = (_isDisable == true);
+    if (_equals) {
+      this.start_button.setDisable(false);
+    } else {
+      this.start_button.setDisable(true);
+    }
+    boolean _isDisable_1 = this.boids_quantity_input.isDisable();
+    boolean _equals_1 = (_isDisable_1 == true);
+    if (_equals_1) {
+      this.boids_quantity_input.setDisable(false);
+    } else {
+      this.boids_quantity_input.setDisable(true);
+    }
+    boolean _isDisable_2 = this.map_selection_input.isDisable();
+    boolean _equals_2 = (_isDisable_2 == true);
+    if (_equals_2) {
+      this.map_selection_input.setDisable(false);
+    } else {
+      this.map_selection_input.setDisable(true);
+    }
+    boolean _isDisable_3 = this.boids_population_input.isDisable();
+    boolean _equals_3 = (_isDisable_3 == true);
+    if (_equals_3) {
+      this.boids_population_input.setDisable(false);
+    } else {
+      this.boids_population_input.setDisable(true);
+    }
+    boolean _isDisable_4 = this.boids_vision_input.isDisable();
+    boolean _equals_4 = (_isDisable_4 == true);
+    if (_equals_4) {
+      this.boids_vision_input.setDisable(false);
+    } else {
+      this.boids_vision_input.setDisable(true);
+    }
+  }
+  
+  public void toggleUIVisibility() {
+    boolean _isVisible = this.UI_pane.isVisible();
+    if (_isVisible) {
+      this.UI_pane.setVisible(false);
+    } else {
+      this.UI_pane.setVisible(true);
+    }
   }
   
   @Override
