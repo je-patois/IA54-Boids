@@ -1,22 +1,38 @@
 package fr.utbm.boids.events;
 
+import fr.utbm.boids.environment.Obstacle;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Event;
+import java.util.List;
 import org.eclipse.xtext.xbase.lib.Pure;
 
+/**
+ * event MapParameters {
+ * var mapWidth : int
+ * var mapHeight : int
+ * 
+ * new(width : int, height : int) {
+ * this.mapWidth = width
+ * this.mapHeight = height
+ * }
+ * }
+ */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
 public class MapParameters extends Event {
-  public final int mapWidth;
+  public int mapWidth;
   
-  public final int mapHeight;
+  public int mapHeight;
   
-  public MapParameters(final int width, final int height) {
+  public List<Obstacle> obstacles;
+  
+  public MapParameters(final int width, final int height, final List<Obstacle> obstacles) {
     this.mapWidth = width;
     this.mapHeight = height;
+    this.obstacles = obstacles;
   }
   
   @Override
@@ -57,9 +73,10 @@ public class MapParameters extends Event {
     StringBuilder result = new StringBuilder(super.attributesToString());
     result.append("mapWidth  = ").append(this.mapWidth);
     result.append("mapHeight  = ").append(this.mapHeight);
+    result.append("obstacles  = ").append(this.obstacles);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 1447392430L;
+  private final static long serialVersionUID = -1342368396L;
 }

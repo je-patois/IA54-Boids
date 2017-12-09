@@ -6,6 +6,9 @@ import fr.utbm.boids.Vector
 import java.util.UUID
 import fr.utbm.boids.BoidBody
 import java.util.Map
+import fr.utbm.boids.environment.Obstacle
+import java.util.List
+import java.util.ArrayList
 
 event ConfigureSimulation {
 	val mapSelection : int
@@ -21,13 +24,25 @@ event ConfigureSimulation {
 	}
 }
 
-event MapParameters {
-	val mapWidth : int
-	val mapHeight : int
-	
+/*event MapParameters {
+	var mapWidth : int
+	var mapHeight : int
+
 	new(width : int, height : int) {
-		mapWidth = width
-		mapHeight = height
+		this.mapWidth = width
+		this.mapHeight = height
+	}
+}*/
+
+event MapParameters {
+	var mapWidth : int
+	var mapHeight : int
+	var obstacles : List<Obstacle>
+	
+	new(width : int, height : int, obstacles : List<Obstacle>) {
+		this.mapWidth = width
+		this.mapHeight = height
+		this.obstacles = obstacles
 	}
 }
 
@@ -95,13 +110,26 @@ event StartingSimulation {
 	}
 }
 
-event StartPosition {
+/*event StartPosition {
 	var hauteur : int 
 	var largeur : int 
 	
 	new (h : int, l : int ){
 		this.hauteur = h
 		this.largeur = l
+	}
+ * }
+ */
+ 
+event StartPosition {
+	var hauteur : int
+	var largeur : int
+	var obstacles : List<Obstacle>
+
+	new (h : int, l : int, obstacles : List<Obstacle>) {
+		this.hauteur = h
+		this.largeur = l
+		this.obstacles = obstacles
 	}
 }
 

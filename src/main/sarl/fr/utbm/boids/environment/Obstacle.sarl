@@ -2,19 +2,27 @@ package fr.utbm.boids.environment
 
 import fr.utbm.boids.util.LineTool
 import java.util.List
+import javafx.scene.shape.Polygon
 
 // import fr.utbm.boids.util.EnvironmentInfos
 
 class Obstacle {
 	
 	var lines : List<LineTool>
+	var shape : Polygon
 	
 	new() {
 		
 	}	
 	
-	new(lines : List<LineTool>) {
+	new(obstacle : Obstacle) {
+		this.lines = obstacle.lines
+		this.shape = obstacle.shape
+	}
+	
+	new(lines : List<LineTool>, shape : Polygon) {
 		this.lines = lines
+		this.shape = shape
 	}
 	
 	/*def getInfos() : EnvironmentInfos {
@@ -25,7 +33,23 @@ class Obstacle {
 		this.infos = infos
 	}*/
 	
+	def getLines() : List<LineTool> {
+		return this.lines
+	}
+	
+	def setLines(lines : List<LineTool>) : void {
+		this.lines = lines
+	}
+	
+	def getPolygon() : Polygon {
+		return this.shape
+	}
+	
+	def setPolygon(polygon : Polygon) : void {
+		this.polygon = polygon
+	}
+	
 	def toString() : String {
-		return 'Obstacle: ' + this.lines.toString() + ''
+		return 'Obstacle: LineTool: ' + this.lines.toString()		
 	}
 }

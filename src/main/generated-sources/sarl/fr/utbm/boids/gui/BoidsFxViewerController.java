@@ -89,11 +89,11 @@ public class BoidsFxViewerController extends FxViewerController {
   @FXML
   private Label boids_vision_display;
   
-  private List<Obstacle> obstacles;
-  
   private List<Polygon> polygons;
   
   private List<List<Coordinates>> polygonsCoordinates;
+  
+  private List<Obstacle> obstacles;
   
   @Pure
   public int getBoidsQuantity() {
@@ -131,6 +131,11 @@ public class BoidsFxViewerController extends FxViewerController {
     return ((int) _height);
   }
   
+  @Pure
+  public List<Obstacle> getObstacles() {
+    return this.obstacles;
+  }
+  
   @FXML
   protected void startSimu() {
     int _mapSelection = this.getMapSelection();
@@ -152,57 +157,54 @@ public class BoidsFxViewerController extends FxViewerController {
     }
   }
   
-  public void buildMap(final int map) {
+  public List<Obstacle> buildMap(final int map) {
     abstract class __BoidsFxViewerController_0 implements Runnable {
       public abstract void run();
     }
     
-    __BoidsFxViewerController_0 command = new __BoidsFxViewerController_0() {
-      @Override
-      public void run() {
-        if ((map == 2)) {
-          ArrayList<Polygon> _arrayList = new ArrayList<Polygon>();
-          BoidsFxViewerController.this.polygons = _arrayList;
-          ArrayList<List<Coordinates>> _arrayList_1 = new ArrayList<List<Coordinates>>();
-          BoidsFxViewerController.this.polygonsCoordinates = _arrayList_1;
-          ArrayList<Obstacle> _arrayList_2 = new ArrayList<Obstacle>();
-          BoidsFxViewerController.this.obstacles = _arrayList_2;
-          Polygon _polygon = new Polygon(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0, 
-            225.0);
-          BoidsFxViewerController.this.polygons.add(_polygon);
-          Polygon _polygon_1 = new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0, 
-            665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0, 605.0, 80.0);
-          BoidsFxViewerController.this.polygons.add(_polygon_1);
-          Polygon _polygon_2 = new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0);
-          BoidsFxViewerController.this.polygons.add(_polygon_2);
-          final Consumer<Polygon> _function = (Polygon p) -> {
-            BoidsFxViewerController.this.obstacle_group.getChildren().add(0, p);
-            BoidsFxViewerController.this.polygonsCoordinates.add(BoidsFxViewerController.this.generateCoordinates(p));
-          };
-          BoidsFxViewerController.this.polygons.forEach(_function);
-          System.out.println("Affichage de polygonsCoordinates");
-          final Procedure2<List<Coordinates>, Integer> _function_1 = (List<Coordinates> pc, Integer index) -> {
-            System.out.println(("Polygon #" + Integer.valueOf(index)));
-            final Consumer<Coordinates> _function_2 = (Coordinates c) -> {
-              System.out.println(c.toString());
+    if ((map == 1)) {
+      return new ArrayList<Obstacle>();
+    } else {
+      if ((map == 2)) {
+        ArrayList<Polygon> _arrayList = new ArrayList<Polygon>();
+        this.polygons = _arrayList;
+        ArrayList<List<Coordinates>> _arrayList_1 = new ArrayList<List<Coordinates>>();
+        this.polygonsCoordinates = _arrayList_1;
+        ArrayList<Obstacle> _arrayList_2 = new ArrayList<Obstacle>();
+        this.obstacles = _arrayList_2;
+        Polygon _polygon = new Polygon(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0, 225.0);
+        this.polygons.add(_polygon);
+        Polygon _polygon_1 = new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0, 
+          665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0, 605.0, 80.0);
+        this.polygons.add(_polygon_1);
+        Polygon _polygon_2 = new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0);
+        this.polygons.add(_polygon_2);
+        final Consumer<Polygon> _function = (Polygon p) -> {
+          this.polygonsCoordinates.add(this.generateCoordinates(p));
+        };
+        this.polygons.forEach(_function);
+        __BoidsFxViewerController_0 command = new __BoidsFxViewerController_0() {
+          @Override
+          public void run() {
+            final Consumer<Polygon> _function = (Polygon p) -> {
+              BoidsFxViewerController.this.obstacle_group.getChildren().add(0, p);
             };
-            pc.forEach(_function_2);
-          };
-          IterableExtensions.<List<Coordinates>>forEach(BoidsFxViewerController.this.polygonsCoordinates, _function_1);
-          BoidsFxViewerController.this.generateObstacles();
-          final Consumer<Obstacle> _function_2 = (Obstacle o) -> {
-            System.out.println(o.toString());
-          };
-          BoidsFxViewerController.this.obstacles.forEach(_function_2);
+            BoidsFxViewerController.this.polygons.forEach(_function);
+          }
+        };
+        boolean _isFxApplicationThread = Platform.isFxApplicationThread();
+        if (_isFxApplicationThread) {
+          command.run();
+          this.generateObstacles();
+          return this.obstacles;
+        } else {
+          Platform.runLater(command);
+          this.generateObstacles();
+          return this.obstacles;
         }
       }
-    };
-    boolean _isFxApplicationThread = Platform.isFxApplicationThread();
-    if (_isFxApplicationThread) {
-      command.run();
-    } else {
-      Platform.runLater(command);
     }
+    return null;
   }
   
   @Pure
@@ -223,8 +225,9 @@ public class BoidsFxViewerController extends FxViewerController {
     return coordinates;
   }
   
+  @Pure
   public void generateObstacles() {
-    final Consumer<List<Coordinates>> _function = (List<Coordinates> p) -> {
+    final Procedure2<List<Coordinates>, Integer> _function = (List<Coordinates> p, Integer currentItem) -> {
       List<LineTool> lines = new ArrayList<LineTool>();
       final Procedure2<Coordinates, Integer> _function_1 = (Coordinates c, Integer index) -> {
         if ((index != 0)) {
@@ -240,10 +243,11 @@ public class BoidsFxViewerController extends FxViewerController {
       LineTool line = new LineTool(_last, _get);
       line.computeLineEquation();
       lines.add(line);
-      Obstacle _obstacle = new Obstacle(lines);
+      Polygon _get_1 = this.polygons.get(currentItem);
+      Obstacle _obstacle = new Obstacle(lines, _get_1);
       this.obstacles.add(_obstacle);
     };
-    this.polygonsCoordinates.forEach(_function);
+    IterableExtensions.<List<Coordinates>>forEach(this.polygonsCoordinates, _function);
   }
   
   public void updateGraphics(final Collection<BoidBody> list) {

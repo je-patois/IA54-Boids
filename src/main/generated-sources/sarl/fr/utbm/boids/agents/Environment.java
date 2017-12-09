@@ -4,6 +4,7 @@ import com.google.common.base.Objects;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Vector;
 import fr.utbm.boids.agents.Boid;
+import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.BoidBodyInitialized;
 import fr.utbm.boids.events.BoidsPositions;
 import fr.utbm.boids.events.BoidsToDisplay;
@@ -43,6 +44,7 @@ import io.sarl.lang.util.ClearableReference;
 import io.sarl.util.Scopes;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -77,6 +79,8 @@ public class Environment extends Agent {
   
   private int hauteur;
   
+  private List<Obstacle> obstacles;
+  
   @SyntheticMember
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
@@ -93,6 +97,7 @@ public class Environment extends Agent {
   private void $behaviorUnit$MapParameters$1(final MapParameters occurrence) {
     this.largeur = occurrence.mapWidth;
     this.hauteur = occurrence.mapHeight;
+    this.obstacles = occurrence.obstacles;
   }
   
   @SyntheticMember
@@ -135,7 +140,7 @@ public class Environment extends Agent {
   @SyntheticMember
   private void $behaviorUnit$BoidBodyInitialized$4(final BoidBodyInitialized occurrence) {
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-    StartPosition _startPosition = new StartPosition(this.hauteur, this.largeur);
+    StartPosition _startPosition = new StartPosition(this.hauteur, this.largeur, this.obstacles);
     _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _startPosition, Scopes.addresses(occurrence.getSource()));
   }
   

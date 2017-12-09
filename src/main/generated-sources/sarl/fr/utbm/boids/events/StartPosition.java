@@ -1,11 +1,24 @@
 package fr.utbm.boids.events;
 
+import fr.utbm.boids.environment.Obstacle;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Event;
+import java.util.List;
 import org.eclipse.xtext.xbase.lib.Pure;
 
+/**
+ * event StartPosition {
+ * var hauteur : int
+ * var largeur : int
+ * 
+ * new (h : int, l : int ){
+ * this.hauteur = h
+ * this.largeur = l
+ * }
+ * }
+ */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
@@ -14,9 +27,12 @@ public class StartPosition extends Event {
   
   public int largeur;
   
-  public StartPosition(final int h, final int l) {
+  public List<Obstacle> obstacles;
+  
+  public StartPosition(final int h, final int l, final List<Obstacle> obstacles) {
     this.hauteur = h;
     this.largeur = l;
+    this.obstacles = obstacles;
   }
   
   @Override
@@ -57,9 +73,10 @@ public class StartPosition extends Event {
     StringBuilder result = new StringBuilder(super.attributesToString());
     result.append("hauteur  = ").append(this.hauteur);
     result.append("largeur  = ").append(this.largeur);
+    result.append("obstacles  = ").append(this.obstacles);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 1343571395L;
+  private final static long serialVersionUID = -1446189431L;
 }

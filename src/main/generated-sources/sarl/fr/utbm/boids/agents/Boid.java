@@ -3,6 +3,7 @@ package fr.utbm.boids.agents;
 import com.google.common.base.Objects;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Vector;
+import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.BoidBodyInitialized;
 import fr.utbm.boids.events.DemandeDeplacement;
 import fr.utbm.boids.events.InitBoidBody;
@@ -26,9 +27,13 @@ import io.sarl.lang.util.ClearableReference;
 import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Inline;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 @SarlSpecification("0.6")
@@ -58,16 +63,43 @@ public class Boid extends Agent {
   
   @SyntheticMember
   private void $behaviorUnit$StartPosition$2(final StartPosition occurrence) {
-    Vector maPosition = null;
-    final Random rnd = new Random();
-    int x = rnd.nextInt();
-    int y = rnd.nextInt();
-    int _x = x;
-    x = (_x % (occurrence.largeur / 2));
-    y = (y % (occurrence.hauteur / 2));
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(((("X, Y \n" + Integer.valueOf(x)) + " ") + Integer.valueOf(y)));
-    Vector _vector = new Vector(x, y);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(occurrence.obstacles);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(Integer.valueOf(occurrence.largeur));
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(Integer.valueOf(occurrence.hauteur));
+    AtomicBoolean validPosition = new AtomicBoolean(true);
+    Vector maPosition = null;
+    AtomicInteger x = new AtomicInteger(0);
+    AtomicInteger y = new AtomicInteger(0);
+    do {
+      {
+        validPosition.set(true);
+        final Random rnd = new Random();
+        x.set(rnd.nextInt());
+        y.set(rnd.nextInt());
+        int _get = x.get();
+        int _modulo = (_get % (occurrence.largeur / 2));
+        x.set(_modulo);
+        int _get_1 = y.get();
+        int _modulo_1 = (_get_1 % (occurrence.hauteur / 2));
+        y.set(_modulo_1);
+        System.out.println("ICI");
+        final Procedure2<Obstacle, Integer> _function = (Obstacle o, Integer index) -> {
+          boolean _contains = o.getPolygon().contains(x.get(), y.get());
+          if (_contains) {
+            validPosition.set(false);
+          }
+        };
+        IterableExtensions.<Obstacle>forEach(occurrence.obstacles, _function);
+      }
+    } while((!validPosition.get()));
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(((("X, Y \n" + x) + " ") + y));
+    int _get = x.get();
+    int _get_1 = y.get();
+    Vector _vector = new Vector(_get, _get_1);
     maPosition = _vector;
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     ResultatDeplacement _resultatDeplacement = new ResultatDeplacement(maPosition);

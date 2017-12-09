@@ -13,6 +13,9 @@ import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.GenerateMap
 import fr.utbm.boids.events.MapParameters
 import fr.utbm.boids.events.BoidsPositions
+import java.util.List
+import fr.utbm.boids.environment.Obstacle
+import java.util.ArrayList
 
 agent BootAgent {
 	uses Logging, Behaviors, InnerContextAccess, Lifecycle, DefaultContextInteractions
@@ -44,15 +47,18 @@ agent BootAgent {
 		info('Boids quantity: ' + this.boidsQuantity)
 		info('Boids population: ' + this.boidsPopulation)
 		info('Boids vision: ' + this.boidsVision)
-		emit (new MapParameters(ctrl.mapWidth, ctrl.mapHeight))
-		emit (new BoidsPositions(grid))
-		emit (new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
 		wake(new GenerateMap())
 	}
 	
 	on GenerateMap {
 		info('Generating map...');
-		ctrl.buildMap(this.map)
+		var obstacles : List<Obstacle> = new ArrayList()
+		obstacles = ctrl.buildMap(this.map)
+		info('ASAA: ' + obstacles)
+		emit(new MapParameters(ctrl.mapWidth, ctrl.mapHeight, obstacles))
+		emit(new BoidsPositions(grid))
+		emit(new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
+		
 	}
 	
 	/*on ListVar {

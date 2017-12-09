@@ -53,11 +53,10 @@ class BoidsFxViewerController extends FxViewerController {
 	@FXML var map_selection_display : Label
 	@FXML var boids_population_display : Label
 	@FXML var boids_vision_display : Label
-	
-	var obstacles : List<Obstacle>
-	var polygons : List<Polygon>	
-	var polygonsCoordinates : List<List<Coordinates>>
 
+	var polygons : List<Polygon>
+	var polygonsCoordinates : List<List<Coordinates>>
+	var obstacles : List<Obstacle>
 
 	def getBoidsQuantity() : int {
 		boids_quantity_input.value as int
@@ -82,6 +81,10 @@ class BoidsFxViewerController extends FxViewerController {
 	def getMapHeight() : int {
 		main_pane.height as int
 	}
+	
+	def getObstacles() : List<Obstacle> {
+		obstacles
+	}
  
 	@FXML protected def startSimu() : void {
 		var ^event = new ConfigureSimulation(this.mapSelection, this.boidsQuantity, this.boidsPopulation, this.boidsVision)
@@ -98,46 +101,42 @@ class BoidsFxViewerController extends FxViewerController {
 		}
 	}
 	
-	def buildMap(map : int) : void {
+	def buildMap(map : int) : List<Obstacle> {
 
-		var command = new Runnable() {
-			@Override
-			def run() {
-				// Map 1: vide
-				if (map == 2) {
-					polygons = new ArrayList()
-					polygonsCoordinates = new ArrayList()
-					obstacles = new ArrayList()
-					polygons.add(new Polygon(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0,
-						225.0))
-					polygons.add(new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0,
-							665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0, 605.0, 80.0))
-					polygons.add(new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0))
-					
-					polygons.forEach[p : Polygon |
+		if(map == 1) {
+			return new ArrayList()
+		}
+		else if (map == 2) {
+			this.polygons = new ArrayList()
+			this.polygonsCoordinates = new ArrayList()
+			this.obstacles = new ArrayList()
+			this.polygons.add(new Polygon(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0, 225.0))
+			this.polygons.add(new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0,
+					665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0, 605.0, 80.0))
+			this.polygons.add(new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0))
+			this.polygons.forEach[p : Polygon|this.polygonsCoordinates.add(this.generateCoordinates(p))]
+
+			var command = new Runnable() {
+				@Override
+				def run() {
+					polygons.forEach [ p : Polygon |
 						obstacle_group.getChildren().add(0, p)
-						polygonsCoordinates.add(generateCoordinates(p))
 					]
-					
-					System.out.println("Affichage de polygonsCoordinates")
-					polygonsCoordinates.forEach[pc : List<Coordinates>, index : int | 
-						System.out.println('Polygon #' + index)
-						pc.forEach[c : Coordinates | 
-							System.out.println(c.toString())	
-						]
-					]
-					
-					generateObstacles()
-					obstacles.forEach[o : Obstacle | System.out.println(o.toString())]
 				}
-			}
 		};
 
-		if (Platform.isFxApplicationThread()) {
-			command.run();
-		} else {
-			Platform.runLater(command);
-		}	
+			if (Platform.isFxApplicationThread()) {
+				command.run();
+				this.generateObstacles()
+				// this.obstacles.forEach[o : Obstacle|System.out.println(o.toString())]
+				return this.obstacles
+				} else {
+					Platform.runLater(command);
+					this.generateObstacles()
+					// this.obstacles.forEach[o : Obstacle|System.out.println(o.toString())]
+					return this.obstacles
+			}
+		}
 	}
 	
 	def generateCoordinates(p : Polygon) : List<Coordinates> {
@@ -154,7 +153,7 @@ class BoidsFxViewerController extends FxViewerController {
 	}
 	
 	def generateObstacles() : void {
-		polygonsCoordinates.forEach [ p |
+		this.polygonsCoordinates.forEach [p : List<Coordinates>, currentItem : int |
 			var lines : List<LineTool> = new ArrayList()
 			p.forEach[c : Coordinates, index : int |
 				if(index != 0) {
@@ -166,8 +165,7 @@ class BoidsFxViewerController extends FxViewerController {
 			var line : LineTool = new LineTool(p.last, p.get(0))
 			line.computeLineEquation()
 			lines.add(line)
-			obstacles.add(new Obstacle(lines))
-			
+			this.obstacles.add(new Obstacle(lines, this.polygons.get(currentItem)))
 		]
 		
 	}

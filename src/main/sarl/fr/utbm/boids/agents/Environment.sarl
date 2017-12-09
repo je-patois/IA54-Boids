@@ -37,6 +37,8 @@ import fr.utbm.boids.events.InitBoidBody
 import fr.utbm.boids.events.BoidBodyInitialized
 import io.sarl.lang.core.Address
 import fr.utbm.boids.events.DemandeDeplacement
+import fr.utbm.boids.environment.Obstacle
+import java.util.List
 
 /*
   * Il va falloir avoir des tableaux d'obstacles et de boids
@@ -55,6 +57,7 @@ agent Environment {
 	var boidsUpdated : int
 	var largeur : int
 	var hauteur : int
+	var obstacles : List<Obstacle>
 	
 
 
@@ -70,6 +73,7 @@ agent Environment {
 	on MapParameters {
 		this.largeur = occurrence.mapWidth
 		this.hauteur = occurrence.mapHeight
+		this.obstacles = occurrence.obstacles
 	}
 	
 	on StartingSimulation {
@@ -101,7 +105,8 @@ agent Environment {
 	
 	on BoidBodyInitialized {
 		// Quand le Boid a initialisé son body, on le start
-		innerContext.defaultSpace.emit(ID,new StartPosition(this.hauteur, this.largeur), Scopes.addresses(occurrence.source))
+		// innerContext.defaultSpace.emit(ID,new StartPosition(this.hauteur, this.largeur), Scopes.addresses(occurrence.source))
+		innerContext.defaultSpace.emit(ID, new StartPosition(this.hauteur, this.largeur, this.obstacles), Scopes.addresses(occurrence.source))
 	}
 
 
