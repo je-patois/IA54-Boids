@@ -12,19 +12,13 @@ agent Screen {
 	uses Logging, DefaultContextInteractions, Lifecycle
 	
 	/*
-	var position : Vecteur
-	var vitesse : Vecteur*/
-	var groupe : int 
-	
-	
-	/*
 	 * gestion des évènements
 	 */
 
 	on Initialize {
 		loggingName = "Screen"
 		info("The Screen is started.")
-		emit(new IsStarted("Screen", null))
+		emit(new IsStarted("Screen"))
 	}
 
 	on EndSimulation {

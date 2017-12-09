@@ -16,9 +16,12 @@ import com.google.common.util.concurrent.AtomicDouble
 import java.util.ArrayList
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
+import javafx.animation.PauseTransition
 
 import static extension javafx.util.Duration.*
-
+import fr.utbm.boids.BoidBody
+import java.util.Collection
+import javafx.scene.shape.Circle
 
 class BoidsFxViewerController extends FxViewerController {
 
@@ -172,10 +175,19 @@ class BoidsFxViewerController extends FxViewerController {
 	
 	/*def updateGraphics(list: Collection<UUID>) : void {
 		var wait = new PauseTransition(0.03.seconds)
-
+		wait.playFromStart
+		
 		wait.onFinished = [
-			// Ramener une liste de boids ou alors la liste des positions
-			wait.playFromStart
+			
+			// TODO reduire taille de la partie d'affichage pour les boids + mettre une couleur en fonction du groupe + remplacer cercle par triangle
+			for (boid : list){
+				var cercle = new Circle()
+				cercle.setCenterX(boid.position.x + getMapWidth / 2);
+				cercle.setCenterY(boid.position.y + getMapHeight/2); 
+				cercle.setRadius(10.0f);
+				myPane.getChildren().add(0,cercle)
+			}
+			
 		]
 		wait.play
 	}*/

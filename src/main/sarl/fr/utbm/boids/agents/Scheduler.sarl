@@ -12,15 +12,13 @@ import fr.utbm.boids.events.NeedDataBoids
 import io.sarl.core.Schedules
 import fr.utbm.boids.events.SendDataBoids
 import fr.utbm.boids.events.BoidsToDisplay
+import fr.utbm.boids.gui.BoidsFxViewerController
 
 agent Scheduler {
 	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
 	
-	/*
-	var position : Vecteur
-	var vitesse : Vecteur*/
-	var groupe : int 
-	var online : boolean //if the simulation is online or not
+	var online : boolean // if the simulation is online or not
+	var ctrl : BoidsFxViewerController = null
 	
 	//fréquence de rafraichissement en millisecondes
 	var freqRafraichissement : long
@@ -32,19 +30,28 @@ agent Scheduler {
 	on Initialize {
 		loggingName = "Scheduler"
 		info("The Scheduler is started.")
-		emit(new IsStarted("Scheduler", null))
+		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
+		emit(new IsStarted("Scheduler"))
 	}
 
 	on StartingSimulation {
 		info("HEY")
 		online = true
-		this.freqRafraichissement = occurrence.freqRafraichissement * 1000
+		this.freqRafraichissement = occurrence.freqRafraichissement * 100
 		info(freqRafraichissement)
 
 		in(this.freqRafraichissement) [
 			info("je demande")
 			emit(new NeedDataBoids())
+
+			in(this.freqRafraichissement) [
+				info("je redemande")
+			emit(new NeedDataBoids())
+			]
+			
 		]
+		
+
 		
 		/*while(online){		//need synchronized?
 			in(this.freqRafraichissement)[
@@ -60,9 +67,10 @@ agent Scheduler {
 	
 	on BoidsToDisplay{
 		info("j'ai reçu des boids à afficher : " + occurrence.boids)
-		for(mesBoids : occurrence.boids){
-			//info(mesBoids.position)
+		for (mesBoids : occurrence.boids.entrySet) {
+			info("boid position : " + mesBoids.value.position)
 		}
+		ctrl.updateGraphics(occurrence.boids.values)
 	}
 
 	on EndSimulation {

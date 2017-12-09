@@ -1,12 +1,14 @@
 package fr.utbm.boids.agents;
 
-import fr.utbm.boids.agents.Boid;
+import fr.utbm.boids.BoidBody;
+import fr.utbm.boids.Vector;
 import fr.utbm.boids.events.BoidsToDisplay;
 import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.IsStarted;
 import fr.utbm.boids.events.NeedDataBoids;
 import fr.utbm.boids.events.SendDataBoids;
 import fr.utbm.boids.events.StartingSimulation;
+import fr.utbm.boids.gui.BoidsFxViewerController;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Destroy;
 import io.sarl.core.Initialize;
@@ -24,6 +26,8 @@ import io.sarl.lang.core.DynamicSkillProvider;
 import io.sarl.lang.core.Skill;
 import io.sarl.lang.util.ClearableReference;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.eclipse.xtext.xbase.lib.Extension;
@@ -35,13 +39,9 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(17)
 @SuppressWarnings("all")
 public class Scheduler extends Agent {
-  /**
-   * var position : Vecteur
-   * var vitesse : Vecteur
-   */
-  private int groupe;
-  
   private boolean online;
+  
+  private BoidsFxViewerController ctrl = null;
   
   private long freqRafraichissement;
   
@@ -51,8 +51,10 @@ public class Scheduler extends Agent {
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName("Scheduler");
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("The Scheduler is started.");
+    Object _get = occurrence.parameters[0];
+    this.ctrl = ((BoidsFxViewerController) _get);
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    IsStarted _isStarted = new IsStarted("Scheduler", null);
+    IsStarted _isStarted = new IsStarted("Scheduler");
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_isStarted);
   }
   
@@ -61,7 +63,7 @@ public class Scheduler extends Agent {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("HEY");
     this.online = true;
-    this.freqRafraichissement = (occurrence.freqRafraichissement * 1000);
+    this.freqRafraichissement = (occurrence.freqRafraichissement * 100);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(Long.valueOf(this.freqRafraichissement));
     Schedules _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER = this.$castSkill(Schedules.class, (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = this.$getSkill(Schedules.class)) : this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
@@ -71,6 +73,15 @@ public class Scheduler extends Agent {
       DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
       NeedDataBoids _needDataBoids = new NeedDataBoids();
       _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_needDataBoids);
+      Schedules _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1 = this.$castSkill(Schedules.class, (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = this.$getSkill(Schedules.class)) : this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
+      final Procedure1<Agent> _function_1 = (Agent it_1) -> {
+        Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+        _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info("je redemande");
+        DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER_1 = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
+        NeedDataBoids _needDataBoids_1 = new NeedDataBoids();
+        _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER_1.emit(_needDataBoids_1);
+      };
+      _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1.in(this.freqRafraichissement, _function_1);
     };
     _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER.in(this.freqRafraichissement, _function);
   }
@@ -85,8 +96,14 @@ public class Scheduler extends Agent {
   private void $behaviorUnit$BoidsToDisplay$3(final BoidsToDisplay occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("j\'ai reçu des boids à afficher : " + occurrence.boids));
-    for (final Boid mesBoids : occurrence.boids) {
+    Set<Map.Entry<UUID, BoidBody>> _entrySet = occurrence.boids.entrySet();
+    for (final Map.Entry<UUID, BoidBody> mesBoids : _entrySet) {
+      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+      Vector _position = mesBoids.getValue().getPosition();
+      String _plus = ("boid position : " + _position);
+      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(_plus);
     }
+    this.ctrl.updateGraphics(occurrence.boids.values());
   }
   
   @SyntheticMember
@@ -222,8 +239,6 @@ public class Scheduler extends Agent {
     if (getClass() != obj.getClass())
       return false;
     Scheduler other = (Scheduler) obj;
-    if (other.groupe != this.groupe)
-      return false;
     if (other.online != this.online)
       return false;
     if (other.freqRafraichissement != this.freqRafraichissement)
@@ -237,7 +252,6 @@ public class Scheduler extends Agent {
   public int hashCode() {
     int result = super.hashCode();
     final int prime = 31;
-    result = prime * result + this.groupe;
     result = prime * result + (this.online ? 1231 : 1237);
     result = prime * result + (int) (this.freqRafraichissement ^ (this.freqRafraichissement >>> 32));
     return result;

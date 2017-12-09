@@ -12,10 +12,6 @@ import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.GenerateMap
 import fr.utbm.boids.events.MapParameters
-import java.util.UUID
-import java.util.Collection
-import fr.utbm.boids.events.ListVar
-import io.sarl.core.MemberJoined
 import fr.utbm.boids.events.BoidsPositions
 
 agent BootAgent {
@@ -27,7 +23,6 @@ agent BootAgent {
 	var boidsVision : int
 	var exited : boolean = false
 	var ctrl : BoidsFxViewerController = null;
-	var boidsList: Collection<UUID>
 	var grid : Object[]
 
 	on Initialize {
@@ -36,7 +31,7 @@ agent BootAgent {
 		ctrl.UISpace.register(asEventListener)
 		spawn(Environment, boidsQuantity) 
 		info("Starting simulation")
-		spawn(Scheduler)
+		spawn(Scheduler,ctrl)
 	}
 	
 	on ConfigureSimulation {
@@ -47,7 +42,6 @@ agent BootAgent {
 		this.boidsVision = occurrence.boidsVision;
 		info('Map: ' + this.map)
 		info('Boids quantity: ' + this.boidsQuantity)
-		emit (new StartingSimulation(2,boidsQuantity,10,1))	//TODO ramener les deux autres paramètres par l'interface
 		info('Boids population: ' + this.boidsPopulation)
 		info('Boids vision: ' + this.boidsVision)
 		emit (new MapParameters(ctrl.mapWidth, ctrl.mapHeight))

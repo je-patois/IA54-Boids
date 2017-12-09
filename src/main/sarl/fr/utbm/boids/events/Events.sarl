@@ -4,6 +4,8 @@ import java.util.Collection
 import fr.utbm.boids.agents.Boid
 import fr.utbm.boids.Vector
 import java.util.UUID
+import fr.utbm.boids.BoidBody
+import java.util.Map
 
 event ConfigureSimulation {
 	val mapSelection : int
@@ -35,11 +37,9 @@ event GenerateMap
  */
 event IsStarted {
 	var type : String
-	var me : Boid
 	
-	new (typeEntity : String, Me : Boid){
+	new (typeEntity : String){
 		this.type = typeEntity
-		this.me = Me
 	}
 }
 
@@ -47,29 +47,38 @@ event MakeTheFiestaBegin
 
 event DemandeDeplacement {
 
-	var otherBoids : Collection<Boid>
+	var otherBoids : Collection<BoidBody>
 
-	new (pos : Vector, otherBoids : Collection<Boid>) {
+	new (pos : Vector, otherBoids : Collection<BoidBody>) {
 		this.otherBoids = otherBoids
 	}
 
-	new (x : int, y : int, otherBoids : Collection<Boid>) {
+	new (x : int, y : int, otherBoids : Collection<BoidBody>) {
 		this.otherBoids = otherBoids
 	}
+	
+	//provisoire
+	new(){}
 }
 
 event ResultatDeplacement {
 	var position : Vector
-	var boid : Boid
 
-	new (pos : Vector, boid :Boid) {
+	new (pos : Vector) {
 		this.position = pos
-		this.boid = boid
 	}
 
 	/*new (x : int, y : int) {
 		this.position.setXY(x, y)
 	}*/
+}
+
+event ValidationDeplacement{
+	var position : Vector
+	
+	new (pos : Vector){
+		this.position = pos
+	}
 }
 
 event StartingSimulation {
@@ -86,7 +95,15 @@ event StartingSimulation {
 	}
 }
 
-event StartPosition
+event StartPosition {
+	var hauteur : int 
+	var largeur : int 
+	
+	new (h : int, l : int ){
+		this.hauteur = h
+		this.largeur = l
+	}
+}
 
 event EndSimulation
 
@@ -125,9 +142,20 @@ event SendDataBoids {
 }
 
 event BoidsToDisplay {
-	var boids : Collection<Boid>
+	var boids : Map<UUID,BoidBody>
 	
-	new(BoidsToDisplay : Collection<Boid>){
+	new(BoidsToDisplay : Map<UUID, BoidBody>) {
 		this.boids = BoidsToDisplay
 	}
 }
+
+
+event InitBoidBody{
+	var body : BoidBody
+	
+	new (body : BoidBody){
+		this.body = body
+	}
+}
+
+event BoidBodyInitialized

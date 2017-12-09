@@ -1,7 +1,11 @@
 package fr.utbm.boids.gui;
 
+<<<<<<< HEAD
 import com.google.common.util.concurrent.AtomicDouble;
 import fr.utbm.boids.environment.Obstacle;
+=======
+import fr.utbm.boids.BoidBody;
+>>>>>>> master
 import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.gui.fx.FxViewerController;
 import fr.utbm.boids.util.Coordinates;
@@ -9,9 +13,14 @@ import fr.utbm.boids.util.LineTool;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+=======
+import java.util.Collection;
+import javafx.animation.PauseTransition;
+>>>>>>> master
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -21,6 +30,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
@@ -200,6 +210,7 @@ public class BoidsFxViewerController extends FxViewerController {
     }
   }
   
+<<<<<<< HEAD
   @Pure
   public List<Coordinates> generateCoordinates(final Polygon p) {
     AtomicDouble abscissa = new AtomicDouble();
@@ -212,6 +223,29 @@ public class BoidsFxViewerController extends FxViewerController {
         double _doubleValue = ordered.doubleValue();
         Coordinates _coordinates = new Coordinates(_get, _doubleValue);
         coordinates.add(_coordinates);
+=======
+  public void updateGraphics(final Collection<BoidBody> list) {
+    Duration _seconds = Duration.seconds(0.03);
+    PauseTransition wait = new PauseTransition(_seconds);
+    wait.playFromStart();
+    final EventHandler<ActionEvent> _function = (ActionEvent it) -> {
+      for (final BoidBody boid : list) {
+        {
+          Circle cercle = new Circle();
+          double _x = boid.getPosition().getX();
+          int _mapWidth = this.getMapWidth();
+          int _divide = (_mapWidth / 2);
+          double _plus = (_x + _divide);
+          cercle.setCenterX(_plus);
+          double _y = boid.getPosition().getY();
+          int _mapHeight = this.getMapHeight();
+          int _divide_1 = (_mapHeight / 2);
+          double _plus_1 = (_y + _divide_1);
+          cercle.setCenterY(_plus_1);
+          cercle.setRadius(10.0f);
+          this.myPane.getChildren().add(0, cercle);
+        }
+>>>>>>> master
       }
     };
     IterableExtensions.<Double>forEach(p.getPoints(), _function);

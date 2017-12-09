@@ -65,11 +65,9 @@ class Vector {
 		return Math.sqrt (x*x + y*y)
 	}
 	
-	def normaliser(vitMax : int) : Vector {
+	def normaliser() : Vector {
 		this.x = this.x / this.length
 		this.y = this.y / this.length
-		this.x *= vitMax
-		this.y *= vitMax
 		return this
 	}
 	
@@ -77,6 +75,10 @@ class Vector {
 	// ici this et vec doivent être normalisés
 	def point (vec : Vector) : double{
 		return Math.acos(this.x*vec.x + this.y*vec.y)
+	}
+	
+	def toString() : String{
+		return "x : " + this.x + " ,y : " + this.y + "   "
 	}
 	
 	
