@@ -13,6 +13,7 @@ import io.sarl.core.Schedules
 import fr.utbm.boids.events.SendDataBoids
 import fr.utbm.boids.events.BoidsToDisplay
 import fr.utbm.boids.gui.BoidsFxViewerController
+import io.sarl.core.Time
 
 agent Scheduler {
 	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
@@ -22,6 +23,8 @@ agent Scheduler {
 	
 	//fréquence de rafraichissement en millisecondes
 	var freqRafraichissement : long
+	var Time : Time
+	var lastUpdate : double
 	
 	/*
 	 * gestion des évènements
@@ -43,14 +46,47 @@ agent Scheduler {
 		in(this.freqRafraichissement) [
 			info("je demande")
 			emit(new NeedDataBoids())
-
+			lastUpdate = Time.getTime()
+/* 
 			in(this.freqRafraichissement) [
 				info("je redemande")
 			emit(new NeedDataBoids())
-			]
-			
+			]*/
 		]
-		
+
+		/*while (true) {
+
+			if (System.currentTimeMillis() - lastTimeUpdate < updateFrequency) {
+				try {
+					Thread.sleep(lastTimeUpdate - System.currentTimeMillis() + updateFrequency + 2); 	// +2 avoids update time check to fail
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					Thread.sleep(2);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			update();
+
+		}*/
+	
+		while(online){
+			info("on est dans le while du cycle", 0)
+			info(Time.getTime())
+			info(lastUpdate)
+			info(freqRafraichissement)
+			if (Time.getTime() >= lastUpdate + freqRafraichissement) {
+				info("je demande")
+				emit(new NeedDataBoids())
+				lastUpdate = Time.getTime()
+			} else {
+				
+			}
+		}
 
 		
 		/*while(online){		//need synchronized?
