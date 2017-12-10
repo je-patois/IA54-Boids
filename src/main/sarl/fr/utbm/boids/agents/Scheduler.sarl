@@ -46,7 +46,8 @@ agent Scheduler {
 		in(this.freqRafraichissement) [
 			info("je demande")
 			emit(new NeedDataBoids())
-			lastUpdate = Time.getTime()
+			//lastUpdate = Time.getTime()
+			lastUpdate = System.currentTimeMillis() 
 /* 
 			in(this.freqRafraichissement) [
 				info("je redemande")
@@ -76,13 +77,14 @@ agent Scheduler {
 	
 		while(online){
 			info("on est dans le while du cycle", 0)
-			info(Time.getTime())
+			System.currentTimeMillis() 
+			//info(Time.Instant)
 			info(lastUpdate)
 			info(freqRafraichissement)
-			if (Time.getTime() >= lastUpdate + freqRafraichissement) {
+			if (/*Time.getTime*/ System.currentTimeMillis() >= lastUpdate + freqRafraichissement) {
 				info("je demande")
 				emit(new NeedDataBoids())
-				lastUpdate = Time.getTime()
+				//lastUpdate = Time.getTime()
 			} else {
 				
 			}
