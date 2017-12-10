@@ -240,7 +240,7 @@ public class Environment extends Agent {
         String _plus_1 = (_plus + address);
         _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(_plus_1);
         InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-        DemandeDeplacement _demandeDeplacement = new DemandeDeplacement();
+        DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
         _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
       };
       this.boidsAddresses.forEach(_function);

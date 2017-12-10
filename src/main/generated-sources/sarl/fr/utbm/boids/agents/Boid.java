@@ -30,7 +30,9 @@ import io.sarl.lang.core.Scope;
 import io.sarl.lang.core.Skill;
 import io.sarl.lang.util.ClearableReference;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -139,11 +141,16 @@ public class Boid extends Agent {
   @SuppressWarnings("equals_with_null")
   @SyntheticMember
   private void $behaviorUnit$DemandeDeplacement$4(final DemandeDeplacement occurrence) {
-    Collection<BoidBody> otherBoids = occurrence.otherBoids;
+    Map<UUID, BoidBody> otherBoids = occurrence.otherBoids;
     Vector forceTot = null;
     Vector _vector = new Vector(0, 0);
     forceTot = _vector;
-    if ((otherBoids != null)) {
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("EST CE QUE L\'ON PASSE AU MOINS ICI? PARLE MOIIIIIIIIIIIIIIIIIIII");
+    boolean _notEquals = (!Objects.equal(otherBoids, null));
+    if (_notEquals) {
+      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("ON PREND EN COMPTE LES AUTRES BOIDS MON GARS");
       forceTot.plus(this.separation(otherBoids));
       forceTot.plus(this.cohesion(otherBoids));
       forceTot.plus(this.alignement(otherBoids));
@@ -189,7 +196,7 @@ public class Boid extends Agent {
    * Création des fonctions comportementales du Boids
    */
   @SuppressWarnings("equals_with_null")
-  protected Vector separation(final Collection<BoidBody> otherBoids) {
+  protected Vector separation(final Map<UUID, BoidBody> otherBoids) {
     Vector force = null;
     Vector tmp = null;
     double len = 0;
@@ -197,10 +204,11 @@ public class Boid extends Agent {
     force = _vector;
     Vector _vector_1 = new Vector(0, 0);
     tmp = _vector_1;
-    for (final BoidBody boid : otherBoids) {
-      if ((((!Objects.equal(boid, null)) && (boid.getGroupe() == this.body.getGroupe())) && this.visible(boid))) {
+    Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
+    for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
+      if ((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe())) && (!Objects.equal(elem.getKey(), this.getID())))) {
         tmp.setXY(this.body.getPosition());
-        tmp.moins(boid.getPosition());
+        tmp.moins(elem.getValue().getPosition());
         len = tmp.length();
         tmp.fois((1 / (len * len)));
         force.plus(tmp);
@@ -210,15 +218,16 @@ public class Boid extends Agent {
   }
   
   @SuppressWarnings("equals_with_null")
-  protected Vector cohesion(final Collection<BoidBody> otherBoids) {
+  protected Vector cohesion(final Map<UUID, BoidBody> otherBoids) {
     int nbTot = 0;
     Vector force = null;
     Vector _vector = new Vector(0, 0);
     force = _vector;
-    for (final BoidBody boid : otherBoids) {
-      if ((((!Objects.equal(boid, null)) && (boid.getGroupe() == this.body.getGroupe())) && this.visible(boid))) {
+    Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
+    for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
+      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
         nbTot++;
-        force.plus(boid.getPosition());
+        force.plus(elem.getValue().getPosition());
       }
     }
     if ((nbTot > 0)) {
@@ -229,7 +238,7 @@ public class Boid extends Agent {
   }
   
   @SuppressWarnings("equals_with_null")
-  protected Vector alignement(final Collection<BoidBody> otherBoids) {
+  protected Vector alignement(final Map<UUID, BoidBody> otherBoids) {
     int nbTot = 0;
     Vector force = null;
     Vector tmp = null;
@@ -237,16 +246,20 @@ public class Boid extends Agent {
     force = _vector;
     Vector _vector_1 = new Vector(0, 0);
     tmp = _vector_1;
-    for (final BoidBody boid : otherBoids) {
-      if ((((!Objects.equal(boid, null)) && (boid.getGroupe() == this.body.getGroupe())) && this.visible(boid))) {
+    Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
+    for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
+      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
         nbTot++;
-        tmp.setXY(boid.getVitesse());
+        tmp.setXY(elem.getValue().getPosition());
         double _length = tmp.length();
         double _divide = (1 / _length);
         tmp.fois(_divide);
         force.plus(tmp);
       }
     }
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    String _plus = (force + " ceci est la force a appliquer !!!!!!!!!!");
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(_plus);
     if ((nbTot > 0)) {
       force.fois((1 / nbTot));
     }
@@ -254,7 +267,7 @@ public class Boid extends Agent {
   }
   
   @SuppressWarnings("equals_with_null")
-  protected Vector repulsion(final Collection<BoidBody> otherBoids) {
+  protected Vector repulsion(final Map<UUID, BoidBody> otherBoids) {
     Vector force = null;
     Vector tmp = null;
     double len = 0;
@@ -262,10 +275,11 @@ public class Boid extends Agent {
     force = _vector;
     Vector _vector_1 = new Vector(0, 0);
     tmp = _vector_1;
-    for (final BoidBody boid : otherBoids) {
-      if ((((!Objects.equal(boid, null)) && (boid.getGroupe() != this.body.getGroupe())) && this.visible(boid))) {
+    Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
+    for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
+      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() != this.body.getGroupe()))) {
         tmp.setXY(this.body.getPosition());
-        tmp.moins(boid.getPosition());
+        tmp.moins(elem.getValue().getPosition());
         len = tmp.length();
         tmp.fois((1 / (len * len)));
         force.plus(tmp);
@@ -275,8 +289,6 @@ public class Boid extends Agent {
   }
   
   protected Vector appliquerForce(final Vector force) {
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("on arrive la");
     Vector newPosition = null;
     Vector acceleration = null;
     Vector _vector = new Vector(force);
@@ -284,22 +296,22 @@ public class Boid extends Agent {
     int _masse = this.body.getMasse();
     int _divide = (1 / _masse);
     acceleration.fois(_divide);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(("acceleration : " + acceleration));
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("acceleration : " + acceleration));
     Vector _vector_1 = new Vector(5, 5);
     this.body.setVitesse(_vector_1);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     Vector _vitesse = this.body.getVitesse();
     String _plus = ("bodyVitesse : " + _vitesse);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(_plus);
     Vector _vitesse_1 = this.body.getVitesse();
     Vector _vector_2 = new Vector(_vitesse_1);
     this.body.setNewVitesse(_vector_2);
     this.body.getNewVitesse().plus(acceleration);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     Vector _newVitesse = this.body.getNewVitesse();
     String _plus_1 = ("nouvelle vitesse : " + _newVitesse);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(_plus_1);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus_1);
     double _length = this.body.getNewVitesse().length();
     int _groupeVitesseMax = this.body.getGroupeVitesseMax();
     boolean _greaterThan = (_length > _groupeVitesseMax);
@@ -307,16 +319,16 @@ public class Boid extends Agent {
       this.body.getNewVitesse().normaliser();
       this.body.getNewVitesse().fois(this.body.getGroupeVitesseMax());
     }
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(Double.valueOf(this.body.getPosition().getX()));
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4.info(Double.valueOf(this.body.getPosition().getX()));
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_5 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_5.info(Double.valueOf(this.body.getPosition().getY()));
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4.info(Double.valueOf(this.body.getPosition().getY()));
     Vector _position = this.body.getPosition();
     Vector _vector_3 = new Vector(_position);
     newPosition = _vector_3;
     newPosition.plus(this.body.getNewVitesse());
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_6 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_6.info(newPosition);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_5 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_5.info(newPosition);
     return newPosition;
   }
   
