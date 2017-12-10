@@ -101,7 +101,7 @@ agent Environment {
 		info('Population size: ' + this.populationSize)
 		for (var i = 0; i < occurrence.nombreDePopulations; i++) {
 			for (var j = 0 ; j < occurrence.nombreDeBoidsParPopulation; j++){
-				var tempBody = new BoidBody (i, 10, 2, occurrence.visionBoids, 50)		//TODO récupérer masse, vmax et distance de vision depuis l'interface utilisateur (param 2 et 3 et 5)
+				var tempBody = new BoidBody (i + 1, 10, 2, occurrence.visionBoids, 50)		//TODO récupérer masse, vmax et distance de vision depuis l'interface utilisateur (param 2 et 3 et 5)
 				var id = spawnInContext(typeof(Boid), innerContext)
 				this.boidsList.put(id, tempBody)
 			}
