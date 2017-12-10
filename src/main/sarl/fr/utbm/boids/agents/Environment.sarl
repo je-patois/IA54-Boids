@@ -185,7 +185,7 @@ agent Environment {
 			boidsAddresses.forEach[id, address|
 				info("REGARDER ICI IIIIIIIIIIIIIIIIIIIIIIIII")
 				info(id + " " + address)
-				innerContext.defaultSpace.emit(id, new DemandeDeplacement(), Scopes.addresses(address))
+				innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
 			]
 			
 		}

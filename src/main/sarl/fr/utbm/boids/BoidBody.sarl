@@ -18,6 +18,7 @@ class BoidBody extends EnvObjet{
 		this.masse = masse
 		this.angleVisibilite = angleVisibilite
 		this.distanceVisibilite = distanceVisibilite
+		this.vitesse = new Vector(0,0)
 	}
 	
 	/*

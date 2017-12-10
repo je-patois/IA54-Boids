@@ -62,18 +62,24 @@ event MakeTheFiestaBegin
 
 event DemandeDeplacement {
 
-	var otherBoids : Collection<BoidBody>
+	/*var otherBoids : Collection<BoidBody>*/
+	var otherBoids : Map<UUID, BoidBody>
 
-	new (pos : Vector, otherBoids : Collection<BoidBody>) {
+	/*new (pos : Vector, otherBoids : Collection<BoidBody>) {
 		this.otherBoids = otherBoids
 	}
 
 	new (x : int, y : int, otherBoids : Collection<BoidBody>) {
 		this.otherBoids = otherBoids
-	}
+	}*/
 	
 	//provisoire
-	new(){}
+	new() {
+	}
+
+	new (otherBoids : Map<UUID, BoidBody>) {
+		this.otherBoids = otherBoids
+	}
 }
 
 event ResultatDeplacement {

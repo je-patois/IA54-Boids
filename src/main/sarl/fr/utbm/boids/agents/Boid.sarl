@@ -21,6 +21,7 @@ import javafx.geometry.Point2D
 import io.sarl.core.Lifecycle
 import java.util.UUID
 import fr.utbm.boids.gui.fx.EndSimulation
+import java.util.Map
 
 agent Boid {
 	uses Logging, DefaultContextInteractions, Lifecycle
@@ -88,9 +89,12 @@ agent Boid {
 		 *		/ !	\	 On suppose que le Boids que je suis a été supprimé de la liste
 		 *	   /_____\
 		 */	   
+		 info("EST CE QUE L'ON PASSE AU MOINS ICI? PARLE MOIIIIIIIIIIIIIIIIIIII")
 		if (otherBoids != null) {
+			info("ON PREND EN COMPTE LES AUTRES BOIDS MON GARS")
 			//TODO ici rajouter vitesse de départ du boids
 			
+			//TODO rajouter dans chaque focntion une vérification que l'on ne se prend pas soi meme en compte pour les calculs
 			//on applique la séparation 
 			forceTot.plus(separation(otherBoids))
 			
@@ -99,7 +103,7 @@ agent Boid {
 			
 			//on applique l'alignement
 			forceTot.plus(alignement(otherBoids))
-			
+
 			//on applique la répulsion
 			forceTot.plus(repulsion(otherBoids))
 			
@@ -109,6 +113,7 @@ agent Boid {
 		}
 		
 		//on renvoie la nouvelle position du Boids
+		//info(forceTot + " ceci est la force totale a appliquer !!!!!!!!!!")
 		emit(new ResultatDeplacement(appliquerForce(forceTot)))
 	 
 	}
@@ -153,7 +158,7 @@ agent Boid {
 	 
 	//TODO test si non utilisation du test du groupe à une influence
 	@SuppressWarnings("equals_with_null")
-	def separation(otherBoids : Collection<BoidBody>) : Vector {
+	def separation(otherBoids : Map<UUID, BoidBody>) : Vector {
 
 		var force : Vector
 		var tmp : Vector
@@ -162,6 +167,28 @@ agent Boid {
 		force = new Vector(0, 0)
 		tmp = new Vector(0, 0)
 
+		/*otherBoids.forEach [ id, boid |
+			if (boid != null && boid.groupe == this.body.groupe && visible(boid) && id != this.ID) {
+				tmp.setXY(this.body.position)
+				tmp.moins(boid.position)
+				len = tmp.length()
+				tmp.fois(1 / (len * len))
+				force.plus(tmp)
+			}
+		 * ]
+		 */
+		 
+		for (elem : otherBoids.entrySet) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe && /*visible(elem.value) && */elem.key != this.ID) {
+				tmp.setXY(this.body.position)
+				tmp.moins(elem.value.position)
+				len = tmp.length()
+				tmp.fois(1 / (len * len))
+				force.plus(tmp)
+			}
+		}
+		
+/* 
 		for (boid : otherBoids) {
 			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
 				tmp.setXY(this.body.position)
@@ -171,25 +198,41 @@ agent Boid {
 				force.plus(tmp)
 			}
 		}
-
+*/
 		return force
 
 	}
 
 	@SuppressWarnings("equals_with_null")
-	def cohesion(otherBoids : Collection<BoidBody>) : Vector {
+	def cohesion(otherBoids : Map<UUID, BoidBody>) : Vector {
 		
 		var nbTot = 0 
 		var force : Vector 
 		
 		force = new Vector(0,0)
 		
+		/*otherBoids.forEach [ id, boid |
+			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
+				nbTot++
+				force.plus(boid.position)
+			}
+		 * ]
+		 */
+		 
+		for (elem : otherBoids.entrySet) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe/* && visible(elem.value)*/) {
+				nbTot++
+				force.plus(elem.value.position)
+			}
+		}
+		
+		/*
 		for (boid : otherBoids) {
 			if (boid != null && boid.groupe == this.body.groupe && visible(boid)){
 				nbTot++
 				force.plus(boid.position)
 			}
-		}
+		}*/
 		
 		if (nbTot > 0){
 			force.fois(1/nbTot)
@@ -202,7 +245,7 @@ agent Boid {
 	
 
 	@SuppressWarnings("equals_with_null")
-	def alignement(otherBoids : Collection<BoidBody>) : Vector {
+	def alignement(otherBoids : Map<UUID, BoidBody>) : Vector {
 		
 		var nbTot = 0 
 		var force : Vector
@@ -211,6 +254,25 @@ agent Boid {
 		force = new Vector(0,0)
 		tmp = new Vector(0,0)
 		
+		/*otherBoids.forEach [ id, boid |
+			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
+				nbTot++
+				tmp.setXY(boid.vitesse)
+				tmp.fois(1 / tmp.length)
+				force.plus(tmp)
+			}
+		]*/
+
+		for (elem : otherBoids.entrySet) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe/*&& visible(elem.value)*/) {
+				nbTot++
+				tmp.setXY(elem.value.position)
+				tmp.fois(1 / tmp.length)
+				force.plus(tmp)
+			}
+		}
+		info(force + " ceci est la force a appliquer !!!!!!!!!!")
+		/*
 		for (boid : otherBoids){
 			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
 				nbTot++
@@ -218,7 +280,7 @@ agent Boid {
 				tmp.fois(1/tmp.length)
 				force.plus(tmp)
 			}
-		}
+		}*/
 		
 		if (nbTot > 0) {
 			force.fois(1/nbTot)	
@@ -229,7 +291,7 @@ agent Boid {
 	}
 
 	@SuppressWarnings("equals_with_null")
-	def repulsion(otherBoids : Collection<BoidBody>) : Vector {
+	def repulsion(otherBoids : Map<UUID, BoidBody>) : Vector {
 		
 		var force : Vector
 		var tmp : Vector
@@ -238,6 +300,27 @@ agent Boid {
 		force = new Vector(0,0)
 		tmp = new Vector(0,0)
 		
+		/*otherBoids.forEach [ id, boid |
+			if (boid != null && boid.groupe != this.body.groupe && visible(boid)) {
+				tmp.setXY(this.body.position)
+				tmp.moins(boid.position)
+				len = tmp.length
+				tmp.fois(1 / (len * len))
+				force.plus(tmp)
+			}
+		]*/
+
+		for (elem : otherBoids.entrySet) {
+			if (elem.key != null && elem.value.groupe != this.body.groupe /*&& visible(elem.value)*/) {
+				tmp.setXY(this.body.position)
+				tmp.moins(elem.value.position)
+				len = tmp.length
+				tmp.fois(1 / (len * len))
+				force.plus(tmp)
+			}
+		}
+		
+		/*
 		for (boid : otherBoids){
 			if (boid != null && boid.groupe != this.body.groupe && visible(boid)){
 				tmp.setXY(this.body.position)
@@ -246,32 +329,31 @@ agent Boid {
 				tmp.fois(1/(len*len))
 				force.plus(tmp)
 			}
-		}
+		}*/
 		
 		return force
 	}
 	
 	
 	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
-	def appliquerForce (force : Vector) : Vector{
-		
-		info("on arrive la")
-		
-		var newPosition : Vector
-		
+	def appliquerForce(force : Vector) : Vector {
+
 		// f = ma => a =f/m
-		
+
+		var newPosition : Vector		
 		var acceleration : Vector
 		
 		acceleration = new Vector(force)
 		acceleration.fois(1/this.body.masse)
-		
 		info("acceleration : " + acceleration)
+
+		//DEFINITION EN DUR ICI
 		this.body.vitesse = new Vector(5, 5)
 		info("bodyVitesse : " + this.body.vitesse)
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)
+		//WAT ON ADDITIONNE VITESSE ET ACCELERATION???
 		
 		info("nouvelle vitesse : " + this.body.newVitesse)
 		
@@ -286,7 +368,6 @@ agent Boid {
 		newPosition.plus(this.body.newVitesse)
 		info(newPosition)
 		return newPosition
-		
 	}
 	
 	on EndSimulation [isFrom(this.parentAgent)] {

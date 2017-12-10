@@ -90,7 +90,7 @@ agent Scheduler {
 			}
 		}*/
 		
-		task('Scheduling').every(1000) [
+		task('Scheduling').every(100) [
 			info("je demande")
 			emit(new NeedDataBoids())
 		]
