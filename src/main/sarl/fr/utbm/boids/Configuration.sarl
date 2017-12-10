@@ -1,5 +1,9 @@
 package fr.utbm.boids
 
-final class Configuration {
+import javafx.scene.paint.Color
+
+public interface Configuration {
+
+	public static val COLOR_FAMILY = #{1 -> Color.RED, 2 -> Color.BLUE, 3 -> Color.GREEN, 4 -> Color.YELLOW, 5 -> Color.PURPLE, 6 -> Color.ORANGE, 7 -> Color.BROWN, 8 -> Color.PINK, 9 -> Color.BEIGE, 10 -> Color.CYAN}
 
 }

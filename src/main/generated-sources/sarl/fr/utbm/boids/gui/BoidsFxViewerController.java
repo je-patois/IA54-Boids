@@ -2,6 +2,7 @@ package fr.utbm.boids.gui;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import fr.utbm.boids.BoidBody;
+import fr.utbm.boids.Configuration;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.gui.fx.FxViewerController;
@@ -24,7 +25,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
@@ -34,7 +34,7 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlSpecification("0.6")
 @SarlElementType(9)
 @SuppressWarnings("all")
-public class BoidsFxViewerController extends FxViewerController {
+public class BoidsFxViewerController extends FxViewerController implements Configuration {
   private boolean launched = false;
   
   private boolean mapCreated = false;
@@ -184,7 +184,7 @@ public class BoidsFxViewerController extends FxViewerController {
         this.polygons.add(_polygon_2);
         final Consumer<Polygon> _function = (Polygon p) -> {
           this.polygonsCoordinates.add(this.generateCoordinates(p));
-          p.setFill(Color.BLUE);
+          p.setFill(Color.GRAY);
           p.setStroke(Color.TRANSPARENT);
           p.setStrokeWidth(20);
         };
@@ -196,9 +196,6 @@ public class BoidsFxViewerController extends FxViewerController {
               BoidsFxViewerController.this.obstacle_group.getChildren().add(0, p);
             };
             BoidsFxViewerController.this.polygons.forEach(_function);
-            System.out.println("LE TEST");
-            Circle testcircle = new Circle(395, 310, 1);
-            BoidsFxViewerController.this.obstacle_group.getChildren().add(0, testcircle);
           }
         };
         boolean _isFxApplicationThread = Platform.isFxApplicationThread();
@@ -270,11 +267,19 @@ public class BoidsFxViewerController extends FxViewerController {
         BoidsFxViewerController.this.boids_group.getChildren().clear();
         for (final BoidBody boid : list) {
           {
-            Circle cercle = new Circle();
-            cercle.setCenterX(boid.getPosition().getX());
-            cercle.setCenterY(boid.getPosition().getY());
-            cercle.setRadius(10.0f);
-            BoidsFxViewerController.this.boids_group.getChildren().add(0, cercle);
+            double _x = boid.getPosition().getX();
+            double _y = boid.getPosition().getY();
+            double _x_1 = boid.getPosition().getX();
+            double _plus = (_x_1 + 5);
+            double _y_1 = boid.getPosition().getY();
+            double _plus_1 = (_y_1 + 15);
+            double _x_2 = boid.getPosition().getX();
+            double _minus = (_x_2 - 5);
+            double _y_2 = boid.getPosition().getY();
+            double _plus_2 = (_y_2 + 15);
+            Polygon boidElement = new Polygon(_x, _y, _plus, _plus_1, _minus, _plus_2);
+            boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
+            BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
           }
         }
       }

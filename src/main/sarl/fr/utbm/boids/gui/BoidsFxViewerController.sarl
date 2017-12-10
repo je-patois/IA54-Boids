@@ -17,8 +17,6 @@ import java.util.ArrayList
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
 import javafx.animation.PauseTransition
-
-import static extension javafx.util.Duration.*
 import fr.utbm.boids.BoidBody
 import java.util.Collection
 import javafx.scene.shape.Circle
@@ -26,8 +24,12 @@ import java.util.UUID
 import javafx.scene.paint.Color
 import javafx.scene.shape.Shape
 import javafx.geometry.Point2D
+import fr.utbm.boids.Configuration
 
-class BoidsFxViewerController extends FxViewerController {
+import static extension javafx.util.Duration.*
+
+
+class BoidsFxViewerController extends FxViewerController implements Configuration  {
 
 	var launched = false
 	var mapCreated = false
@@ -120,7 +122,7 @@ class BoidsFxViewerController extends FxViewerController {
 			this.polygons.add(new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0))
 			this.polygons.forEach[p : Polygon |
 				this.polygonsCoordinates.add(this.generateCoordinates(p))
-				p.setFill(Color.BLUE)
+				p.setFill(Color.GRAY)
 				p.setStroke(Color.TRANSPARENT)
 				p.setStrokeWidth(20)
 			]
@@ -131,10 +133,10 @@ class BoidsFxViewerController extends FxViewerController {
 					polygons.forEach [ p : Polygon |
 						obstacle_group.getChildren().add(0, p)
 					]
-					System.out.println('LE TEST')
+					/*System.out.println('LE TEST')
 					var testcircle = new Circle(395, 310, 1)
 					//System.out.println(polygons.get(0).contains(new Point2D(testcircle.centerX, testcircle.centerY)))
-					obstacle_group.getChildren().add(0, testcircle)
+					obstacle_group.getChildren().add(0, testcircle)*/
 				}
 		};
 
@@ -190,13 +192,17 @@ class BoidsFxViewerController extends FxViewerController {
 				boids_group.getChildren().clear()
 				// TODO reduire taille de la partie d'affichage pour les boids + mettre une couleur en fonction du groupe + remplacer cercle par triangle
 				for (boid : list){
-					var cercle = new Circle()
+					/*var cercle = new Circle()
 					//cercle.setCenterX(boid.position.x + getMapWidth / 2);
 					//cercle.setCenterY(boid.position.y + getMapHeight/2); 
 					cercle.setCenterX(boid.position.x)
 					cercle.setCenterY(boid.position.y)
 					cercle.setRadius(10.0f);
-					boids_group.getChildren().add(0, cercle)
+					cercle.fill = COLOR_FAMILY.get(boid.groupe)
+					boids_group.getChildren().add(0, cercle)*/
+					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y, boid.position.x + 5, boid.position.y + 15, boid.position.x - 5, boid.position.y + 15)
+					boidElement.setFill(COLOR_FAMILY.get(boid.groupe))
+					boids_group.getChildren().add(0, boidElement)
 				}
 			}
 		}

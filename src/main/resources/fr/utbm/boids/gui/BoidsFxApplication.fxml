@@ -16,8 +16,8 @@
             <Label fx:id="map_selection_label" layoutX="75.0" layoutY="221.0" prefHeight="21.0" prefWidth="100.0" text="%MapSelectionLabel" />
             <Label fx:id="map_selection_display" layoutX="162.0" layoutY="260.0" text="1" />
             <Label fx:id="boids_population_label" layoutX="70.0" layoutY="88.0" prefHeight="21.0" prefWidth="110.0" text="%BoidsPopulationQuantityLabel" />
-            <ScrollBar fx:id="boids_population_input" layoutX="70.0" layoutY="108.0" max="5.0" min="1.0" onMouseEntered="#actionPopulationDisplay" prefHeight="18.0" prefWidth="110.0" value="2.0" />
-            <Label fx:id="boids_population_display" layoutX="170.0" layoutY="126.0" prefHeight="21.0" prefWidth="8.0" text="2" textAlignment="RIGHT" />
+            <ScrollBar fx:id="boids_population_input" layoutX="70.0" layoutY="108.0" max="10.0" min="1.0" onMouseEntered="#actionPopulationDisplay" prefHeight="18.0" prefWidth="110.0" value="1.0" />
+            <Label fx:id="boids_population_display" layoutX="170.0" layoutY="126.0" text="1" textAlignment="RIGHT" />
             <Label fx:id="boids_vision_label" layoutX="70.0" layoutY="155.0" prefHeight="21.0" prefWidth="110.0" text="%BoidsVisionLabel" />
             <ScrollBar fx:id="boids_vision_input" layoutX="70.0" layoutY="176.0" max="800.0" onMouseEntered="#actionBoidsVisionDisplay" prefHeight="18.0" prefWidth="110.0" unitIncrement="10.0" value="10.0" />
             <Label fx:id="boids_vision_display" layoutX="162.0" layoutY="194.0" text="10" />
