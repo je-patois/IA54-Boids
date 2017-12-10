@@ -1,7 +1,7 @@
 package fr.utbm.boids.agents;
 
-import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.IsStarted;
+import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Destroy;
 import io.sarl.core.Initialize;

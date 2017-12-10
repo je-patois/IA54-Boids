@@ -7,11 +7,10 @@ import fr.utbm.boids.events.MakeTheFiestaBegin
 import fr.utbm.boids.events.IsStarted
 import fr.utbm.boids.events.BtnLaunch
 import fr.utbm.boids.events.StartingSimulation
-import fr.utbm.boids.events.EndSimulation
 import fr.utbm.boids.events.BtnShutdown
-
 import io.sarl.core.Schedules
 import io.sarl.core.Lifecycle
+import fr.utbm.boids.gui.fx.EndSimulation
 
 agent GUI {
 	uses Logging, DefaultContextInteractions, Schedules, Lifecycle

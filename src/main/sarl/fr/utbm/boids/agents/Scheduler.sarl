@@ -6,7 +6,6 @@ import io.sarl.core.Logging
 import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.IsStarted
 import io.sarl.core.Lifecycle
-import fr.utbm.boids.events.EndSimulation
 import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.NeedDataBoids
 import io.sarl.core.Schedules
@@ -14,6 +13,7 @@ import fr.utbm.boids.events.SendDataBoids
 import fr.utbm.boids.events.BoidsToDisplay
 import fr.utbm.boids.gui.BoidsFxViewerController
 import io.sarl.core.Time
+import fr.utbm.boids.gui.fx.EndSimulation
 
 agent Scheduler {
 	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
@@ -31,7 +31,7 @@ agent Scheduler {
 	 */
 
 	on Initialize {
-		loggingName = "Scheduler"
+		loggingName = "Scheduler-" + this.ID
 		info("The Scheduler is started.")
 		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
 		emit(new IsStarted("Scheduler"))
@@ -90,7 +90,7 @@ agent Scheduler {
 			}
 		}*/
 		
-		task('Scheduling').every(50) [
+		task('Scheduling').every(1000) [
 			info("je demande")
 			emit(new NeedDataBoids())
 		]
@@ -119,7 +119,7 @@ agent Scheduler {
 	on EndSimulation {
 		info('Scheduler kill')
 		online = false
-		task("Scheduling").cancel
+		//task('Scheduling').cancel // Ca fait bugguer, mais faudrait //TODO Cancel la task
 		killMe
 	}
 

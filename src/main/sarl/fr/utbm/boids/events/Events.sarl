@@ -133,8 +133,6 @@ event StartPosition {
 	}
 }
 
-event EndSimulation
-
 /* Events of the GUI only */
 
 event BtnLaunch

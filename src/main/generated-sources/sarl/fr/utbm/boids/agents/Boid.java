@@ -6,12 +6,12 @@ import fr.utbm.boids.Vector;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.BoidBodyInitialized;
 import fr.utbm.boids.events.DemandeDeplacement;
-import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.InitBoidBody;
 import fr.utbm.boids.events.IsStarted;
 import fr.utbm.boids.events.ResultatDeplacement;
 import fr.utbm.boids.events.StartPosition;
 import fr.utbm.boids.events.ValidationDeplacement;
+import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Initialize;
 import io.sarl.core.Lifecycle;
@@ -21,9 +21,11 @@ import io.sarl.lang.annotation.PerceptGuardEvaluator;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
+import io.sarl.lang.core.Address;
 import io.sarl.lang.core.Agent;
 import io.sarl.lang.core.BuiltinCapacitiesProvider;
 import io.sarl.lang.core.DynamicSkillProvider;
+import io.sarl.lang.core.Scope;
 import io.sarl.lang.core.Skill;
 import io.sarl.lang.util.ClearableReference;
 import java.util.Collection;
@@ -45,12 +47,17 @@ import org.eclipse.xtext.xbase.lib.Pure;
 public class Boid extends Agent {
   private BoidBody body;
   
+  private UUID parentAgent;
+  
   @SyntheticMember
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName("Boid");
+    UUID _iD = this.getID();
+    String _plus = ("Boid-" + _iD);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName(_plus);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("A Boid agent was started.");
+    this.parentAgent = occurrence.spawner;
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     IsStarted _isStarted = new IsStarted("Boid");
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_isStarted);
@@ -296,8 +303,22 @@ public class Boid extends Agent {
   private void $behaviorUnit$EndSimulation$5(final EndSimulation occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Boid kill");
+    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
+    EndSimulation _endSimulation = new EndSimulation();
+    final Scope<Address> _function = (Address it) -> {
+      UUID _uUID = it.getUUID();
+      return Objects.equal(_uUID, this.parentAgent);
+    };
+    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_endSimulation, _function);
     Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
     _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.killMe();
+  }
+  
+  @SyntheticMember
+  @Pure
+  private boolean $behaviorUnitGuard$EndSimulation$5(final EndSimulation it, final EndSimulation occurrence) {
+    boolean _isFrom = it.isFrom(this.parentAgent);
+    return _isFrom;
   }
   
   @Extension
@@ -374,14 +395,6 @@ public class Boid extends Agent {
   
   @SyntheticMember
   @PerceptGuardEvaluator
-  private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$5(occurrence));
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
   private void $guardEvaluator$ValidationDeplacement(final ValidationDeplacement occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
@@ -396,10 +409,30 @@ public class Boid extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$DemandeDeplacement$4(occurrence));
   }
   
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    if ($behaviorUnitGuard$EndSimulation$5(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$5(occurrence));
+    }
+  }
+  
   @Override
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Boid other = (Boid) obj;
+    if (!java.util.Objects.equals(this.parentAgent, other.parentAgent)) {
+      return false;
+    }
     return super.equals(obj);
   }
   
@@ -408,6 +441,8 @@ public class Boid extends Agent {
   @SyntheticMember
   public int hashCode() {
     int result = super.hashCode();
+    final int prime = 31;
+    result = prime * result + java.util.Objects.hashCode(this.parentAgent);
     return result;
   }
   

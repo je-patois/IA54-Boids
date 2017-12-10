@@ -2,10 +2,10 @@ package fr.utbm.boids.agents;
 
 import fr.utbm.boids.events.BtnLaunch;
 import fr.utbm.boids.events.BtnShutdown;
-import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.IsStarted;
 import fr.utbm.boids.events.MakeTheFiestaBegin;
 import fr.utbm.boids.events.StartingSimulation;
+import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Initialize;
 import io.sarl.core.Lifecycle;
@@ -165,14 +165,6 @@ public class GUI extends Agent {
   
   @SyntheticMember
   @PerceptGuardEvaluator
-  private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$4(occurrence));
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
   private void $guardEvaluator$MakeTheFiestaBegin(final MakeTheFiestaBegin occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
@@ -185,6 +177,14 @@ public class GUI extends Agent {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BtnLaunch$2(occurrence));
+  }
+  
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$4(occurrence));
   }
   
   @SyntheticMember

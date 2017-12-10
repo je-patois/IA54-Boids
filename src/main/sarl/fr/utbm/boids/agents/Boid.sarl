@@ -18,21 +18,24 @@ import fr.utbm.boids.environment.Obstacle
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import javafx.geometry.Point2D
-import fr.utbm.boids.events.EndSimulation
 import io.sarl.core.Lifecycle
+import java.util.UUID
+import fr.utbm.boids.gui.fx.EndSimulation
 
 agent Boid {
 	uses Logging, DefaultContextInteractions, Lifecycle
 
 	var body : BoidBody
+	var parentAgent : UUID
 	
 	/*
 	 * gestion des évènements
 	 */
 	 
 	on Initialize {
-		loggingName = "Boid"
+		loggingName = "Boid-" + this.ID
 		info("A Boid agent was started.")
+		parentAgent = occurrence.spawner
 		emit(new IsStarted("Boid"))
 	}
 	
@@ -286,8 +289,9 @@ agent Boid {
 		
 	}
 	
-	on EndSimulation {
+	on EndSimulation [isFrom(this.parentAgent)] {
 		info("Boid kill")
+		emit(new EndSimulation) [it.UUID == this.parentAgent]
 		killMe
 	}
 }

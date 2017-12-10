@@ -3,12 +3,12 @@ package fr.utbm.boids.agents;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Vector;
 import fr.utbm.boids.events.BoidsToDisplay;
-import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.IsStarted;
 import fr.utbm.boids.events.NeedDataBoids;
 import fr.utbm.boids.events.SendDataBoids;
 import fr.utbm.boids.events.StartingSimulation;
 import fr.utbm.boids.gui.BoidsFxViewerController;
+import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Destroy;
 import io.sarl.core.Initialize;
@@ -51,9 +51,11 @@ public class Scheduler extends Agent {
   private long lastUpdate;
   
   @SyntheticMember
-  private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
+  private void $behaviorUnit$Initialize$6(final Initialize occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName("Scheduler");
+    UUID _iD = this.getID();
+    String _plus = ("Scheduler-" + _iD);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName(_plus);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("The Scheduler is started.");
     Object _get = occurrence.parameters[0];
@@ -64,7 +66,7 @@ public class Scheduler extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$StartingSimulation$1(final StartingSimulation occurrence) {
+  private void $behaviorUnit$StartingSimulation$0(final StartingSimulation occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("HEY");
     this.online = true;
@@ -90,17 +92,17 @@ public class Scheduler extends Agent {
       NeedDataBoids _needDataBoids = new NeedDataBoids();
       _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_needDataBoids);
     };
-    _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1.every(_$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_2.task("Scheduling"), 50, _function_1);
+    _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1.every(_$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_2.task("Scheduling"), 1000, _function_1);
   }
   
   @SyntheticMember
-  private void $behaviorUnit$SendDataBoids$2(final SendDataBoids occurrence) {
+  private void $behaviorUnit$SendDataBoids$1(final SendDataBoids occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(occurrence.lesBoids);
   }
   
   @SyntheticMember
-  private void $behaviorUnit$BoidsToDisplay$3(final BoidsToDisplay occurrence) {
+  private void $behaviorUnit$BoidsToDisplay$2(final BoidsToDisplay occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("j\'ai reçu des boids à afficher : " + occurrence.boids));
     Set<Map.Entry<UUID, BoidBody>> _entrySet = occurrence.boids.entrySet();
@@ -114,19 +116,16 @@ public class Scheduler extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$4(final EndSimulation occurrence) {
+  private void $behaviorUnit$EndSimulation$3(final EndSimulation occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Scheduler kill");
     this.online = false;
-    Schedules _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER = this.$castSkill(Schedules.class, (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = this.$getSkill(Schedules.class)) : this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
-    Schedules _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1 = this.$castSkill(Schedules.class, (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = this.$getSkill(Schedules.class)) : this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
-    _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER.cancel(_$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1.task("Scheduling"));
     Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
     _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.killMe();
   }
   
   @SyntheticMember
-  private void $behaviorUnit$Destroy$5(final Destroy occurrence) {
+  private void $behaviorUnit$Destroy$4(final Destroy occurrence) {
   }
   
   @Extension
@@ -189,31 +188,12 @@ public class Scheduler extends Agent {
     return $castSkill(Schedules.class, this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
   }
   
-  /**
-   * gestion des évènements
-   */
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$Initialize(final Initialize occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Initialize$0(occurrence));
-  }
-  
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$SendDataBoids(final SendDataBoids occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$SendDataBoids$2(occurrence));
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$4(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$SendDataBoids$1(occurrence));
   }
   
   @SyntheticMember
@@ -221,7 +201,7 @@ public class Scheduler extends Agent {
   private void $guardEvaluator$Destroy(final Destroy occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Destroy$5(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Destroy$4(occurrence));
   }
   
   @SyntheticMember
@@ -229,7 +209,7 @@ public class Scheduler extends Agent {
   private void $guardEvaluator$StartingSimulation(final StartingSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartingSimulation$1(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartingSimulation$0(occurrence));
   }
   
   @SyntheticMember
@@ -237,39 +217,32 @@ public class Scheduler extends Agent {
   private void $guardEvaluator$BoidsToDisplay(final BoidsToDisplay occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsToDisplay$3(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsToDisplay$2(occurrence));
+  }
+  
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$3(occurrence));
   }
   
   @Override
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Scheduler other = (Scheduler) obj;
-    if (other.online != this.online)
-      return false;
-    if (other.freqRafraichissement != this.freqRafraichissement)
-      return false;
-    if (other.lastUpdate != this.lastUpdate)
-      return false;
-    return super.equals(obj);
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    int result = super.hashCode();
-    final int prime = 31;
-    result = prime * result + (this.online ? 1231 : 1237);
-    result = prime * result + (int) (this.freqRafraichissement ^ (this.freqRafraichissement >>> 32));
-    result = prime * result + (int) (this.lastUpdate ^ (this.lastUpdate >>> 32));
-    return result;
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
   }
   
   @SyntheticMember

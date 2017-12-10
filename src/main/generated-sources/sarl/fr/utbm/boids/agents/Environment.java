@@ -9,7 +9,6 @@ import fr.utbm.boids.events.BoidBodyInitialized;
 import fr.utbm.boids.events.BoidsPositions;
 import fr.utbm.boids.events.BoidsToDisplay;
 import fr.utbm.boids.events.DemandeDeplacement;
-import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.InitBoidBody;
 import fr.utbm.boids.events.IsStarted;
 import fr.utbm.boids.events.MapParameters;
@@ -18,6 +17,7 @@ import fr.utbm.boids.events.ResultatDeplacement;
 import fr.utbm.boids.events.StartPosition;
 import fr.utbm.boids.events.StartingSimulation;
 import fr.utbm.boids.events.ValidationDeplacement;
+import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.core.AgentKilled;
 import io.sarl.core.AgentSpawned;
 import io.sarl.core.ContextJoined;
@@ -84,7 +84,9 @@ public class Environment extends Agent {
   @SyntheticMember
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName("Environment");
+    UUID _iD = this.getID();
+    String _plus = ("Environment-" + _iD);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName(_plus);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("The Environment is started.");
     this.boidsUpdated = 0;
@@ -238,40 +240,69 @@ public class Environment extends Agent {
   private void $behaviorUnit$EndSimulation$7(final EndSimulation occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Environment kill");
+    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
+    EndSimulation _endSimulation = new EndSimulation();
+    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_endSimulation);
     Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
     _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.killMe();
   }
   
   @SyntheticMember
-  private void $behaviorUnit$Destroy$8(final Destroy occurrence) {
+  @Pure
+  private boolean $behaviorUnitGuard$EndSimulation$7(final EndSimulation it, final EndSimulation occurrence) {
+    InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+    boolean _hasMemberAgent = _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.hasMemberAgent();
+    boolean _not = (!_hasMemberAgent);
+    return _not;
   }
   
   @SyntheticMember
-  private void $behaviorUnit$AgentSpawned$9(final AgentSpawned occurrence) {
+  private void $behaviorUnit$EndSimulation$8(final EndSimulation occurrence) {
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("JE DOIS TOUS LES TUER");
+    InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+    EndSimulation _endSimulation = new EndSimulation();
+    _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _endSimulation, null);
   }
   
   @SyntheticMember
-  private void $behaviorUnit$AgentKilled$10(final AgentKilled occurrence) {
+  @Pure
+  private boolean $behaviorUnitGuard$EndSimulation$8(final EndSimulation it, final EndSimulation occurrence) {
+    InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+    boolean _hasMemberAgent = _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.hasMemberAgent();
+    return _hasMemberAgent;
   }
   
   @SyntheticMember
-  private void $behaviorUnit$ContextJoined$11(final ContextJoined occurrence) {
+  private void $behaviorUnit$Destroy$9(final Destroy occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$ContextLeft$12(final ContextLeft occurrence) {
+  private void $behaviorUnit$AgentSpawned$10(final AgentSpawned occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$MemberJoined$13(final MemberJoined occurrence) {
+  private void $behaviorUnit$AgentKilled$11(final AgentKilled occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$MemberLeft$14(final MemberLeft occurrence) {
+  private void $behaviorUnit$ContextJoined$12(final ContextJoined occurrence) {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$BoidsPositions$15(final BoidsPositions occurrence) {
+  private void $behaviorUnit$ContextLeft$13(final ContextLeft occurrence) {
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$MemberJoined$14(final MemberJoined occurrence) {
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$MemberLeft$15(final MemberLeft occurrence) {
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$BoidsPositions$16(final BoidsPositions occurrence) {
     this.grid = occurrence.grid;
   }
   
@@ -340,7 +371,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$MemberLeft(final MemberLeft occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MemberLeft$14(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MemberLeft$15(occurrence));
   }
   
   @SyntheticMember
@@ -353,10 +384,23 @@ public class Environment extends Agent {
   
   @SyntheticMember
   @PerceptGuardEvaluator
+  private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    if ($behaviorUnitGuard$EndSimulation$7(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$7(occurrence));
+    }
+    if ($behaviorUnitGuard$EndSimulation$8(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$8(occurrence));
+    }
+  }
+  
+  @SyntheticMember
+  @PerceptGuardEvaluator
   private void $guardEvaluator$AgentSpawned(final AgentSpawned occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$AgentSpawned$9(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$AgentSpawned$10(occurrence));
   }
   
   @SyntheticMember
@@ -388,7 +432,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$AgentKilled(final AgentKilled occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$AgentKilled$10(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$AgentKilled$11(occurrence));
   }
   
   @SyntheticMember
@@ -404,7 +448,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$MemberJoined(final MemberJoined occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MemberJoined$13(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MemberJoined$14(occurrence));
   }
   
   @SyntheticMember
@@ -427,15 +471,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$BoidsPositions(final BoidsPositions occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsPositions$15(occurrence));
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$7(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsPositions$16(occurrence));
   }
   
   @SyntheticMember
@@ -443,7 +479,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$ContextLeft(final ContextLeft occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ContextLeft$12(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ContextLeft$13(occurrence));
   }
   
   @SyntheticMember
@@ -459,7 +495,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$ContextJoined(final ContextJoined occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ContextJoined$11(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ContextJoined$12(occurrence));
   }
   
   @SyntheticMember
@@ -467,7 +503,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$Destroy(final Destroy occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Destroy$8(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Destroy$9(occurrence));
   }
   
   @Override

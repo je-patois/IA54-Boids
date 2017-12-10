@@ -13,7 +13,6 @@ import io.sarl.core.MemberLeft
 import fr.utbm.boids.events.IsStarted
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Lifecycle
-import fr.utbm.boids.events.EndSimulation
 import java.util.Collection
 import fr.utbm.boids.events.StartingSimulation
 import java.util.ArrayList
@@ -40,6 +39,7 @@ import fr.utbm.boids.events.DemandeDeplacement
 import fr.utbm.boids.environment.Obstacle
 import java.util.List
 import javafx.geometry.Point2D
+import fr.utbm.boids.gui.fx.EndSimulation
 
 /*
   * Il va falloir avoir des tableaux d'obstacles et de boids
@@ -63,7 +63,7 @@ agent Environment {
 
 
 	on Initialize {
-		loggingName = "Environment"
+		loggingName = "Environment-" + this.ID
 		info("The Environment is started.")
 		boidsUpdated = 0
 		emit(new IsStarted("Environment"))
@@ -90,7 +90,7 @@ agent Environment {
 			for (var j = 0 ; j < occurrence.nombreDeBoidsParPopulation; j++){
 				
 				var tempBody = new BoidBody (i + 1, 10, 2, occurrence.visionBoids, 50)		//TODO récupérer masse, vmax et distance de vision depuis l'interface utilisateur (param 2 et 3 et 5)
-				var id = spawnInContext(Boid, innerContext)
+				var id = spawnInContext(typeof(Boid), innerContext)
 				this.boidsList.put(id, tempBody)
 			}
 		}
@@ -221,9 +221,15 @@ agent Environment {
 		return newPosition
 	}
 
-	on EndSimulation {
+	on EndSimulation [!hasMemberAgent] {
 		info('Environment kill')
+		emit(new EndSimulation)
 		killMe
+	}
+	
+	on EndSimulation [hasMemberAgent] {
+		info('JE DOIS TOUS LES TUER')
+		innerContext.defaultSpace.emit(ID, new EndSimulation)
 	}
 
 	on Destroy {

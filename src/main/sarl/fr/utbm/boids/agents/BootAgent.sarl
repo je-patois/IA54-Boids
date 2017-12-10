@@ -33,10 +33,10 @@ agent BootAgent {
 		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
 		ctrl.UISpace.register(asEventListener)
 		//spawn(Environment, boidsQuantity)
-		spawnInContext(Environment, innerContext, boidsQuantity) 
+		spawnInContext(typeof(Environment), innerContext, boidsQuantity) 
 		info("Starting simulation")
 		//spawn(Scheduler,ctrl)
-		spawnInContext(Scheduler, innerContext, ctrl)
+		spawnInContext(typeof(Scheduler), innerContext, ctrl)
 	}
 	
 	on ConfigureSimulation {
@@ -76,6 +76,7 @@ agent BootAgent {
 	}
 	
 	on EndSimulation [hasMemberAgent && !exited] {
+		info("JE VAIS TOUS LES TUER")
 		exited = true
 		innerContext.defaultSpace.emit(ID, new EndSimulation)
 	}

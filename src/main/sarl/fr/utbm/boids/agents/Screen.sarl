@@ -6,7 +6,7 @@ import io.sarl.core.Logging
 import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.IsStarted
 import io.sarl.core.Lifecycle
-import fr.utbm.boids.events.EndSimulation
+import fr.utbm.boids.gui.fx.EndSimulation
 
 agent Screen {
 	uses Logging, DefaultContextInteractions, Lifecycle
