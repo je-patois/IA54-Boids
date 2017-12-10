@@ -23,6 +23,9 @@ import fr.utbm.boids.BoidBody
 import java.util.Collection
 import javafx.scene.shape.Circle
 import java.util.UUID
+import javafx.scene.paint.Color
+import javafx.scene.shape.Shape
+import javafx.geometry.Point2D
 
 class BoidsFxViewerController extends FxViewerController {
 
@@ -57,6 +60,7 @@ class BoidsFxViewerController extends FxViewerController {
 	var polygons : List<Polygon>
 	var polygonsCoordinates : List<List<Coordinates>>
 	var obstacles : List<Obstacle>
+	var obstacleShells : List<Obstacle>
 
 	def getBoidsQuantity() : int {
 		boids_quantity_input.value as int
@@ -114,7 +118,12 @@ class BoidsFxViewerController extends FxViewerController {
 			this.polygons.add(new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0,
 					665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0, 605.0, 80.0))
 			this.polygons.add(new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0))
-			this.polygons.forEach[p : Polygon|this.polygonsCoordinates.add(this.generateCoordinates(p))]
+			this.polygons.forEach[p : Polygon |
+				this.polygonsCoordinates.add(this.generateCoordinates(p))
+				p.setFill(Color.BLUE)
+				p.setStroke(Color.TRANSPARENT)
+				p.setStrokeWidth(20)
+			]
 
 			var command = new Runnable() {
 				@Override
@@ -122,6 +131,10 @@ class BoidsFxViewerController extends FxViewerController {
 					polygons.forEach [ p : Polygon |
 						obstacle_group.getChildren().add(0, p)
 					]
+					System.out.println('LE TEST')
+					var testcircle = new Circle(395, 310, 1)
+					//System.out.println(polygons.get(0).contains(new Point2D(testcircle.centerX, testcircle.centerY)))
+					obstacle_group.getChildren().add(0, testcircle)
 				}
 		};
 
@@ -130,11 +143,11 @@ class BoidsFxViewerController extends FxViewerController {
 				this.generateObstacles()
 				// this.obstacles.forEach[o : Obstacle|System.out.println(o.toString())]
 				return this.obstacles
-				} else {
-					Platform.runLater(command);
-					this.generateObstacles()
-					// this.obstacles.forEach[o : Obstacle|System.out.println(o.toString())]
-					return this.obstacles
+			} else {
+				Platform.runLater(command);
+				this.generateObstacles()
+				// this.obstacles.forEach[o : Obstacle|System.out.println(o.toString())]
+				return this.obstacles
 			}
 		}
 	}
@@ -178,8 +191,10 @@ class BoidsFxViewerController extends FxViewerController {
 				// TODO reduire taille de la partie d'affichage pour les boids + mettre une couleur en fonction du groupe + remplacer cercle par triangle
 				for (boid : list){
 					var cercle = new Circle()
-					cercle.setCenterX(boid.position.x + getMapWidth / 2);
-					cercle.setCenterY(boid.position.y + getMapHeight/2); 
+					//cercle.setCenterX(boid.position.x + getMapWidth / 2);
+					//cercle.setCenterY(boid.position.y + getMapHeight/2); 
+					cercle.setCenterX(boid.position.x)
+					cercle.setCenterY(boid.position.y)
 					cercle.setRadius(10.0f);
 					boids_group.getChildren().add(0, cercle)
 				}

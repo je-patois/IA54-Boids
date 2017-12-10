@@ -17,6 +17,7 @@ import fr.utbm.boids.events.BoidBodyInitialized
 import fr.utbm.boids.environment.Obstacle
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import javafx.geometry.Point2D
 
 agent Boid {
 	uses Logging, DefaultContextInteractions
@@ -39,39 +40,21 @@ agent Boid {
 	}
 	
 	on StartPosition {
-		info(occurrence.obstacles)
-		info(occurrence.largeur)
-		info(occurrence.hauteur)
 		var validPosition : AtomicBoolean = new AtomicBoolean(true)
 		var maPosition : Vector
 		var x : AtomicInteger = new AtomicInteger(0)
-		var y : AtomicInteger = new AtomicInteger(0)
-		/*val rnd = new Random()
-		var x = rnd.nextInt()
-		var y = rnd.nextInt()
-		//info("X, Y \n" + x + " " + y)
-		//x %= 50
-		// y = y % 50
-		x %= (occurrence.largeur/2)
-		y = y % (occurrence.hauteur/2)*/
-		
+		var y : AtomicInteger = new AtomicInteger(0)		
 		do {
 			validPosition.set(true)
-			val rnd = new Random()
-			x.set(rnd.nextInt())
-			y.set(rnd.nextInt())
-			// info("X, Y \n" + x + " " + y)
-			// x %= 50
-			// y = y % 50
-			x.set(x.get()%(occurrence.largeur / 2))
-			y.set(y.get() % (occurrence.hauteur / 2))
-			System.out.println("ICI")
+			var rnd = new Random()
+			x.set(rnd.nextInt(occurrence.largeur) + 1)
+			y.set(rnd.nextInt(occurrence.hauteur) + 1)
 			occurrence.obstacles.forEach[o : Obstacle, index : int | 
-				if(o.getPolygon().contains(x.get(), y.get())) {
+				if(o.getPolygon().contains(new Point2D(x.get(), y.get()))) {
 					validPosition.set(false)
 				}
 			]
-		} while(!validPosition.get())
+		} while(validPosition.get() == false)
 		
 		info("X, Y \n" + x + " " + y)
 		maPosition = new Vector(x.get(), y.get())

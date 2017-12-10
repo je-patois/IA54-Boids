@@ -29,6 +29,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import javafx.geometry.Point2D;
 import javax.inject.Inject;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Inline;
@@ -63,12 +64,6 @@ public class Boid extends Agent {
   
   @SyntheticMember
   private void $behaviorUnit$StartPosition$2(final StartPosition occurrence) {
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(occurrence.obstacles);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(Integer.valueOf(occurrence.largeur));
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(Integer.valueOf(occurrence.hauteur));
     AtomicBoolean validPosition = new AtomicBoolean(true);
     Vector maPosition = null;
     AtomicInteger x = new AtomicInteger(0);
@@ -76,27 +71,27 @@ public class Boid extends Agent {
     do {
       {
         validPosition.set(true);
-        final Random rnd = new Random();
-        x.set(rnd.nextInt());
-        y.set(rnd.nextInt());
-        int _get = x.get();
-        int _modulo = (_get % (occurrence.largeur / 2));
-        x.set(_modulo);
-        int _get_1 = y.get();
-        int _modulo_1 = (_get_1 % (occurrence.hauteur / 2));
-        y.set(_modulo_1);
-        System.out.println("ICI");
+        Random rnd = new Random();
+        int _nextInt = rnd.nextInt(occurrence.largeur);
+        int _plus = (_nextInt + 1);
+        x.set(_plus);
+        int _nextInt_1 = rnd.nextInt(occurrence.hauteur);
+        int _plus_1 = (_nextInt_1 + 1);
+        y.set(_plus_1);
         final Procedure2<Obstacle, Integer> _function = (Obstacle o, Integer index) -> {
-          boolean _contains = o.getPolygon().contains(x.get(), y.get());
+          int _get = x.get();
+          int _get_1 = y.get();
+          Point2D _point2D = new Point2D(_get, _get_1);
+          boolean _contains = o.getPolygon().contains(_point2D);
           if (_contains) {
             validPosition.set(false);
           }
         };
         IterableExtensions.<Obstacle>forEach(occurrence.obstacles, _function);
       }
-    } while((!validPosition.get()));
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(((("X, Y \n" + x) + " ") + y));
+    } while((validPosition.get() == false));
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(((("X, Y \n" + x) + " ") + y));
     int _get = x.get();
     int _get_1 = y.get();
     Vector _vector = new Vector(_get, _get_1);

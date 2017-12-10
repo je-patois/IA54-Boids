@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
@@ -94,6 +95,8 @@ public class BoidsFxViewerController extends FxViewerController {
   private List<List<Coordinates>> polygonsCoordinates;
   
   private List<Obstacle> obstacles;
+  
+  private List<Obstacle> obstacleShells;
   
   @Pure
   public int getBoidsQuantity() {
@@ -181,6 +184,9 @@ public class BoidsFxViewerController extends FxViewerController {
         this.polygons.add(_polygon_2);
         final Consumer<Polygon> _function = (Polygon p) -> {
           this.polygonsCoordinates.add(this.generateCoordinates(p));
+          p.setFill(Color.BLUE);
+          p.setStroke(Color.TRANSPARENT);
+          p.setStrokeWidth(20);
         };
         this.polygons.forEach(_function);
         __BoidsFxViewerController_0 command = new __BoidsFxViewerController_0() {
@@ -190,6 +196,9 @@ public class BoidsFxViewerController extends FxViewerController {
               BoidsFxViewerController.this.obstacle_group.getChildren().add(0, p);
             };
             BoidsFxViewerController.this.polygons.forEach(_function);
+            System.out.println("LE TEST");
+            Circle testcircle = new Circle(395, 310, 1);
+            BoidsFxViewerController.this.obstacle_group.getChildren().add(0, testcircle);
           }
         };
         boolean _isFxApplicationThread = Platform.isFxApplicationThread();
@@ -262,16 +271,8 @@ public class BoidsFxViewerController extends FxViewerController {
         for (final BoidBody boid : list) {
           {
             Circle cercle = new Circle();
-            double _x = boid.getPosition().getX();
-            int _mapWidth = BoidsFxViewerController.this.getMapWidth();
-            int _divide = (_mapWidth / 2);
-            double _plus = (_x + _divide);
-            cercle.setCenterX(_plus);
-            double _y = boid.getPosition().getY();
-            int _mapHeight = BoidsFxViewerController.this.getMapHeight();
-            int _divide_1 = (_mapHeight / 2);
-            double _plus_1 = (_y + _divide_1);
-            cercle.setCenterY(_plus_1);
+            cercle.setCenterX(boid.getPosition().getX());
+            cercle.setCenterY(boid.getPosition().getY());
             cercle.setRadius(10.0f);
             BoidsFxViewerController.this.boids_group.getChildren().add(0, cercle);
           }
