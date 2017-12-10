@@ -32,9 +32,11 @@ agent BootAgent {
 		loggingName = "BootAgent-" + this.ID
 		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
 		ctrl.UISpace.register(asEventListener)
-		spawn(Environment, boidsQuantity) 
+		//spawn(Environment, boidsQuantity)
+		spawnInContext(Environment, innerContext, boidsQuantity) 
 		info("Starting simulation")
-		spawn(Scheduler,ctrl)
+		//spawn(Scheduler,ctrl)
+		spawnInContext(Scheduler, innerContext, ctrl)
 	}
 	
 	on ConfigureSimulation {
@@ -55,10 +57,12 @@ agent BootAgent {
 		var obstacles : List<Obstacle> = new ArrayList()
 		obstacles = ctrl.buildMap(this.map)
 		info('ASAA: ' + obstacles)
-		emit(new MapParameters(ctrl.mapWidth, ctrl.mapHeight, obstacles))
-		emit(new BoidsPositions(grid))
-		emit(new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
-		
+		// emit(new MapParameters(ctrl.mapWidth, ctrl.mapHeight, obstacles))
+		// emit(new BoidsPositions(grid))
+		// emit(new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
+		innerContext.defaultSpace.emit(ID, new MapParameters(ctrl.mapWidth, ctrl.mapHeight, obstacles))
+		innerContext.defaultSpace.emit(ID, new BoidsPositions(grid))
+		innerContext.defaultSpace.emit(ID, new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
 	}
 	
 	/*on ListVar {

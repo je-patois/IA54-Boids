@@ -219,20 +219,16 @@ public class Environment extends Agent {
     double positionX = v.getX();
     double positionY = v.getY();
     if ((positionX > this.largeur)) {
-      double _positionX = positionX;
-      positionX = (_positionX - (2 * this.largeur));
+      positionX = 1;
     }
-    if ((positionX < (-this.largeur))) {
-      double _positionX_1 = positionX;
-      positionX = (_positionX_1 + (2 * this.largeur));
+    if ((positionX < 0)) {
+      positionX = (this.largeur - 1);
     }
     if ((positionY > this.hauteur)) {
-      double _positionY = positionY;
-      positionY = (_positionY - (2 * this.hauteur));
+      positionY = 1;
     }
-    if ((positionY < (-this.hauteur))) {
-      double _positionY_1 = positionY;
-      positionY = (_positionY_1 + (2 * this.hauteur));
+    if ((positionY < 0)) {
+      positionY = (this.hauteur - 1);
     }
     Vector newPosition = new Vector(positionX, positionY);
     return newPosition;
@@ -240,6 +236,8 @@ public class Environment extends Agent {
   
   @SyntheticMember
   private void $behaviorUnit$EndSimulation$7(final EndSimulation occurrence) {
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Environment kill");
     Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
     _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.killMe();
   }

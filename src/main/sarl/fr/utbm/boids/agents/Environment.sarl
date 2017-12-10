@@ -39,6 +39,7 @@ import io.sarl.lang.core.Address
 import fr.utbm.boids.events.DemandeDeplacement
 import fr.utbm.boids.environment.Obstacle
 import java.util.List
+import javafx.geometry.Point2D
 
 /*
   * Il va falloir avoir des tableaux d'obstacles et de boids
@@ -130,6 +131,13 @@ agent Environment {
 			}
 		
 		}
+		
+		// pour interdire à un boids d'aller dans un obstacle
+		/*this.obstacles.forEach[o : Obstacle, index : int |
+			if(o.polygon.contains(new Point2D(occurrence.position.x, occurrence.position.y))) {
+				// setter accept à false. Au début on le mettrait à true et on le passerait à false seulement si quelque chose empêche le déplacement
+			}
+		]*/
 			
 		if (accept) {
 			emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
@@ -183,11 +191,11 @@ agent Environment {
 		}
 	}
 
-	def estDansLaCarte(v : Vector) : Vector {	//TODO rajouter tests murs ICI
+	def estDansLaCarte(v : Vector) : Vector {	//TODO rajouter tests murs ICI / Rename ?
 		var positionX = v.getX()
 		var positionY = v.getY()
 		
-		if (positionX > largeur) {
+		/*if (positionX > largeur) {
 			positionX -= 2 * largeur
 		}
 		if (positionX < -largeur) {
@@ -198,13 +206,23 @@ agent Environment {
 		}
 		if (positionY < -hauteur) {
 			positionY += 2 * hauteur
-		}
+		}*/
+		
+		if(positionX > largeur)
+			positionX = 1 // peut-être que 0 marche aussi
+		if(positionX < 0)
+			positionX = largeur - 1 // peut-être que largeur marche aussi
+		if(positionY > hauteur)
+			positionY = 1 // peut-être que 0 marche aussi
+		if(positionY < 0)
+			positionY = hauteur - 1 // peut-être que hauteur marche aussi
 		
 		var newPosition = new Vector(positionX, positionY)
 		return newPosition
 	}
 
 	on EndSimulation {
+		info('Environment kill')
 		killMe
 	}
 

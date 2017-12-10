@@ -11,9 +11,10 @@ import fr.utbm.boids.events.EndSimulation
 import fr.utbm.boids.events.BtnShutdown
 
 import io.sarl.core.Schedules
+import io.sarl.core.Lifecycle
 
 agent GUI {
-	uses Logging, DefaultContextInteractions, Schedules
+	uses Logging, DefaultContextInteractions, Schedules, Lifecycle
 
 	/* -1 if not exiting the app // +x if we quit the app and x agents are alive */
 	var AgentsAlive = -1 
@@ -50,6 +51,11 @@ agent GUI {
 		AgentsAlive = 3
 		/* initialiser au nombre de fils dans context et space */
 		emit(new EndSimulation())
+	}
+
+	on EndSimulation {
+		info('GUI kill')
+		killMe
 	}
 
 	/*on AgentKilled {

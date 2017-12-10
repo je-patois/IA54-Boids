@@ -22,6 +22,7 @@ agent Screen {
 	}
 
 	on EndSimulation {
+		info('Screen kill')
 		killMe
 	}
 

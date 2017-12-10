@@ -1,6 +1,7 @@
 package fr.utbm.boids.gui.fx;
 
 import fr.utbm.boids.gui.fx.AppStart;
+import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
@@ -30,8 +31,9 @@ public abstract class FxViewerController implements EventListener {
   /**
    * Emit a kill signal when the app is exited.
    */
-  @Pure
   public void safeExit() {
+    EndSimulation _endSimulation = new EndSimulation();
+    this.emitToAgents(_endSimulation);
   }
   
   /**
@@ -81,7 +83,6 @@ public abstract class FxViewerController implements EventListener {
    * Catch exit event.
    */
   @FXML
-  @Pure
   public void exitApplication(final ActionEvent event) {
     this.safeExit();
     Platform.exit();

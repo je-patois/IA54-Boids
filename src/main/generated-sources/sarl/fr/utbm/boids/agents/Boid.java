@@ -6,6 +6,7 @@ import fr.utbm.boids.Vector;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.BoidBodyInitialized;
 import fr.utbm.boids.events.DemandeDeplacement;
+import fr.utbm.boids.events.EndSimulation;
 import fr.utbm.boids.events.InitBoidBody;
 import fr.utbm.boids.events.IsStarted;
 import fr.utbm.boids.events.ResultatDeplacement;
@@ -13,6 +14,7 @@ import fr.utbm.boids.events.StartPosition;
 import fr.utbm.boids.events.ValidationDeplacement;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Initialize;
+import io.sarl.core.Lifecycle;
 import io.sarl.core.Logging;
 import io.sarl.lang.annotation.ImportedCapacityFeature;
 import io.sarl.lang.annotation.PerceptGuardEvaluator;
@@ -290,6 +292,14 @@ public class Boid extends Agent {
     return newPosition;
   }
   
+  @SyntheticMember
+  private void $behaviorUnit$EndSimulation$5(final EndSimulation occurrence) {
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Boid kill");
+    Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
+    _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.killMe();
+  }
+  
   @Extension
   @ImportedCapacityFeature(Logging.class)
   @SyntheticMember
@@ -320,6 +330,21 @@ public class Boid extends Agent {
     return $castSkill(DefaultContextInteractions.class, this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
   }
   
+  @Extension
+  @ImportedCapacityFeature(Lifecycle.class)
+  @SyntheticMember
+  private transient ClearableReference<Skill> $CAPACITY_USE$IO_SARL_CORE_LIFECYCLE;
+  
+  @SyntheticMember
+  @Pure
+  @Inline(value = "$castSkill(Lifecycle.class, ($0$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || $0$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? ($0$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = $0$getSkill(Lifecycle.class)) : $0$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE)", imported = Lifecycle.class)
+  private Lifecycle $CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER() {
+    if (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) {
+      this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = $getSkill(Lifecycle.class);
+    }
+    return $castSkill(Lifecycle.class, this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
+  }
+  
   /**
    * gestion des évènements
    */
@@ -345,6 +370,14 @@ public class Boid extends Agent {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartPosition$2(occurrence));
+  }
+  
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$5(occurrence));
   }
   
   @SyntheticMember

@@ -17,7 +17,7 @@ abstract class FxViewerController implements EventListener {
 	/** Emit a kill signal when the app is exited.
 	 */
 	def safeExit {
-		//emitToAgents(new AppExit)
+		emitToAgents(new EndSimulation)
 	}
 	/** Method invoked by the SARL agent to register the object on a space.
 	 */

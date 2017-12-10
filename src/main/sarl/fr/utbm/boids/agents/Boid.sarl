@@ -18,9 +18,11 @@ import fr.utbm.boids.environment.Obstacle
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import javafx.geometry.Point2D
+import fr.utbm.boids.events.EndSimulation
+import io.sarl.core.Lifecycle
 
 agent Boid {
-	uses Logging, DefaultContextInteractions
+	uses Logging, DefaultContextInteractions, Lifecycle
 
 	var body : BoidBody
 	
@@ -282,5 +284,10 @@ agent Boid {
 		info(newPosition)
 		return newPosition
 		
+	}
+	
+	on EndSimulation {
+		info("Boid kill")
+		killMe
 	}
 }
