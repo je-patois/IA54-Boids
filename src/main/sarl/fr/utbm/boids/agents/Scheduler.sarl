@@ -14,6 +14,7 @@ import fr.utbm.boids.events.BoidsToDisplay
 import fr.utbm.boids.gui.BoidsFxViewerController
 import io.sarl.core.Time
 import fr.utbm.boids.gui.fx.EndSimulation
+import fr.utbm.boids.events.SchedulerBeginsScheduling
 
 agent Scheduler {
 	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
@@ -37,23 +38,31 @@ agent Scheduler {
 		emit(new IsStarted("Scheduler"))
 	}
 
-	on StartingSimulation {
+	//on StartingSimulation {
+	on SchedulerBeginsScheduling {
 		info("HEY")
 		online = true
+		//this.freqRafraichissement = occurrence.freqRafraichissement
 		this.freqRafraichissement = occurrence.freqRafraichissement * 100
-		info(freqRafraichissement)
+		//info(freqRafraichissement)
 
-		in(this.freqRafraichissement) [
+		//in(this.freqRafraichissement) [
+		in(1000) [
 			info("je demande")
 			emit(new NeedDataBoids())
 			//lastUpdate = Time.getTime()
-			lastUpdate = System.currentTimeMillis() 
+			//lastUpdate = System.currentTimeMillis() 
 /* 
 			in(this.freqRafraichissement) [
 				info("je redemande")
 			emit(new NeedDataBoids())
-			]*/
-		]
+			 * ]
+			 */
+			in(1000) [task('Scheduling').every(1000) [
+			info("je demande")
+				emit(new NeedDataBoids())
+			]
+		]]
 
 		/*while (true) {
 
@@ -90,10 +99,10 @@ agent Scheduler {
 			}
 		}*/
 		
-		task('Scheduling').every(1000) [
+		/*task('Scheduling').every(1000) [
 			info("je demande")
 			emit(new NeedDataBoids())
-		]
+		]*/
 
 		
 		/*while(online){		//need synchronized?
@@ -119,7 +128,7 @@ agent Scheduler {
 	on EndSimulation {
 		info('Scheduler kill')
 		online = false
-		//task('Scheduling').cancel // Ca fait bugguer, mais faudrait //TODO Cancel la task
+		task('Scheduling').cancel
 		killMe
 	}
 

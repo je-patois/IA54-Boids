@@ -21,9 +21,10 @@ import javafx.geometry.Point2D
 import io.sarl.core.Lifecycle
 import java.util.UUID
 import fr.utbm.boids.gui.fx.EndSimulation
+import io.sarl.core.Schedules
 
 agent Boid {
-	uses Logging, DefaultContextInteractions, Lifecycle
+	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
 
 	var body : BoidBody
 	var parentAgent : UUID
@@ -36,11 +37,20 @@ agent Boid {
 		loggingName = "Boid-" + this.ID
 		info("A Boid agent was started.")
 		parentAgent = occurrence.spawner
-		emit(new IsStarted("Boid"))
+		task('say-started').every(1000) [emit(new IsStarted("Boid"))]
 	}
 	
 	on InitBoidBody {
-		this.body = occurrence.body
+		task('say-started').cancel
+		//this.body = occurrence.body
+		//this.body = new BoidBody(occurrence.body)
+		//info(occurrence.body.groupe)
+		//info(occurrence.body.groupeVitesseMax)
+		//info(occurrence.body.masse)
+		//info(occurrence.body.angleVisibilite)
+		//info(occurrence.body.distanceVisibilite)
+		this.body = new BoidBody(occurrence.body.groupe, occurrence.body.groupeVitesseMax, occurrence.body.masse, occurrence.body.angleVisibilite, occurrence.body.distanceVisibilite)
+		info('Mon body est initialisé!')
 		emit(new BoidBodyInitialized())
 	}
 	
@@ -88,7 +98,7 @@ agent Boid {
 		 *		/ !	\	 On suppose que le Boids que je suis a été supprimé de la liste
 		 *	   /_____\
 		 */	   
-		if (otherBoids != null) {
+		if (otherBoids !== null) {
 			//TODO ici rajouter vitesse de départ du boids
 			
 			//on applique la séparation 
@@ -282,6 +292,8 @@ agent Boid {
 		}
 		
 		//maj position
+		info(this.body.position.x)
+		info(this.body.position.y)
 		newPosition = new Vector(this.body.position)
 		newPosition.plus(this.body.newVitesse)
 		info(newPosition)

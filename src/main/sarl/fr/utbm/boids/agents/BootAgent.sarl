@@ -16,6 +16,10 @@ import fr.utbm.boids.events.BoidsPositions
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
 import java.util.ArrayList
+import io.sarl.core.MemberJoined
+import fr.utbm.boids.events.BoidsReady
+import fr.utbm.boids.events.SchedulerBeginsScheduling
+import io.sarl.lang.core.Address
 
 agent BootAgent {
 	uses Logging, Behaviors, InnerContextAccess, Lifecycle, DefaultContextInteractions
@@ -65,6 +69,14 @@ agent BootAgent {
 		innerContext.defaultSpace.emit(ID, new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
 	}
 	
+	on BoidsReady {
+		info('Les boids sont prêts !')
+		// innerContext.defaultSpace.emit(ID, new SchedulerBeginsScheduling(50))
+		var evt = new SchedulerBeginsScheduling(50)
+		evt.source = new Address(innerContext.defaultSpace.spaceID, ID);
+		innerContext.defaultSpace.emit(ID, evt)
+	}
+	
 	/*on ListVar {
 		this.boidsList = occurrence.list
 		ctrl.updateGraphics(boidsList);
@@ -77,12 +89,8 @@ agent BootAgent {
 	
 	on EndSimulation [hasMemberAgent && !exited] {
 		info("JE VAIS TOUS LES TUER")
+		info(memberAgentCount)
 		exited = true
 		innerContext.defaultSpace.emit(ID, new EndSimulation)
 	}
-
-	/*on MemberJoined [memberAgentCount >= boidsQuantity * boidsPopulation] { // Distinction avec les obstacles qui peut poser problème
-		info("All boids have been created")
-		emit(new AllBoidsCreated)
-	}*/
 }

@@ -8,7 +8,6 @@ import fr.utbm.boids.BoidBody
 import java.util.Map
 import fr.utbm.boids.environment.Obstacle
 import java.util.List
-import java.util.ArrayList
 
 event ConfigureSimulation {
 	val mapSelection : int
@@ -185,3 +184,15 @@ event InitBoidBody{
 }
 
 event BoidBodyInitialized
+
+event BoidsReady
+
+event SchedulerBeginsScheduling {
+	var freqRafraichissement : long
+	
+	new(freqRafraichissement : long) {
+		this.freqRafraichissement = freqRafraichissement
+	}
+}
+
+event BoidsSideReady

@@ -20,6 +20,14 @@ class BoidBody extends EnvObjet{
 		this.distanceVisibilite = distanceVisibilite
 	}
 	
+	new (body : BoidBody) {
+		this.groupe = body.groupe
+		this.groupeVitesseMax = body.groupeVitesseMax
+		this.masse = body.masse
+		this.angleVisibilite = body.angleVisibilite
+		this.distanceVisibilite = body.distanceVisibilite
+	}
+	
 	/*
 	 * GETTER
 	 */

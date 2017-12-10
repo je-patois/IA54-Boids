@@ -34,6 +34,14 @@ public class BoidBody extends EnvObjet {
     this.distanceVisibilite = distanceVisibilite;
   }
   
+  public BoidBody(final BoidBody body) {
+    this.groupe = body.groupe;
+    this.groupeVitesseMax = body.groupeVitesseMax;
+    this.masse = body.masse;
+    this.angleVisibilite = body.angleVisibilite;
+    this.distanceVisibilite = body.distanceVisibilite;
+  }
+  
   /**
    * GETTER
    */
@@ -104,7 +112,6 @@ public class BoidBody extends EnvObjet {
   }
   
   @SuppressWarnings("equals_with_null")
-  @Pure
   public String toString() {
     String retour = null;
     retour = super.toString();

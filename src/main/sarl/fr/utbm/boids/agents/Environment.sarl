@@ -40,6 +40,11 @@ import fr.utbm.boids.environment.Obstacle
 import java.util.List
 import javafx.geometry.Point2D
 import fr.utbm.boids.gui.fx.EndSimulation
+import fr.utbm.boids.events.BoidsReady
+import fr.utbm.boids.events.BoidsSideReady
+import io.sarl.core.Schedules
+import io.sarl.core.Behaviors
+import java.util.concurrent.atomic.AtomicInteger
 
 /*
   * Il va falloir avoir des tableaux d'obstacles et de boids
@@ -48,7 +53,7 @@ import fr.utbm.boids.gui.fx.EndSimulation
   */
  
 agent Environment {
-	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess
+	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess, Behaviors, Schedules
 	
 	var boidsList : Map<UUID,BoidBody>	//liste complète des corps de boids
 	var boidsGrid : Map<Vector, UUID>
@@ -59,7 +64,9 @@ agent Environment {
 	var largeur : int
 	var hauteur : int
 	var obstacles : List<Obstacle>
-	
+	var boidsQuantity : int
+	var populationSize : int
+	var firstTime : boolean
 
 
 	on Initialize {
@@ -68,7 +75,9 @@ agent Environment {
 		boidsUpdated = 0
 		emit(new IsStarted("Environment"))
 		//emit(new IsStarted())
-		//emit(new ListVar(boidsList))
+		// emit(new ListVar(boidsList))
+		this.boidsList = new HashMap<UUID, BoidBody>
+		firstTime = true
 	}
 	
 	on MapParameters {
@@ -79,27 +88,37 @@ agent Environment {
 	
 	on StartingSimulation {
 		info("HO")
-
+		
+		this.boidsQuantity = occurrence.nombreDeBoidsParPopulation
+		this.populationSize = occurrence.nombreDePopulations
+		
 		this.boidsGrid = new HashMap<Vector, UUID>
 		this.boidsList = new HashMap<UUID, BoidBody>
 		this.boidsAddresses = new HashMap<UUID, Address>
 		
 		info ("ready to start ")
-		
-		for (var i = 0; i< occurrence.nombreDePopulations; i++){
+		info('Boids quantity: ' + this.boidsQuantity)
+		info('Population size: ' + this.populationSize)
+		for (var i = 0; i < occurrence.nombreDePopulations; i++) {
 			for (var j = 0 ; j < occurrence.nombreDeBoidsParPopulation; j++){
-				
-				var tempBody = new BoidBody (i + 1, 10, 2, occurrence.visionBoids, 50)		//TODO récupérer masse, vmax et distance de vision depuis l'interface utilisateur (param 2 et 3 et 5)
+				var tempBody = new BoidBody (i, 10, 2, occurrence.visionBoids, 50)		//TODO récupérer masse, vmax et distance de vision depuis l'interface utilisateur (param 2 et 3 et 5)
 				var id = spawnInContext(typeof(Boid), innerContext)
 				this.boidsList.put(id, tempBody)
 			}
-		}
+		} 
 	}
 
-	on IsStarted {
+	on IsStarted [this.boidsList.containsKey(occurrence.source.UUID) == true] {
 		if (occurrence.type == "Boid") {
 			// Quand le Boid est démarré, on lui donne son body
-			innerContext.defaultSpace.emit(ID,new InitBoidBody(this.boidsList.get(occurrence.source.UUID)), Scopes.addresses(occurrence.source))
+			
+			//info('Recherche de ' + occurrence.source.UUID + ' dans: ' + this.boidsList)
+			//info(this.boidsList.get(occurrence.source.UUID).groupe)
+			//info(this.boidsList.get(occurrence.source.UUID).groupeVitesseMax)
+			//info(this.boidsList.get(occurrence.source.UUID).masse)
+			//info(this.boidsList.get(occurrence.source.UUID).angleVisibilite)
+			//info(this.boidsList.get(occurrence.source.UUID).distanceVisibilite)
+			innerContext.defaultSpace.emit(ID, new InitBoidBody(this.boidsList.get(occurrence.source.UUID)), Scopes.addresses(occurrence.source))
 			boidsAddresses.put(occurrence.source.UUID, occurrence.source)
 		}
 	}
@@ -140,17 +159,24 @@ agent Environment {
 		]*/
 			
 		if (accept) {
-			emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
+			info('DEPLACEMENT ACCEPTE')
+			//emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
+			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
 		} else {
 			//TODO resolution des problèmes de collision interBoids
 			
 			//TODO supprimer acceptation collisions
-			emit(new ResultatDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
+			//emit(new ResultatDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
+			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
 		}
 		//info(boidsUpdated)
 		//info (boidsGrid)
 
-		
+		if(boidsUpdated == boidsQuantity * populationSize && firstTime == true) {
+			info('boidsUpdated: ' + boidsUpdated + ', boidsTotal: ' + boidsQuantity * populationSize)
+			wake(new BoidsSideReady)
+			firstTime = false
+		}
 	}
 	
 	
@@ -236,35 +262,14 @@ agent Environment {
 		
 	}
 
-	on AgentSpawned {
-		// A new agent has been spawned in our context.
-	}
-
-	on AgentKilled {
-		// A new agent has been killed in our context.
-	}
-
-	on ContextJoined {
-		// Event trigger when an agent of the level joins a shared context.
-		// Sent to a agent of the same level.
-	}
-
-	on ContextLeft {
-		// Event trigger when an agent of the level jleaves a shared context.
-		// Sent to a agent of the same level.
-	}
-
-	on MemberJoined {
-		// Event trigger when an agent joins one of our shared super-holons.
-		// Sent to all members of the considered super-holon.
-		/*if(occurrence.agentType == 'Boid') {
-			this.boidsGrid.add(occurrence.)
-		}*/
-	}
-
-	on MemberLeft {
-		// Event trigger when an agent leaves one of our shared super-holons.
-		// Sent to all members of the considered super-holon.
+	/*on MemberJoined [occurrence.inInnerDefaultSpace && memberAgentCount == boidsQuantity * populationSize] {
+		info("All boids have been created: " + memberAgentCount)
+		emit(new BoidsReady)
+	}*/
+	
+	on BoidsSideReady {
+		info("All boids have been created: " + boidsUpdated)
+		emit(new BoidsReady)
 	}
 
 	/*on AllBoidsCreated {
