@@ -78,3 +78,5 @@ workspace/
 **/.DS_Store
 sarlide.sh
 dbg.log
+
+*.sarlbin
