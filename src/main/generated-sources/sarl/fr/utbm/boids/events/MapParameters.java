@@ -8,17 +8,6 @@ import io.sarl.lang.core.Event;
 import java.util.List;
 import org.eclipse.xtext.xbase.lib.Pure;
 
-/**
- * event MapParameters {
- * var mapWidth : int
- * var mapHeight : int
- * 
- * new(width : int, height : int) {
- * this.mapWidth = width
- * this.mapHeight = height
- * }
- * }
- */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")

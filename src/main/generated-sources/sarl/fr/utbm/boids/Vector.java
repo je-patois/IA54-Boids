@@ -5,9 +5,6 @@ import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import org.eclipse.xtext.xbase.lib.Pure;
 
-/**
- * Du mal à réutiliser une classe Vector java, malgré l'import il veut pas reconnaitre le type de la variable, je passe par cette classe en attendant
- */
 @SarlSpecification("0.6")
 @SarlElementType(9)
 @SuppressWarnings("all")

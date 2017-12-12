@@ -29,15 +29,6 @@ public class Obstacle {
     this.shape = shape;
   }
   
-  /**
-   * def getInfos() : EnvironmentInfos {
-   * return this.infos
-   * }
-   * 
-   * def setInfos(infos : EnvironmentInfos) : void {
-   * this.infos = infos
-   * }
-   */
   @Pure
   public List<LineTool> getLines() {
     return this.lines;

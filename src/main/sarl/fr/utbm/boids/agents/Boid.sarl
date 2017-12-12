@@ -3,7 +3,6 @@ package fr.utbm.boids.agents
 import io.sarl.core.Initialize
 import io.sarl.core.Logging
 import io.sarl.core.DefaultContextInteractions
-import java.util.Collection
 import fr.utbm.boids.events.IsStarted
 import fr.utbm.boids.events.DemandeDeplacement
 import fr.utbm.boids.events.StartPosition
@@ -43,13 +42,6 @@ agent Boid {
 	
 	on InitBoidBody {
 		task('say-started').cancel
-		//this.body = occurrence.body
-		//this.body = new BoidBody(occurrence.body)
-		//info(occurrence.body.groupe)
-		//info(occurrence.body.groupeVitesseMax)
-		//info(occurrence.body.masse)
-		//info(occurrence.body.angleVisibilite)
-		//info(occurrence.body.distanceVisibilite)
 		this.body = new BoidBody(occurrence.body.groupe, occurrence.body.groupeVitesseMax, occurrence.body.masse, occurrence.body.angleVisibilite, occurrence.body.distanceVisibilite)
 		info('Mon body est initialisé!')
 		emit(new BoidBodyInitialized())
@@ -99,10 +91,8 @@ agent Boid {
 		 *		/ !	\	 On suppose que le Boids que je suis a été supprimé de la liste
 		 *	   /_____\
 		 */	   
-		 info("EST CE QUE L'ON PASSE AU MOINS ICI? PARLE MOIIIIIIIIIIIIIIIIIIII")
+
 		if (otherBoids != null) {
-			info("ON PREND EN COMPTE LES AUTRES BOIDS MON GARS")
-			//TODO ici rajouter vitesse de départ du boids
 			
 			//TODO rajouter dans chaque focntion une vérification que l'on ne se prend pas soi meme en compte pour les calculs
 			//on applique la séparation 
@@ -123,7 +113,6 @@ agent Boid {
 		}
 		
 		//on renvoie la nouvelle position du Boids
-		//info(forceTot + " ceci est la force totale a appliquer !!!!!!!!!!")
 		emit(new ResultatDeplacement(appliquerForce(forceTot)))
 	 
 	}
@@ -148,11 +137,8 @@ agent Boid {
 	 	tmp2 = new Vector(this.body.vitesse)
 	 	
 	 	tmp2.normaliser()
-	 	//tmp2.fois(this.body.groupeVitesseMax)			//TODO m'expliquer pourquoi normaliser avait été changé et pourquoi on voulait faire une multiplication par la vitesseMax
-	 	
-	 	// pas dans le code du prof mais pourtant le vecteur doit l'être pour que la formule marche et ça me parraît pas être "logique" tmp soit déjà normaliser
+
 	 	tmp.normaliser()
-	 	//tmp.fois(this.body.groupeVitesseMax)
 	 	
 	 	if (tmp2.point(tmp) < this.body.angleVisibilite) {
 	 		return false
@@ -166,7 +152,6 @@ agent Boid {
 	 * Création des fonctions comportementales du Boids
 	 */
 	 
-	//TODO test si non utilisation du test du groupe à une influence
 	@SuppressWarnings("equals_with_null")
 	def separation(otherBoids : Map<UUID, BoidBody>) : Vector {
 
@@ -176,17 +161,6 @@ agent Boid {
 
 		force = new Vector(0, 0)
 		tmp = new Vector(0, 0)
-
-		/*otherBoids.forEach [ id, boid |
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid) && id != this.ID) {
-				tmp.setXY(this.body.position)
-				tmp.moins(boid.position)
-				len = tmp.length()
-				tmp.fois(1 / (len * len))
-				force.plus(tmp)
-			}
-		 * ]
-		 */
 		 
 		for (elem : otherBoids.entrySet) {
 			if (elem.key != null && elem.value.groupe == this.body.groupe && /*visible(elem.value) && */elem.key != this.ID) {
@@ -198,17 +172,6 @@ agent Boid {
 			}
 		}
 		
-/* 
-		for (boid : otherBoids) {
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
-				tmp.setXY(this.body.position)
-				tmp.moins(boid.position)
-				len = tmp.length()
-				tmp.fois(1 / (len * len))
-				force.plus(tmp)
-			}
-		}
-*/
 		return force
 
 	}
@@ -220,14 +183,6 @@ agent Boid {
 		var force : Vector 
 		
 		force = new Vector(0,0)
-		
-		/*otherBoids.forEach [ id, boid |
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
-				nbTot++
-				force.plus(boid.position)
-			}
-		 * ]
-		 */
 		 
 		for (elem : otherBoids.entrySet) {
 			if (elem.key != null && elem.value.groupe == this.body.groupe/* && visible(elem.value)*/) {
@@ -235,14 +190,6 @@ agent Boid {
 				force.plus(elem.value.position)
 			}
 		}
-		
-		/*
-		for (boid : otherBoids) {
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)){
-				nbTot++
-				force.plus(boid.position)
-			}
-		}*/
 		
 		if (nbTot > 0){
 			force.fois(1/nbTot)
@@ -263,15 +210,6 @@ agent Boid {
 		
 		force = new Vector(0,0)
 		tmp = new Vector(0,0)
-		
-		/*otherBoids.forEach [ id, boid |
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
-				nbTot++
-				tmp.setXY(boid.vitesse)
-				tmp.fois(1 / tmp.length)
-				force.plus(tmp)
-			}
-		]*/
 
 		for (elem : otherBoids.entrySet) {
 			if (elem.key != null && elem.value.groupe == this.body.groupe/*&& visible(elem.value)*/) {
@@ -281,16 +219,6 @@ agent Boid {
 				force.plus(tmp)
 			}
 		}
-		info(force + " ceci est la force a appliquer !!!!!!!!!!")
-		/*
-		for (boid : otherBoids){
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
-				nbTot++
-				tmp.setXY(boid.vitesse)
-				tmp.fois(1/tmp.length)
-				force.plus(tmp)
-			}
-		}*/
 		
 		if (nbTot > 0) {
 			force.fois(1/nbTot)	
@@ -309,16 +237,6 @@ agent Boid {
 		
 		force = new Vector(0,0)
 		tmp = new Vector(0,0)
-		
-		/*otherBoids.forEach [ id, boid |
-			if (boid != null && boid.groupe != this.body.groupe && visible(boid)) {
-				tmp.setXY(this.body.position)
-				tmp.moins(boid.position)
-				len = tmp.length
-				tmp.fois(1 / (len * len))
-				force.plus(tmp)
-			}
-		]*/
 
 		for (elem : otherBoids.entrySet) {
 			if (elem.key != null && elem.value.groupe != this.body.groupe /*&& visible(elem.value)*/) {
@@ -329,17 +247,6 @@ agent Boid {
 				force.plus(tmp)
 			}
 		}
-		
-		/*
-		for (boid : otherBoids){
-			if (boid != null && boid.groupe != this.body.groupe && visible(boid)){
-				tmp.setXY(this.body.position)
-				tmp.moins(boid.position)
-				len = tmp.length
-				tmp.fois(1/(len*len))
-				force.plus(tmp)
-			}
-		}*/
 		
 		return force
 	}
@@ -363,7 +270,6 @@ agent Boid {
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)
-		//WAT ON ADDITIONNE VITESSE ET ACCELERATION???
 		
 		info("nouvelle vitesse : " + this.body.newVitesse)
 		

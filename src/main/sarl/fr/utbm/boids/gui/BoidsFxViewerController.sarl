@@ -16,14 +16,9 @@ import com.google.common.util.concurrent.AtomicDouble
 import java.util.ArrayList
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
-import javafx.animation.PauseTransition
 import fr.utbm.boids.BoidBody
 import java.util.Collection
-import javafx.scene.shape.Circle
-import java.util.UUID
 import javafx.scene.paint.Color
-import javafx.scene.shape.Shape
-import javafx.geometry.Point2D
 import fr.utbm.boids.Configuration
 
 import static extension javafx.util.Duration.*
@@ -133,22 +128,16 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 					polygons.forEach [ p : Polygon |
 						obstacle_group.getChildren().add(0, p)
 					]
-					/*System.out.println('LE TEST')
-					var testcircle = new Circle(395, 310, 1)
-					//System.out.println(polygons.get(0).contains(new Point2D(testcircle.centerX, testcircle.centerY)))
-					obstacle_group.getChildren().add(0, testcircle)*/
 				}
 		};
 
 			if (Platform.isFxApplicationThread()) {
 				command.run();
 				this.generateObstacles()
-				// this.obstacles.forEach[o : Obstacle|System.out.println(o.toString())]
 				return this.obstacles
 			} else {
 				Platform.runLater(command);
 				this.generateObstacles()
-				// this.obstacles.forEach[o : Obstacle|System.out.println(o.toString())]
 				return this.obstacles
 			}
 		}
@@ -190,16 +179,7 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 			@Override
 			def run() {
 				boids_group.getChildren().clear()
-				// TODO reduire taille de la partie d'affichage pour les boids + mettre une couleur en fonction du groupe + remplacer cercle par triangle
 				for (boid : list){
-					/*var cercle = new Circle()
-					//cercle.setCenterX(boid.position.x + getMapWidth / 2);
-					//cercle.setCenterY(boid.position.y + getMapHeight/2); 
-					cercle.setCenterX(boid.position.x)
-					cercle.setCenterY(boid.position.y)
-					cercle.setRadius(10.0f);
-					cercle.fill = COLOR_FAMILY.get(boid.groupe)
-					boids_group.getChildren().add(0, cercle)*/
 					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y, boid.position.x + 5, boid.position.y + 15, boid.position.x - 5, boid.position.y + 15)
 					boidElement.setFill(COLOR_FAMILY.get(boid.groupe))
 					boids_group.getChildren().add(0, boidElement)

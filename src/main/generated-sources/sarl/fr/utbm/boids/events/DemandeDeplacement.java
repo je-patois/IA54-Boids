@@ -13,20 +13,8 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(14)
 @SuppressWarnings("all")
 public class DemandeDeplacement extends Event {
-  /**
-   * var otherBoids : Collection<BoidBody>
-   */
   public Map<UUID, BoidBody> otherBoids;
   
-  /**
-   * new (pos : Vector, otherBoids : Collection<BoidBody>) {
-   * this.otherBoids = otherBoids
-   * }
-   * 
-   * new (x : int, y : int, otherBoids : Collection<BoidBody>) {
-   * this.otherBoids = otherBoids
-   * }
-   */
   public DemandeDeplacement() {
   }
   

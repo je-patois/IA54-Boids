@@ -13,7 +13,6 @@ import fr.utbm.boids.events.StartingSimulation;
 import fr.utbm.boids.gui.BoidsFxViewerController;
 import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.core.Behaviors;
-import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Initialize;
 import io.sarl.core.InnerContextAccess;
 import io.sarl.core.Lifecycle;
@@ -229,21 +228,6 @@ public class BootAgent extends Agent {
     return $castSkill(Lifecycle.class, this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
   }
   
-  @Extension
-  @ImportedCapacityFeature(DefaultContextInteractions.class)
-  @SyntheticMember
-  private transient ClearableReference<Skill> $CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS;
-  
-  @SyntheticMember
-  @Pure
-  @Inline(value = "$castSkill(DefaultContextInteractions.class, ($0$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || $0$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? ($0$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = $0$getSkill(DefaultContextInteractions.class)) : $0$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS)", imported = DefaultContextInteractions.class)
-  private DefaultContextInteractions $CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER() {
-    if (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) {
-      this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = $getSkill(DefaultContextInteractions.class);
-    }
-    return $castSkill(DefaultContextInteractions.class, this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-  }
-  
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$Initialize(final Initialize occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -260,12 +244,6 @@ public class BootAgent extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsReady$3(occurrence));
   }
   
-  /**
-   * on ListVar {
-   * this.boidsList = occurrence.list
-   * ctrl.updateGraphics(boidsList);
-   * }
-   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {

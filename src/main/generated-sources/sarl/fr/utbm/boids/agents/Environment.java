@@ -27,7 +27,6 @@ import io.sarl.core.Initialize;
 import io.sarl.core.InnerContextAccess;
 import io.sarl.core.Lifecycle;
 import io.sarl.core.Logging;
-import io.sarl.core.Schedules;
 import io.sarl.lang.annotation.ImportedCapacityFeature;
 import io.sarl.lang.annotation.PerceptGuardEvaluator;
 import io.sarl.lang.annotation.SarlElementType;
@@ -111,8 +110,6 @@ public class Environment extends Agent {
   
   @SyntheticMember
   private void $behaviorUnit$StartingSimulation$2(final StartingSimulation occurrence) {
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("HO");
     this.boidsQuantity = occurrence.nombreDeBoidsParPopulation;
     this.populationSize = occurrence.nombreDePopulations;
     HashMap<Vector, UUID> _hashMap = new HashMap<Vector, UUID>();
@@ -121,12 +118,12 @@ public class Environment extends Agent {
     this.boidsList = _hashMap_1;
     HashMap<UUID, Address> _hashMap_2 = new HashMap<UUID, Address>();
     this.boidsAddresses = _hashMap_2;
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("ready to start ");
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("ready to start ");
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(("Boids quantity: " + Integer.valueOf(this.boidsQuantity)));
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(("Boids quantity: " + Integer.valueOf(this.boidsQuantity)));
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(("Population size: " + Integer.valueOf(this.populationSize)));
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(("Population size: " + Integer.valueOf(this.populationSize)));
     for (int i = 0; (i < occurrence.nombreDePopulations); i++) {
       for (int j = 0; (j < occurrence.nombreDeBoidsParPopulation); j++) {
         {
@@ -234,11 +231,9 @@ public class Environment extends Agent {
       this.boidsUpdated = 0;
       final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
         Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-        _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info("REGARDER ICI IIIIIIIIIIIIIIIIIIIIIIIII");
-        Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
         String _plus = (id + " ");
         String _plus_1 = (_plus + address);
-        _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(_plus_1);
+        _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus_1);
         InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
         DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
         _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
@@ -397,21 +392,6 @@ public class Environment extends Agent {
     return $castSkill(Behaviors.class, this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
   }
   
-  @Extension
-  @ImportedCapacityFeature(Schedules.class)
-  @SyntheticMember
-  private transient ClearableReference<Skill> $CAPACITY_USE$IO_SARL_CORE_SCHEDULES;
-  
-  @SyntheticMember
-  @Pure
-  @Inline(value = "$castSkill(Schedules.class, ($0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || $0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? ($0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = $0$getSkill(Schedules.class)) : $0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES)", imported = Schedules.class)
-  private Schedules $CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER() {
-    if (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) {
-      this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = $getSkill(Schedules.class);
-    }
-    return $castSkill(Schedules.class, this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
-  }
-  
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$Initialize(final Initialize occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -420,13 +400,6 @@ public class Environment extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Initialize$0(occurrence));
   }
   
-  /**
-   * on AllBoidsCreated {
-   * boids = getDefaultContext().defaultSpace.participants.toArray;
-   * info(boids)
-   * boids.get(2).
-   * }
-   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$BoidsPositions(final BoidsPositions occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -435,12 +408,6 @@ public class Environment extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsPositions$11(occurrence));
   }
   
-  /**
-   * on MemberJoined [occurrence.inInnerDefaultSpace && memberAgentCount == boidsQuantity * populationSize] {
-   * info("All boids have been created: " + memberAgentCount)
-   * emit(new BoidsReady)
-   * }
-   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$BoidsSideReady(final BoidsSideReady occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {

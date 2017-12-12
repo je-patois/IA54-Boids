@@ -3,7 +3,6 @@ package fr.utbm.boids.agents;
 import fr.utbm.boids.events.BtnLaunch;
 import fr.utbm.boids.events.BtnShutdown;
 import fr.utbm.boids.events.IsStarted;
-import fr.utbm.boids.events.MakeTheFiestaBegin;
 import fr.utbm.boids.events.StartingSimulation;
 import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.core.DefaultContextInteractions;
@@ -50,16 +49,7 @@ public class GUI extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$MakeTheFiestaBegin$1(final MakeTheFiestaBegin occurrence) {
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Début de la fiesta");
-    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    BtnLaunch _btnLaunch = new BtnLaunch();
-    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_btnLaunch);
-  }
-  
-  @SyntheticMember
-  private void $behaviorUnit$BtnLaunch$2(final BtnLaunch occurrence) {
+  private void $behaviorUnit$BtnLaunch$1(final BtnLaunch occurrence) {
     final int nbPop = 3;
     final int nbBoids = 20;
     final int visionBoids = 10;
@@ -77,7 +67,7 @@ public class GUI extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$BtnShutdown$3(final BtnShutdown occurrence) {
+  private void $behaviorUnit$BtnShutdown$2(final BtnShutdown occurrence) {
     this.AgentsAlive = 3;
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     EndSimulation _endSimulation = new EndSimulation();
@@ -85,7 +75,7 @@ public class GUI extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$4(final EndSimulation occurrence) {
+  private void $behaviorUnit$EndSimulation$3(final EndSimulation occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("GUI kill");
     Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
@@ -165,18 +155,10 @@ public class GUI extends Agent {
   
   @SyntheticMember
   @PerceptGuardEvaluator
-  private void $guardEvaluator$MakeTheFiestaBegin(final MakeTheFiestaBegin occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MakeTheFiestaBegin$1(occurrence));
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
   private void $guardEvaluator$BtnLaunch(final BtnLaunch occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BtnLaunch$2(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BtnLaunch$1(occurrence));
   }
   
   @SyntheticMember
@@ -184,7 +166,7 @@ public class GUI extends Agent {
   private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$4(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$3(occurrence));
   }
   
   @SyntheticMember
@@ -192,7 +174,7 @@ public class GUI extends Agent {
   private void $guardEvaluator$BtnShutdown(final BtnShutdown occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BtnShutdown$3(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BtnShutdown$2(occurrence));
   }
   
   @Override

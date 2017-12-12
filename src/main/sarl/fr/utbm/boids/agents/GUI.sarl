@@ -3,7 +3,6 @@ package fr.utbm.boids.agents
 import io.sarl.core.Initialize
 import io.sarl.core.Logging
 import io.sarl.core.DefaultContextInteractions
-import fr.utbm.boids.events.MakeTheFiestaBegin
 import fr.utbm.boids.events.IsStarted
 import fr.utbm.boids.events.BtnLaunch
 import fr.utbm.boids.events.StartingSimulation
@@ -25,14 +24,6 @@ agent GUI {
 		loggingName = "GUI"
 		info("The GUI is started.")
 		emit(new IsStarted("GUI"))
-	}
-	
-	on MakeTheFiestaBegin {
-		info("Début de la fiesta")
-		
-		
-		/* TODO Delete fake simu launcher */
-		emit(new BtnLaunch());
 	}
 	
 	on BtnLaunch {
@@ -57,10 +48,4 @@ agent GUI {
 		killMe
 	}
 
-	/*on AgentKilled {
-		AgentsAlive -= 1
-		if (AgentsAlive == 0){
-			killMe
-		}
-	}*/
 }

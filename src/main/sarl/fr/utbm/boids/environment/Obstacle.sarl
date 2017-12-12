@@ -4,7 +4,6 @@ import fr.utbm.boids.util.LineTool
 import java.util.List
 import javafx.scene.shape.Polygon
 
-// import fr.utbm.boids.util.EnvironmentInfos
 
 class Obstacle {
 	
@@ -25,13 +24,7 @@ class Obstacle {
 		this.shape = shape
 	}
 	
-	/*def getInfos() : EnvironmentInfos {
-		return this.infos
-	}
-	
-	def setInfos(infos : EnvironmentInfos) : void {
-		this.infos = infos
-	}*/
+
 	
 	def getLines() : List<LineTool> {
 		return this.lines

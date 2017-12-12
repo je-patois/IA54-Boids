@@ -145,12 +145,8 @@ public class Boid extends Agent {
     Vector forceTot = null;
     Vector _vector = new Vector(0, 0);
     forceTot = _vector;
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("EST CE QUE L\'ON PASSE AU MOINS ICI? PARLE MOIIIIIIIIIIIIIIIIIIII");
     boolean _notEquals = (!Objects.equal(otherBoids, null));
     if (_notEquals) {
-      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("ON PREND EN COMPTE LES AUTRES BOIDS MON GARS");
       forceTot.plus(this.separation(otherBoids));
       forceTot.plus(this.cohesion(otherBoids));
       forceTot.plus(this.alignement(otherBoids));
@@ -257,9 +253,6 @@ public class Boid extends Agent {
         force.plus(tmp);
       }
     }
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    String _plus = (force + " ceci est la force a appliquer !!!!!!!!!!");
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(_plus);
     if ((nbTot > 0)) {
       force.fois((1 / nbTot));
     }

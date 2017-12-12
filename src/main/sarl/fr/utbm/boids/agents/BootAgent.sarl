@@ -8,7 +8,6 @@ import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.ConfigureSimulation
 import fr.utbm.boids.gui.BoidsFxViewerController
 import io.sarl.core.Behaviors
-import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.GenerateMap
 import fr.utbm.boids.events.MapParameters
@@ -16,13 +15,12 @@ import fr.utbm.boids.events.BoidsPositions
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
 import java.util.ArrayList
-import io.sarl.core.MemberJoined
 import fr.utbm.boids.events.BoidsReady
 import fr.utbm.boids.events.SchedulerBeginsScheduling
 import io.sarl.lang.core.Address
 
 agent BootAgent {
-	uses Logging, Behaviors, InnerContextAccess, Lifecycle, DefaultContextInteractions
+	uses Logging, Behaviors, InnerContextAccess, Lifecycle
 	
 	var map : int
 	var boidsQuantity : int
@@ -36,10 +34,8 @@ agent BootAgent {
 		loggingName = "BootAgent-" + this.ID
 		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
 		ctrl.UISpace.register(asEventListener)
-		//spawn(Environment, boidsQuantity)
 		spawnInContext(typeof(Environment), innerContext, boidsQuantity) 
 		info("Starting simulation")
-		//spawn(Scheduler,ctrl)
 		spawnInContext(typeof(Scheduler), innerContext, ctrl)
 	}
 	
@@ -61,9 +57,6 @@ agent BootAgent {
 		var obstacles : List<Obstacle> = new ArrayList()
 		obstacles = ctrl.buildMap(this.map)
 		info('ASAA: ' + obstacles)
-		// emit(new MapParameters(ctrl.mapWidth, ctrl.mapHeight, obstacles))
-		// emit(new BoidsPositions(grid))
-		// emit(new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
 		innerContext.defaultSpace.emit(ID, new MapParameters(ctrl.mapWidth, ctrl.mapHeight, obstacles))
 		innerContext.defaultSpace.emit(ID, new BoidsPositions(grid))
 		innerContext.defaultSpace.emit(ID, new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
@@ -71,16 +64,10 @@ agent BootAgent {
 	
 	on BoidsReady {
 		info('Les boids sont prêts !')
-		// innerContext.defaultSpace.emit(ID, new SchedulerBeginsScheduling(50))
 		var evt = new SchedulerBeginsScheduling(50)
 		evt.source = new Address(innerContext.defaultSpace.spaceID, ID);
 		innerContext.defaultSpace.emit(ID, evt)
 	}
-	
-	/*on ListVar {
-		this.boidsList = occurrence.list
-		ctrl.updateGraphics(boidsList);
-	}*/
 
 	on EndSimulation [!hasMemberAgent] {
 		info("The simulation has ended.")

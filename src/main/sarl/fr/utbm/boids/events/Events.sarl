@@ -23,16 +23,6 @@ event ConfigureSimulation {
 	}
 }
 
-/*event MapParameters {
-	var mapWidth : int
-	var mapHeight : int
-
-	new(width : int, height : int) {
-		this.mapWidth = width
-		this.mapHeight = height
-	}
-}*/
-
 event MapParameters {
 	var mapWidth : int
 	var mapHeight : int
@@ -57,20 +47,9 @@ event IsStarted {
 	}
 }
 
-event MakeTheFiestaBegin
-
 event DemandeDeplacement {
 
-	/*var otherBoids : Collection<BoidBody>*/
 	var otherBoids : Map<UUID, BoidBody>
-
-	/*new (pos : Vector, otherBoids : Collection<BoidBody>) {
-		this.otherBoids = otherBoids
-	}
-
-	new (x : int, y : int, otherBoids : Collection<BoidBody>) {
-		this.otherBoids = otherBoids
-	}*/
 	
 	//provisoire
 	new() {
@@ -88,9 +67,6 @@ event ResultatDeplacement {
 		this.position = pos
 	}
 
-	/*new (x : int, y : int) {
-		this.position.setXY(x, y)
-	}*/
 }
 
 event ValidationDeplacement{
@@ -115,16 +91,6 @@ event StartingSimulation {
 	}
 }
 
-/*event StartPosition {
-	var hauteur : int 
-	var largeur : int 
-	
-	new (h : int, l : int ){
-		this.hauteur = h
-		this.largeur = l
-	}
- * }
- */
  
 event StartPosition {
 	var hauteur : int

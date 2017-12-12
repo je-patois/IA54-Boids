@@ -8,17 +8,6 @@ import io.sarl.lang.core.Event;
 import java.util.List;
 import org.eclipse.xtext.xbase.lib.Pure;
 
-/**
- * event StartPosition {
- * var hauteur : int
- * var largeur : int
- * 
- * new (h : int, l : int ){
- * this.hauteur = h
- * this.largeur = l
- * }
- * }
- */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")

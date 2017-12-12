@@ -1,6 +1,6 @@
 package fr.utbm.boids
 
-/* Du mal à réutiliser une classe Vector java, malgré l'import il veut pas reconnaitre le type de la variable, je passe par cette classe en attendant  */
+
 class Vector {
 	var x : double
 	var y : double
