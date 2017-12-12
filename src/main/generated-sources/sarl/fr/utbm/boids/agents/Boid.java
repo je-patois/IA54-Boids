@@ -152,10 +152,10 @@ public class Boid extends Agent {
       Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
       _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("ON PREND EN COMPTE LES AUTRES BOIDS MON GARS");
       forceTot.plus(this.separation(otherBoids));
-      forceTot.plus(this.cohesion(otherBoids));
-      forceTot.plus(this.alignement(otherBoids));
-      forceTot.plus(this.repulsion(otherBoids));
     }
+    forceTot.fois(100000);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(("force totale " + forceTot));
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     Vector _appliquerForce = this.appliquerForce(forceTot);
     ResultatDeplacement _resultatDeplacement = new ResultatDeplacement(_appliquerForce);
@@ -293,12 +293,9 @@ public class Boid extends Agent {
     Vector acceleration = null;
     Vector _vector = new Vector(force);
     acceleration = _vector;
-    int _masse = this.body.getMasse();
-    int _divide = (1 / _masse);
-    acceleration.fois(_divide);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("acceleration : " + acceleration));
-    Vector _vector_1 = new Vector(5, 5);
+    Vector _vector_1 = new Vector(0, 0);
     this.body.setVitesse(_vector_1);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     Vector _vitesse = this.body.getVitesse();
