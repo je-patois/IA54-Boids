@@ -200,6 +200,9 @@ public class Boid extends Agent {
     Vector force = null;
     Vector tmp = null;
     double len = 0;
+    double xelem = 0;
+    double yelem = 0;
+    Vector tmpelem = null;
     Vector _vector = new Vector(0, 0);
     force = _vector;
     Vector _vector_1 = new Vector(0, 0);
@@ -207,8 +210,98 @@ public class Boid extends Agent {
     Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
       if ((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe())) && (!Objects.equal(elem.getKey(), this.getID())))) {
+        double _x = this.body.getPosition().getX();
+        double _x_1 = elem.getValue().getPosition().getX();
+        double _minus = (_x - _x_1);
+        double _x_2 = this.body.getPosition().getX();
+        double _x_3 = elem.getValue().getPosition().getX();
+        double _minus_1 = (_x_3 - 800);
+        double _minus_2 = (_x_2 - _minus_1);
+        boolean _lessThan = (_minus < _minus_2);
+        if (_lessThan) {
+          double _x_4 = this.body.getPosition().getX();
+          double _x_5 = elem.getValue().getPosition().getX();
+          double _minus_3 = (_x_4 - _x_5);
+          double _x_6 = this.body.getPosition().getX();
+          double _x_7 = elem.getValue().getPosition().getX();
+          double _plus = (_x_7 + 800);
+          double _minus_4 = (_x_6 - _plus);
+          boolean _lessThan_1 = (_minus_3 < _minus_4);
+          if (_lessThan_1) {
+            xelem = elem.getValue().getPosition().getX();
+          } else {
+            double _x_8 = elem.getValue().getPosition().getX();
+            double _plus_1 = (_x_8 + 800);
+            xelem = _plus_1;
+          }
+        } else {
+          double _x_9 = this.body.getPosition().getX();
+          double _x_10 = elem.getValue().getPosition().getX();
+          double _minus_5 = (_x_10 - 800);
+          double _minus_6 = (_x_9 - _minus_5);
+          double _x_11 = this.body.getPosition().getX();
+          double _x_12 = elem.getValue().getPosition().getX();
+          double _plus_2 = (_x_12 + 800);
+          double _minus_7 = (_x_11 - _plus_2);
+          boolean _lessThan_2 = (_minus_6 < _minus_7);
+          if (_lessThan_2) {
+            double _x_13 = elem.getValue().getPosition().getX();
+            double _minus_8 = (_x_13 - 800);
+            xelem = _minus_8;
+          } else {
+            double _x_14 = elem.getValue().getPosition().getX();
+            double _plus_3 = (_x_14 + 800);
+            xelem = _plus_3;
+          }
+        }
+        double _y = this.body.getPosition().getY();
+        double _y_1 = elem.getValue().getPosition().getY();
+        double _minus_9 = (_y - _y_1);
+        double _y_2 = this.body.getPosition().getY();
+        double _y_3 = elem.getValue().getPosition().getY();
+        double _minus_10 = (_y_3 - 600);
+        double _minus_11 = (_y_2 - _minus_10);
+        boolean _lessThan_3 = (_minus_9 < _minus_11);
+        if (_lessThan_3) {
+          double _y_4 = this.body.getPosition().getY();
+          double _y_5 = elem.getValue().getPosition().getY();
+          double _minus_12 = (_y_4 - _y_5);
+          double _y_6 = this.body.getPosition().getY();
+          double _y_7 = elem.getValue().getPosition().getY();
+          double _plus_4 = (_y_7 + 600);
+          double _minus_13 = (_y_6 - _plus_4);
+          boolean _lessThan_4 = (_minus_12 < _minus_13);
+          if (_lessThan_4) {
+            yelem = elem.getValue().getPosition().getY();
+          } else {
+            double _y_8 = elem.getValue().getPosition().getY();
+            double _plus_5 = (_y_8 + 600);
+            yelem = _plus_5;
+          }
+        } else {
+          double _y_9 = this.body.getPosition().getY();
+          double _y_10 = elem.getValue().getPosition().getY();
+          double _minus_14 = (_y_10 - 600);
+          double _minus_15 = (_y_9 - _minus_14);
+          double _y_11 = this.body.getPosition().getY();
+          double _y_12 = elem.getValue().getPosition().getY();
+          double _plus_6 = (_y_12 + 600);
+          double _minus_16 = (_y_11 - _plus_6);
+          boolean _lessThan_5 = (_minus_15 < _minus_16);
+          if (_lessThan_5) {
+            double _y_13 = elem.getValue().getPosition().getY();
+            double _minus_17 = (_y_13 - 600);
+            yelem = _minus_17;
+          } else {
+            double _y_14 = elem.getValue().getPosition().getY();
+            double _plus_7 = (_y_14 + 600);
+            yelem = _plus_7;
+          }
+        }
+        Vector _vector_2 = new Vector((xelem % 800), (yelem % 600));
+        tmpelem = _vector_2;
         tmp.setXY(this.body.getPosition());
-        tmp.moins(elem.getValue().getPosition());
+        tmp.moins(tmpelem);
         len = tmp.length();
         tmp.fois((1 / (len * len)));
         force.plus(tmp);

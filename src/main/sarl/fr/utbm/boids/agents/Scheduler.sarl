@@ -58,7 +58,7 @@ agent Scheduler {
 			emit(new NeedDataBoids())
 			 * ]
 			 */
-			in(1000) [task('Scheduling').every(1000) [
+			in(1000) [task('Scheduling').every(50) [
 				info("je demande")
 				emit(new NeedDataBoids())
 			]

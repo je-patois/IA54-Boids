@@ -89,7 +89,7 @@ public class Scheduler extends Agent {
           NeedDataBoids _needDataBoids_1 = new NeedDataBoids();
           _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER_1.emit(_needDataBoids_1);
         };
-        _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_2.every(_$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_3.task("Scheduling"), 1000, _function_2);
+        _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_2.every(_$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_3.task("Scheduling"), 50, _function_2);
       };
       _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1.in(1000, _function_1);
     };
