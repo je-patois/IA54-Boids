@@ -13,8 +13,11 @@ import org.eclipse.xtext.xbase.lib.Pure;
 public class ResultatDeplacement extends Event {
   public Vector position;
   
-  public ResultatDeplacement(final Vector pos) {
+  public Vector newVitesse;
+  
+  public ResultatDeplacement(final Vector pos, final Vector vit) {
     this.position = pos;
+    this.newVitesse = vit;
   }
   
   @Override
@@ -40,9 +43,10 @@ public class ResultatDeplacement extends Event {
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
     result.append("position  = ").append(this.position);
+    result.append("newVitesse  = ").append(this.newVitesse);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = -107835186L;
+  private final static long serialVersionUID = 1298862813L;
 }

@@ -59,11 +59,13 @@ agent Boid {
 	on StartPosition {
 		var validPosition : AtomicBoolean = new AtomicBoolean(true)
 		var maPosition : Vector
+		var rnd = new Random()
 		var x : AtomicInteger = new AtomicInteger(0)
-		var y : AtomicInteger = new AtomicInteger(0)		
+		var y : AtomicInteger = new AtomicInteger(0)
+		var vx : AtomicInteger = new AtomicInteger(0)
+		var vy : AtomicInteger = new AtomicInteger(0)	
 		do {
 			validPosition.set(true)
-			var rnd = new Random()
 			x.set(rnd.nextInt(occurrence.largeur) + 1)
 			y.set(rnd.nextInt(occurrence.hauteur) + 1)
 			occurrence.obstacles.forEach[o : Obstacle, index : int | 
@@ -75,7 +77,17 @@ agent Boid {
 		
 		info("X, Y \n" + x + " " + y)
 		maPosition = new Vector(x.get(), y.get())
-		emit(new ResultatDeplacement(maPosition))
+		//définition d'une vitesse aléatoire 
+		vx.set(rnd.nextInt(this.body.groupeVitesseMax))
+		vy.set(rnd.nextInt(this.body.groupeVitesseMax))
+		this.body.newVitesse = new Vector (vx.get(),vy.get())
+		// vmax est en ligne droite, on vérifie qu'avec vx et vy on dépasse pas la longueur de vmax
+		if (this.body.newVitesse.length > this.body.groupeVitesseMax) {
+			this.body.newVitesse.normaliser()
+			this.body.newVitesse.fois(this.body.groupeVitesseMax)
+		}
+		
+		emit(new ResultatDeplacement(maPosition, this.body.newVitesse))
 	}
 
 	// Si le déplacement est validé, on enregistre la nouvelle position du Boids, ainsi que sa nouvelle vitesse
@@ -83,6 +95,8 @@ agent Boid {
 		this.body.position = occurrence.position
 		this.body.vitesse = this.body.newVitesse
 		info("Validation de la position")
+		info ("vitesse boids :    " + this.body.vitesse)
+		info ("position boids : " + this.body.position)
 	}
 	
 	@SuppressWarnings("equals_with_null")
@@ -107,17 +121,17 @@ agent Boid {
 			
 			//TODO rajouter dans chaque focntion une vérification que l'on ne se prend pas soi meme en compte pour les calculs
 			//on applique la séparation 
-			forceTot.plus(separation(otherBoids))
-			/*
+			//forceTot.plus(separation(otherBoids))
+			
 			//on applique la cohésion
-			forceTot.plus(cohesion(otherBoids))
+			//forceTot.plus(cohesion(otherBoids))				
 			
 			//on applique l'alignement
 			forceTot.plus(alignement(otherBoids))
 
 			//on applique la répulsion
-			forceTot.plus(repulsion(otherBoids))
-			*/
+			//forceTot.plus(repulsion(otherBoids))
+			
 			//on applique la force résultant de la détection des obstacles
 		 
 			// TODO appliquer force obstacle
@@ -128,7 +142,7 @@ agent Boid {
 
 		//on renvoie la nouvelle position du Boids
 		//info(forceTot + " ceci est la force totale a appliquer !!!!!!!!!!")
-		emit(new ResultatDeplacement(appliquerForce(forceTot)))
+		emit(new ResultatDeplacement(appliquerForce(forceTot), this.body.newVitesse))
 	 
 	}
 	
@@ -261,29 +275,13 @@ agent Boid {
 		var force : Vector 
 		
 		force = new Vector(0,0)
-		
-		/*otherBoids.forEach [ id, boid |
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
-				nbTot++
-				force.plus(boid.position)
-			}
-		 * ]
-		 */
 		 
 		for (elem : otherBoids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe/* && visible(elem.value)*/) {
+			if (elem.key != null && elem.key != ID  && elem.value.groupe == this.body.groupe /* && visible(elem.value)*/) {
 				nbTot++
 				force.plus(elem.value.position)
 			}
 		}
-		
-		/*
-		for (boid : otherBoids) {
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)){
-				nbTot++
-				force.plus(boid.position)
-			}
-		}*/
 		
 		if (nbTot > 0){
 			force.fois(1/nbTot)
@@ -315,7 +313,7 @@ agent Boid {
 		]*/
 
 		for (elem : otherBoids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe/*&& visible(elem.value)*/) {
+			if (elem.key != null && elem.key != ID && elem.value.groupe == this.body.groupe/*&& visible(elem.value)*/) {
 				nbTot++
 				tmp.setXY(elem.value.position)
 				tmp.fois(1 / tmp.length)
@@ -399,8 +397,8 @@ agent Boid {
 		info("acceleration : " + acceleration)
 
 		//DEFINITION EN DUR ICI
-		this.body.vitesse = new Vector(0, 0)
-		info("bodyVitesse : " + this.body.vitesse)
+		//this.body.vitesse = new Vector(0, 0)
+		//info("bodyVitesse : " + this.body.vitesse)
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)

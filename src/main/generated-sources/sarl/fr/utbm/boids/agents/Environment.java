@@ -185,6 +185,11 @@ public class Environment extends Agent {
         accept = true;
       }
     }
+    synchronized (this.boidsList) {
+      BoidBody modifBody = this.boidsList.get(occurrence.getSource().getUUID());
+      modifBody.setVitesse(occurrence.newVitesse);
+      this.boidsList.put(occurrence.getSource().getUUID(), modifBody);
+    }
     if (accept) {
       Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
       _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("DEPLACEMENT ACCEPTE");
@@ -224,6 +229,10 @@ public class Environment extends Agent {
         for (final Map.Entry<Vector, UUID> elem : _entrySet) {
           {
             BoidBody modifBody = this.boidsList.get(elem.getValue());
+            Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+            Vector _vitesse = modifBody.getVitesse();
+            String _plus = ("vitesse boid  dans env :   " + _vitesse);
+            _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus);
             modifBody.setPosition(elem.getKey());
             this.boidsList.put(elem.getValue(), modifBody);
           }

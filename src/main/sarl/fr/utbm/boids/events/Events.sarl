@@ -33,6 +33,7 @@ event ConfigureSimulation {
 	}
 }*/
 
+
 event MapParameters {
 	var mapWidth : int
 	var mapHeight : int
@@ -83,9 +84,11 @@ event DemandeDeplacement {
 
 event ResultatDeplacement {
 	var position : Vector
+	var newVitesse : Vector
 
-	new (pos : Vector) {
+	new (pos : Vector, vit : Vector) {
 		this.position = pos
+		this.newVitesse = vit
 	}
 
 	/*new (x : int, y : int) {

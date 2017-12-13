@@ -201,6 +201,7 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 					cercle.fill = COLOR_FAMILY.get(boid.groupe)
 					boids_group.getChildren().add(0, cercle)*/
 					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y - 7.5, boid.position.x + 5, boid.position.y + 7.5, boid.position.x - 5, boid.position.y + 7.5)
+					boidElement.rotate = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
 					boidElement.setFill(COLOR_FAMILY.get(boid.groupe))
 					boids_group.getChildren().add(0, boidElement)
 				}

@@ -279,6 +279,10 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
             double _y_2 = boid.getPosition().getY();
             double _plus_2 = (_y_2 + 7.5);
             Polygon boidElement = new Polygon(_x, _minus, _plus, _plus_1, _minus_1, _plus_2);
+            double _x_3 = boid.getVitesse().getX();
+            double _y_3 = boid.getVitesse().getY();
+            double _divide = (_x_3 / _y_3);
+            boidElement.setRotate(Math.toDegrees(Math.atan(_divide)));
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
             BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
           }
@@ -376,20 +380,29 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    BoidsFxViewerController other = (BoidsFxViewerController) obj;
+    if (other.launched != this.launched)
+      return false;
+    if (other.mapCreated != this.mapCreated)
+      return false;
+    return super.equals(obj);
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    int result = super.hashCode();
+    final int prime = 31;
+    result = prime * result + (this.launched ? 1231 : 1237);
+    result = prime * result + (this.mapCreated ? 1231 : 1237);
+    return result;
   }
   
   @SyntheticMember

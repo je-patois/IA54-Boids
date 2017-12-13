@@ -188,6 +188,16 @@ agent Environment {
 		
 		}
 		
+		/* test pour remonter la vitesse  */
+		
+		synchronized (boidsList) {
+			var modifBody = this.boidsList.get(occurrence.source.UUID)
+			modifBody.vitesse = occurrence.newVitesse
+			this.boidsList.put(occurrence.source.UUID, modifBody)
+		}
+		
+		/* fin test */
+		
 		// pour interdire à un boids d'aller dans un obstacle
 		/*this.obstacles.forEach[o : Obstacle, index : int |
 			if(o.polygon.contains(new Point2D(occurrence.position.x, occurrence.position.y))) {
@@ -199,6 +209,8 @@ agent Environment {
 			info('DEPLACEMENT ACCEPTE')
 			//emit(new ValidationDeplacement(occurrence.position),Scopes.addresses(occurrence.source))
 			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
+			
+			
 		} else {
 			//TODO resolution des problèmes de collision interBoids
 			
@@ -219,7 +231,6 @@ agent Environment {
 		}
 	}
 	
-	
 	on NeedDataBoids{
 		info ("demande de rafraichissement : " + this.boidsUpdated)
 		// if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
@@ -232,6 +243,7 @@ agent Environment {
 			synchronized (boidsGrid){
 				for (elem : this.boidsGrid.entrySet){
 					var modifBody = this.boidsList.get(elem.value)
+					info ("vitesse boid  dans env :   " + modifBody.vitesse)
 					modifBody.position = elem.key 
 					this.boidsList.put(elem.value, modifBody)
 				}
