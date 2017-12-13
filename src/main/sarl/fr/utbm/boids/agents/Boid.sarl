@@ -199,28 +199,29 @@ agent Boid {
 				
 				//hauteur et largeur de la map mis en dur
 				//TODO amener largeur et hauteur dynamiquement
-				if(this.body.position.x - elem.value.position.x < this.body.position.x - (elem.value.position.x - 800)){
-					if(this.body.position.x - elem.value.position.x < this.body.position.x - (elem.value.position.x + 800)){
+				
+				if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - 800)){
+					if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x + 800)){
 						xelem = elem.value.position.x
 					} else {
 						xelem = elem.value.position.x + 800
 					}
 				} else {
-					if(this.body.position.x - (elem.value.position.x - 800) < this.body.position.x - (elem.value.position.x + 800)){
+					if(distance(this.body.position.x, elem.value.position.x - 800) < distance(this.body.position.x, elem.value.position.x + 800)){
 						xelem = elem.value.position.x - 800
 					} else {
 						xelem = elem.value.position.x + 800
 					}
 				}
 				
-				if (this.body.position.y - elem.value.position.y < this.body.position.y - (elem.value.position.y - 600)) {
-					if (this.body.position.y - elem.value.position.y < this.body.position.y - (elem.value.position.y + 600)) {
+				if (distance(this.body.position.y, elem.value.position.y) < distance(this.body.position.y, elem.value.position.y - 600)) {
+					if (distance(this.body.position.y, elem.value.position.y) < distance(this.body.position.y, elem.value.position.y + 600)) {
 						yelem = elem.value.position.y
 					} else {
 						yelem = elem.value.position.y + 600
 					}
 				} else {
-					if (this.body.position.y - (elem.value.position.y - 600) < this.body.position.y - (elem.value.position.y + 600)) {
+					if (distance(this.body.position.y, elem.value.position.y - 600) < distance(this.body.position.y, elem.value.position.y + 600)) {
 						yelem = elem.value.position.y - 600
 					} else {
 						yelem = elem.value.position.y + 600
@@ -419,6 +420,10 @@ agent Boid {
 		newPosition.plus(this.body.newVitesse)
 		info(newPosition)
 		return newPosition
+	}
+	
+	def distance(XA : double, XB : double){
+		return Math.abs(XA - XB)
 	}
 	
 	on EndSimulation [isFrom(this.parentAgent)] {
