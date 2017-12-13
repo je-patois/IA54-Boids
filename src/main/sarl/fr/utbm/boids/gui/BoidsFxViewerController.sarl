@@ -465,6 +465,7 @@ class BoidsFxViewerController extends FxViewerController  {
 	}
 	
 	def hideInfosVisibility() : void {
+		this.resetTexts()
 		boids_infos_pane.visible = false
 		boids_infos_pane.disable = true
 		/*boid_group.visible = false
@@ -477,6 +478,16 @@ class BoidsFxViewerController extends FxViewerController  {
 		hide_infos.visible = false*/
 	}
 	
+	def resetTexts() : void {
+		boid_group.text = ''
+		boid_vitesse.text = ''
+		boid_group_vitesse.text = ''
+		boid_masse.text = ''
+		boid_angle.text = ''
+		boid_distance.text = ''
+		boid_new_vitesse.text = ''
+	}
+
 	def showInfosVisibility() : void {
 		boids_infos_pane.visible = true
 		boids_infos_pane.disable = false

@@ -741,8 +741,19 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   public void hideInfosVisibility() {
+    this.resetTexts();
     this.boids_infos_pane.setVisible(false);
     this.boids_infos_pane.setDisable(true);
+  }
+  
+  public void resetTexts() {
+    this.boid_group.setText("");
+    this.boid_vitesse.setText("");
+    this.boid_group_vitesse.setText("");
+    this.boid_masse.setText("");
+    this.boid_angle.setText("");
+    this.boid_distance.setText("");
+    this.boid_new_vitesse.setText("");
   }
   
   public void showInfosVisibility() {
