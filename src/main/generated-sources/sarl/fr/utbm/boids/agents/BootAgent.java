@@ -275,9 +275,8 @@ public class BootAgent extends Agent {
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$ConfigureSimulation(final ConfigureSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ConfigureSimulation$1(occurrence));
+    throw new Error("Unresolved compilation problems:"
+      + "\nInvalid type: \'fr.utbm.boids.events.ConfigureSimulation\'. Only events can be used after the keyword \'on\'.");
   }
   
   @SyntheticMember

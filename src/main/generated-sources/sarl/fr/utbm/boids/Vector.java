@@ -103,7 +103,7 @@ public class Vector {
   
   @Pure
   public double point(final Vector vec) {
-    return Math.acos(((this.x * vec.x) + (this.y * vec.y)));
+    return ((this.x * vec.x) + (this.y * vec.y));
   }
   
   @Pure

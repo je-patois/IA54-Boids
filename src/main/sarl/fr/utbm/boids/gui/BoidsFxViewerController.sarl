@@ -208,6 +208,7 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 				boids_group.getChildren().clear()
 				for (boid : list){
 					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y - 7.5, boid.position.x + 5, boid.position.y + 7.5, boid.position.x - 5, boid.position.y + 7.5)
+					boidElement.rotate = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
 					boidElement.setFill(COLOR_FAMILY.get(boid.groupe))
 					if(togglePerception) {
 						var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_vision_display.text))

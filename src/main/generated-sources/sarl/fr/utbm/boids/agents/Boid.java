@@ -95,12 +95,14 @@ public class Boid extends Agent {
   private void $behaviorUnit$StartPosition$2(final StartPosition occurrence) {
     AtomicBoolean validPosition = new AtomicBoolean(true);
     Vector maPosition = null;
+    Random rnd = new Random();
     AtomicInteger x = new AtomicInteger(0);
     AtomicInteger y = new AtomicInteger(0);
+    AtomicInteger vx = new AtomicInteger(0);
+    AtomicInteger vy = new AtomicInteger(0);
     do {
       {
         validPosition.set(true);
-        Random rnd = new Random();
         int _nextInt = rnd.nextInt(occurrence.largeur);
         int _plus = (_nextInt + 1);
         x.set(_plus);
@@ -125,8 +127,22 @@ public class Boid extends Agent {
     int _get_1 = y.get();
     Vector _vector = new Vector(_get, _get_1);
     maPosition = _vector;
+    vx.set(rnd.nextInt(this.body.getGroupeVitesseMax()));
+    vy.set(rnd.nextInt(this.body.getGroupeVitesseMax()));
+    int _get_2 = vx.get();
+    int _get_3 = vy.get();
+    Vector _vector_1 = new Vector(_get_2, _get_3);
+    this.body.setNewVitesse(_vector_1);
+    double _length = this.body.getNewVitesse().length();
+    int _groupeVitesseMax = this.body.getGroupeVitesseMax();
+    boolean _greaterThan = (_length > _groupeVitesseMax);
+    if (_greaterThan) {
+      this.body.getNewVitesse().normaliser();
+      this.body.getNewVitesse().fois(this.body.getGroupeVitesseMax());
+    }
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    ResultatDeplacement _resultatDeplacement = new ResultatDeplacement(maPosition);
+    Vector _newVitesse = this.body.getNewVitesse();
+    ResultatDeplacement _resultatDeplacement = new ResultatDeplacement(maPosition, _newVitesse);
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_resultatDeplacement);
   }
   
@@ -136,6 +152,14 @@ public class Boid extends Agent {
     this.body.setVitesse(this.body.getNewVitesse());
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Validation de la position");
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    Vector _vitesse = this.body.getVitesse();
+    String _plus = ("vitesse boids :    " + _vitesse);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(_plus);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    Vector _position = this.body.getPosition();
+    String _plus_1 = ("position boids : " + _position);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus_1);
   }
   
   @SuppressWarnings("equals_with_null")
@@ -151,14 +175,15 @@ public class Boid extends Agent {
     if (_notEquals) {
       Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
       _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("ON PREND EN COMPTE LES AUTRES BOIDS MON GARS");
-      forceTot.plus(this.separation(otherBoids));
+      forceTot.plus(this.cohesion(otherBoids));
     }
     forceTot.fois(100000);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(("force totale " + forceTot));
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     Vector _appliquerForce = this.appliquerForce(forceTot);
-    ResultatDeplacement _resultatDeplacement = new ResultatDeplacement(_appliquerForce);
+    Vector _newVitesse = this.body.getNewVitesse();
+    ResultatDeplacement _resultatDeplacement = new ResultatDeplacement(_appliquerForce, _newVitesse);
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_resultatDeplacement);
   }
   
@@ -181,12 +206,15 @@ public class Boid extends Agent {
     Vector _vitesse = this.body.getVitesse();
     Vector _vector_1 = new Vector(_vitesse);
     tmp2 = _vector_1;
-    tmp2.normaliser();
-    tmp.normaliser();
     double _point = tmp2.point(tmp);
+    double _length_1 = tmp2.length();
+    double _length_2 = tmp.length();
+    double _multiply = (_length_1 * _length_2);
+    double _divide = (_point / _multiply);
+    double _abs = Math.abs(Math.toDegrees(Math.acos(_divide)));
     int _angleVisibilite = this.body.getAngleVisibilite();
-    boolean _lessThan = (_point < _angleVisibilite);
-    if (_lessThan) {
+    boolean _greaterThan_1 = (_abs > _angleVisibilite);
+    if (_greaterThan_1) {
       return false;
     }
     return true;
@@ -209,7 +237,7 @@ public class Boid extends Agent {
     tmp = _vector_1;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if ((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe())) && (!Objects.equal(elem.getKey(), this.getID())))) {
+      if (((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue())) && (!Objects.equal(elem.getKey(), this.getID())))) {
         double _distance = this.distance(this.body.getPosition().getX(), elem.getValue().getPosition().getX());
         double _x = elem.getValue().getPosition().getX();
         double _minus = (_x - 800);
@@ -302,7 +330,7 @@ public class Boid extends Agent {
     force = _vector;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
+      if (((((!Objects.equal(elem.getKey(), null)) && (!Objects.equal(elem.getKey(), this.getID()))) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue()))) {
         nbTot++;
         force.plus(elem.getValue().getPosition());
       }
@@ -325,7 +353,7 @@ public class Boid extends Agent {
     tmp = _vector_1;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
+      if (((((!Objects.equal(elem.getKey(), null)) && (!Objects.equal(elem.getKey(), this.getID()))) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue()))) {
         nbTot++;
         tmp.setXY(elem.getValue().getPosition());
         double _length = tmp.length();
@@ -354,7 +382,7 @@ public class Boid extends Agent {
     tmp = _vector_1;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() != this.body.getGroupe()))) {
+      if ((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() != this.body.getGroupe())) && this.visible(elem.getValue()))) {
         tmp.setXY(this.body.getPosition());
         tmp.moins(elem.getValue().getPosition());
         len = tmp.length();
@@ -372,20 +400,14 @@ public class Boid extends Agent {
     acceleration = _vector;
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("acceleration : " + acceleration));
-    Vector _vector_1 = new Vector(0, 0);
-    this.body.setVitesse(_vector_1);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     Vector _vitesse = this.body.getVitesse();
-    String _plus = ("bodyVitesse : " + _vitesse);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(_plus);
-    Vector _vitesse_1 = this.body.getVitesse();
-    Vector _vector_2 = new Vector(_vitesse_1);
-    this.body.setNewVitesse(_vector_2);
+    Vector _vector_1 = new Vector(_vitesse);
+    this.body.setNewVitesse(_vector_1);
     this.body.getNewVitesse().plus(acceleration);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     Vector _newVitesse = this.body.getNewVitesse();
-    String _plus_1 = ("nouvelle vitesse : " + _newVitesse);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus_1);
+    String _plus = ("nouvelle vitesse : " + _newVitesse);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(_plus);
     double _length = this.body.getNewVitesse().length();
     int _groupeVitesseMax = this.body.getGroupeVitesseMax();
     boolean _greaterThan = (_length > _groupeVitesseMax);
@@ -393,16 +415,16 @@ public class Boid extends Agent {
       this.body.getNewVitesse().normaliser();
       this.body.getNewVitesse().fois(this.body.getGroupeVitesseMax());
     }
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(Double.valueOf(this.body.getPosition().getX()));
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(Double.valueOf(this.body.getPosition().getX()));
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4.info(Double.valueOf(this.body.getPosition().getY()));
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(Double.valueOf(this.body.getPosition().getY()));
     Vector _position = this.body.getPosition();
-    Vector _vector_3 = new Vector(_position);
-    newPosition = _vector_3;
+    Vector _vector_2 = new Vector(_position);
+    newPosition = _vector_2;
     newPosition.plus(this.body.getNewVitesse());
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_5 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_5.info(newPosition);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4.info(newPosition);
     return newPosition;
   }
   

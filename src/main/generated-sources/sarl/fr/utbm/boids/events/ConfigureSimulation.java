@@ -29,35 +29,17 @@ public class ConfigureSimulation extends Event {
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    ConfigureSimulation other = (ConfigureSimulation) obj;
-    if (other.mapSelection != this.mapSelection)
-      return false;
-    if (other.boidsQuantity != this.boidsQuantity)
-      return false;
-    if (other.boidsPopulation != this.boidsPopulation)
-      return false;
-    if (other.boidsVision != this.boidsVision)
-      return false;
-    return super.equals(obj);
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    int result = super.hashCode();
-    final int prime = 31;
-    result = prime * result + this.mapSelection;
-    result = prime * result + this.boidsQuantity;
-    result = prime * result + this.boidsPopulation;
-    result = prime * result + this.boidsVision;
-    return result;
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
   }
   
   /**
@@ -66,14 +48,7 @@ public class ConfigureSimulation extends Event {
   @SyntheticMember
   @Pure
   protected String attributesToString() {
-    StringBuilder result = new StringBuilder(super.attributesToString());
-    result.append("mapSelection  = ").append(this.mapSelection);
-    result.append("boidsQuantity  = ").append(this.boidsQuantity);
-    result.append("boidsPopulation  = ").append(this.boidsPopulation);
-    result.append("boidsVision  = ").append(this.boidsVision);
-    return result.toString();
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
   }
-  
-  @SyntheticMember
-  private final static long serialVersionUID = 654767120L;
 }
