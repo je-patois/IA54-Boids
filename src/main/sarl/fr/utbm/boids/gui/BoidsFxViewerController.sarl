@@ -54,23 +54,32 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var map_selection_label : Label
 	@FXML var boids_population_label : Label
 	@FXML var boids_vision_label : Label
+	@FXML var boids_distance_deplacement_label : Label
 
 	// Sliders
 	@FXML var boids_quantity_input : ScrollBar
 	@FXML var map_selection_input : ScrollBar
 	@FXML var boids_population_input : ScrollBar
 	@FXML var boids_vision_input : ScrollBar
+	@FXML var boids_distance_deplacement_input : ScrollBar
 
 	// Valeurs
 	@FXML var boids_quantity_display : Label
 	@FXML var map_selection_display : Label
 	@FXML var boids_population_display : Label
 	@FXML var boids_vision_display : Label
+	@FXML var boids_distance_deplacement_display : Label
 	
-	@FXML var boids_quantity_min : Label; @FXML var boids_quantity_max : Label
-	@FXML var map_min : Label; @FXML var map_max : Label
-	@FXML var boids_population_min : Label; @FXML var boids_population_max : Label
-	@FXML var boids_vision_min : Label; @FXML var boids_vision_max : Label
+	@FXML var boids_quantity_min : Label
+	@FXML var boids_quantity_max : Label
+	@FXML var map_min : Label
+	@FXML var map_max : Label
+	@FXML var boids_population_min : Label
+	@FXML var boids_population_max : Label
+	@FXML var boids_vision_min : Label
+	@FXML var boids_vision_max : Label
+	@FXML var boids_distance_deplacement_min : Label
+	@FXML var boids_distance_deplacement_max : Label
 	
 	// TODO coder la pause/reprise et l'affichage des infos au vol
 	@FXML var pause_button : Rectangle
@@ -117,6 +126,10 @@ class BoidsFxViewerController extends FxViewerController  {
 	
 	def getObstacles() : List<Obstacle> {
 		obstacles
+	}
+	
+	def getBoidsDistanceDeplacement() : int {
+		boids_distance_deplacement_input.value as int
 	}
  
 	@FXML protected def startSimu() : void {
@@ -246,7 +259,7 @@ class BoidsFxViewerController extends FxViewerController  {
 					
 					if(togglePerception) {
 						// var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_vision_display.text) * 80/100)
-						var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_vision_display.text))
+						var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_distance_deplacement_display.text))
 						// perceptionRadius.setStrokeWidth(Double.parseDouble(boids_vision_display.text) * 20/100)
 						if(nightMode) {
 							perceptionRadius.fill = Color.rgb(255, 245, 112, 0.2)
@@ -295,6 +308,12 @@ class BoidsFxViewerController extends FxViewerController  {
 			boids_vision_display.setText(String.format("%.0f", boids_vision_input.getValue()));
 		];
 	}
+
+	@FXML protected def actionBoidsDistanceDeplacementDisplay() : void {
+		boids_distance_deplacement_input.valueProperty().addListener [
+			boids_distance_deplacement_display.setText(String.format("%.0f", boids_distance_deplacement_input.getValue()));
+		];
+	}
 	
 	@FXML protected def toggleMode() : void {
 		if(nightMode) {
@@ -308,6 +327,12 @@ class BoidsFxViewerController extends FxViewerController  {
 			map_selection_label.textFill = normalTextColor;	map_selection_display.textFill = normalTextColor; map_min.textFill = normalTextColor; map_max.textFill = normalTextColor
 			boids_population_label.textFill = normalTextColor; boids_population_display.textFill = normalTextColor; boids_population_min.textFill = normalTextColor; boids_population_max.textFill = normalTextColor
 			boids_vision_label.textFill = normalTextColor; boids_vision_display.textFill = normalTextColor;	boids_vision_min.textFill = normalTextColor; boids_vision_max.textFill = normalTextColor
+			
+			boids_distance_deplacement_label.textFill = normalTextColor;
+			boids_distance_deplacement_display.textFill = normalTextColor;
+			boids_distance_deplacement_min.textFill = normalTextColor;
+			boids_distance_deplacement_max.textFill = normalTextColor
+			
 			boid_group.textFill = Color.rgb(0, 0, 0, 0.7)
 			boid_vitesse.textFill = Color.rgb(0, 0, 0, 0.7)
 			boid_group_vitesse.textFill = Color.rgb(0, 0, 0, 0.7)
@@ -330,7 +355,16 @@ class BoidsFxViewerController extends FxViewerController  {
 			boids_quantity_label.textFill = nightTextColor;	boids_quantity_display.textFill = nightTextColor; boids_quantity_min.textFill = nightTextColor;	boids_quantity_max.textFill = nightTextColor
 			map_selection_label.textFill = nightTextColor; map_selection_display.textFill = nightTextColor;	map_min.textFill = nightTextColor;	map_max.textFill = nightTextColor
 			boids_population_label.textFill = nightTextColor; boids_population_display.textFill = nightTextColor; boids_population_min.textFill = nightTextColor; boids_population_max.textFill = nightTextColor
-			boids_vision_label.textFill = nightTextColor; boids_vision_display.textFill = nightTextColor; boids_vision_min.textFill = nightTextColor; boids_vision_max.textFill = nightTextColor
+			boids_vision_label.textFill = nightTextColor;
+			boids_vision_display.textFill = nightTextColor;
+			boids_vision_min.textFill = nightTextColor;
+			boids_vision_max.textFill = nightTextColor
+
+			boids_distance_deplacement_label.textFill = nightTextColor
+			boids_distance_deplacement_display.textFill = nightTextColor
+			boids_distance_deplacement_min.textFill = nightTextColor
+			boids_distance_deplacement_max.textFill = nightTextColor
+			
 			boid_group.textFill = Color.rgb(191, 191, 191, 0.7)
 			boid_vitesse.textFill = Color.rgb(191, 191, 191, 0.7)
 			boid_group_vitesse.textFill = Color.rgb(191, 191, 191, 0.7)
@@ -440,6 +474,8 @@ class BoidsFxViewerController extends FxViewerController  {
 		if(map_selection_input.disable == true) map_selection_input.disable = false else map_selection_input.disable = true
 		if(boids_population_input.disable == true) boids_population_input.disable = false else boids_population_input.disable = true
 		if(boids_vision_input.disable == true) boids_vision_input.disable = false else boids_vision_input.disable = true
+
+		if(boids_distance_deplacement_input.disable == true) boids_distance_deplacement_input.disable = false else boids_distance_deplacement_input.disable = true
 		// if(toggle_night_mode.disable == true)  toggle_night_mode.disable = false else toggle_night_mode.disable = true
 	}
 	

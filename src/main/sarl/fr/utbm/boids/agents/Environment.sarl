@@ -60,7 +60,7 @@ agent Environment {
 		info('Population size: ' + this.ctrl.boidsPopulation)
 		for (var i = 0; i < this.ctrl.boidsPopulation; i++) {
 			for (var j = 0 ; j < this.ctrl.boidsQuantity; j++){
-				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsVision)
+				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsVision, ctrl.boidsDistanceDeplacement)
 			}
 		}
 		info(this.boidsList)

@@ -91,6 +91,9 @@ public class BoidsFxViewerController extends FxViewerController {
   private Label boids_vision_label;
   
   @FXML
+  private Label boids_distance_deplacement_label;
+  
+  @FXML
   private ScrollBar boids_quantity_input;
   
   @FXML
@@ -103,6 +106,9 @@ public class BoidsFxViewerController extends FxViewerController {
   private ScrollBar boids_vision_input;
   
   @FXML
+  private ScrollBar boids_distance_deplacement_input;
+  
+  @FXML
   private Label boids_quantity_display;
   
   @FXML
@@ -113,6 +119,9 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @FXML
   private Label boids_vision_display;
+  
+  @FXML
+  private Label boids_distance_deplacement_display;
   
   @FXML
   private Label boids_quantity_min;
@@ -137,6 +146,12 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @FXML
   private Label boids_vision_max;
+  
+  @FXML
+  private Label boids_distance_deplacement_min;
+  
+  @FXML
+  private Label boids_distance_deplacement_max;
   
   @FXML
   private Rectangle pause_button;
@@ -220,6 +235,12 @@ public class BoidsFxViewerController extends FxViewerController {
   @Pure
   public List<Obstacle> getObstacles() {
     return this.obstacles;
+  }
+  
+  @Pure
+  public int getBoidsDistanceDeplacement() {
+    double _value = this.boids_distance_deplacement_input.getValue();
+    return ((int) _value);
   }
   
   @FXML
@@ -419,7 +440,7 @@ public class BoidsFxViewerController extends FxViewerController {
             if ((BoidsFxViewerController.this.togglePerception).booleanValue()) {
               double _x_4 = boid.getPosition().getX();
               double _y_4 = boid.getPosition().getY();
-              double _parseDouble = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
+              double _parseDouble = Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText());
               Circle perceptionRadius = new Circle(_x_4, _y_4, _parseDouble);
               if ((BoidsFxViewerController.this.nightMode).booleanValue()) {
                 perceptionRadius.setFill(Color.rgb(255, 245, 112, 0.2));
@@ -476,6 +497,14 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @FXML
+  protected void actionBoidsDistanceDeplacementDisplay() {
+    final InvalidationListener _function = (Observable it) -> {
+      this.boids_distance_deplacement_display.setText(String.format("%.0f", Double.valueOf(this.boids_distance_deplacement_input.getValue())));
+    };
+    this.boids_distance_deplacement_input.valueProperty().addListener(_function);
+  }
+  
+  @FXML
   protected void toggleMode() {
     if ((this.nightMode).booleanValue()) {
       this.nightMode = Boolean.valueOf(false);
@@ -502,6 +531,10 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_vision_display.setTextFill(normalTextColor);
       this.boids_vision_min.setTextFill(normalTextColor);
       this.boids_vision_max.setTextFill(normalTextColor);
+      this.boids_distance_deplacement_label.setTextFill(normalTextColor);
+      this.boids_distance_deplacement_display.setTextFill(normalTextColor);
+      this.boids_distance_deplacement_min.setTextFill(normalTextColor);
+      this.boids_distance_deplacement_max.setTextFill(normalTextColor);
       this.boid_group.setTextFill(Color.rgb(0, 0, 0, 0.7));
       this.boid_vitesse.setTextFill(Color.rgb(0, 0, 0, 0.7));
       this.boid_group_vitesse.setTextFill(Color.rgb(0, 0, 0, 0.7));
@@ -539,6 +572,10 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_vision_display.setTextFill(nightTextColor);
       this.boids_vision_min.setTextFill(nightTextColor);
       this.boids_vision_max.setTextFill(nightTextColor);
+      this.boids_distance_deplacement_label.setTextFill(nightTextColor);
+      this.boids_distance_deplacement_display.setTextFill(nightTextColor);
+      this.boids_distance_deplacement_min.setTextFill(nightTextColor);
+      this.boids_distance_deplacement_max.setTextFill(nightTextColor);
       this.boid_group.setTextFill(Color.rgb(191, 191, 191, 0.7));
       this.boid_vitesse.setTextFill(Color.rgb(191, 191, 191, 0.7));
       this.boid_group_vitesse.setTextFill(Color.rgb(191, 191, 191, 0.7));
@@ -695,6 +732,13 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_vision_input.setDisable(false);
     } else {
       this.boids_vision_input.setDisable(true);
+    }
+    boolean _isDisable_5 = this.boids_distance_deplacement_input.isDisable();
+    boolean _equals_5 = (_isDisable_5 == true);
+    if (_equals_5) {
+      this.boids_distance_deplacement_input.setDisable(false);
+    } else {
+      this.boids_distance_deplacement_input.setDisable(true);
     }
   }
   

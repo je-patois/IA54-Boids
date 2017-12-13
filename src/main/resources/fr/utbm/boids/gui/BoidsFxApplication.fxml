@@ -22,6 +22,7 @@
                <font>
                   <Font size="16.0" />
                </font></Label>
+			   
             <Label fx:id="boids_population_label" alignment="CENTER" layoutX="21.0" layoutY="103.0" prefHeight="21.0" prefWidth="173.0" text="%BoidsPopulationQuantityLabel">
                <font>
                   <Font size="18.0" />
@@ -32,22 +33,39 @@
                <font>
                   <Font size="16.0" />
                </font></Label>
+			   
             <Label fx:id="boids_vision_label" alignment="CENTER" layoutX="23.0" layoutY="189.0" prefHeight="21.0" prefWidth="173.0" text="%BoidsVisionLabel">
                <font>
                   <Font size="18.0" />
                </font></Label>
-            <ScrollBar fx:id="boids_vision_input" layoutX="23.0" layoutY="216.0" max="800.0" onMouseEntered="#actionBoidsVisionDisplay" prefHeight="18.0" prefWidth="173.0" unitIncrement="10.0" value="30.0" />
-            <Label fx:id="boids_vision_display" alignment="CENTER" layoutX="21.0" layoutY="236.0" prefHeight="21.0" prefWidth="173.0" text="30" />
-            <ScrollBar fx:id="boids_quantity_input" layoutX="20.0" layoutY="49.0" min="1.0" onMouseEntered="#actionBoidsQuantityDisplay" prefHeight="18.0" prefWidth="173.0" value="1.0" />
+            <ScrollBar fx:id="boids_vision_input" layoutX="23.0" layoutY="216.0" max="180.0" onMouseEntered="#actionBoidsVisionDisplay" prefHeight="18.0" prefWidth="173.0" unitIncrement="10.0" value="30.0" />
+            <Label fx:id="boids_vision_display" alignment="CENTER" layoutX="21.0" layoutY="236.0" prefHeight="21.0" prefWidth="173.0" text="30">
+				<font>
+					  <Font size="16.0" />
+				</font>
+			</Label>
+            
+			<Label fx:id="boids_quantity_label" alignment="CENTER" layoutX="23.0" layoutY="25.0" prefHeight="21.0" prefWidth="173.0" text="%BoidsQuantityLabel">
+			<font>
+                  <Font size="18.0" />
+               </font></Label>
+			<ScrollBar fx:id="boids_quantity_input" layoutX="20.0" layoutY="49.0" min="1.0" onMouseEntered="#actionBoidsQuantityDisplay" prefHeight="18.0" prefWidth="173.0" value="1.0" />
             <Label fx:id="boids_quantity_display" alignment="CENTER" layoutX="20.0" layoutY="67.0" prefHeight="25.0" prefWidth="173.0" text="1">
                <font>
                   <Font size="16.0" />
                </font></Label>
-            <Label fx:id="boids_quantity_label" alignment="CENTER" layoutX="22.0" layoutY="22.0" prefHeight="27.0" prefWidth="173.0" text="%BoidsQuantityLabel">
+			   
+            <Label fx:id="boids_distance_deplacement_label" alignment="CENTER" layoutX="22.0" layoutY="355.0" prefHeight="27.0" prefWidth="173.0" text="%BoidsDistanceDeplacementLabel">
                <font>
                   <Font size="18.0" />
                </font></Label>
-            <Button fx:id="start_button" layoutX="74.0" layoutY="375.0" mnemonicParsing="false" onAction="#startSimu" onMouseEntered="#startButtonGlow" onMouseExited="#startButtonReset" prefHeight="21.0" prefWidth="74.0" style="-fx-background-color: transparent;" text="Start" textAlignment="CENTER">
+            <ScrollBar fx:id="boids_distance_deplacement_input" layoutX="20.0" layoutY="380.0" min="20.0" max= "400.0" onMouseEntered="#actionBoidsDistanceDeplacementDisplay" prefHeight="18.0" prefWidth="173.0" unitIncrement="10.0" value="20.0" />
+			<Label fx:id="boids_distance_deplacement_display" alignment="CENTER" layoutX="21.0" layoutY="397.0" prefHeight="21.0" prefWidth="173.0" text="20">
+				<font>
+					  <Font size="16.0" />
+				</font>
+			</Label>
+            <Button fx:id="start_button" layoutX="74.0" layoutY="450.0" mnemonicParsing="false" onAction="#startSimu" onMouseEntered="#startButtonGlow" onMouseExited="#startButtonReset" prefHeight="21.0" prefWidth="74.0" style="-fx-background-color: transparent;" text="Start" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
@@ -77,7 +95,7 @@
                   <Font size="8.0" />
                </font>
             </Label>
-            <Label fx:id="boids_vision_max" layoutX="198.0" layoutY="219.0" text="800">
+            <Label fx:id="boids_vision_max" layoutX="198.0" layoutY="219.0" text="180">
                <font>
                   <Font size="8.0" />
                </font>
@@ -88,6 +106,16 @@
                </font>
             </Label>
             <Label fx:id="map_max" layoutX="199.0" layoutY="301.0" text="2">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+			<Label fx:id="boids_distance_deplacement_min" layoutX="11.0" layoutY="383.0" text="20">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+            <Label fx:id="boid_distnace_deplacement_max" layoutX="199.0" layoutY="383.0" text="400">
                <font>
                   <Font size="8.0" />
                </font>
