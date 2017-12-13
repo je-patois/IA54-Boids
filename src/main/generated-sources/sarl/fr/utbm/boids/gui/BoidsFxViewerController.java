@@ -35,6 +35,8 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -438,17 +440,29 @@ public class BoidsFxViewerController extends FxViewerController {
             };
             boidElement.setOnMousePressed(_____BoidsFxViewerController_1_0_1);
             if ((BoidsFxViewerController.this.togglePerception).booleanValue()) {
-              double _x_4 = boid.getPosition().getX();
-              double _y_4 = boid.getPosition().getY();
-              double _parseDouble = Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText());
-              Circle perceptionRadius = new Circle(_x_4, _y_4, _parseDouble);
+              Arc perceptionArc = new Arc();
+              perceptionArc.setCenterX(boid.getPosition().getX());
+              perceptionArc.setCenterY(boid.getPosition().getY());
+              perceptionArc.setRadiusX(Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText()));
+              perceptionArc.setRadiusY(Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText()));
+              double _parseDouble = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
+              double _minus_2 = (90 - _parseDouble);
+              perceptionArc.setStartAngle(_minus_2);
+              double _parseDouble_1 = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
+              double _multiply = (_parseDouble_1 * 2);
+              perceptionArc.setLength(_multiply);
+              perceptionArc.setType(ArcType.ROUND);
+              double _x_4 = boid.getVitesse().getX();
+              double _y_4 = boid.getVitesse().getY();
+              double _divide_1 = (_x_4 / _y_4);
+              perceptionArc.setRotate(Math.toDegrees(Math.atan(_divide_1)));
               if ((BoidsFxViewerController.this.nightMode).booleanValue()) {
-                perceptionRadius.setFill(Color.rgb(255, 245, 112, 0.2));
+                perceptionArc.setFill(Color.rgb(255, 245, 112, 0.2));
               } else {
-                perceptionRadius.setFill(Color.rgb(255, 245, 112, 0.8));
+                perceptionArc.setFill(Color.rgb(255, 245, 112, 0.8));
               }
               BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
-              BoidsFxViewerController.this.boids_group.getChildren().add(0, perceptionRadius);
+              BoidsFxViewerController.this.boids_group.getChildren().add(0, perceptionArc);
             } else {
               BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
             }
