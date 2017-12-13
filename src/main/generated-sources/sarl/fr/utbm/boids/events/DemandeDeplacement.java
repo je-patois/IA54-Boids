@@ -11,31 +11,16 @@ import org.eclipse.xtext.xbase.lib.Pure;
 
 /**
  * Formule une demande de déplacement auprès d'un boid
- * @param otherBoids - Liste des autres boids, permettant au boid de décider de son placement
+ * @param boids - Liste des boids, permettant au boid de décider de son placement
  */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
 public class DemandeDeplacement extends Event {
-  /**
-   * var otherBoids : Collection<BoidBody>
-   */
-  public Map<UUID, BoidBody> otherBoids;
+  public Map<UUID, BoidBody> boids;
   
-  /**
-   * new (pos : Vector, otherBoids : Collection<BoidBody>) {
-   * this.otherBoids = otherBoids
-   * }
-   * 
-   * new (x : int, y : int, otherBoids : Collection<BoidBody>) {
-   * this.otherBoids = otherBoids
-   * }
-   */
-  public DemandeDeplacement() {
-  }
-  
-  public DemandeDeplacement(final Map<UUID, BoidBody> otherBoids) {
-    this.otherBoids = otherBoids;
+  public DemandeDeplacement(final Map<UUID, BoidBody> boids) {
+    this.boids = boids;
   }
   
   @Override
@@ -60,7 +45,13 @@ public class DemandeDeplacement extends Event {
   @Pure
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
-    result.append("otherBoids  = ").append(this.otherBoids);
+    result.append("boids  = ").append(this.boids);
     return result.toString();
   }
+<<<<<<< HEAD
+=======
+  
+  @SyntheticMember
+  private final static long serialVersionUID = -1889683984L;
+>>>>>>> master
 }

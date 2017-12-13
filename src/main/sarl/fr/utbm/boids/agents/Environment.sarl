@@ -50,7 +50,6 @@ agent Environment {
 	}
 	
 	on StartingSimulation {
-		info("HO")
 
 		this.boidsGrid = new HashMap<Vector, UUID>
 		this.boidsList = new HashMap<UUID, BoidBody>
@@ -82,10 +81,6 @@ agent Environment {
 
 	//TODO Si à l'initialisation deux boids spawn au même endroit, il faut relancer un spawn
 	on ResultatDeplacement {
-		info("l'env recoit les coordonnées")
-		// boidsUpdated += 1
-		
-		// info ("maintenant updated = " + boidsUpdated)
 		
 		var accept = false
 		
@@ -101,16 +96,6 @@ agent Environment {
 		
 		}
 		
-		/* test pour remonter la vitesse  */
-		
-		synchronized (boidsList) {
-			var modifBody = this.boidsList.get(occurrence.source.UUID)
-			modifBody.vitesse = occurrence.newSpeed
-			this.boidsList.put(occurrence.source.UUID, modifBody)
-		}
-		
-		/* fin test */
-		
 		// pour interdire à un boids d'aller dans un obstacle
 		/*this.obstacles.forEach[o : Obstacle, index : int |
 			if(o.polygon.contains(new Point2D(occurrence.position.x, occurrence.position.y))) {
@@ -119,7 +104,6 @@ agent Environment {
 		]*/
 			
 		if (accept) {
-			info('DEPLACEMENT ACCEPTE')
 			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))	
 		} else {
 			//TODO resolution des problèmes de collision interBoids
@@ -144,35 +128,18 @@ agent Environment {
 			// if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
 			if (this.boidsUpdated >= boidsList.size) {
 				inCycle = true
-				// info("J'apprends que le Scheduler veut de nouvelles coordonnées")
-				
-				//emit(new SendDataBoids(this.boidsGrid))	//de quoi afficher les boids
-				
-				// on met à jour les positions des boids dans leurs corps (elem.key => Vector, elem.value => UUID
-				synchronized (boidsGrid){
-					for (elem : this.boidsGrid.entrySet){
-						var modifBody = this.boidsList.get(elem.value)
-						info ("vitesse boid  dans env :   " + modifBody.vitesse)
-						modifBody.position = elem.key 
-						this.boidsList.put(elem.value, modifBody)
-					}
-		
-					// remise à zéro de la liste des changements
-					this.boidsGrid = new HashMap<Vector, UUID>
-					this.boidsUpdated = 0 
-				}
-				
+
 				// envoi des nouveaux corps des boids
 				ctrl.updateGraphics(this.boidsList.values)
-				
-				/*info ("j'affiche les nouveaux corps")
-				info (boidsList)*/
+
+				// remise à zéro de la liste des changements
+				synchronized (boidsGrid){
+					this.boidsGrid = new HashMap<Vector, UUID>
+				}
 				
 				//On se prépare pour la prochaine itération
 				this.boidsUpdated = 0
 				boidsAddresses.forEach[id, address|
-					info("REGARDER ICI IIIIIIIIIIIIIIIIIIIIIIIII")
-					info(id + " & " + address)
 					innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
 				]
 				inCycle = false	
@@ -196,31 +163,15 @@ agent Environment {
 		var newPosition = new Vector(positionX, positionY)
 		return newPosition
 	}
-	
-	/*on ContextLeft [!hasMemberAgent] {
-		wake(new EndSimulation)
-	}*/
 
 	on EndSimulation [!hasMemberAgent] {
-	//on EndSimulation [isFromMe] {
-		// info('Environment kill')
 		emit(new EndSimulation)
 		killMe
 	}
 	
 	// on EndSimulation [hasMemberAgent && occurrence.source.UUID === this.spawner && !isFromMe] {
 	on EndSimulation [hasMemberAgent] {
-		// info('JE DOIS TOUS LES TUER')
-		// info(memberAgentCount)
 		innerContext.defaultSpace.emit(ID, new EndSimulation)
 	}
 
-	/*on Destroy {
-		emit(new EndSimulation)
-	}*/
-
-	/*on MemberJoined [occurrence.inInnerDefaultSpace && memberAgentCount == boidsQuantity * populationSize] {
-		info("All boids have been created: " + memberAgentCount)
-		emit(new BoidsReady)
-	}*/
 }

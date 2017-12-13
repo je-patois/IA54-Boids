@@ -40,12 +40,6 @@ agent Boid {
 		emit(new BoidInitialized(this.body, 'Boid'))
 	}
 	
-	/* on InitBoidBody {
-		this.body = new BoidBody(occurrence.body.groupe, occurrence.body.groupeVitesseMax, occurrence.body.masse, occurrence.body.angleVisibilite, occurrence.body.distanceVisibilite)
-		info('Mon body est initialisé!')
-		emit(new BoidBodyInitialized())
-	}*/
-	
 	on StartPosition {
 		var validPosition : AtomicBoolean = new AtomicBoolean(true)
 		var maPosition : Vector
@@ -67,10 +61,12 @@ agent Boid {
 		
 		info("X, Y \n" + x + " " + y)
 		maPosition = new Vector(x.get(), y.get())
+		
 		//définition d'une vitesse aléatoire 
 		vx.set(rnd.nextInt(this.body.groupeVitesseMax))
 		vy.set(rnd.nextInt(this.body.groupeVitesseMax))
 		this.body.newVitesse = new Vector (vx.get(),vy.get())
+		
 		// vmax est en ligne droite, on vérifie qu'avec vx et vy on dépasse pas la longueur de vmax
 		if (this.body.newVitesse.length > this.body.groupeVitesseMax) {
 			this.body.newVitesse.normaliser()
@@ -92,35 +88,24 @@ agent Boid {
 	@SuppressWarnings("equals_with_null")
 	on DemandeDeplacement {
 		
-		/* 
-		 * on récupère la liste des autres boids
-		 */
-		var otherBoids = occurrence.otherBoids
+		var boids = occurrence.boids
 		var forceTot : Vector
 
 		forceTot = new Vector(0, 0)
-		
-		/* 		 / \
-		 *		/ !	\	 On suppose que le Boids que je suis a été supprimé de la liste
-		 *	   /_____\
-		 */	   
-		 info("EST CE QUE L'ON PASSE AU MOINS ICI? PARLE MOIIIIIIIIIIIIIIIIIIII")
-		if (otherBoids != null) {
-			info("ON PREND EN COMPTE LES AUTRES BOIDS MON GARS")
-			//TODO ici rajouter vitesse de départ du boids
+		 
+		if (boids != null) {
 			
-			//TODO rajouter dans chaque focntion une vérification que l'on ne se prend pas soi meme en compte pour les calculs
 			//on applique la séparation 
-			//forceTot.plus(separation(otherBoids))
+			forceTot.plus(separation(boids))
 			
 			//on applique la cohésion
-			forceTot.plus(cohesion(otherBoids))				
+			forceTot.plus(cohesion(boids))				
 			
 			//on applique l'alignement
-			//forceTot.plus(alignement(otherBoids))
+			forceTot.plus(alignement(boids))
 
 			//on applique la répulsion
-			//forceTot.plus(repulsion(otherBoids))
+			forceTot.plus(repulsion(boids))
 			
 			//on applique la force résultant de la détection des obstacles
 		 
@@ -130,8 +115,6 @@ agent Boid {
 		forceTot.fois(100000)
 		info("force totale " + forceTot)
 
-		//on renvoie la nouvelle position du Boids
-		//info(forceTot + " ceci est la force totale a appliquer !!!!!!!!!!")
 		emit(new ResultatDeplacement(appliquerForce(forceTot), this.body.newVitesse))
 	 
 	}
@@ -145,8 +128,19 @@ agent Boid {
 	 	var tmp : Vector
 	 	var tmp2 : Vector
 	 	
+	 	
 	 	tmp = new Vector(b.position)
 	 	tmp.moins(this.body.position)
+
+		//TODO insérer avec des paramètres la demi largeur et demi hauteur
+		if (tmp.x > 400 ){
+	 		tmp.moins(new Vector(800,0))
+	 	}
+	 	
+	 	if (tmp.y > 400) {
+	 		tmp.moins(new Vector(0,800))
+	 	}
+	 	
 	 	
 	 	// Si le boids est trop loin, on ne le voit pas 
 	 	if (tmp.length() > this.body.distanceVisibilite){
@@ -170,7 +164,7 @@ agent Boid {
 	 
 	//TODO test si non utilisation du test du groupe à une influence
 	@SuppressWarnings("equals_with_null")
-	def separation(otherBoids : Map<UUID, BoidBody>) : Vector {
+	def separation(boids : Map<UUID, BoidBody>) : Vector {
 
 		var force : Vector
 		var tmp : Vector
@@ -181,25 +175,14 @@ agent Boid {
 
 		force = new Vector(0, 0)
 		tmp = new Vector(0, 0)
-
-		/*otherBoids.forEach [ id, boid |
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid) && id != this.ID) {
-				tmp.setXY(this.body.position)
-				tmp.moins(boid.position)
-				len = tmp.length()
-				tmp.fois(1 / (len * len))
-				force.plus(tmp)
-			}
-		 * ]
-		 */
 		 
-		for (elem : otherBoids.entrySet) {
+		for (elem : boids.entrySet) {
 			if (elem.key != null && elem.value.groupe == this.body.groupe && visible(elem.value) && elem.key != this.ID) {
 				
 				//hauteur et largeur de la map mis en dur
 				//TODO amener largeur et hauteur dynamiquement
 				
-				if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - 800)){
+				/*if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - 800)){
 					if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x + 800)){
 						xelem = elem.value.position.x
 					} else {
@@ -225,10 +208,9 @@ agent Boid {
 					} else {
 						yelem = elem.value.position.y + 600
 					}
-				}
+				}*/
 				
 				tmpelem = new Vector(xelem%800, yelem%600)
-				//tmpelem = new Vector(0, 0)
 				tmp.setXY(this.body.position)
 				tmp.moins(tmpelem)
 				len = tmp.length()
@@ -236,31 +218,20 @@ agent Boid {
 				force.plus(tmp)
 			}
 		}
-		
-/* 
-		for (boid : otherBoids) {
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
-				tmp.setXY(this.body.position)
-				tmp.moins(boid.position)
-				len = tmp.length()
-				tmp.fois(1 / (len * len))
-				force.plus(tmp)
-			}
-		}
-*/
+	
 		return force
 
 	}
 
 	@SuppressWarnings("equals_with_null")
-	def cohesion(otherBoids : Map<UUID, BoidBody>) : Vector {
+	def cohesion(boids : Map<UUID, BoidBody>) : Vector {
 		
 		var nbTot = 0 
 		var force : Vector 
 		
 		force = new Vector(0,0)
 		 
-		for (elem : otherBoids.entrySet) {
+		for (elem : boids.entrySet) {
 			if (elem.key != null && elem.key != ID  && elem.value.groupe == this.body.groupe  && visible(elem.value)) {
 				nbTot++
 				force.plus(elem.value.position)
@@ -278,7 +249,7 @@ agent Boid {
 	
 
 	@SuppressWarnings("equals_with_null")
-	def alignement(otherBoids : Map<UUID, BoidBody>) : Vector {
+	def alignement(boids : Map<UUID, BoidBody>) : Vector {
 		
 		var nbTot = 0 
 		var force : Vector
@@ -286,17 +257,8 @@ agent Boid {
 		
 		force = new Vector(0,0)
 		tmp = new Vector(0,0)
-		
-		/*otherBoids.forEach [ id, boid |
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
-				nbTot++
-				tmp.setXY(boid.vitesse)
-				tmp.fois(1 / tmp.length)
-				force.plus(tmp)
-			}
-		]*/
 
-		for (elem : otherBoids.entrySet) {
+		for (elem : boids.entrySet) {
 			if (elem.key != null && elem.key != ID && elem.value.groupe == this.body.groupe && visible(elem.value)) {
 				nbTot++
 				tmp.setXY(elem.value.position)
@@ -304,16 +266,6 @@ agent Boid {
 				force.plus(tmp)
 			}
 		}
-		info(force + " ceci est la force a appliquer !!!!!!!!!!")
-		/*
-		for (boid : otherBoids){
-			if (boid != null && boid.groupe == this.body.groupe && visible(boid)) {
-				nbTot++
-				tmp.setXY(boid.vitesse)
-				tmp.fois(1/tmp.length)
-				force.plus(tmp)
-			}
-		}*/
 		
 		if (nbTot > 0) {
 			force.fois(1/nbTot)	
@@ -324,7 +276,7 @@ agent Boid {
 	}
 
 	@SuppressWarnings("equals_with_null")
-	def repulsion(otherBoids : Map<UUID, BoidBody>) : Vector {
+	def repulsion(boids : Map<UUID, BoidBody>) : Vector {
 		
 		var force : Vector
 		var tmp : Vector
@@ -332,18 +284,8 @@ agent Boid {
 		
 		force = new Vector(0,0)
 		tmp = new Vector(0,0)
-		
-		/*otherBoids.forEach [ id, boid |
-			if (boid != null && boid.groupe != this.body.groupe && visible(boid)) {
-				tmp.setXY(this.body.position)
-				tmp.moins(boid.position)
-				len = tmp.length
-				tmp.fois(1 / (len * len))
-				force.plus(tmp)
-			}
-		]*/
 
-		for (elem : otherBoids.entrySet) {
+		for (elem : boids.entrySet) {
 			if (elem.key != null && elem.value.groupe != this.body.groupe && visible(elem.value)) {
 				tmp.setXY(this.body.position)
 				tmp.moins(elem.value.position)
@@ -352,17 +294,6 @@ agent Boid {
 				force.plus(tmp)
 			}
 		}
-		
-		/*
-		for (boid : otherBoids){
-			if (boid != null && boid.groupe != this.body.groupe && visible(boid)){
-				tmp.setXY(this.body.position)
-				tmp.moins(boid.position)
-				len = tmp.length
-				tmp.fois(1/(len*len))
-				force.plus(tmp)
-			}
-		}*/
 		
 		return force
 	}
@@ -379,16 +310,9 @@ agent Boid {
 		acceleration = new Vector(force)
 		//acceleration.fois(1/this.body.masse)
 		info("acceleration : " + acceleration)
-
-		//DEFINITION EN DUR ICI
-		//this.body.vitesse = new Vector(0, 0)
-		//info("bodyVitesse : " + this.body.vitesse)
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)
-		//WAT ON ADDITIONNE VITESSE ET ACCELERATION???
-		
-		info("nouvelle vitesse : " + this.body.newVitesse)
 		
 		//bornage de la vitesse
 		if (this.body.newVitesse.length > this.body.groupeVitesseMax){
@@ -397,8 +321,6 @@ agent Boid {
 		}
 		
 		//maj position
-		info(this.body.position.x)
-		info(this.body.position.y)
 		newPosition = new Vector(this.body.position)
 		newPosition.plus(this.body.newVitesse)
 		info(newPosition)
@@ -414,7 +336,4 @@ agent Boid {
 		killMe
 	}
 	
-	/*on Destroy {
-		emit(new EndSimulation)[it.UUID == this.parentAgent]
-	}*/
 }
