@@ -23,6 +23,7 @@ import java.util.UUID
 import fr.utbm.boids.gui.fx.EndSimulation
 import io.sarl.core.Schedules
 import java.util.Map
+import io.sarl.core.Destroy
 
 agent Boid {
 	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
@@ -383,8 +384,12 @@ agent Boid {
 	}
 	
 	on EndSimulation [isFrom(this.parentAgent)] {
-		info("Boid kill")
+		// info("Boid kill")
 		emit(new EndSimulation) [it.UUID == this.parentAgent]
 		killMe
 	}
+	
+	/*on Destroy {
+		emit(new EndSimulation)[it.UUID == this.parentAgent]
+	}*/
 }
