@@ -16,18 +16,17 @@ import com.google.common.util.concurrent.AtomicDouble
 import java.util.ArrayList
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
-import javafx.animation.PauseTransition
 import fr.utbm.boids.BoidBody
 import java.util.Collection
 import javafx.scene.shape.Circle
-import java.util.UUID
 import javafx.scene.paint.Color
-import javafx.scene.shape.Shape
-import javafx.geometry.Point2D
 import fr.utbm.boids.Configuration
-
-import static extension javafx.util.Duration.*
-
+import javafx.scene.control.ToggleButton
+import javafx.scene.layout.Background
+import javafx.scene.layout.BackgroundFill
+import javafx.scene.layout.CornerRadii
+import javafx.geometry.Insets
+import javafx.scene.effect.Glow
 
 class BoidsFxViewerController extends FxViewerController implements Configuration  {
 
@@ -39,7 +38,11 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 	@FXML var UI_pane : Pane // Pane contenant l'UI
 	@FXML var obstacle_group : Group // Groupe contenant les obstacles
 	
+	@FXML var toggle_night_mode : ToggleButton
+	@FXML var toggle_perception : ToggleButton
 	@FXML var start_button : Button
+	@FXML var night_mode_indicator : Circle
+	@FXML var perception_indicator : Circle
 
 	// Titres
 	@FXML var boids_quantity_label : Label
@@ -58,11 +61,17 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 	@FXML var map_selection_display : Label
 	@FXML var boids_population_display : Label
 	@FXML var boids_vision_display : Label
+	
+	@FXML var boids_quantity_min : Label; @FXML var boids_quantity_max : Label
+	@FXML var map_min : Label; @FXML var map_max : Label
+	@FXML var boids_population_min : Label; @FXML var boids_population_max : Label
+	@FXML var boids_vision_min : Label; @FXML var boids_vision_max : Label
 
 	var polygons : List<Polygon>
 	var polygonsCoordinates : List<List<Coordinates>>
 	var obstacles : List<Obstacle>
-	var obstacleShells : List<Obstacle>
+	var nightMode : Boolean = false
+	var togglePerception : Boolean = true
 
 	def getBoidsQuantity() : int {
 		boids_quantity_input.value as int
@@ -101,7 +110,14 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 			launched = true
 			mapCreated = false
 			toggleUIState()
-			toggleUIVisibility()			
+			toggleMenuUIVisibility()
+			toggleSimuUIVisibility()
+			toggle_night_mode.background = new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
+			if(nightMode) {
+				toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
+			} else {
+				toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
+			}			
 		} else {
 			emitToAgents(^event)
 		}
@@ -190,19 +206,18 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 			@Override
 			def run() {
 				boids_group.getChildren().clear()
-				// TODO reduire taille de la partie d'affichage pour les boids + mettre une couleur en fonction du groupe + remplacer cercle par triangle
 				for (boid : list){
-					/*var cercle = new Circle()
-					//cercle.setCenterX(boid.position.x + getMapWidth / 2);
-					//cercle.setCenterY(boid.position.y + getMapHeight/2); 
-					cercle.setCenterX(boid.position.x)
-					cercle.setCenterY(boid.position.y)
-					cercle.setRadius(10.0f);
-					cercle.fill = COLOR_FAMILY.get(boid.groupe)
-					boids_group.getChildren().add(0, cercle)*/
 					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y - 7.5, boid.position.x + 5, boid.position.y + 7.5, boid.position.x - 5, boid.position.y + 7.5)
 					boidElement.setFill(COLOR_FAMILY.get(boid.groupe))
-					boids_group.getChildren().add(0, boidElement)
+					if(togglePerception) {
+						var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_vision_display.text))
+						if(nightMode) perceptionRadius.fill = Color.rgb(255, 245, 112,0.2) else perceptionRadius.fill = Color.rgb(255, 245, 112)
+						boids_group.getChildren().add(0, boidElement)
+						boids_group.getChildren.add(0, perceptionRadius)
+					} else {
+						boids_group.getChildren.add(0, boidElement)
+					}
+					
 				}
 			}
 		}
@@ -238,16 +253,126 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 		];
 	}
 	
+	@FXML protected def toggleMode() : void {
+		if(nightMode) {
+			nightMode = false
+			night_mode_indicator.fill = Color.TRANSPARENT
+			night_mode_indicator.stroke = Color.rgb(0, 0, 0, 0.3)
+			perception_indicator.stroke = Color.rgb(0, 0, 0, 0.3)
+			var normalTextColor : Color = Color.BLACK
+			main_pane.background = new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
+			boids_quantity_label.textFill = normalTextColor; boids_quantity_display.textFill = normalTextColor; boids_quantity_min.textFill = normalTextColor; boids_quantity_max.textFill = normalTextColor
+			map_selection_label.textFill = normalTextColor;	map_selection_display.textFill = normalTextColor; map_min.textFill = normalTextColor; map_max.textFill = normalTextColor
+			boids_population_label.textFill = normalTextColor; boids_population_display.textFill = normalTextColor; boids_population_min.textFill = normalTextColor; boids_population_max.textFill = normalTextColor
+			boids_vision_label.textFill = normalTextColor; boids_vision_display.textFill = normalTextColor; boids_vision_min.textFill = normalTextColor; boids_vision_max.textFill = normalTextColor
+			toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
+			toggle_perception.textFill = Color.rgb(0, 0, 0, 0.3)
+			start_button.textFill = normalTextColor
+		} else {
+			nightMode = true
+			night_mode_indicator.fill = Color.rgb(0, 204, 99)
+			night_mode_indicator.stroke = Color.rgb(184, 193, 207, 0.3)
+			perception_indicator.stroke = Color.rgb(184, 193, 207, 0.3)
+			var nightTextColor : Color = Color.rgb(191, 191, 191)
+			main_pane.background = new Background(
+			new BackgroundFill(Color.rgb(34, 34, 34), CornerRadii.EMPTY, Insets.EMPTY))
+			boids_quantity_label.textFill = nightTextColor;	boids_quantity_display.textFill = nightTextColor; boids_quantity_min.textFill = nightTextColor;	boids_quantity_max.textFill = nightTextColor
+			map_selection_label.textFill = nightTextColor; map_selection_display.textFill = nightTextColor;	map_min.textFill = nightTextColor;	map_max.textFill = nightTextColor
+			boids_population_label.textFill = nightTextColor; boids_population_display.textFill = nightTextColor; boids_population_min.textFill = nightTextColor; boids_population_max.textFill = nightTextColor
+			boids_vision_label.textFill = nightTextColor; boids_vision_display.textFill = nightTextColor; boids_vision_min.textFill = nightTextColor; boids_vision_max.textFill = nightTextColor
+			toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
+			toggle_perception.textFill = Color.rgb(191, 191, 191, 0.3)
+			start_button.textFill = nightTextColor
+		}
+	}
+	
+	@FXML protected def togglePerception() : void {
+		if(togglePerception) {
+			togglePerception = false
+			perception_indicator.fill = Color.TRANSPARENT
+		} else {
+			togglePerception = true
+			perception_indicator.fill = Color.rgb(0, 204, 99)
+		}
+	}
+	
+	@FXML protected def toggleButtonGlow() : void {	
+		if(nightMode)
+			toggle_night_mode.textFill = Color.rgb(235, 221, 26)
+		else
+			toggle_night_mode.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		toggle_night_mode.effect = glowEffect
+	}
+	
+	@FXML protected def toggleButtonReset() : void {
+		if(launched) {
+			if (nightMode)
+				toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
+			else
+				toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
+		} else {
+			if (nightMode)
+				toggle_night_mode.textFill = Color.rgb(191, 191, 191)
+			else
+				toggle_night_mode.textFill = Color.rgb(0, 0, 0)
+		}
+		toggle_night_mode.effect = null
+	}
+
+	@FXML protected def startButtonGlow() : void {
+		if (nightMode)
+			start_button.textFill = Color.rgb(235, 221, 26)
+		else
+			start_button.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		start_button.effect = glowEffect
+	}
+
+	@FXML protected def startButtonReset() : void {
+		if (nightMode)
+			start_button.textFill = Color.rgb(191, 191, 191)
+		else
+			start_button.textFill = Color.rgb(0, 0, 0)
+		start_button.effect = null
+	}
+	
+	@FXML protected def perceptionButtonGlow() : void {
+		if (nightMode)
+			toggle_perception.textFill = Color.rgb(235, 221, 26)
+		else
+			toggle_perception.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		toggle_perception.effect = glowEffect
+	}
+	
+	@FXML protected def perceptionButtonReset() : void {
+		if (nightMode)
+			toggle_perception.textFill = Color.rgb(191, 191, 191, 0.3)
+		else
+			toggle_perception.textFill = Color.rgb(0, 0, 0, 0.3)
+		toggle_perception.effect = null
+	}
+	
 	def toggleUIState() : void {
 		if(start_button.disable == true) start_button.disable = false else start_button.disable = true
 		if(boids_quantity_input.disable == true) boids_quantity_input.disable = false else boids_quantity_input.disable = true
 		if(map_selection_input.disable == true) map_selection_input.disable = false else map_selection_input.disable = true
 		if(boids_population_input.disable == true) boids_population_input.disable = false else boids_population_input.disable = true
 		if(boids_vision_input.disable == true) boids_vision_input.disable = false else boids_vision_input.disable = true
+		// if(toggle_night_mode.disable == true)  toggle_night_mode.disable = false else toggle_night_mode.disable = true
 	}
 	
-	def toggleUIVisibility() : void {
+	def toggleMenuUIVisibility() : void {
 		if(UI_pane.visible) UI_pane.visible = false else UI_pane.visible = true
+	}
+	
+	def toggleSimuUIVisibility() : void {
+		if(!toggle_perception.visible) toggle_perception.visible = true else toggle_perception.visible = false
+		if(!perception_indicator.visible) perception_indicator.visible = true else perception_indicator.visible = false
 	}
 	
 }

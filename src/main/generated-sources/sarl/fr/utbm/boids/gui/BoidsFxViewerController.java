@@ -19,12 +19,19 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.effect.Glow;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
@@ -52,7 +59,19 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
   private Group obstacle_group;
   
   @FXML
+  private ToggleButton toggle_night_mode;
+  
+  @FXML
+  private ToggleButton toggle_perception;
+  
+  @FXML
   private Button start_button;
+  
+  @FXML
+  private Circle night_mode_indicator;
+  
+  @FXML
+  private Circle perception_indicator;
   
   @FXML
   private Label boids_quantity_label;
@@ -90,13 +109,39 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
   @FXML
   private Label boids_vision_display;
   
+  @FXML
+  private Label boids_quantity_min;
+  
+  @FXML
+  private Label boids_quantity_max;
+  
+  @FXML
+  private Label map_min;
+  
+  @FXML
+  private Label map_max;
+  
+  @FXML
+  private Label boids_population_min;
+  
+  @FXML
+  private Label boids_population_max;
+  
+  @FXML
+  private Label boids_vision_min;
+  
+  @FXML
+  private Label boids_vision_max;
+  
   private List<Polygon> polygons;
   
   private List<List<Coordinates>> polygonsCoordinates;
   
   private List<Obstacle> obstacles;
   
-  private List<Obstacle> obstacleShells;
+  private Boolean nightMode = Boolean.valueOf(false);
+  
+  private Boolean togglePerception = Boolean.valueOf(true);
   
   @Pure
   public int getBoidsQuantity() {
@@ -154,7 +199,16 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
       this.launched = true;
       this.mapCreated = false;
       this.toggleUIState();
-      this.toggleUIVisibility();
+      this.toggleMenuUIVisibility();
+      this.toggleSimuUIVisibility();
+      BackgroundFill _backgroundFill = new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY);
+      Background _background = new Background(_backgroundFill);
+      this.toggle_night_mode.setBackground(_background);
+      if ((this.nightMode).booleanValue()) {
+        this.toggle_night_mode.setTextFill(Color.rgb(191, 191, 191, 0.3));
+      } else {
+        this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0, 0.3));
+      }
     } else {
       this.emitToAgents(event);
     }
@@ -280,7 +334,21 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
             double _plus_2 = (_y_2 + 7.5);
             Polygon boidElement = new Polygon(_x, _minus, _plus, _plus_1, _minus_1, _plus_2);
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
-            BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
+            if ((BoidsFxViewerController.this.togglePerception).booleanValue()) {
+              double _x_3 = boid.getPosition().getX();
+              double _y_3 = boid.getPosition().getY();
+              double _parseDouble = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
+              Circle perceptionRadius = new Circle(_x_3, _y_3, _parseDouble);
+              if ((BoidsFxViewerController.this.nightMode).booleanValue()) {
+                perceptionRadius.setFill(Color.rgb(255, 245, 112, 0.2));
+              } else {
+                perceptionRadius.setFill(Color.rgb(255, 245, 112));
+              }
+              BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
+              BoidsFxViewerController.this.boids_group.getChildren().add(0, perceptionRadius);
+            } else {
+              BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
+            }
           }
         }
       }
@@ -325,6 +393,153 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
     this.boids_vision_input.valueProperty().addListener(_function);
   }
   
+  @FXML
+  protected void toggleMode() {
+    if ((this.nightMode).booleanValue()) {
+      this.nightMode = Boolean.valueOf(false);
+      this.night_mode_indicator.setFill(Color.TRANSPARENT);
+      this.night_mode_indicator.setStroke(Color.rgb(0, 0, 0, 0.3));
+      this.perception_indicator.setStroke(Color.rgb(0, 0, 0, 0.3));
+      Color normalTextColor = Color.BLACK;
+      BackgroundFill _backgroundFill = new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY);
+      Background _background = new Background(_backgroundFill);
+      this.main_pane.setBackground(_background);
+      this.boids_quantity_label.setTextFill(normalTextColor);
+      this.boids_quantity_display.setTextFill(normalTextColor);
+      this.boids_quantity_min.setTextFill(normalTextColor);
+      this.boids_quantity_max.setTextFill(normalTextColor);
+      this.map_selection_label.setTextFill(normalTextColor);
+      this.map_selection_display.setTextFill(normalTextColor);
+      this.map_min.setTextFill(normalTextColor);
+      this.map_max.setTextFill(normalTextColor);
+      this.boids_population_label.setTextFill(normalTextColor);
+      this.boids_population_display.setTextFill(normalTextColor);
+      this.boids_population_min.setTextFill(normalTextColor);
+      this.boids_population_max.setTextFill(normalTextColor);
+      this.boids_vision_label.setTextFill(normalTextColor);
+      this.boids_vision_display.setTextFill(normalTextColor);
+      this.boids_vision_min.setTextFill(normalTextColor);
+      this.boids_vision_max.setTextFill(normalTextColor);
+      this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0, 0.3));
+      this.toggle_perception.setTextFill(Color.rgb(0, 0, 0, 0.3));
+      this.start_button.setTextFill(normalTextColor);
+    } else {
+      this.nightMode = Boolean.valueOf(true);
+      this.night_mode_indicator.setFill(Color.rgb(0, 204, 99));
+      this.night_mode_indicator.setStroke(Color.rgb(184, 193, 207, 0.3));
+      this.perception_indicator.setStroke(Color.rgb(184, 193, 207, 0.3));
+      Color nightTextColor = Color.rgb(191, 191, 191);
+      Color _rgb = Color.rgb(34, 34, 34);
+      BackgroundFill _backgroundFill_1 = new BackgroundFill(_rgb, CornerRadii.EMPTY, Insets.EMPTY);
+      Background _background_1 = new Background(_backgroundFill_1);
+      this.main_pane.setBackground(_background_1);
+      this.boids_quantity_label.setTextFill(nightTextColor);
+      this.boids_quantity_display.setTextFill(nightTextColor);
+      this.boids_quantity_min.setTextFill(nightTextColor);
+      this.boids_quantity_max.setTextFill(nightTextColor);
+      this.map_selection_label.setTextFill(nightTextColor);
+      this.map_selection_display.setTextFill(nightTextColor);
+      this.map_min.setTextFill(nightTextColor);
+      this.map_max.setTextFill(nightTextColor);
+      this.boids_population_label.setTextFill(nightTextColor);
+      this.boids_population_display.setTextFill(nightTextColor);
+      this.boids_population_min.setTextFill(nightTextColor);
+      this.boids_population_max.setTextFill(nightTextColor);
+      this.boids_vision_label.setTextFill(nightTextColor);
+      this.boids_vision_display.setTextFill(nightTextColor);
+      this.boids_vision_min.setTextFill(nightTextColor);
+      this.boids_vision_max.setTextFill(nightTextColor);
+      this.toggle_night_mode.setTextFill(Color.rgb(191, 191, 191, 0.3));
+      this.toggle_perception.setTextFill(Color.rgb(191, 191, 191, 0.3));
+      this.start_button.setTextFill(nightTextColor);
+    }
+  }
+  
+  @FXML
+  protected void togglePerception() {
+    if ((this.togglePerception).booleanValue()) {
+      this.togglePerception = Boolean.valueOf(false);
+      this.perception_indicator.setFill(Color.TRANSPARENT);
+    } else {
+      this.togglePerception = Boolean.valueOf(true);
+      this.perception_indicator.setFill(Color.rgb(0, 204, 99));
+    }
+  }
+  
+  @FXML
+  protected void toggleButtonGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.toggle_night_mode.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.toggle_night_mode.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void toggleButtonReset() {
+    if (this.launched) {
+      if ((this.nightMode).booleanValue()) {
+        this.toggle_night_mode.setTextFill(Color.rgb(191, 191, 191, 0.3));
+      } else {
+        this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0, 0.3));
+      }
+    } else {
+      if ((this.nightMode).booleanValue()) {
+        this.toggle_night_mode.setTextFill(Color.rgb(191, 191, 191));
+      } else {
+        this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0));
+      }
+    }
+    this.toggle_night_mode.setEffect(null);
+  }
+  
+  @FXML
+  protected void startButtonGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.start_button.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.start_button.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.start_button.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void startButtonReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.start_button.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.start_button.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.start_button.setEffect(null);
+  }
+  
+  @FXML
+  protected void perceptionButtonGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.toggle_perception.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.toggle_perception.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.toggle_perception.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void perceptionButtonReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.toggle_perception.setTextFill(Color.rgb(191, 191, 191, 0.3));
+    } else {
+      this.toggle_perception.setTextFill(Color.rgb(0, 0, 0, 0.3));
+    }
+    this.toggle_perception.setEffect(null);
+  }
+  
   public void toggleUIState() {
     boolean _isDisable = this.start_button.isDisable();
     boolean _equals = (_isDisable == true);
@@ -363,7 +578,7 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
     }
   }
   
-  public void toggleUIVisibility() {
+  public void toggleMenuUIVisibility() {
     boolean _isVisible = this.UI_pane.isVisible();
     if (_isVisible) {
       this.UI_pane.setVisible(false);
@@ -372,24 +587,56 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
     }
   }
   
+  public void toggleSimuUIVisibility() {
+    boolean _isVisible = this.toggle_perception.isVisible();
+    boolean _not = (!_isVisible);
+    if (_not) {
+      this.toggle_perception.setVisible(true);
+    } else {
+      this.toggle_perception.setVisible(false);
+    }
+    boolean _isVisible_1 = this.perception_indicator.isVisible();
+    boolean _not_1 = (!_isVisible_1);
+    if (_not_1) {
+      this.perception_indicator.setVisible(true);
+    } else {
+      this.perception_indicator.setVisible(false);
+    }
+  }
+  
   @Override
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    BoidsFxViewerController other = (BoidsFxViewerController) obj;
+    if (other.launched != this.launched)
+      return false;
+    if (other.mapCreated != this.mapCreated)
+      return false;
+    if (other.nightMode != this.nightMode)
+      return false;
+    if (other.togglePerception != this.togglePerception)
+      return false;
+    return super.equals(obj);
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    int result = super.hashCode();
+    final int prime = 31;
+    result = prime * result + (this.launched ? 1231 : 1237);
+    result = prime * result + (this.mapCreated ? 1231 : 1237);
+    result = prime * result + (this.nightMode ? 1231 : 1237);
+    result = prime * result + (this.togglePerception ? 1231 : 1237);
+    return result;
   }
   
   @SyntheticMember

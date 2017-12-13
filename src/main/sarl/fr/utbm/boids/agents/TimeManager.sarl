@@ -6,21 +6,17 @@ import io.sarl.core.Logging
 import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.IsStarted
 import io.sarl.core.Lifecycle
-import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.NeedDataBoids
 import io.sarl.core.Schedules
 import fr.utbm.boids.events.SendDataBoids
-import fr.utbm.boids.events.BoidsToDisplay
 import fr.utbm.boids.gui.BoidsFxViewerController
 import io.sarl.core.Time
 import fr.utbm.boids.gui.fx.EndSimulation
 import fr.utbm.boids.events.SchedulerBeginsScheduling
-import java.util.UUID
-import java.util.Map
-import fr.utbm.boids.BoidBody
 import io.sarl.core.Behaviors
+import fr.utbm.boids.events.BoidsToDisplay
 
-agent Scheduler {
+agent TimeManager {
 	uses Logging, DefaultContextInteractions, Lifecycle, Schedules, Behaviors
 	
 	var online : boolean // if the simulation is online or not

@@ -16,7 +16,6 @@ import fr.utbm.boids.events.BoidsPositions
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
 import java.util.ArrayList
-import io.sarl.core.MemberJoined
 import fr.utbm.boids.events.BoidsReady
 import fr.utbm.boids.events.SchedulerBeginsScheduling
 import io.sarl.lang.core.Address
@@ -40,7 +39,7 @@ agent BootAgent {
 		spawnInContext(typeof(Environment), innerContext, boidsQuantity) 
 		info("Starting simulation")
 		//spawn(Scheduler,ctrl)
-		spawnInContext(typeof(Scheduler), innerContext, ctrl)
+		spawnInContext(typeof(TimeManager), innerContext, ctrl)
 	}
 	
 	on ConfigureSimulation {

@@ -40,6 +40,7 @@ agent Boid {
 		info("A Boid agent was started.")
 		parentAgent = occurrence.spawner
 		task('say-started').every(1000) [emit(new IsStarted("Boid"))]
+		// emit(new IsStarted("Boid"))
 	}
 	
 	on InitBoidBody {

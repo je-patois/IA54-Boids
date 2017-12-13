@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.canvas.*?>
@@ -9,24 +11,94 @@
 
 <Pane fx:id="main_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.boids.gui.BoidsFxViewerController">
    <children>
-      <Pane fx:id="UI_pane" layoutX="580.0" layoutY="47.0" prefHeight="381.0" prefWidth="200.0">
+      <Pane fx:id="UI_pane" layoutX="562.0" layoutY="41.0" prefHeight="425.0" prefWidth="221.0">
          <children>
-            <Button fx:id="start_button" layoutX="100.0" layoutY="295.0" mnemonicParsing="false" onAction="#startSimu" text="Start" />
-            <ScrollBar fx:id="map_selection_input" layoutX="75.0" layoutY="242.0" max="2.0" min="1.0" onMouseEntered="#actionMapSelectionDisplay" value="1.0" />
-            <Label fx:id="map_selection_label" layoutX="75.0" layoutY="221.0" prefHeight="21.0" prefWidth="100.0" text="%MapSelectionLabel" />
-            <Label fx:id="map_selection_display" layoutX="162.0" layoutY="260.0" text="1" />
-            <Label fx:id="boids_population_label" layoutX="70.0" layoutY="88.0" prefHeight="21.0" prefWidth="110.0" text="%BoidsPopulationQuantityLabel" />
-            <ScrollBar fx:id="boids_population_input" layoutX="70.0" layoutY="108.0" max="10.0" min="1.0" onMouseEntered="#actionPopulationDisplay" prefHeight="18.0" prefWidth="110.0" value="1.0" />
-            <Label fx:id="boids_population_display" layoutX="170.0" layoutY="126.0" text="1" textAlignment="RIGHT" />
-            <Label fx:id="boids_vision_label" layoutX="70.0" layoutY="155.0" prefHeight="21.0" prefWidth="110.0" text="%BoidsVisionLabel" />
-            <ScrollBar fx:id="boids_vision_input" layoutX="70.0" layoutY="176.0" max="800.0" onMouseEntered="#actionBoidsVisionDisplay" prefHeight="18.0" prefWidth="110.0" unitIncrement="10.0" value="10.0" />
-            <Label fx:id="boids_vision_display" layoutX="162.0" layoutY="194.0" text="10" />
-            <ScrollBar fx:id="boids_quantity_input" layoutX="75.0" layoutY="49.0" min="1.0" onMouseEntered="#actionBoidsQuantityDisplay" value="1.0" />
-            <Label fx:id="boids_quantity_display" layoutX="166.0" layoutY="67.0" text="1" />
-            <Label fx:id="boids_quantity_label" layoutX="75.0" layoutY="28.0" prefHeight="21.0" prefWidth="100.0" text="%BoidsQuantityLabel" />
+            <ScrollBar fx:id="map_selection_input" layoutX="21.0" layoutY="298.0" max="2.0" min="1.0" onMouseEntered="#actionMapSelectionDisplay" prefHeight="18.0" prefWidth="173.0" value="1.0" />
+            <Label fx:id="map_selection_label" alignment="CENTER" layoutX="19.0" layoutY="271.0" prefHeight="21.0" prefWidth="173.0" text="%MapSelectionLabel">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <Label fx:id="map_selection_display" alignment="CENTER" layoutX="21.0" layoutY="316.0" prefHeight="25.0" prefWidth="173.0" text="1">
+               <font>
+                  <Font size="16.0" />
+               </font></Label>
+            <Label fx:id="boids_population_label" alignment="CENTER" layoutX="21.0" layoutY="103.0" prefHeight="21.0" prefWidth="173.0" text="%BoidsPopulationQuantityLabel">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <ScrollBar fx:id="boids_population_input" layoutX="23.0" layoutY="128.0" max="10.0" min="1.0" onMouseEntered="#actionPopulationDisplay" prefHeight="18.0" prefWidth="173.0" value="1.0" />
+            <Label fx:id="boids_population_display" alignment="CENTER" layoutX="21.0" layoutY="145.0" prefHeight="25.0" prefWidth="173.0" text="1" textAlignment="RIGHT">
+               <font>
+                  <Font size="16.0" />
+               </font></Label>
+            <Label fx:id="boids_vision_label" alignment="CENTER" layoutX="23.0" layoutY="189.0" prefHeight="21.0" prefWidth="173.0" text="%BoidsVisionLabel">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <ScrollBar fx:id="boids_vision_input" layoutX="23.0" layoutY="216.0" max="800.0" onMouseEntered="#actionBoidsVisionDisplay" prefHeight="18.0" prefWidth="173.0" unitIncrement="10.0" value="30.0" />
+            <Label fx:id="boids_vision_display" alignment="CENTER" layoutX="21.0" layoutY="236.0" prefHeight="21.0" prefWidth="173.0" text="30" />
+            <ScrollBar fx:id="boids_quantity_input" layoutX="20.0" layoutY="49.0" min="1.0" onMouseEntered="#actionBoidsQuantityDisplay" prefHeight="18.0" prefWidth="173.0" value="1.0" />
+            <Label fx:id="boids_quantity_display" alignment="CENTER" layoutX="20.0" layoutY="67.0" prefHeight="25.0" prefWidth="173.0" text="1">
+               <font>
+                  <Font size="16.0" />
+               </font></Label>
+            <Label fx:id="boids_quantity_label" alignment="CENTER" layoutX="22.0" layoutY="22.0" prefHeight="27.0" prefWidth="173.0" text="%BoidsQuantityLabel">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <Button fx:id="start_button" layoutX="74.0" layoutY="375.0" mnemonicParsing="false" onAction="#startSimu" onMouseEntered="#startButtonGlow" onMouseExited="#startButtonReset" prefHeight="21.0" prefWidth="74.0" style="-fx-background-color: transparent;" text="Start" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
+            <Label fx:id="boids_quantity_min" layoutX="12.0" layoutY="52.0" text="1">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+            <Label fx:id="boids_quantity_max" layoutX="196.0" layoutY="52.0" text="100">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+            <Label fx:id="boids_population_min" layoutX="13.0" layoutY="131.0" text="1">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+            <Label fx:id="boids_population_max" layoutX="200.0" layoutY="131.0" text="10">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+            <Label fx:id="boids_vision_min" layoutX="13.0" layoutY="219.0" text="0">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+            <Label fx:id="boids_vision_max" layoutX="198.0" layoutY="219.0" text="800">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+            <Label fx:id="map_min" layoutX="11.0" layoutY="301.0" text="1">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+            <Label fx:id="map_max" layoutX="199.0" layoutY="301.0" text="2">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <Group fx:id="boids_group" />
       <Group fx:id="obstacle_group" />
+      <ToggleButton fx:id="toggle_night_mode" layoutX="690.0" layoutY="557.0" mnemonicParsing="false" onAction="#toggleMode" onMouseEntered="#toggleButtonGlow" onMouseExited="#toggleButtonReset" prefHeight="31.0" prefWidth="111.0" style="-fx-background-color: transparent;" text="%NightModeLabel" />
+      <Circle fx:id="night_mode_indicator" fill="#1f93ff00" layoutX="686.0" layoutY="572.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" />
+      <Circle fx:id="perception_indicator" fill="#00cc63" layoutX="686.0" layoutY="546.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" visible="false" />
+      <ToggleButton fx:id="toggle_perception" layoutX="690.0" layoutY="531.0" mnemonicParsing="false" onAction="#togglePerception" onMouseEntered="#perceptionButtonGlow" onMouseExited="#perceptionButtonReset" prefHeight="31.0" prefWidth="111.0" style="-fx-background-color: transparent;" text="%PerceptionLabel" textFill="#0000004d" visible="false" />
    </children>
 </Pane>

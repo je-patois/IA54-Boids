@@ -40,7 +40,7 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlSpecification("0.6")
 @SarlElementType(17)
 @SuppressWarnings("all")
-public class Scheduler extends Agent {
+public class TimeManager extends Agent {
   private boolean online;
   
   private BoidsFxViewerController ctrl = null;
@@ -269,7 +269,7 @@ public class Scheduler extends Agent {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    Scheduler other = (Scheduler) obj;
+    TimeManager other = (TimeManager) obj;
     if (other.online != this.online)
       return false;
     if (other.freqRafraichissement != this.freqRafraichissement)
@@ -292,20 +292,20 @@ public class Scheduler extends Agent {
   }
   
   @SyntheticMember
-  public Scheduler(final UUID parentID, final UUID agentID) {
+  public TimeManager(final UUID parentID, final UUID agentID) {
     super(parentID, agentID);
   }
   
   @SyntheticMember
   @Inject
   @Deprecated
-  public Scheduler(final BuiltinCapacitiesProvider provider, final UUID parentID, final UUID agentID) {
+  public TimeManager(final BuiltinCapacitiesProvider provider, final UUID parentID, final UUID agentID) {
     super(provider, parentID, agentID);
   }
   
   @SyntheticMember
   @Inject
-  public Scheduler(final UUID parentID, final UUID agentID, final DynamicSkillProvider skillProvider) {
+  public TimeManager(final UUID parentID, final UUID agentID, final DynamicSkillProvider skillProvider) {
     super(parentID, agentID, skillProvider);
   }
 }
