@@ -175,7 +175,7 @@ public class Boid extends Agent {
     if (_notEquals) {
       Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
       _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("ON PREND EN COMPTE LES AUTRES BOIDS MON GARS");
-      forceTot.plus(this.alignement(otherBoids));
+      forceTot.plus(this.cohesion(otherBoids));
     }
     forceTot.fois(100000);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
@@ -206,12 +206,15 @@ public class Boid extends Agent {
     Vector _vitesse = this.body.getVitesse();
     Vector _vector_1 = new Vector(_vitesse);
     tmp2 = _vector_1;
-    tmp2.normaliser();
-    tmp.normaliser();
     double _point = tmp2.point(tmp);
+    double _length_1 = tmp2.length();
+    double _length_2 = tmp.length();
+    double _multiply = (_length_1 * _length_2);
+    double _divide = (_point / _multiply);
+    double _abs = Math.abs(Math.toDegrees(Math.acos(_divide)));
     int _angleVisibilite = this.body.getAngleVisibilite();
-    boolean _lessThan = (_point < _angleVisibilite);
-    if (_lessThan) {
+    boolean _greaterThan_1 = (_abs > _angleVisibilite);
+    if (_greaterThan_1) {
       return false;
     }
     return true;
@@ -234,7 +237,7 @@ public class Boid extends Agent {
     tmp = _vector_1;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if ((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe())) && (!Objects.equal(elem.getKey(), this.getID())))) {
+      if (((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue())) && (!Objects.equal(elem.getKey(), this.getID())))) {
         double _distance = this.distance(this.body.getPosition().getX(), elem.getValue().getPosition().getX());
         double _x = elem.getValue().getPosition().getX();
         double _minus = (_x - 800);
@@ -327,7 +330,7 @@ public class Boid extends Agent {
     force = _vector;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if ((((!Objects.equal(elem.getKey(), null)) && (!Objects.equal(elem.getKey(), this.getID()))) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
+      if (((((!Objects.equal(elem.getKey(), null)) && (!Objects.equal(elem.getKey(), this.getID()))) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue()))) {
         nbTot++;
         force.plus(elem.getValue().getPosition());
       }
@@ -350,7 +353,7 @@ public class Boid extends Agent {
     tmp = _vector_1;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if ((((!Objects.equal(elem.getKey(), null)) && (!Objects.equal(elem.getKey(), this.getID()))) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
+      if (((((!Objects.equal(elem.getKey(), null)) && (!Objects.equal(elem.getKey(), this.getID()))) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue()))) {
         nbTot++;
         tmp.setXY(elem.getValue().getPosition());
         double _length = tmp.length();
@@ -379,7 +382,7 @@ public class Boid extends Agent {
     tmp = _vector_1;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = otherBoids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() != this.body.getGroupe()))) {
+      if ((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() != this.body.getGroupe())) && this.visible(elem.getValue()))) {
         tmp.setXY(this.body.getPosition());
         tmp.moins(elem.getValue().getPosition());
         len = tmp.length();

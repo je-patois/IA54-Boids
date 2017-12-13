@@ -124,10 +124,10 @@ agent Boid {
 			//forceTot.plus(separation(otherBoids))
 			
 			//on applique la cohésion
-			//forceTot.plus(cohesion(otherBoids))				
+			forceTot.plus(cohesion(otherBoids))				
 			
 			//on applique l'alignement
-			forceTot.plus(alignement(otherBoids))
+			//forceTot.plus(alignement(otherBoids))
 
 			//on applique la répulsion
 			//forceTot.plus(repulsion(otherBoids))
@@ -165,14 +165,8 @@ agent Boid {
 	 	
 	 	tmp2 = new Vector(this.body.vitesse)
 	 	
-	 	tmp2.normaliser()
-	 	//tmp2.fois(this.body.groupeVitesseMax)			//TODO m'expliquer pourquoi normaliser avait été changé et pourquoi on voulait faire une multiplication par la vitesseMax
-	 	
-	 	// pas dans le code du prof mais pourtant le vecteur doit l'être pour que la formule marche et ça me parraît pas être "logique" tmp soit déjà normaliser
-	 	tmp.normaliser()
-	 	//tmp.fois(this.body.groupeVitesseMax)
-	 	
-	 	if (tmp2.point(tmp) < this.body.angleVisibilite) {
+	 	// on test si le boids est hors de l'angle de vision : cos(ABC) = vec(AB).vec(AC)/(AB*AC)
+	 	if (Math.abs(Math.toDegrees(Math.acos((tmp2.point(tmp)/(tmp2.length * tmp.length))))) > this.body.angleVisibilite) {
 	 		return false
 	 	}
 	 	
@@ -210,7 +204,7 @@ agent Boid {
 		 */
 		 
 		for (elem : otherBoids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe && /*visible(elem.value) && */elem.key != this.ID) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe && visible(elem.value) && elem.key != this.ID) {
 				
 				//hauteur et largeur de la map mis en dur
 				//TODO amener largeur et hauteur dynamiquement
@@ -277,7 +271,7 @@ agent Boid {
 		force = new Vector(0,0)
 		 
 		for (elem : otherBoids.entrySet) {
-			if (elem.key != null && elem.key != ID  && elem.value.groupe == this.body.groupe /* && visible(elem.value)*/) {
+			if (elem.key != null && elem.key != ID  && elem.value.groupe == this.body.groupe  && visible(elem.value)) {
 				nbTot++
 				force.plus(elem.value.position)
 			}
@@ -313,7 +307,7 @@ agent Boid {
 		]*/
 
 		for (elem : otherBoids.entrySet) {
-			if (elem.key != null && elem.key != ID && elem.value.groupe == this.body.groupe/*&& visible(elem.value)*/) {
+			if (elem.key != null && elem.key != ID && elem.value.groupe == this.body.groupe && visible(elem.value)) {
 				nbTot++
 				tmp.setXY(elem.value.position)
 				tmp.fois(1 / tmp.length)
@@ -360,7 +354,7 @@ agent Boid {
 		]*/
 
 		for (elem : otherBoids.entrySet) {
-			if (elem.key != null && elem.value.groupe != this.body.groupe /*&& visible(elem.value)*/) {
+			if (elem.key != null && elem.value.groupe != this.body.groupe && visible(elem.value)) {
 				tmp.setXY(this.body.position)
 				tmp.moins(elem.value.position)
 				len = tmp.length
