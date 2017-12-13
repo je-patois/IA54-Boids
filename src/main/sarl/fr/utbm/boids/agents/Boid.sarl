@@ -128,10 +128,20 @@ agent Boid {
 	 	var tmp : Vector
 	 	var tmp2 : Vector
 	 	
+	 	
 	 	tmp = new Vector(b.position)
 	 	tmp.moins(this.body.position)
+
+		//TODO insérer avec des paramètres la demi largeur et demi hauteur
+		if (tmp.x > 400 ){
+	 		tmp.moins(new Vector(800,0))
+	 	}
 	 	
-	 	//TODO faire un test pour prendre en compte le retour à la ligne de la carte
+	 	if (tmp.y > 400) {
+	 		tmp.moins(new Vector(0,800))
+	 	}
+	 	
+	 	
 	 	// Si le boids est trop loin, on ne le voit pas 
 	 	if (tmp.length() > this.body.distanceVisibilite){
 	 		return false
@@ -172,7 +182,7 @@ agent Boid {
 				//hauteur et largeur de la map mis en dur
 				//TODO amener largeur et hauteur dynamiquement
 				
-				if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - 800)){
+				/*if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - 800)){
 					if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x + 800)){
 						xelem = elem.value.position.x
 					} else {
@@ -198,7 +208,7 @@ agent Boid {
 					} else {
 						yelem = elem.value.position.y + 600
 					}
-				}
+				}*/
 				
 				tmpelem = new Vector(xelem%800, yelem%600)
 				tmp.setXY(this.body.position)
