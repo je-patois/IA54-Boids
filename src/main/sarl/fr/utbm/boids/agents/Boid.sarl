@@ -3,8 +3,6 @@ package fr.utbm.boids.agents
 import io.sarl.core.Initialize
 import io.sarl.core.Logging
 import io.sarl.core.DefaultContextInteractions
-import java.util.Collection
-import fr.utbm.boids.events.IsStarted
 import fr.utbm.boids.events.DemandeDeplacement
 import fr.utbm.boids.events.StartPosition
 import fr.utbm.boids.events.ResultatDeplacement
@@ -12,8 +10,6 @@ import fr.utbm.boids.Vector
 import java.util.Random
 import fr.utbm.boids.events.ValidationDeplacement
 import fr.utbm.boids.BoidBody
-import fr.utbm.boids.events.InitBoidBody
-import fr.utbm.boids.events.BoidBodyInitialized
 import fr.utbm.boids.environment.Obstacle
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -21,12 +17,11 @@ import javafx.geometry.Point2D
 import io.sarl.core.Lifecycle
 import java.util.UUID
 import fr.utbm.boids.gui.fx.EndSimulation
-import io.sarl.core.Schedules
 import java.util.Map
-import io.sarl.core.Destroy
+import fr.utbm.boids.events.BoidInitialized
 
 agent Boid {
-	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
+	uses Logging, DefaultContextInteractions, Lifecycle
 
 	var body : BoidBody
 	var parentAgent : UUID
@@ -39,23 +34,17 @@ agent Boid {
 		loggingName = "Boid-" + this.ID
 		info("A Boid agent was started.")
 		parentAgent = occurrence.spawner
-		task('say-started').every(1000) [emit(new IsStarted("Boid"))]
-		// emit(new IsStarted("Boid"))
+		this.body = new BoidBody(occurrence.parameters.get(0) as Integer, 10, 2, occurrence.parameters.get(1) as Integer, 200)
+		info('MON BODY')
+		info(this.body)
+		emit(new BoidInitialized(this.body, 'Boid'))
 	}
 	
-	on InitBoidBody {
-		task('say-started').cancel
-		//this.body = occurrence.body
-		//this.body = new BoidBody(occurrence.body)
-		//info(occurrence.body.groupe)
-		//info(occurrence.body.groupeVitesseMax)
-		//info(occurrence.body.masse)
-		//info(occurrence.body.angleVisibilite)
-		//info(occurrence.body.distanceVisibilite)
+	/* on InitBoidBody {
 		this.body = new BoidBody(occurrence.body.groupe, occurrence.body.groupeVitesseMax, occurrence.body.masse, occurrence.body.angleVisibilite, occurrence.body.distanceVisibilite)
 		info('Mon body est initialisé!')
 		emit(new BoidBodyInitialized())
-	}
+	}*/
 	
 	on StartPosition {
 		var validPosition : AtomicBoolean = new AtomicBoolean(true)
@@ -67,8 +56,8 @@ agent Boid {
 		var vy : AtomicInteger = new AtomicInteger(0)	
 		do {
 			validPosition.set(true)
-			x.set(rnd.nextInt(occurrence.largeur) + 1)
-			y.set(rnd.nextInt(occurrence.hauteur) + 1)
+			x.set(rnd.nextInt(occurrence.width) + 1)
+			y.set(rnd.nextInt(occurrence.height) + 1)
 			occurrence.obstacles.forEach[o : Obstacle, index : int | 
 				if(o.getPolygon().contains(new Point2D(x.get(), y.get()))) {
 					validPosition.set(false)
@@ -421,7 +410,6 @@ agent Boid {
 	}
 	
 	on EndSimulation [isFrom(this.parentAgent)] {
-		// info("Boid kill")
 		emit(new EndSimulation) [it.UUID == this.parentAgent]
 		killMe
 	}

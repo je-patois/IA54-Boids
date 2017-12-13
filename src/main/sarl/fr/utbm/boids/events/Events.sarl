@@ -9,6 +9,13 @@ import java.util.Map
 import fr.utbm.boids.environment.Obstacle
 import java.util.List
 
+/**
+ * Transfert des paramètres utilisateurs au BootAgent
+ * @param mapSelection - Map choisie
+ * @param boidsQuantity - Nombre de boids par population
+ * @param boidsPopulation - Nombre de populations
+ * @param boidsVision - Radius de perception des boids
+ */
 event ConfigureSimulation {
 	val mapSelection : int
 	val boidsQuantity : int
@@ -23,43 +30,29 @@ event ConfigureSimulation {
 	}
 }
 
-/*event MapParameters {
-	var mapWidth : int
-	var mapHeight : int
-
-	new(width : int, height : int) {
-		this.mapWidth = width
-		this.mapHeight = height
-	}
-}*/
-
-
-event MapParameters {
-	var mapWidth : int
-	var mapHeight : int
-	var obstacles : List<Obstacle>
-	
-	new(width : int, height : int, obstacles : List<Obstacle>) {
-		this.mapWidth = width
-		this.mapHeight = height
-		this.obstacles = obstacles
-	}
-}
-
-event GenerateMap
-
-/* event pour prévenir l'environnement que le Boids est lancé
+/** 
+ * Un IsStarted avec le body en plus
+ * @param body - Transfert du `BoidBody` 
  */
-event IsStarted {
+event BoidInitialized {
+	var body : BoidBody
 	var type : String
-	
-	new (typeEntity : String){
+
+	new(body : BoidBody, typeEntity : String) {
+		this.body = body
 		this.type = typeEntity
 	}
 }
 
+/**
+ * Evenement ordonnant à l'agent GUI de débuter sa fonction
+ */
 event MakeTheFiestaBegin
 
+/**
+ * Formule une demande de déplacement auprès d'un boid
+ * @param otherBoids - Liste des autres boids, permettant au boid de décider de son placement
+ */
 event DemandeDeplacement {
 
 	/*var otherBoids : Collection<BoidBody>*/
@@ -82,13 +75,18 @@ event DemandeDeplacement {
 	}
 }
 
+/**
+ * Evenement lancé lorsqu'un boid désire se déplacer. Il transfert ici la prochaine position qu'il veut, pour que l'environnement puisse décider de si il s'agit d'une position viable ou non
+ * @param position - Nouvelle position du boid
+ * @param newVitesse - Nouveau vecteur vitesse du boid
+ */
 event ResultatDeplacement {
 	var position : Vector
-	var newVitesse : Vector
+	var newSpeed : Vector
 
 	new (pos : Vector, vit : Vector) {
 		this.position = pos
-		this.newVitesse = vit
+		this.newSpeed = vit
 	}
 
 	/*new (x : int, y : int) {
@@ -96,6 +94,9 @@ event ResultatDeplacement {
 	}*/
 }
 
+/**
+ * Valide le déplacement d'un boid
+ */
 event ValidationDeplacement{
 	var position : Vector
 	
@@ -104,69 +105,33 @@ event ValidationDeplacement{
 	}
 }
 
-event StartingSimulation {
-	val nombreDePopulations : int
-	val nombreDeBoidsParPopulation : int
-	val visionBoids : int
-	val freqRafraichissement : int
-
-	new(nombreDePopulations : int, nombreDeBoidsParPopulation : int, visionBoids : int, freqRafraichissement : int) {
-		this.nombreDePopulations = nombreDePopulations
-		this.nombreDeBoidsParPopulation = nombreDeBoidsParPopulation
-		this.visionBoids = visionBoids
-		this.freqRafraichissement = freqRafraichissement
-	}
-}
-
-/*event StartPosition {
-	var hauteur : int 
-	var largeur : int 
-	
-	new (h : int, l : int ){
-		this.hauteur = h
-		this.largeur = l
-	}
- * }
+/**
+ * Débute la simulation
  */
+event StartingSimulation
  
+/**
+ * Initialise les positions intiales des boids
+ * @param height - Position du boid en y
+ * @param width - Position du boid en x
+ * @param obstacles - Liste des obstacles avec les données relatives à leur traitement
+ */
 event StartPosition {
-	var hauteur : int
-	var largeur : int
+	var height : int
+	var width : int
 	var obstacles : List<Obstacle>
 
 	new (h : int, l : int, obstacles : List<Obstacle>) {
-		this.hauteur = h
-		this.largeur = l
+		this.height = h
+		this.width = l
 		this.obstacles = obstacles
 	}
 }
 
-/* Events of the GUI only */
-
-event BtnLaunch
-
-event BtnShutdown
-
-event ListVar {
-	val list : Collection<UUID>
-	
-	new(list: Collection<UUID>) {
-		this.list = list
-	}	
-}
-
-// event AllBoidsCreated
-
-event BoidsPositions {
-	val grid : Object[]
-	
-	new(grid: Object[]) {
-		this.grid = grid
-	}
-}
-
-event NeedDataBoids
-
+/**
+ * Envoi des données relatives aux boids
+ * @parameter lesBoids - Données relatives aux boids
+ */
 event SendDataBoids {
 	var lesBoids : Collection<Boid>
 	
@@ -175,15 +140,10 @@ event SendDataBoids {
 	}
 }
 
-event BoidsToDisplay {
-	var boids : Map<UUID,BoidBody>
-	
-	new(BoidsToDisplay : Map<UUID, BoidBody>) {
-		this.boids = BoidsToDisplay
-	}
-}
-
-
+/**
+ * Demande au boid d'initialiser son BoidBody 
+ * @parameter body - BoidBody du boid
+ */
 event InitBoidBody{
 	var body : BoidBody
 	
@@ -192,16 +152,38 @@ event InitBoidBody{
 	}
 }
 
+/**
+ * Evenement déclenché lorsqu'un BoidBody est correctement initialisé 
+ */
 event BoidBodyInitialized
 
+/** 
+ * Evenement déclenché lorsque le nombre d'agents `Boid` correspond au nombre de boids demandé
+ */
 event BoidsReady
 
-event SchedulerBeginsScheduling {
-	var freqRafraichissement : long
+/**
+ * Demande au Time Manager de démarrer ses cycles
+ * @param frequency - Fréquence de raffraichissement entre 2 cycles
+ */
+event TimeManagingStart {
+	var frequency : long
 	
-	new(freqRafraichissement : long) {
-		this.freqRafraichissement = freqRafraichissement
+	new(frequency : long) {
+		this.frequency = frequency
 	}
 }
 
+/**
+ * Evenement déclenché lorsque les boids sont prêts 
+ */
 event BoidsSideReady
+
+/**
+ * Signalement du début d'un nouveau cycle
+ */
+event Cycle
+
+event BtnLaunch
+
+event BtnShutdown

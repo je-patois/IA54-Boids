@@ -8,6 +8,10 @@ import io.sarl.lang.core.Event;
 import java.util.Collection;
 import org.eclipse.xtext.xbase.lib.Pure;
 
+/**
+ * Envoi des données relatives aux boids
+ * @parameter lesBoids - Données relatives aux boids
+ */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")

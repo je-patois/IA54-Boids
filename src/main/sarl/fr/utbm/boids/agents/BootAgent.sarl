@@ -8,38 +8,32 @@ import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.ConfigureSimulation
 import fr.utbm.boids.gui.BoidsFxViewerController
 import io.sarl.core.Behaviors
-import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.StartingSimulation
-import fr.utbm.boids.events.GenerateMap
-import fr.utbm.boids.events.MapParameters
-import fr.utbm.boids.events.BoidsPositions
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
 import java.util.ArrayList
 import fr.utbm.boids.events.BoidsReady
-import fr.utbm.boids.events.SchedulerBeginsScheduling
 import io.sarl.lang.core.Address
+import fr.utbm.boids.events.TimeManagingStart
+import fr.utbm.boids.Configuration
 
 agent BootAgent {
-	uses Logging, Behaviors, InnerContextAccess, Lifecycle, DefaultContextInteractions
+	uses Logging, Behaviors, InnerContextAccess, Lifecycle
 	
 	var map : int
 	var boidsQuantity : int
 	var boidsPopulation : int
 	var boidsVision : int
 	var exited : boolean = false
-	var ctrl : BoidsFxViewerController = null;
-	var grid : Object[]
+	var ctrl : BoidsFxViewerController = null
 
 	on Initialize {
 		loggingName = "BootAgent-" + this.ID
 		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
 		ctrl.UISpace.register(asEventListener)
-		//spawn(Environment, boidsQuantity)
-		spawnInContext(typeof(Environment), innerContext, boidsQuantity) 
 		info("Starting simulation")
-		//spawn(Scheduler,ctrl)
-		spawnInContext(typeof(TimeManager), innerContext, ctrl)
+		spawnInContext(typeof(Environment), innerContext, ctrl) 
+		spawnInContext(typeof(TimeManager), innerContext)
 	}
 	
 	on ConfigureSimulation {
@@ -52,43 +46,33 @@ agent BootAgent {
 		info('Boids quantity: ' + this.boidsQuantity)
 		info('Boids population: ' + this.boidsPopulation)
 		info('Boids vision: ' + this.boidsVision)
-		wake(new GenerateMap())
+		this.generateMap()
 	}
 	
-	on GenerateMap {
-		info('Generating map...');
+	/**
+	 * Demande à la GUI de générer la map et fait débuter la simulation
+	 * @return {void}
+	 */
+	def generateMap() : void {
+		info('Generating map...')
 		var obstacles : List<Obstacle> = new ArrayList()
 		obstacles = ctrl.buildMap(this.map)
-		info('ASAA: ' + obstacles)
-		// emit(new MapParameters(ctrl.mapWidth, ctrl.mapHeight, obstacles))
-		// emit(new BoidsPositions(grid))
-		// emit(new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
-		innerContext.defaultSpace.emit(ID, new MapParameters(ctrl.mapWidth, ctrl.mapHeight, obstacles))
-		innerContext.defaultSpace.emit(ID, new BoidsPositions(grid))
-		innerContext.defaultSpace.emit(ID, new StartingSimulation(boidsPopulation, boidsQuantity, boidsVision, 50))
+		innerContext.defaultSpace.emit(ID, new StartingSimulation())
 	}
 	
 	on BoidsReady {
-		info('Les boids sont prêts !')
-		// innerContext.defaultSpace.emit(ID, new SchedulerBeginsScheduling(50))
-		var evt = new SchedulerBeginsScheduling(50)
+		info('Boids are ready !')
+		var evt = new TimeManagingStart(Configuration::FREQUENCY) // TODO Fréquence en dur dans le fichier de configuration. Je pense qu'on peut laisser comme ça ? Donner la possibilité à l'utilisateur de la modifier peut entraîner des effets indésirables
 		evt.source = new Address(innerContext.defaultSpace.spaceID, ID);
 		innerContext.defaultSpace.emit(ID, evt)
 	}
-	
-	/*on ListVar {
-		this.boidsList = occurrence.list
-		ctrl.updateGraphics(boidsList);
-	}*/
+
 
 	on EndSimulation [!hasMemberAgent] {
-		// info("The simulation has ended.")
 		killMe
 	}
 	
 	on EndSimulation [hasMemberAgent && !exited] {
-		// info("JE VAIS TOUS LES TUER")
-		// info(memberAgentCount)
 		exited = true
 		innerContext.defaultSpace.emit(ID, new EndSimulation)
 	}

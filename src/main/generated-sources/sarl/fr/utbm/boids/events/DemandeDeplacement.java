@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.UUID;
 import org.eclipse.xtext.xbase.lib.Pure;
 
+/**
+ * Formule une demande de déplacement auprès d'un boid
+ * @param otherBoids - Liste des autres boids, permettant au boid de décider de son placement
+ */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")

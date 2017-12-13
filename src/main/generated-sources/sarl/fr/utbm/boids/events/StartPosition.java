@@ -9,29 +9,24 @@ import java.util.List;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 /**
- * event StartPosition {
- * var hauteur : int
- * var largeur : int
- * 
- * new (h : int, l : int ){
- * this.hauteur = h
- * this.largeur = l
- * }
- * }
+ * Initialise les positions intiales des boids
+ * @param height - Position du boid en y
+ * @param width - Position du boid en x
+ * @param obstacles - Liste des obstacles avec les données relatives à leur traitement
  */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
 public class StartPosition extends Event {
-  public int hauteur;
+  public int height;
   
-  public int largeur;
+  public int width;
   
   public List<Obstacle> obstacles;
   
   public StartPosition(final int h, final int l, final List<Obstacle> obstacles) {
-    this.hauteur = h;
-    this.largeur = l;
+    this.height = h;
+    this.width = l;
     this.obstacles = obstacles;
   }
   
@@ -46,9 +41,9 @@ public class StartPosition extends Event {
     if (getClass() != obj.getClass())
       return false;
     StartPosition other = (StartPosition) obj;
-    if (other.hauteur != this.hauteur)
+    if (other.height != this.height)
       return false;
-    if (other.largeur != this.largeur)
+    if (other.width != this.width)
       return false;
     return super.equals(obj);
   }
@@ -59,8 +54,8 @@ public class StartPosition extends Event {
   public int hashCode() {
     int result = super.hashCode();
     final int prime = 31;
-    result = prime * result + this.hauteur;
-    result = prime * result + this.largeur;
+    result = prime * result + this.height;
+    result = prime * result + this.width;
     return result;
   }
   
@@ -71,12 +66,12 @@ public class StartPosition extends Event {
   @Pure
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
-    result.append("hauteur  = ").append(this.hauteur);
-    result.append("largeur  = ").append(this.largeur);
+    result.append("height  = ").append(this.height);
+    result.append("width  = ").append(this.width);
     result.append("obstacles  = ").append(this.obstacles);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = -1446189431L;
+  private final static long serialVersionUID = -3205458700L;
 }

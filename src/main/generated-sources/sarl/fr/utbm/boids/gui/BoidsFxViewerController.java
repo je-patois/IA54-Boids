@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.AtomicDouble;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Configuration;
 import fr.utbm.boids.environment.Obstacle;
+import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.gui.fx.FxViewerController;
 import fr.utbm.boids.util.Coordinates;
 import fr.utbm.boids.util.LineTool;
@@ -33,13 +34,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 @SarlSpecification("0.6")
 @SarlElementType(9)
 @SuppressWarnings("all")
-public class BoidsFxViewerController extends FxViewerController implements Configuration {
+public class BoidsFxViewerController extends FxViewerController {
   private boolean launched = false;
   
   private boolean mapCreated = false;
@@ -135,7 +137,7 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
   
   private List<List<Coordinates>> polygonsCoordinates;
   
-  private List<Obstacle> obstacles;
+  private List<Obstacle> obstacles = new ArrayList<Obstacle>();
   
   private Boolean nightMode = Boolean.valueOf(false);
   
@@ -184,9 +186,32 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
   
   @FXML
   protected void startSimu() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nType mismatch: cannot convert from ConfigureSimulation to Event"
-      + "\nType mismatch: cannot convert from ConfigureSimulation to Event");
+    int _mapSelection = this.getMapSelection();
+    int _boidsQuantity = this.getBoidsQuantity();
+    int _boidsPopulation = this.getBoidsPopulation();
+    int _boidsVision = this.getBoidsVision();
+    ConfigureSimulation event = new ConfigureSimulation(_mapSelection, _boidsQuantity, _boidsPopulation, _boidsVision);
+    if ((!this.launched)) {
+      final Procedure0 _function = () -> {
+        this.emitToAgents(event);
+      };
+      this.startAgentApplication(_function);
+      this.launched = true;
+      this.mapCreated = false;
+      this.toggleUIState();
+      this.toggleMenuUIVisibility();
+      this.toggleSimuUIVisibility();
+      BackgroundFill _backgroundFill = new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY);
+      Background _background = new Background(_backgroundFill);
+      this.toggle_night_mode.setBackground(_background);
+      if ((this.nightMode).booleanValue()) {
+        this.toggle_night_mode.setTextFill(Color.rgb(191, 191, 191, 0.3));
+      } else {
+        this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0, 0.3));
+      }
+    } else {
+      this.emitToAgents(event);
+    }
   }
   
   public List<Obstacle> buildMap(final int map) {
@@ -321,7 +346,7 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
               if ((BoidsFxViewerController.this.nightMode).booleanValue()) {
                 perceptionRadius.setFill(Color.rgb(255, 245, 112, 0.2));
               } else {
-                perceptionRadius.setFill(Color.rgb(255, 245, 112));
+                perceptionRadius.setFill(Color.rgb(255, 245, 112, 0.8));
               }
               BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
               BoidsFxViewerController.this.boids_group.getChildren().add(0, perceptionRadius);

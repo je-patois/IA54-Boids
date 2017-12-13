@@ -28,7 +28,7 @@ import javafx.scene.layout.CornerRadii
 import javafx.geometry.Insets
 import javafx.scene.effect.Glow
 
-class BoidsFxViewerController extends FxViewerController implements Configuration  {
+class BoidsFxViewerController extends FxViewerController  {
 
 	var launched = false
 	var mapCreated = false
@@ -69,7 +69,7 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 
 	var polygons : List<Polygon>
 	var polygonsCoordinates : List<List<Coordinates>>
-	var obstacles : List<Obstacle>
+	var obstacles : List<Obstacle> = new ArrayList()
 	var nightMode : Boolean = false
 	var togglePerception : Boolean = true
 
@@ -209,10 +209,18 @@ class BoidsFxViewerController extends FxViewerController implements Configuratio
 				for (boid : list){
 					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y - 7.5, boid.position.x + 5, boid.position.y + 7.5, boid.position.x - 5, boid.position.y + 7.5)
 					boidElement.rotate = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
-					boidElement.setFill(COLOR_FAMILY.get(boid.groupe))
+					boidElement.setFill(Configuration::COLOR_FAMILY.get(boid.groupe))
 					if(togglePerception) {
+						// var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_vision_display.text) * 80/100)
 						var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_vision_display.text))
-						if(nightMode) perceptionRadius.fill = Color.rgb(255, 245, 112,0.2) else perceptionRadius.fill = Color.rgb(255, 245, 112)
+						// perceptionRadius.setStrokeWidth(Double.parseDouble(boids_vision_display.text) * 20/100)
+						if(nightMode) {
+							perceptionRadius.fill = Color.rgb(255, 245, 112, 0.2)
+							// perceptionRadius.setStroke(Color.rgb(255, 255, 255, 0.1))
+						} else {
+							perceptionRadius.fill = Color.rgb(255, 245, 112, 0.8)
+							// perceptionRadius.setStroke(Color.rgb(255, 255, 255, 0.5))
+						}
 						boids_group.getChildren().add(0, boidElement)
 						boids_group.getChildren.add(0, perceptionRadius)
 					} else {

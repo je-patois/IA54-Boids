@@ -11,7 +11,6 @@ class BoidBody extends EnvObjet{
 	var angleVisibilite : int // défini dans Boid car chauqe individu peut avoir des caractéristiques différentes (dépendant de sa famille et de sa morfologie)
 	var distanceVisibilite : int
 	
-	
 	new (groupe : int, groupeVitesseMax : int, masse : int, angleVisibilite : int, distanceVisibilite : int){
 		this.groupe = groupe
 		this.groupeVitesseMax = groupeVitesseMax

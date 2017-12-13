@@ -5,20 +5,16 @@ import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Vector;
 import fr.utbm.boids.agents.Boid;
 import fr.utbm.boids.environment.Obstacle;
-import fr.utbm.boids.events.BoidBodyInitialized;
-import fr.utbm.boids.events.BoidsPositions;
+import fr.utbm.boids.events.BoidInitialized;
 import fr.utbm.boids.events.BoidsReady;
 import fr.utbm.boids.events.BoidsSideReady;
-import fr.utbm.boids.events.BoidsToDisplay;
+import fr.utbm.boids.events.Cycle;
 import fr.utbm.boids.events.DemandeDeplacement;
-import fr.utbm.boids.events.InitBoidBody;
-import fr.utbm.boids.events.IsStarted;
-import fr.utbm.boids.events.MapParameters;
-import fr.utbm.boids.events.NeedDataBoids;
 import fr.utbm.boids.events.ResultatDeplacement;
 import fr.utbm.boids.events.StartPosition;
 import fr.utbm.boids.events.StartingSimulation;
 import fr.utbm.boids.events.ValidationDeplacement;
+import fr.utbm.boids.gui.BoidsFxViewerController;
 import fr.utbm.boids.gui.fx.EndSimulation;
 import io.sarl.core.Behaviors;
 import io.sarl.core.DefaultContextInteractions;
@@ -26,7 +22,6 @@ import io.sarl.core.Initialize;
 import io.sarl.core.InnerContextAccess;
 import io.sarl.core.Lifecycle;
 import io.sarl.core.Logging;
-import io.sarl.core.Schedules;
 import io.sarl.lang.annotation.ImportedCapacityFeature;
 import io.sarl.lang.annotation.PerceptGuardEvaluator;
 import io.sarl.lang.annotation.SarlElementType;
@@ -51,11 +46,6 @@ import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Inline;
 import org.eclipse.xtext.xbase.lib.Pure;
 
-/**
- * Il va falloir avoir des tableaux d'obstacles et de boids
- * 
- * Peut-être vaut-il mieux faire 2 tableaux (1 pour les obstacles et 1 pour les boids)
- */
 @SarlSpecification("0.6")
 @SarlElementType(17)
 @SuppressWarnings("all")
@@ -66,25 +56,15 @@ public class Environment extends Agent {
   
   private Map<UUID, Address> boidsAddresses;
   
-  private boolean superBoids;
-  
-  private Object[] grid;
-  
   private int boidsUpdated;
   
-  private int largeur;
-  
-  private int hauteur;
-  
-  private List<Obstacle> obstacles;
-  
-  private int boidsQuantity;
-  
-  private int populationSize;
+  private BoidsFxViewerController ctrl = null;
   
   private boolean firstTime;
   
   private UUID spawner;
+  
+  private Boolean inCycle;
   
   @SyntheticMember
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
@@ -92,31 +72,22 @@ public class Environment extends Agent {
     UUID _iD = this.getID();
     String _plus = ("Environment-" + _iD);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName(_plus);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("The Environment is started.");
+    Object _get = occurrence.parameters[0];
+    this.ctrl = ((BoidsFxViewerController) _get);
     this.boidsUpdated = 0;
-    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    IsStarted _isStarted = new IsStarted("Environment");
-    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_isStarted);
     HashMap<UUID, BoidBody> _hashMap = new HashMap<UUID, BoidBody>();
     this.boidsList = _hashMap;
     this.firstTime = true;
     this.spawner = occurrence.spawner;
+    this.inCycle = Boolean.valueOf(false);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("The Environment is started.");
   }
   
   @SyntheticMember
-  private void $behaviorUnit$MapParameters$1(final MapParameters occurrence) {
-    this.largeur = occurrence.mapWidth;
-    this.hauteur = occurrence.mapHeight;
-    this.obstacles = occurrence.obstacles;
-  }
-  
-  @SyntheticMember
-  private void $behaviorUnit$StartingSimulation$2(final StartingSimulation occurrence) {
+  private void $behaviorUnit$StartingSimulation$1(final StartingSimulation occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("HO");
-    this.boidsQuantity = occurrence.nombreDeBoidsParPopulation;
-    this.populationSize = occurrence.nombreDePopulations;
     HashMap<Vector, UUID> _hashMap = new HashMap<Vector, UUID>();
     this.boidsGrid = _hashMap;
     HashMap<UUID, BoidBody> _hashMap_1 = new HashMap<UUID, BoidBody>();
@@ -126,18 +97,18 @@ public class Environment extends Agent {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("ready to start ");
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(("Boids quantity: " + Integer.valueOf(this.boidsQuantity)));
+    int _boidsQuantity = this.ctrl.getBoidsQuantity();
+    String _plus = ("Boids quantity: " + Integer.valueOf(_boidsQuantity));
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(("Population size: " + Integer.valueOf(this.populationSize)));
-    for (int i = 0; (i < occurrence.nombreDePopulations); i++) {
-      for (int j = 0; (j < occurrence.nombreDeBoidsParPopulation); j++) {
-        {
-          BoidBody tempBody = new BoidBody((i + 1), 10, 2, occurrence.visionBoids, 200);
-          Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
-          InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-          UUID id = _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.spawnInContext(Boid.class, _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext());
-          this.boidsList.put(id, tempBody);
-        }
+    int _boidsPopulation = this.ctrl.getBoidsPopulation();
+    String _plus_1 = ("Population size: " + Integer.valueOf(_boidsPopulation));
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(_plus_1);
+    for (int i = 0; (i < this.ctrl.getBoidsPopulation()); i++) {
+      for (int j = 0; (j < this.ctrl.getBoidsQuantity()); j++) {
+        Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
+        InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+        _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.spawnInContext(Boid.class, _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext(), Integer.valueOf((i + 1)), Integer.valueOf(this.ctrl.getBoidsVision()));
       }
     }
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
@@ -145,34 +116,39 @@ public class Environment extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$IsStarted$3(final IsStarted occurrence) {
+  private void $behaviorUnit$BoidInitialized$2(final BoidInitialized occurrence) {
     boolean _equals = Objects.equal(occurrence.type, "Boid");
     if (_equals) {
-      InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-      BoidBody _get = this.boidsList.get(occurrence.getSource().getUUID());
-      InitBoidBody _initBoidBody = new InitBoidBody(_get);
-      _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _initBoidBody, Scopes.addresses(occurrence.getSource()));
       this.boidsAddresses.put(occurrence.getSource().getUUID(), occurrence.getSource());
+      this.boidsList.put(occurrence.getSource().getUUID(), occurrence.body);
+      InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+      int _mapHeight = this.ctrl.getMapHeight();
+      int _mapWidth = this.ctrl.getMapWidth();
+      List<Obstacle> _obstacles = this.ctrl.getObstacles();
+      StartPosition _startPosition = new StartPosition(_mapHeight, _mapWidth, _obstacles);
+      _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _startPosition, Scopes.addresses(occurrence.getSource()));
     }
   }
   
   @SyntheticMember
   @Pure
-  private boolean $behaviorUnitGuard$IsStarted$3(final IsStarted it, final IsStarted occurrence) {
-    boolean _containsKey = this.boidsList.containsKey(occurrence.getSource().getUUID());
-    boolean _equals = (_containsKey == true);
-    return _equals;
-  }
-  
-  @SyntheticMember
-  private void $behaviorUnit$BoidBodyInitialized$4(final BoidBodyInitialized occurrence) {
+  private boolean $behaviorUnitGuard$BoidInitialized$2(final BoidInitialized it, final BoidInitialized occurrence) {
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-    StartPosition _startPosition = new StartPosition(this.hauteur, this.largeur, this.obstacles);
-    _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _startPosition, Scopes.addresses(occurrence.getSource()));
+    boolean _isInInnerDefaultSpace = _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.isInInnerDefaultSpace(occurrence);
+    return _isInInnerDefaultSpace;
   }
   
   @SyntheticMember
-  private void $behaviorUnit$ResultatDeplacement$5(final ResultatDeplacement occurrence) {
+  private void $behaviorUnit$BoidsSideReady$3(final BoidsSideReady occurrence) {
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("All boids have been created: " + Integer.valueOf(this.boidsUpdated)));
+    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
+    BoidsReady _boidsReady = new BoidsReady();
+    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_boidsReady);
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$ResultatDeplacement$4(final ResultatDeplacement occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("l\'env recoit les coordonnées");
     boolean accept = false;
@@ -187,7 +163,7 @@ public class Environment extends Agent {
     }
     synchronized (this.boidsList) {
       BoidBody modifBody = this.boidsList.get(occurrence.getSource().getUUID());
-      modifBody.setVitesse(occurrence.newVitesse);
+      modifBody.setVitesse(occurrence.newSpeed);
       this.boidsList.put(occurrence.getSource().getUUID(), modifBody);
     }
     if (accept) {
@@ -205,9 +181,13 @@ public class Environment extends Agent {
     this.boidsUpdated = (_boidsUpdated + 1);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(("maintenant updated = " + Integer.valueOf(this.boidsUpdated)));
-    if (((this.boidsUpdated == (this.boidsQuantity * this.populationSize)) && (this.firstTime == true))) {
+    if (((this.boidsUpdated == (this.ctrl.getBoidsQuantity() * this.ctrl.getBoidsPopulation())) && (this.firstTime == true))) {
       Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(((("boidsUpdated: " + Integer.valueOf(this.boidsUpdated)) + ", boidsTotal: ") + Integer.valueOf((this.boidsQuantity * this.populationSize))));
+      int _boidsQuantity = this.ctrl.getBoidsQuantity();
+      int _boidsPopulation = this.ctrl.getBoidsPopulation();
+      int _multiply = (_boidsQuantity * _boidsPopulation);
+      String _plus = ((("boidsUpdated: " + Integer.valueOf(this.boidsUpdated)) + ", boidsTotal: ") + Integer.valueOf(_multiply));
+      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(_plus);
       Behaviors _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER = this.$castSkill(Behaviors.class, (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS == null || this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS = this.$getSkill(Behaviors.class)) : this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
       BoidsSideReady _boidsSideReady = new BoidsSideReady();
       _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER.wake(_boidsSideReady);
@@ -216,47 +196,47 @@ public class Environment extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$NeedDataBoids$6(final NeedDataBoids occurrence) {
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("demande de rafraichissement : " + Integer.valueOf(this.boidsUpdated)));
-    int _size = this.boidsList.size();
-    boolean _greaterEqualsThan = (this.boidsUpdated >= _size);
-    if (_greaterEqualsThan) {
-      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("J\'apprends que le Scheduler veut de nouvelles coordonnées");
-      synchronized (this.boidsGrid) {
-        Set<Map.Entry<Vector, UUID>> _entrySet = this.boidsGrid.entrySet();
-        for (final Map.Entry<Vector, UUID> elem : _entrySet) {
-          {
-            BoidBody modifBody = this.boidsList.get(elem.getValue());
-            Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-            Vector _vitesse = modifBody.getVitesse();
-            String _plus = ("vitesse boid  dans env :   " + _vitesse);
-            _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus);
-            modifBody.setPosition(elem.getKey());
-            this.boidsList.put(elem.getValue(), modifBody);
+  private void $behaviorUnit$Cycle$5(final Cycle occurrence) {
+    if ((!(this.inCycle).booleanValue())) {
+      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("demande de rafraichissement : " + Integer.valueOf(this.boidsUpdated)));
+      int _size = this.boidsList.size();
+      boolean _greaterEqualsThan = (this.boidsUpdated >= _size);
+      if (_greaterEqualsThan) {
+        this.inCycle = Boolean.valueOf(true);
+        synchronized (this.boidsGrid) {
+          Set<Map.Entry<Vector, UUID>> _entrySet = this.boidsGrid.entrySet();
+          for (final Map.Entry<Vector, UUID> elem : _entrySet) {
+            {
+              BoidBody modifBody = this.boidsList.get(elem.getValue());
+              Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+              Vector _vitesse = modifBody.getVitesse();
+              String _plus = ("vitesse boid  dans env :   " + _vitesse);
+              _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(_plus);
+              modifBody.setPosition(elem.getKey());
+              this.boidsList.put(elem.getValue(), modifBody);
+            }
           }
+          HashMap<Vector, UUID> _hashMap = new HashMap<Vector, UUID>();
+          this.boidsGrid = _hashMap;
+          this.boidsUpdated = 0;
         }
-        HashMap<Vector, UUID> _hashMap = new HashMap<Vector, UUID>();
-        this.boidsGrid = _hashMap;
+        this.ctrl.updateGraphics(this.boidsList.values());
         this.boidsUpdated = 0;
+        final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
+          Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+          _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("REGARDER ICI IIIIIIIIIIIIIIIIIIIIIIIII");
+          Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+          String _plus = (id + " & ");
+          String _plus_1 = (_plus + address);
+          _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus_1);
+          InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+          DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
+          _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
+        };
+        this.boidsAddresses.forEach(_function);
+        this.inCycle = Boolean.valueOf(false);
       }
-      DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-      BoidsToDisplay _boidsToDisplay = new BoidsToDisplay(this.boidsList);
-      _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_boidsToDisplay);
-      this.boidsUpdated = 0;
-      final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
-        Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-        _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info("REGARDER ICI IIIIIIIIIIIIIIIIIIIIIIIII");
-        Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-        String _plus = (id + " & ");
-        String _plus_1 = (_plus + address);
-        _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(_plus_1);
-        InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-        DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
-        _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
-      };
-      this.boidsAddresses.forEach(_function);
     }
   }
   
@@ -264,24 +244,32 @@ public class Environment extends Agent {
   protected Vector estDansLaCarte(final Vector v) {
     double positionX = v.getX();
     double positionY = v.getY();
-    if ((positionX > this.largeur)) {
+    int _mapWidth = this.ctrl.getMapWidth();
+    boolean _greaterThan = (positionX > _mapWidth);
+    if (_greaterThan) {
       positionX = 1;
     }
     if ((positionX < 0)) {
-      positionX = (this.largeur - 1);
+      int _mapWidth_1 = this.ctrl.getMapWidth();
+      int _minus = (_mapWidth_1 - 1);
+      positionX = _minus;
     }
-    if ((positionY > this.hauteur)) {
+    int _mapHeight = this.ctrl.getMapHeight();
+    boolean _greaterThan_1 = (positionY > _mapHeight);
+    if (_greaterThan_1) {
       positionY = 1;
     }
     if ((positionY < 0)) {
-      positionY = (this.hauteur - 1);
+      int _mapHeight_1 = this.ctrl.getMapHeight();
+      int _minus_1 = (_mapHeight_1 - 1);
+      positionY = _minus_1;
     }
     Vector newPosition = new Vector(positionX, positionY);
     return newPosition;
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$7(final EndSimulation occurrence) {
+  private void $behaviorUnit$EndSimulation$6(final EndSimulation occurrence) {
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     EndSimulation _endSimulation = new EndSimulation();
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_endSimulation);
@@ -291,7 +279,7 @@ public class Environment extends Agent {
   
   @SyntheticMember
   @Pure
-  private boolean $behaviorUnitGuard$EndSimulation$7(final EndSimulation it, final EndSimulation occurrence) {
+  private boolean $behaviorUnitGuard$EndSimulation$6(final EndSimulation it, final EndSimulation occurrence) {
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
     boolean _hasMemberAgent = _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.hasMemberAgent();
     boolean _not = (!_hasMemberAgent);
@@ -299,7 +287,7 @@ public class Environment extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$8(final EndSimulation occurrence) {
+  private void $behaviorUnit$EndSimulation$7(final EndSimulation occurrence) {
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
     EndSimulation _endSimulation = new EndSimulation();
     _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _endSimulation, null);
@@ -307,24 +295,10 @@ public class Environment extends Agent {
   
   @SyntheticMember
   @Pure
-  private boolean $behaviorUnitGuard$EndSimulation$8(final EndSimulation it, final EndSimulation occurrence) {
+  private boolean $behaviorUnitGuard$EndSimulation$7(final EndSimulation it, final EndSimulation occurrence) {
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
     boolean _hasMemberAgent = _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.hasMemberAgent();
     return _hasMemberAgent;
-  }
-  
-  @SyntheticMember
-  private void $behaviorUnit$BoidsSideReady$9(final BoidsSideReady occurrence) {
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("All boids have been created: " + Integer.valueOf(this.boidsUpdated)));
-    DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    BoidsReady _boidsReady = new BoidsReady();
-    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_boidsReady);
-  }
-  
-  @SyntheticMember
-  private void $behaviorUnit$BoidsPositions$10(final BoidsPositions occurrence) {
-    this.grid = occurrence.grid;
   }
   
   @Extension
@@ -402,21 +376,6 @@ public class Environment extends Agent {
     return $castSkill(Behaviors.class, this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
   }
   
-  @Extension
-  @ImportedCapacityFeature(Schedules.class)
-  @SyntheticMember
-  private transient ClearableReference<Skill> $CAPACITY_USE$IO_SARL_CORE_SCHEDULES;
-  
-  @SyntheticMember
-  @Pure
-  @Inline(value = "$castSkill(Schedules.class, ($0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || $0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? ($0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = $0$getSkill(Schedules.class)) : $0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES)", imported = Schedules.class)
-  private Schedules $CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER() {
-    if (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) {
-      this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = $getSkill(Schedules.class);
-    }
-    return $castSkill(Schedules.class, this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
-  }
-  
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$Initialize(final Initialize occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -425,41 +384,22 @@ public class Environment extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Initialize$0(occurrence));
   }
   
-  /**
-   * on AllBoidsCreated {
-   * boids = getDefaultContext().defaultSpace.participants.toArray;
-   * info(boids)
-   * boids.get(2).
-   * }
-   */
   @SyntheticMember
   @PerceptGuardEvaluator
-  private void $guardEvaluator$BoidsPositions(final BoidsPositions occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+  private void $guardEvaluator$BoidInitialized(final BoidInitialized occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsPositions$10(occurrence));
+    if ($behaviorUnitGuard$BoidInitialized$2(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidInitialized$2(occurrence));
+    }
   }
   
-  /**
-   * on MemberJoined [occurrence.inInnerDefaultSpace && memberAgentCount == boidsQuantity * populationSize] {
-   * info("All boids have been created: " + memberAgentCount)
-   * emit(new BoidsReady)
-   * }
-   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$BoidsSideReady(final BoidsSideReady occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsSideReady$9(occurrence));
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$MapParameters(final MapParameters occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$MapParameters$1(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsSideReady$3(occurrence));
   }
   
   @SyntheticMember
@@ -467,7 +407,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$StartingSimulation(final StartingSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartingSimulation$2(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartingSimulation$1(occurrence));
   }
   
   /**
@@ -480,21 +420,11 @@ public class Environment extends Agent {
   private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
+    if ($behaviorUnitGuard$EndSimulation$6(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$6(occurrence));
+    }
     if ($behaviorUnitGuard$EndSimulation$7(occurrence, occurrence)) {
       ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$7(occurrence));
-    }
-    if ($behaviorUnitGuard$EndSimulation$8(occurrence, occurrence)) {
-      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$8(occurrence));
-    }
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$IsStarted(final IsStarted occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    if ($behaviorUnitGuard$IsStarted$3(occurrence, occurrence)) {
-      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$IsStarted$3(occurrence));
     }
   }
   
@@ -503,23 +433,15 @@ public class Environment extends Agent {
   private void $guardEvaluator$ResultatDeplacement(final ResultatDeplacement occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ResultatDeplacement$5(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ResultatDeplacement$4(occurrence));
   }
   
   @SyntheticMember
   @PerceptGuardEvaluator
-  private void $guardEvaluator$NeedDataBoids(final NeedDataBoids occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+  private void $guardEvaluator$Cycle(final Cycle occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$NeedDataBoids$6(occurrence));
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$BoidBodyInitialized(final BoidBodyInitialized occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidBodyInitialized$4(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Cycle$5(occurrence));
   }
   
   @Override
@@ -533,23 +455,15 @@ public class Environment extends Agent {
     if (getClass() != obj.getClass())
       return false;
     Environment other = (Environment) obj;
-    if (other.superBoids != this.superBoids)
-      return false;
     if (other.boidsUpdated != this.boidsUpdated)
-      return false;
-    if (other.largeur != this.largeur)
-      return false;
-    if (other.hauteur != this.hauteur)
-      return false;
-    if (other.boidsQuantity != this.boidsQuantity)
-      return false;
-    if (other.populationSize != this.populationSize)
       return false;
     if (other.firstTime != this.firstTime)
       return false;
     if (!java.util.Objects.equals(this.spawner, other.spawner)) {
       return false;
     }
+    if (other.inCycle != this.inCycle)
+      return false;
     return super.equals(obj);
   }
   
@@ -559,14 +473,10 @@ public class Environment extends Agent {
   public int hashCode() {
     int result = super.hashCode();
     final int prime = 31;
-    result = prime * result + (this.superBoids ? 1231 : 1237);
     result = prime * result + this.boidsUpdated;
-    result = prime * result + this.largeur;
-    result = prime * result + this.hauteur;
-    result = prime * result + this.boidsQuantity;
-    result = prime * result + this.populationSize;
     result = prime * result + (this.firstTime ? 1231 : 1237);
     result = prime * result + java.util.Objects.hashCode(this.spawner);
+    result = prime * result + (this.inCycle ? 1231 : 1237);
     return result;
   }
   

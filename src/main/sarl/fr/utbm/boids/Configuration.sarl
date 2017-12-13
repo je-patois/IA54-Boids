@@ -2,10 +2,12 @@ package fr.utbm.boids
 
 import javafx.scene.paint.Color
 
-public interface Configuration {
+final class Configuration {
 
-	// public static val COLOR_FAMILY = #{1 -> Color.RED, 2 -> Color.BLUE, 3 -> Color.GREEN, 4 -> Color.YELLOW, 5 -> Color.PURPLE, 6 -> Color.ORANGE, 7 -> Color.BROWN, 8 -> Color.PINK, 9 -> Color.BEIGE, 10 -> Color.CYAN}
+	/** Fréquence de rafraichissement de la simulation */
+	public static val FREQUENCY : long = 50
+
+	/** Couleurs attribuées aux familles de boids */
 	public static val COLOR_FAMILY = #{1 -> Color.rgb(0, 174, 255), 2 -> Color.rgb(255, 66, 66), 3 -> Color.rgb(0, 217, 112), 4 -> Color.rgb(211, 66, 255), 5 -> Color.rgb(255, 149, 20), 6 -> Color.rgb(252, 61, 240), 7 -> Color.rgb(176, 155, 111), 8 -> Color.rgb(74, 243, 255), 9 -> Color.rgb(41, 204, 182), 10 -> Color.rgb(54, 74, 255)}
 
-	
 }

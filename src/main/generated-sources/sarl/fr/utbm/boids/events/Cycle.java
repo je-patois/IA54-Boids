@@ -6,17 +6,20 @@ import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Address;
 import io.sarl.lang.core.Event;
 
+/**
+ * Signalement du début d'un nouveau cycle
+ */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
-public class GenerateMap extends Event {
+public class Cycle extends Event {
   @SyntheticMember
-  public GenerateMap() {
+  public Cycle() {
     super();
   }
   
   @SyntheticMember
-  public GenerateMap(final Address source) {
+  public Cycle(final Address source) {
     super(source);
   }
   

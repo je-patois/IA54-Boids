@@ -4,9 +4,7 @@ import io.sarl.core.Initialize
 import io.sarl.core.Logging
 import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.MakeTheFiestaBegin
-import fr.utbm.boids.events.IsStarted
 import fr.utbm.boids.events.BtnLaunch
-import fr.utbm.boids.events.StartingSimulation
 import fr.utbm.boids.events.BtnShutdown
 import io.sarl.core.Schedules
 import io.sarl.core.Lifecycle
@@ -24,7 +22,7 @@ agent GUI {
 	on Initialize {
 		loggingName = "GUI"
 		info("The GUI is started.")
-		emit(new IsStarted("GUI"))
+		// emit(new IsStarted("GUI"))
 	}
 	
 	on MakeTheFiestaBegin {
@@ -36,11 +34,11 @@ agent GUI {
 	}
 	
 	on BtnLaunch {
-		val nbPop = 3
+		/*val nbPop = 3
 		val nbBoids = 20
 		val visionBoids = 10
-		val freqRafraichissement = 1
-		emit(new StartingSimulation(nbPop, nbBoids, visionBoids, freqRafraichissement))
+		val freqRafraichissement = 1*/
+		// emit(new StartingSimulation())
 		in(10000)[
 			emit(new BtnShutdown)
 		]

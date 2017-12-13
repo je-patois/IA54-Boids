@@ -1,19 +1,28 @@
 package fr.utbm.boids.events;
 
+import fr.utbm.boids.BoidBody;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Event;
+import java.util.Objects;
 import org.eclipse.xtext.xbase.lib.Pure;
 
+/**
+ * Un IsStarted avec le body en plus
+ * @param body - Transfert du `BoidBody`
+ */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
-public class SchedulerBeginsScheduling extends Event {
-  public long freqRafraichissement;
+public class BoidInitialized extends Event {
+  public BoidBody body;
   
-  public SchedulerBeginsScheduling(final long freqRafraichissement) {
-    this.freqRafraichissement = freqRafraichissement;
+  public String type;
+  
+  public BoidInitialized(final BoidBody body, final String typeEntity) {
+    this.body = body;
+    this.type = typeEntity;
   }
   
   @Override
@@ -26,9 +35,10 @@ public class SchedulerBeginsScheduling extends Event {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    SchedulerBeginsScheduling other = (SchedulerBeginsScheduling) obj;
-    if (other.freqRafraichissement != this.freqRafraichissement)
+    BoidInitialized other = (BoidInitialized) obj;
+    if (!Objects.equals(this.type, other.type)) {
       return false;
+    }
     return super.equals(obj);
   }
   
@@ -38,21 +48,22 @@ public class SchedulerBeginsScheduling extends Event {
   public int hashCode() {
     int result = super.hashCode();
     final int prime = 31;
-    result = prime * result + (int) (this.freqRafraichissement ^ (this.freqRafraichissement >>> 32));
+    result = prime * result + Objects.hashCode(this.type);
     return result;
   }
   
   /**
-   * Returns a String representation of the SchedulerBeginsScheduling event's attributes only.
+   * Returns a String representation of the BoidInitialized event's attributes only.
    */
   @SyntheticMember
   @Pure
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
-    result.append("freqRafraichissement  = ").append(this.freqRafraichissement);
+    result.append("body  = ").append(this.body);
+    result.append("type  = ").append(this.type);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 2365250911L;
+  private final static long serialVersionUID = 2664466909L;
 }

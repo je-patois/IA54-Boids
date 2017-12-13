@@ -7,6 +7,9 @@ import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Event;
 import org.eclipse.xtext.xbase.lib.Pure;
 
+/**
+ * Valide le déplacement d'un boid
+ */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")

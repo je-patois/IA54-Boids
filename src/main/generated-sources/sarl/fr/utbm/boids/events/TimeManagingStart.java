@@ -4,20 +4,20 @@ import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Event;
-import java.util.Objects;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 /**
- * event pour prévenir l'environnement que le Boids est lancé
+ * Demande au Time Manager de démarrer ses cycles
+ * @param frequency - Fréquence de raffraichissement entre 2 cycles
  */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
-public class IsStarted extends Event {
-  public String type;
+public class TimeManagingStart extends Event {
+  public long frequency;
   
-  public IsStarted(final String typeEntity) {
-    this.type = typeEntity;
+  public TimeManagingStart(final long frequency) {
+    this.frequency = frequency;
   }
   
   @Override
@@ -30,10 +30,9 @@ public class IsStarted extends Event {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    IsStarted other = (IsStarted) obj;
-    if (!Objects.equals(this.type, other.type)) {
+    TimeManagingStart other = (TimeManagingStart) obj;
+    if (other.frequency != this.frequency)
       return false;
-    }
     return super.equals(obj);
   }
   
@@ -43,21 +42,21 @@ public class IsStarted extends Event {
   public int hashCode() {
     int result = super.hashCode();
     final int prime = 31;
-    result = prime * result + Objects.hashCode(this.type);
+    result = prime * result + (int) (this.frequency ^ (this.frequency >>> 32));
     return result;
   }
   
   /**
-   * Returns a String representation of the IsStarted event's attributes only.
+   * Returns a String representation of the TimeManagingStart event's attributes only.
    */
   @SyntheticMember
   @Pure
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
-    result.append("type  = ").append(this.type);
+    result.append("frequency  = ").append(this.frequency);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 185545343L;
+  private final static long serialVersionUID = 624831361L;
 }

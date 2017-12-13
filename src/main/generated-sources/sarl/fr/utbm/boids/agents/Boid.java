@@ -4,10 +4,8 @@ import com.google.common.base.Objects;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Vector;
 import fr.utbm.boids.environment.Obstacle;
-import fr.utbm.boids.events.BoidBodyInitialized;
+import fr.utbm.boids.events.BoidInitialized;
 import fr.utbm.boids.events.DemandeDeplacement;
-import fr.utbm.boids.events.InitBoidBody;
-import fr.utbm.boids.events.IsStarted;
 import fr.utbm.boids.events.ResultatDeplacement;
 import fr.utbm.boids.events.StartPosition;
 import fr.utbm.boids.events.ValidationDeplacement;
@@ -16,7 +14,6 @@ import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Initialize;
 import io.sarl.core.Lifecycle;
 import io.sarl.core.Logging;
-import io.sarl.core.Schedules;
 import io.sarl.lang.annotation.ImportedCapacityFeature;
 import io.sarl.lang.annotation.PerceptGuardEvaluator;
 import io.sarl.lang.annotation.SarlElementType;
@@ -41,7 +38,6 @@ import javax.inject.Inject;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Inline;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 import org.eclipse.xtext.xbase.lib.Pure;
 
@@ -62,37 +58,21 @@ public class Boid extends Agent {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("A Boid agent was started.");
     this.parentAgent = occurrence.spawner;
-    Schedules _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER = this.$castSkill(Schedules.class, (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = this.$getSkill(Schedules.class)) : this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
-    Schedules _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1 = this.$castSkill(Schedules.class, (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = this.$getSkill(Schedules.class)) : this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
-    final Procedure1<Agent> _function = (Agent it) -> {
-      DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-      IsStarted _isStarted = new IsStarted("Boid");
-      _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_isStarted);
-    };
-    _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER.every(_$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1.task("say-started"), 1000, _function);
-  }
-  
-  @SyntheticMember
-  private void $behaviorUnit$InitBoidBody$1(final InitBoidBody occurrence) {
-    Schedules _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER = this.$castSkill(Schedules.class, (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = this.$getSkill(Schedules.class)) : this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
-    Schedules _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1 = this.$castSkill(Schedules.class, (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = this.$getSkill(Schedules.class)) : this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
-    _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER.cancel(_$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1.task("say-started"));
-    int _groupe = occurrence.body.getGroupe();
-    int _groupeVitesseMax = occurrence.body.getGroupeVitesseMax();
-    int _masse = occurrence.body.getMasse();
-    int _angleVisibilite = occurrence.body.getAngleVisibilite();
-    int _distanceVisibilite = occurrence.body.getDistanceVisibilite();
-    BoidBody _boidBody = new BoidBody(_groupe, _groupeVitesseMax, _masse, _angleVisibilite, _distanceVisibilite);
+    Object _get = occurrence.parameters[0];
+    Object _get_1 = occurrence.parameters[1];
+    BoidBody _boidBody = new BoidBody((((Integer) _get)).intValue(), 10, 2, (((Integer) _get_1)).intValue(), 200);
     this.body = _boidBody;
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Mon body est initialisé!");
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info("MON BODY");
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(this.body);
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
-    BoidBodyInitialized _boidBodyInitialized = new BoidBodyInitialized();
-    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_boidBodyInitialized);
+    BoidInitialized _boidInitialized = new BoidInitialized(this.body, "Boid");
+    _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_boidInitialized);
   }
   
   @SyntheticMember
-  private void $behaviorUnit$StartPosition$2(final StartPosition occurrence) {
+  private void $behaviorUnit$StartPosition$1(final StartPosition occurrence) {
     AtomicBoolean validPosition = new AtomicBoolean(true);
     Vector maPosition = null;
     Random rnd = new Random();
@@ -103,10 +83,10 @@ public class Boid extends Agent {
     do {
       {
         validPosition.set(true);
-        int _nextInt = rnd.nextInt(occurrence.largeur);
+        int _nextInt = rnd.nextInt(occurrence.width);
         int _plus = (_nextInt + 1);
         x.set(_plus);
-        int _nextInt_1 = rnd.nextInt(occurrence.hauteur);
+        int _nextInt_1 = rnd.nextInt(occurrence.height);
         int _plus_1 = (_nextInt_1 + 1);
         y.set(_plus_1);
         final Procedure2<Obstacle, Integer> _function = (Obstacle o, Integer index) -> {
@@ -147,7 +127,7 @@ public class Boid extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$ValidationDeplacement$3(final ValidationDeplacement occurrence) {
+  private void $behaviorUnit$ValidationDeplacement$2(final ValidationDeplacement occurrence) {
     this.body.setPosition(occurrence.position);
     this.body.setVitesse(this.body.getNewVitesse());
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
@@ -164,7 +144,7 @@ public class Boid extends Agent {
   
   @SuppressWarnings("equals_with_null")
   @SyntheticMember
-  private void $behaviorUnit$DemandeDeplacement$4(final DemandeDeplacement occurrence) {
+  private void $behaviorUnit$DemandeDeplacement$3(final DemandeDeplacement occurrence) {
     Map<UUID, BoidBody> otherBoids = occurrence.otherBoids;
     Vector forceTot = null;
     Vector _vector = new Vector(0, 0);
@@ -434,7 +414,7 @@ public class Boid extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$5(final EndSimulation occurrence) {
+  private void $behaviorUnit$EndSimulation$4(final EndSimulation occurrence) {
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     EndSimulation _endSimulation = new EndSimulation();
     final Scope<Address> _function = (Address it) -> {
@@ -448,7 +428,7 @@ public class Boid extends Agent {
   
   @SyntheticMember
   @Pure
-  private boolean $behaviorUnitGuard$EndSimulation$5(final EndSimulation it, final EndSimulation occurrence) {
+  private boolean $behaviorUnitGuard$EndSimulation$4(final EndSimulation it, final EndSimulation occurrence) {
     boolean _isFrom = it.isFrom(this.parentAgent);
     return _isFrom;
   }
@@ -498,21 +478,6 @@ public class Boid extends Agent {
     return $castSkill(Lifecycle.class, this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
   }
   
-  @Extension
-  @ImportedCapacityFeature(Schedules.class)
-  @SyntheticMember
-  private transient ClearableReference<Skill> $CAPACITY_USE$IO_SARL_CORE_SCHEDULES;
-  
-  @SyntheticMember
-  @Pure
-  @Inline(value = "$castSkill(Schedules.class, ($0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || $0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) ? ($0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = $0$getSkill(Schedules.class)) : $0$CAPACITY_USE$IO_SARL_CORE_SCHEDULES)", imported = Schedules.class)
-  private Schedules $CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER() {
-    if (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) {
-      this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = $getSkill(Schedules.class);
-    }
-    return $castSkill(Schedules.class, this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
-  }
-  
   /**
    * gestion des évènements
    */
@@ -524,20 +489,19 @@ public class Boid extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Initialize$0(occurrence));
   }
   
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$InitBoidBody(final InitBoidBody occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$InitBoidBody$1(occurrence));
-  }
-  
+  /**
+   * on InitBoidBody {
+   * this.body = new BoidBody(occurrence.body.groupe, occurrence.body.groupeVitesseMax, occurrence.body.masse, occurrence.body.angleVisibilite, occurrence.body.distanceVisibilite)
+   * info('Mon body est initialisé!')
+   * emit(new BoidBodyInitialized())
+   * }
+   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$StartPosition(final StartPosition occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartPosition$2(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartPosition$1(occurrence));
   }
   
   @SyntheticMember
@@ -545,7 +509,7 @@ public class Boid extends Agent {
   private void $guardEvaluator$ValidationDeplacement(final ValidationDeplacement occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ValidationDeplacement$3(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ValidationDeplacement$2(occurrence));
   }
   
   @SyntheticMember
@@ -553,7 +517,7 @@ public class Boid extends Agent {
   private void $guardEvaluator$DemandeDeplacement(final DemandeDeplacement occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$DemandeDeplacement$4(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$DemandeDeplacement$3(occurrence));
   }
   
   @SyntheticMember
@@ -561,8 +525,8 @@ public class Boid extends Agent {
   private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    if ($behaviorUnitGuard$EndSimulation$5(occurrence, occurrence)) {
-      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$5(occurrence));
+    if ($behaviorUnitGuard$EndSimulation$4(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$4(occurrence));
     }
   }
   

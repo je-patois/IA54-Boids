@@ -3,13 +3,11 @@ package fr.utbm.boids.agents
 import io.sarl.core.Destroy
 import io.sarl.core.Initialize
 import io.sarl.core.Logging
-import io.sarl.core.DefaultContextInteractions
-import fr.utbm.boids.events.IsStarted
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.gui.fx.EndSimulation
 
 agent Screen {
-	uses Logging, DefaultContextInteractions, Lifecycle
+	uses Logging, Lifecycle
 	
 	/*
 	 * gestion des évènements
@@ -18,7 +16,7 @@ agent Screen {
 	on Initialize {
 		loggingName = "Screen"
 		info("The Screen is started.")
-		emit(new IsStarted("Screen"))
+		// emit(new IsStarted("Screen"))
 	}
 
 	on EndSimulation {
