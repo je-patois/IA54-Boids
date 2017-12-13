@@ -9,6 +9,7 @@ import io.sarl.lang.core.Address;
 import io.sarl.lang.core.Event;
 import io.sarl.lang.core.EventListener;
 import io.sarl.util.OpenEventSpace;
+import java.util.Objects;
 import java.util.UUID;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -105,17 +106,27 @@ public abstract class FxViewerController implements EventListener {
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    FxViewerController other = (FxViewerController) obj;
+    if (!Objects.equals(this.id, other.id)) {
+      return false;
+    }
+    return super.equals(obj);
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    int result = super.hashCode();
+    final int prime = 31;
+    result = prime * result + Objects.hashCode(this.id);
+    return result;
   }
   
   @SyntheticMember

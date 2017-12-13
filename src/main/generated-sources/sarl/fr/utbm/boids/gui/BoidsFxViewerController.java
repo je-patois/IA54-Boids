@@ -269,15 +269,16 @@ public class BoidsFxViewerController extends FxViewerController implements Confi
           {
             double _x = boid.getPosition().getX();
             double _y = boid.getPosition().getY();
+            double _minus = (_y - 7.5);
             double _x_1 = boid.getPosition().getX();
             double _plus = (_x_1 + 5);
             double _y_1 = boid.getPosition().getY();
-            double _plus_1 = (_y_1 + 15);
+            double _plus_1 = (_y_1 + 7.5);
             double _x_2 = boid.getPosition().getX();
-            double _minus = (_x_2 - 5);
+            double _minus_1 = (_x_2 - 5);
             double _y_2 = boid.getPosition().getY();
-            double _plus_2 = (_y_2 + 15);
-            Polygon boidElement = new Polygon(_x, _y, _plus, _plus_1, _minus, _plus_2);
+            double _plus_2 = (_y_2 + 7.5);
+            Polygon boidElement = new Polygon(_x, _minus, _plus, _plus_1, _minus_1, _plus_2);
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
             BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
           }
