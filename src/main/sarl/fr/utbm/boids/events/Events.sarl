@@ -184,6 +184,16 @@ event BoidsSideReady
  */
 event Cycle
 
+/**
+ * Pause la simulation 
+ */
+event Pause
+
+/**
+ * Reprend la simulation 
+ */
+event Resume
+
 event BtnLaunch
 
 event BtnShutdown

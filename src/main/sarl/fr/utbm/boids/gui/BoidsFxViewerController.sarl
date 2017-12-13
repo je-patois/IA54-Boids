@@ -27,6 +27,11 @@ import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.CornerRadii
 import javafx.geometry.Insets
 import javafx.scene.effect.Glow
+import javafx.scene.input.MouseEvent
+import javafx.^event.EventHandler
+import javafx.scene.shape.Rectangle
+import fr.utbm.boids.events.Pause
+import fr.utbm.boids.events.Resume
 
 class BoidsFxViewerController extends FxViewerController  {
 
@@ -66,6 +71,18 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var map_min : Label; @FXML var map_max : Label
 	@FXML var boids_population_min : Label; @FXML var boids_population_max : Label
 	@FXML var boids_vision_min : Label; @FXML var boids_vision_max : Label
+	
+	// TODO coder la pause/reprise et l'affichage des infos au vol
+	@FXML var pause_button : Rectangle
+	@FXML var resume_button : Polygon
+	@FXML var boid_group : Label
+	@FXML var boid_vitesse : Label
+	@FXML var boid_new_vitesse : Label
+	@FXML var boid_group_vitesse : Label
+	@FXML var boid_angle : Label
+	@FXML var boid_distance : Label
+	@FXML var boid_masse : Label
+	@FXML var hide_infos : Button
 
 	var polygons : List<Polygon>
 	var polygonsCoordinates : List<List<Coordinates>>
@@ -124,6 +141,8 @@ class BoidsFxViewerController extends FxViewerController  {
 	}
 	
 	def buildMap(map : int) : List<Obstacle> {
+
+		pause_button.visible = true
 
 		if(map == 1) {
 			return new ArrayList()
@@ -210,6 +229,20 @@ class BoidsFxViewerController extends FxViewerController  {
 					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y - 7.5, boid.position.x + 5, boid.position.y + 7.5, boid.position.x - 5, boid.position.y + 7.5)
 					boidElement.rotate = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
 					boidElement.setFill(Configuration::COLOR_FAMILY.get(boid.groupe))
+					
+					boidElement.setOnMousePressed(new EventHandler<MouseEvent>() {
+						def handle(^event : MouseEvent) {
+							boid_group.text = 'Groupe: ' + boid.groupe
+							boid_vitesse.text = 'Vitesse: (' + boid.vitesse.x + ', ' + boid.vitesse.y + ')' 
+							boid_group_vitesse.text = 'Vitesse max. groupe: ' + boid.groupeVitesseMax
+							boid_masse.text = 'Masse: ' + boid.masse
+							boid_angle.text = 'Angle: ' + boid.angleVisibilite
+							boid_distance.text = 'Distance percep.: ' + boid.distanceVisibilite
+							boid_new_vitesse.text = 'Nouvelle vitesse: (' + boid.newVitesse.x + ', ' + boid.newVitesse.y + ')'
+							showInfosVisibility()
+						}
+					}); 
+					
 					if(togglePerception) {
 						// var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_vision_display.text) * 80/100)
 						var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_vision_display.text))
@@ -273,9 +306,17 @@ class BoidsFxViewerController extends FxViewerController  {
 			boids_quantity_label.textFill = normalTextColor; boids_quantity_display.textFill = normalTextColor; boids_quantity_min.textFill = normalTextColor; boids_quantity_max.textFill = normalTextColor
 			map_selection_label.textFill = normalTextColor;	map_selection_display.textFill = normalTextColor; map_min.textFill = normalTextColor; map_max.textFill = normalTextColor
 			boids_population_label.textFill = normalTextColor; boids_population_display.textFill = normalTextColor; boids_population_min.textFill = normalTextColor; boids_population_max.textFill = normalTextColor
-			boids_vision_label.textFill = normalTextColor; boids_vision_display.textFill = normalTextColor; boids_vision_min.textFill = normalTextColor; boids_vision_max.textFill = normalTextColor
+			boids_vision_label.textFill = normalTextColor; boids_vision_display.textFill = normalTextColor;	boids_vision_min.textFill = normalTextColor; boids_vision_max.textFill = normalTextColor
+			boid_group.textFill = Color.rgb(0, 0, 0, 0.7)
+			boid_vitesse.textFill = Color.rgb(0, 0, 0, 0.7)
+			boid_group_vitesse.textFill = Color.rgb(0, 0, 0, 0.7)
+			boid_masse.textFill = Color.rgb(0, 0, 0, 0.7)
+			boid_angle.textFill = Color.rgb(0, 0, 0, 0.7)
+			boid_distance.textFill = Color.rgb(0, 0, 0, 0.7)
+			boid_new_vitesse.textFill = Color.rgb(0, 0, 0, 0.7)
 			toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
 			toggle_perception.textFill = Color.rgb(0, 0, 0, 0.3)
+			hide_infos.textFill = Color.rgb(0, 0, 0, 0.3)
 			start_button.textFill = normalTextColor
 		} else {
 			nightMode = true
@@ -289,8 +330,16 @@ class BoidsFxViewerController extends FxViewerController  {
 			map_selection_label.textFill = nightTextColor; map_selection_display.textFill = nightTextColor;	map_min.textFill = nightTextColor;	map_max.textFill = nightTextColor
 			boids_population_label.textFill = nightTextColor; boids_population_display.textFill = nightTextColor; boids_population_min.textFill = nightTextColor; boids_population_max.textFill = nightTextColor
 			boids_vision_label.textFill = nightTextColor; boids_vision_display.textFill = nightTextColor; boids_vision_min.textFill = nightTextColor; boids_vision_max.textFill = nightTextColor
+			boid_group.textFill = Color.rgb(191, 191, 191, 0.7)
+			boid_vitesse.textFill = Color.rgb(191, 191, 191, 0.7)
+			boid_group_vitesse.textFill = Color.rgb(191, 191, 191, 0.7)
+			boid_masse.textFill = Color.rgb(191, 191, 191, 0.7)
+			boid_angle.textFill = Color.rgb(191, 191, 191, 0.7)
+			boid_distance.textFill = Color.rgb(191, 191, 191, 0.7)
+			boid_new_vitesse.textFill = Color.rgb(191, 191, 191, 0.7)
 			toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
 			toggle_perception.textFill = Color.rgb(191, 191, 191, 0.3)
+			hide_infos.textFill = Color.rgb(191, 191, 191, 0.3)
 			start_button.textFill = nightTextColor
 		}
 	}
@@ -366,6 +415,24 @@ class BoidsFxViewerController extends FxViewerController  {
 		toggle_perception.effect = null
 	}
 	
+	@FXML protected def infosButtonGlow() : void {
+		if (nightMode)
+			hide_infos.textFill = Color.rgb(235, 221, 26)
+		else
+			hide_infos.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		hide_infos.effect = glowEffect
+	}
+	
+	@FXML protected def infosButtonReset() : void {
+		if (nightMode)
+			hide_infos.textFill = Color.rgb(191, 191, 191, 0.3)
+		else
+			hide_infos.textFill = Color.rgb(0, 0, 0, 0.3)
+		hide_infos.effect = null
+	}
+	
 	def toggleUIState() : void {
 		if(start_button.disable == true) start_button.disable = false else start_button.disable = true
 		if(boids_quantity_input.disable == true) boids_quantity_input.disable = false else boids_quantity_input.disable = true
@@ -384,4 +451,37 @@ class BoidsFxViewerController extends FxViewerController  {
 		if(!perception_indicator.visible) perception_indicator.visible = true else perception_indicator.visible = false
 	}
 	
+	@FXML def pause() : void {
+		pause_button.visible = false
+		resume_button.visible = true
+		emitToAgents(new Pause)
+	}
+	
+	@FXML def resume() : void {
+		pause_button.visible = true
+		resume_button.visible = false
+		emitToAgents(new Resume)
+	}
+	
+	def hideInfosVisibility() : void {
+		boid_group.visible = false
+		boid_vitesse.visible = false
+		boid_group_vitesse.visible = false
+		boid_masse.visible = false
+		boid_angle.visible = false
+		boid_distance.visible = false
+		boid_new_vitesse.visible = false
+		hide_infos.visible = false
+	}
+	
+	def showInfosVisibility() : void {
+		boid_group.visible = true
+		boid_vitesse.visible = true
+		boid_group_vitesse.visible = true
+		boid_masse.visible = true
+		boid_angle.visible = true
+		boid_distance.visible = true
+		boid_new_vitesse.visible = true
+		hide_infos.visible = true
+	}
 }

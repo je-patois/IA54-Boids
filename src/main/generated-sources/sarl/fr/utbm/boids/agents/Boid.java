@@ -60,7 +60,7 @@ public class Boid extends Agent {
     this.parentAgent = occurrence.spawner;
     Object _get = occurrence.parameters[0];
     Object _get_1 = occurrence.parameters[1];
-    BoidBody _boidBody = new BoidBody((((Integer) _get)).intValue(), 10, 2, (((Integer) _get_1)).intValue(), 200);
+    BoidBody _boidBody = new BoidBody((((Integer) _get)).intValue(), 10, 2, 360, (((Integer) _get_1)).intValue());
     this.body = _boidBody;
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info("MON BODY");

@@ -9,6 +9,9 @@ import io.sarl.core.Schedules
 import fr.utbm.boids.gui.fx.EndSimulation
 import fr.utbm.boids.events.TimeManagingStart
 import fr.utbm.boids.events.Cycle
+import fr.utbm.boids.events.Pause
+import fr.utbm.boids.Configuration
+import fr.utbm.boids.events.Resume
 
 agent TimeManager {
 	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
@@ -25,8 +28,21 @@ agent TimeManager {
 		online = true
 		
 		task('Iterate').every(occurrence.frequency) [
-			emit(new Cycle)	
+			if(this.online)
+				emit(new Cycle)	
 		]
+	}
+	
+	on Pause {
+		//task('Iterate').cancel
+		this.online = false
+	}
+	
+	on Resume {
+		/*task('Iterate').every(Configuration::FREQUENCY) [
+			emit(new Cycle)
+		]*/
+		this.online = true
 	}
 
 	on EndSimulation {

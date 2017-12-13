@@ -22,7 +22,4 @@ public class BoidsReady extends Event {
   public BoidsReady(final Address source) {
     super(source);
   }
-  
-  @SyntheticMember
-  private final static long serialVersionUID = 588368462L;
 }

@@ -100,5 +100,24 @@
       <Circle fx:id="night_mode_indicator" fill="#1f93ff00" layoutX="686.0" layoutY="572.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" />
       <Circle fx:id="perception_indicator" fill="#00cc63" layoutX="686.0" layoutY="546.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" visible="false" />
       <ToggleButton fx:id="toggle_perception" layoutX="690.0" layoutY="531.0" mnemonicParsing="false" onAction="#togglePerception" onMouseEntered="#perceptionButtonGlow" onMouseExited="#perceptionButtonReset" prefHeight="31.0" prefWidth="111.0" style="-fx-background-color: transparent;" text="%PerceptionLabel" textFill="#0000004d" visible="false" />
+      <Label fx:id="boid_vitesse" layoutX="14.0" layoutY="10.0" prefHeight="21.0" prefWidth="173.0" visible="false" />
+      <Rectangle fx:id="pause_button" arcHeight="5.0" arcWidth="5.0" fill="#ff5555" height="12.0" layoutX="770.0" layoutY="14.0" onMousePressed="#pause" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="13.0" />
+      <Polygon fx:id="resume_button" fill="#04d300" layoutX="778.0" layoutY="30.0" onMousePressed="#resume" rotate="90.0" scaleX="0.15" scaleY="0.15" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" visible="false">
+        <points>
+          <Double fx:value="-50.0" />
+          <Double fx:value="40.0" />
+          <Double fx:value="50.0" />
+          <Double fx:value="40.0" />
+          <Double fx:value="0.0" />
+          <Double fx:value="-60.0" />
+        </points>
+      </Polygon>
+      <Label fx:id="boid_group_vitesse" layoutX="14.0" layoutY="31.0" prefHeight="21.0" prefWidth="173.0" visible="false" />
+      <Label fx:id="boid_new_vitesse" layoutX="198.0" layoutY="10.0" prefHeight="21.0" prefWidth="173.0" visible="false" />
+      <Label fx:id="boid_angle" layoutX="14.0" layoutY="50.0" prefHeight="21.0" prefWidth="173.0" visible="false" />
+      <Label fx:id="boid_masse" layoutX="198.0" layoutY="31.0" prefHeight="21.0" prefWidth="173.0" visible="false" />
+      <Label fx:id="boid_distance" layoutX="198.0" layoutY="50.0" prefHeight="21.0" prefWidth="173.0" visible="false" />
+      <Label fx:id="boid_group" layoutX="14.0" layoutY="71.0" prefHeight="21.0" prefWidth="173.0" visible="false" />
+      <Button fx:id="hide_infos" layoutX="25.0" layoutY="101.0" mnemonicParsing="false" onAction="#hideInfosVisibility" onMouseEntered="#infosButtonGlow" onMouseExited="#infosButtonReset" prefHeight="31.0" prefWidth="353.0" style="-fx-background-color: transparent;" text="Cacher" visible="false" />
    </children>
 </Pane>

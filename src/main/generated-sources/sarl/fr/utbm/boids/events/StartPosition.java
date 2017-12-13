@@ -71,7 +71,4 @@ public class StartPosition extends Event {
     result.append("obstacles  = ").append(this.obstacles);
     return result.toString();
   }
-  
-  @SyntheticMember
-  private final static long serialVersionUID = -3205458700L;
 }

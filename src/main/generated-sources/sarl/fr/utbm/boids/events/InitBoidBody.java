@@ -46,7 +46,4 @@ public class InitBoidBody extends Event {
     result.append("body  = ").append(this.body);
     return result.toString();
   }
-  
-  @SyntheticMember
-  private final static long serialVersionUID = -1612128729L;
 }

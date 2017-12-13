@@ -63,7 +63,4 @@ public class DemandeDeplacement extends Event {
     result.append("otherBoids  = ").append(this.otherBoids);
     return result.toString();
   }
-  
-  @SyntheticMember
-  private final static long serialVersionUID = -2192754315L;
 }

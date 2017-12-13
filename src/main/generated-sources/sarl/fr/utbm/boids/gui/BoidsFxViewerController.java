@@ -5,6 +5,8 @@ import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Configuration;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.ConfigureSimulation;
+import fr.utbm.boids.events.Pause;
+import fr.utbm.boids.events.Resume;
 import fr.utbm.boids.gui.fx.FxViewerController;
 import fr.utbm.boids.util.Coordinates;
 import fr.utbm.boids.util.LineTool;
@@ -18,6 +20,7 @@ import java.util.function.Consumer;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -26,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.Glow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -33,6 +37,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
@@ -133,6 +138,36 @@ public class BoidsFxViewerController extends FxViewerController {
   @FXML
   private Label boids_vision_max;
   
+  @FXML
+  private Rectangle pause_button;
+  
+  @FXML
+  private Polygon resume_button;
+  
+  @FXML
+  private Label boid_group;
+  
+  @FXML
+  private Label boid_vitesse;
+  
+  @FXML
+  private Label boid_new_vitesse;
+  
+  @FXML
+  private Label boid_group_vitesse;
+  
+  @FXML
+  private Label boid_angle;
+  
+  @FXML
+  private Label boid_distance;
+  
+  @FXML
+  private Label boid_masse;
+  
+  @FXML
+  private Button hide_infos;
+  
   private List<Polygon> polygons;
   
   private List<List<Coordinates>> polygonsCoordinates;
@@ -219,6 +254,7 @@ public class BoidsFxViewerController extends FxViewerController {
       public abstract void run();
     }
     
+    this.pause_button.setVisible(true);
     if ((map == 1)) {
       return new ArrayList<Obstacle>();
     } else {
@@ -318,6 +354,10 @@ public class BoidsFxViewerController extends FxViewerController {
     __BoidsFxViewerController_1 command = new __BoidsFxViewerController_1() {
       @Override
       public void run() {
+        abstract class ____BoidsFxViewerController_1_0_1 implements EventHandler<MouseEvent> {
+          public abstract void handle(final MouseEvent event);
+        }
+        
         BoidsFxViewerController.this.boids_group.getChildren().clear();
         for (final BoidBody boid : list) {
           {
@@ -338,6 +378,41 @@ public class BoidsFxViewerController extends FxViewerController {
             double _divide = (_x_3 / _y_3);
             boidElement.setRotate(Math.toDegrees(Math.atan(_divide)));
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
+            ____BoidsFxViewerController_1_0_1 _____BoidsFxViewerController_1_0_1 = new ____BoidsFxViewerController_1_0_1() {
+              public void handle(final MouseEvent event) {
+                int _groupe = boid.getGroupe();
+                String _plus = ("Groupe: " + Integer.valueOf(_groupe));
+                BoidsFxViewerController.this.boid_group.setText(_plus);
+                double _x = boid.getVitesse().getX();
+                String _plus_1 = ("Vitesse: (" + Double.valueOf(_x));
+                String _plus_2 = (_plus_1 + ", ");
+                double _y = boid.getVitesse().getY();
+                String _plus_3 = (_plus_2 + Double.valueOf(_y));
+                String _plus_4 = (_plus_3 + ")");
+                BoidsFxViewerController.this.boid_vitesse.setText(_plus_4);
+                int _groupeVitesseMax = boid.getGroupeVitesseMax();
+                String _plus_5 = ("Vitesse max. groupe: " + Integer.valueOf(_groupeVitesseMax));
+                BoidsFxViewerController.this.boid_group_vitesse.setText(_plus_5);
+                int _masse = boid.getMasse();
+                String _plus_6 = ("Masse: " + Integer.valueOf(_masse));
+                BoidsFxViewerController.this.boid_masse.setText(_plus_6);
+                int _angleVisibilite = boid.getAngleVisibilite();
+                String _plus_7 = ("Angle: " + Integer.valueOf(_angleVisibilite));
+                BoidsFxViewerController.this.boid_angle.setText(_plus_7);
+                int _distanceVisibilite = boid.getDistanceVisibilite();
+                String _plus_8 = ("Distance percep.: " + Integer.valueOf(_distanceVisibilite));
+                BoidsFxViewerController.this.boid_distance.setText(_plus_8);
+                double _x_1 = boid.getNewVitesse().getX();
+                String _plus_9 = ("Nouvelle vitesse: (" + Double.valueOf(_x_1));
+                String _plus_10 = (_plus_9 + ", ");
+                double _y_1 = boid.getNewVitesse().getY();
+                String _plus_11 = (_plus_10 + Double.valueOf(_y_1));
+                String _plus_12 = (_plus_11 + ")");
+                BoidsFxViewerController.this.boid_new_vitesse.setText(_plus_12);
+                BoidsFxViewerController.this.showInfosVisibility();
+              }
+            };
+            boidElement.setOnMousePressed(_____BoidsFxViewerController_1_0_1);
             if ((BoidsFxViewerController.this.togglePerception).booleanValue()) {
               double _x_4 = boid.getPosition().getX();
               double _y_4 = boid.getPosition().getY();
@@ -424,8 +499,16 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_vision_display.setTextFill(normalTextColor);
       this.boids_vision_min.setTextFill(normalTextColor);
       this.boids_vision_max.setTextFill(normalTextColor);
+      this.boid_group.setTextFill(Color.rgb(0, 0, 0, 0.7));
+      this.boid_vitesse.setTextFill(Color.rgb(0, 0, 0, 0.7));
+      this.boid_group_vitesse.setTextFill(Color.rgb(0, 0, 0, 0.7));
+      this.boid_masse.setTextFill(Color.rgb(0, 0, 0, 0.7));
+      this.boid_angle.setTextFill(Color.rgb(0, 0, 0, 0.7));
+      this.boid_distance.setTextFill(Color.rgb(0, 0, 0, 0.7));
+      this.boid_new_vitesse.setTextFill(Color.rgb(0, 0, 0, 0.7));
       this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0, 0.3));
       this.toggle_perception.setTextFill(Color.rgb(0, 0, 0, 0.3));
+      this.hide_infos.setTextFill(Color.rgb(0, 0, 0, 0.3));
       this.start_button.setTextFill(normalTextColor);
     } else {
       this.nightMode = Boolean.valueOf(true);
@@ -453,8 +536,16 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_vision_display.setTextFill(nightTextColor);
       this.boids_vision_min.setTextFill(nightTextColor);
       this.boids_vision_max.setTextFill(nightTextColor);
+      this.boid_group.setTextFill(Color.rgb(191, 191, 191, 0.7));
+      this.boid_vitesse.setTextFill(Color.rgb(191, 191, 191, 0.7));
+      this.boid_group_vitesse.setTextFill(Color.rgb(191, 191, 191, 0.7));
+      this.boid_masse.setTextFill(Color.rgb(191, 191, 191, 0.7));
+      this.boid_angle.setTextFill(Color.rgb(191, 191, 191, 0.7));
+      this.boid_distance.setTextFill(Color.rgb(191, 191, 191, 0.7));
+      this.boid_new_vitesse.setTextFill(Color.rgb(191, 191, 191, 0.7));
       this.toggle_night_mode.setTextFill(Color.rgb(191, 191, 191, 0.3));
       this.toggle_perception.setTextFill(Color.rgb(191, 191, 191, 0.3));
+      this.hide_infos.setTextFill(Color.rgb(191, 191, 191, 0.3));
       this.start_button.setTextFill(nightTextColor);
     }
   }
@@ -544,6 +635,28 @@ public class BoidsFxViewerController extends FxViewerController {
     this.toggle_perception.setEffect(null);
   }
   
+  @FXML
+  protected void infosButtonGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.hide_infos.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.hide_infos.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.hide_infos.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void infosButtonReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.hide_infos.setTextFill(Color.rgb(191, 191, 191, 0.3));
+    } else {
+      this.hide_infos.setTextFill(Color.rgb(0, 0, 0, 0.3));
+    }
+    this.hide_infos.setEffect(null);
+  }
+  
   public void toggleUIState() {
     boolean _isDisable = this.start_button.isDisable();
     boolean _equals = (_isDisable == true);
@@ -606,6 +719,44 @@ public class BoidsFxViewerController extends FxViewerController {
     } else {
       this.perception_indicator.setVisible(false);
     }
+  }
+  
+  @FXML
+  public void pause() {
+    this.pause_button.setVisible(false);
+    this.resume_button.setVisible(true);
+    Pause _pause = new Pause();
+    this.emitToAgents(_pause);
+  }
+  
+  @FXML
+  public void resume() {
+    this.pause_button.setVisible(true);
+    this.resume_button.setVisible(false);
+    Resume _resume = new Resume();
+    this.emitToAgents(_resume);
+  }
+  
+  public void hideInfosVisibility() {
+    this.boid_group.setVisible(false);
+    this.boid_vitesse.setVisible(false);
+    this.boid_group_vitesse.setVisible(false);
+    this.boid_masse.setVisible(false);
+    this.boid_angle.setVisible(false);
+    this.boid_distance.setVisible(false);
+    this.boid_new_vitesse.setVisible(false);
+    this.hide_infos.setVisible(false);
+  }
+  
+  public void showInfosVisibility() {
+    this.boid_group.setVisible(true);
+    this.boid_vitesse.setVisible(true);
+    this.boid_group_vitesse.setVisible(true);
+    this.boid_masse.setVisible(true);
+    this.boid_angle.setVisible(true);
+    this.boid_distance.setVisible(true);
+    this.boid_new_vitesse.setVisible(true);
+    this.hide_infos.setVisible(true);
   }
   
   @Override

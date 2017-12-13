@@ -34,7 +34,7 @@ agent Boid {
 		loggingName = "Boid-" + this.ID
 		info("A Boid agent was started.")
 		parentAgent = occurrence.spawner
-		this.body = new BoidBody(occurrence.parameters.get(0) as Integer, 10, 2, occurrence.parameters.get(1) as Integer, 200)
+		this.body = new BoidBody(occurrence.parameters.get(0) as Integer, 10, 2, 360, occurrence.parameters.get(1) as Integer)
 		info('MON BODY')
 		info(this.body)
 		emit(new BoidInitialized(this.body, 'Boid'))

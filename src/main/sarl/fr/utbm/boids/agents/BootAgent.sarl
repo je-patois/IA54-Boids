@@ -16,6 +16,8 @@ import fr.utbm.boids.events.BoidsReady
 import io.sarl.lang.core.Address
 import fr.utbm.boids.events.TimeManagingStart
 import fr.utbm.boids.Configuration
+import fr.utbm.boids.events.Pause
+import fr.utbm.boids.events.Resume
 
 agent BootAgent {
 	uses Logging, Behaviors, InnerContextAccess, Lifecycle
@@ -67,6 +69,13 @@ agent BootAgent {
 		innerContext.defaultSpace.emit(ID, evt)
 	}
 
+	on Pause {
+		innerContext.defaultSpace.emit(ID, new Pause)
+	}
+	
+	on Resume {
+		innerContext.defaultSpace.emit(ID, new Resume)
+	}
 
 	on EndSimulation [!hasMemberAgent] {
 		killMe

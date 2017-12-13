@@ -45,7 +45,4 @@ public class ValidationDeplacement extends Event {
     result.append("position  = ").append(this.position);
     return result.toString();
   }
-  
-  @SyntheticMember
-  private final static long serialVersionUID = -107835186L;
 }
