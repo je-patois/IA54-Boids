@@ -83,13 +83,13 @@ agent BootAgent {
 	}*/
 
 	on EndSimulation [!hasMemberAgent] {
-		info("The simulation has ended.")
+		// info("The simulation has ended.")
 		killMe
 	}
 	
 	on EndSimulation [hasMemberAgent && !exited] {
-		info("JE VAIS TOUS LES TUER")
-		info(memberAgentCount)
+		// info("JE VAIS TOUS LES TUER")
+		// info(memberAgentCount)
 		exited = true
 		innerContext.defaultSpace.emit(ID, new EndSimulation)
 	}

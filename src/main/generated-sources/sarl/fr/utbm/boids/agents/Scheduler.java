@@ -9,6 +9,7 @@ import fr.utbm.boids.events.SchedulerBeginsScheduling;
 import fr.utbm.boids.events.SendDataBoids;
 import fr.utbm.boids.gui.BoidsFxViewerController;
 import fr.utbm.boids.gui.fx.EndSimulation;
+import io.sarl.core.Behaviors;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Destroy;
 import io.sarl.core.Initialize;
@@ -89,7 +90,7 @@ public class Scheduler extends Agent {
           NeedDataBoids _needDataBoids_1 = new NeedDataBoids();
           _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER_1.emit(_needDataBoids_1);
         };
-        _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_2.every(_$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_3.task("Scheduling"), 150, _function_2);
+        _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_2.every(_$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_3.task("Scheduling"), 50, _function_2);
       };
       _$CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER_1.in(1000, _function_1);
     };
@@ -190,6 +191,21 @@ public class Scheduler extends Agent {
       this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = $getSkill(Schedules.class);
     }
     return $castSkill(Schedules.class, this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
+  }
+  
+  @Extension
+  @ImportedCapacityFeature(Behaviors.class)
+  @SyntheticMember
+  private transient ClearableReference<Skill> $CAPACITY_USE$IO_SARL_CORE_BEHAVIORS;
+  
+  @SyntheticMember
+  @Pure
+  @Inline(value = "$castSkill(Behaviors.class, ($0$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS == null || $0$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS.get() == null) ? ($0$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS = $0$getSkill(Behaviors.class)) : $0$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS)", imported = Behaviors.class)
+  private Behaviors $CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER() {
+    if (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS == null || this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS.get() == null) {
+      this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS = $getSkill(Behaviors.class);
+    }
+    return $castSkill(Behaviors.class, this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
   }
   
   /**

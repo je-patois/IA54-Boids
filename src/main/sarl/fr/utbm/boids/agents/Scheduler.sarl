@@ -15,9 +15,13 @@ import fr.utbm.boids.gui.BoidsFxViewerController
 import io.sarl.core.Time
 import fr.utbm.boids.gui.fx.EndSimulation
 import fr.utbm.boids.events.SchedulerBeginsScheduling
+import java.util.UUID
+import java.util.Map
+import fr.utbm.boids.BoidBody
+import io.sarl.core.Behaviors
 
 agent Scheduler {
-	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
+	uses Logging, DefaultContextInteractions, Lifecycle, Schedules, Behaviors
 	
 	var online : boolean // if the simulation is online or not
 	var ctrl : BoidsFxViewerController = null
@@ -26,6 +30,10 @@ agent Scheduler {
 	var freqRafraichissement : long
 	var Time : Time
 	var lastUpdate : long
+	
+	// var iteration : int
+	// var boidsIteration : int
+	// var tempBoids : Map<UUID, BoidBody>
 	
 	/*
 	 * gestion des évènements
@@ -36,6 +44,8 @@ agent Scheduler {
 		info("The Scheduler is started.")
 		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
 		emit(new IsStarted("Scheduler"))
+		// iteration = 0
+		// boidsIteration = 0
 	}
 
 	//on StartingSimulation {
@@ -48,6 +58,7 @@ agent Scheduler {
 
 		//in(this.freqRafraichissement) [
 		in(1000) [
+			// iteration++
 			info("je demande")
 			emit(new NeedDataBoids())
 			//lastUpdate = Time.getTime()
@@ -58,9 +69,17 @@ agent Scheduler {
 			emit(new NeedDataBoids())
 			 * ]
 			 */
-			in(1000) [task('Scheduling').every(150) [
-				info("je demande")
-				emit(new NeedDataBoids())
+			in(1000) [task('Scheduling').every(50) [
+				// info('Iteration actuelle: ' + iteration + ', boidsIteration: ' + boidsIteration)
+				// if(iteration == boidsIteration) {
+					// iteration++
+					info("je demande")
+					emit(new NeedDataBoids())
+				// } else if(boidsIteration != 0) {
+					//iteration++
+					//boidsIteration = iteration - 1
+					//wake(new BoidsToDisplay(tempBoids))
+				// }
 			]
 		]]
 
@@ -123,12 +142,16 @@ agent Scheduler {
 			info("boid position : " + mesBoids.value.position)
 		}
 		ctrl.updateGraphics(occurrence.boids.values)
+		// tempBoids = occurrence.boids
+		// boidsIteration++
 	}
 
+	//on EndSimulation [!isFromMe] {
 	on EndSimulation {
-		info('Scheduler kill')
+		 info('Scheduler kill')
 		online = false
 		task('Scheduling').cancel
+		//in(1000) [killMe]
 		killMe
 	}
 
