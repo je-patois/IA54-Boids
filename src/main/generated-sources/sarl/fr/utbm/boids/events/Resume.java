@@ -22,4 +22,7 @@ public class Resume extends Event {
   public Resume(final Address source) {
     super(source);
   }
+  
+  @SyntheticMember
+  private final static long serialVersionUID = 588368462L;
 }

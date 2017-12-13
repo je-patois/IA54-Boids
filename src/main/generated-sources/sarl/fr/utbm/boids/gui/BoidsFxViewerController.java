@@ -168,6 +168,9 @@ public class BoidsFxViewerController extends FxViewerController {
   @FXML
   private Button hide_infos;
   
+  @FXML
+  private Pane boids_infos_pane;
+  
   private List<Polygon> polygons;
   
   private List<List<Coordinates>> polygonsCoordinates;
@@ -738,25 +741,13 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   public void hideInfosVisibility() {
-    this.boid_group.setVisible(false);
-    this.boid_vitesse.setVisible(false);
-    this.boid_group_vitesse.setVisible(false);
-    this.boid_masse.setVisible(false);
-    this.boid_angle.setVisible(false);
-    this.boid_distance.setVisible(false);
-    this.boid_new_vitesse.setVisible(false);
-    this.hide_infos.setVisible(false);
+    this.boids_infos_pane.setVisible(false);
+    this.boids_infos_pane.setDisable(true);
   }
   
   public void showInfosVisibility() {
-    this.boid_group.setVisible(true);
-    this.boid_vitesse.setVisible(true);
-    this.boid_group_vitesse.setVisible(true);
-    this.boid_masse.setVisible(true);
-    this.boid_angle.setVisible(true);
-    this.boid_distance.setVisible(true);
-    this.boid_new_vitesse.setVisible(true);
-    this.hide_infos.setVisible(true);
+    this.boids_infos_pane.setVisible(true);
+    this.boids_infos_pane.setDisable(false);
   }
   
   @Override

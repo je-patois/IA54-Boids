@@ -22,4 +22,7 @@ public class BoidBodyInitialized extends Event {
   public BoidBodyInitialized(final Address source) {
     super(source);
   }
+  
+  @SyntheticMember
+  private final static long serialVersionUID = 588368462L;
 }

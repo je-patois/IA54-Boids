@@ -56,4 +56,7 @@ public class TimeManagingStart extends Event {
     result.append("frequency  = ").append(this.frequency);
     return result.toString();
   }
+  
+  @SyntheticMember
+  private final static long serialVersionUID = 624831361L;
 }

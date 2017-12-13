@@ -5,6 +5,7 @@ import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Event;
+import java.util.Objects;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 /**
@@ -28,17 +29,27 @@ public class BoidInitialized extends Event {
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    BoidInitialized other = (BoidInitialized) obj;
+    if (!Objects.equals(this.type, other.type)) {
+      return false;
+    }
+    return super.equals(obj);
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    int result = super.hashCode();
+    final int prime = 31;
+    result = prime * result + Objects.hashCode(this.type);
+    return result;
   }
   
   /**
@@ -47,8 +58,10 @@ public class BoidInitialized extends Event {
   @SyntheticMember
   @Pure
   protected String attributesToString() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    StringBuilder result = new StringBuilder(super.attributesToString());
+    result.append("body  = ").append(this.body);
+    result.append("type  = ").append(this.type);
+    return result.toString();
   }
   
   @SyntheticMember

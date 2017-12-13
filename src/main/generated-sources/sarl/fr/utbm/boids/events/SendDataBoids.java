@@ -47,4 +47,7 @@ public class SendDataBoids extends Event {
     result.append("lesBoids  = ").append(this.lesBoids);
     return result.toString();
   }
+  
+  @SyntheticMember
+  private final static long serialVersionUID = 4143690518L;
 }

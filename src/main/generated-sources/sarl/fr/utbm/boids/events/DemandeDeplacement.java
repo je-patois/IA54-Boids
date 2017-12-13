@@ -48,10 +48,7 @@ public class DemandeDeplacement extends Event {
     result.append("boids  = ").append(this.boids);
     return result.toString();
   }
-<<<<<<< HEAD
-=======
   
   @SyntheticMember
   private final static long serialVersionUID = -1889683984L;
->>>>>>> master
 }

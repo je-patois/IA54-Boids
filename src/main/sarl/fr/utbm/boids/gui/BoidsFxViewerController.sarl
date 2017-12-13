@@ -83,6 +83,7 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var boid_distance : Label
 	@FXML var boid_masse : Label
 	@FXML var hide_infos : Button
+	@FXML var boids_infos_pane : Pane
 
 	var polygons : List<Polygon>
 	var polygonsCoordinates : List<List<Coordinates>>
@@ -464,24 +465,28 @@ class BoidsFxViewerController extends FxViewerController  {
 	}
 	
 	def hideInfosVisibility() : void {
-		boid_group.visible = false
+		boids_infos_pane.visible = false
+		boids_infos_pane.disable = true
+		/*boid_group.visible = false
 		boid_vitesse.visible = false
 		boid_group_vitesse.visible = false
 		boid_masse.visible = false
 		boid_angle.visible = false
 		boid_distance.visible = false
 		boid_new_vitesse.visible = false
-		hide_infos.visible = false
+		hide_infos.visible = false*/
 	}
 	
 	def showInfosVisibility() : void {
-		boid_group.visible = true
+		boids_infos_pane.visible = true
+		boids_infos_pane.disable = false
+		/*boid_group.visible = true
 		boid_vitesse.visible = true
 		boid_group_vitesse.visible = true
 		boid_masse.visible = true
 		boid_angle.visible = true
 		boid_distance.visible = true
 		boid_new_vitesse.visible = true
-		hide_infos.visible = true
+		hide_infos.visible = true*/
 	}
 }

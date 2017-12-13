@@ -51,4 +51,7 @@ public class ResultatDeplacement extends Event {
     result.append("newSpeed  = ").append(this.newSpeed);
     return result.toString();
   }
+  
+  @SyntheticMember
+  private final static long serialVersionUID = 1602694147L;
 }

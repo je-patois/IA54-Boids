@@ -7,19 +7,19 @@ import io.sarl.lang.core.Address;
 import io.sarl.lang.core.Event;
 
 /**
- * Evenement déclenché lorsque les boids sont prêts
+ * Débute la simulation
  */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
-public class BoidsSideReady extends Event {
+public class StartingSimulation extends Event {
   @SyntheticMember
-  public BoidsSideReady() {
+  public StartingSimulation() {
     super();
   }
   
   @SyntheticMember
-  public BoidsSideReady(final Address source) {
+  public StartingSimulation(final Address source) {
     super(source);
   }
   
