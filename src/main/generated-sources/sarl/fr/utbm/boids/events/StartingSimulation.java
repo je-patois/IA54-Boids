@@ -6,17 +6,20 @@ import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Address;
 import io.sarl.lang.core.Event;
 
+/**
+ * Débute la simulation
+ */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")
-public class NeedDataBoids extends Event {
+public class StartingSimulation extends Event {
   @SyntheticMember
-  public NeedDataBoids() {
+  public StartingSimulation() {
     super();
   }
   
   @SyntheticMember
-  public NeedDataBoids(final Address source) {
+  public StartingSimulation(final Address source) {
     super(source);
   }
   

@@ -51,27 +51,14 @@ event MakeTheFiestaBegin
 
 /**
  * Formule une demande de déplacement auprès d'un boid
- * @param otherBoids - Liste des autres boids, permettant au boid de décider de son placement
+ * @param boids - Liste des boids, permettant au boid de décider de son placement
  */
 event DemandeDeplacement {
 
-	/*var otherBoids : Collection<BoidBody>*/
-	var otherBoids : Map<UUID, BoidBody>
+	var boids : Map<UUID, BoidBody>
 
-	/*new (pos : Vector, otherBoids : Collection<BoidBody>) {
-		this.otherBoids = otherBoids
-	}
-
-	new (x : int, y : int, otherBoids : Collection<BoidBody>) {
-		this.otherBoids = otherBoids
-	}*/
-	
-	//provisoire
-	new() {
-	}
-
-	new (otherBoids : Map<UUID, BoidBody>) {
-		this.otherBoids = otherBoids
+	new (boids : Map<UUID, BoidBody>) {
+		this.boids = boids
 	}
 }
 
