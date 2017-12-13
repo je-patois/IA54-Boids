@@ -108,7 +108,7 @@ agent Boid {
 			//TODO rajouter dans chaque focntion une vérification que l'on ne se prend pas soi meme en compte pour les calculs
 			//on applique la séparation 
 			forceTot.plus(separation(otherBoids))
-			
+			/*
 			//on applique la cohésion
 			forceTot.plus(cohesion(otherBoids))
 			
@@ -117,12 +117,15 @@ agent Boid {
 
 			//on applique la répulsion
 			forceTot.plus(repulsion(otherBoids))
-			
+			*/
 			//on applique la force résultant de la détection des obstacles
 		 
 			// TODO appliquer force obstacle
 		}
 		
+		forceTot.fois(100000)
+		info("force totale " + forceTot)
+
 		//on renvoie la nouvelle position du Boids
 		//info(forceTot + " ceci est la force totale a appliquer !!!!!!!!!!")
 		emit(new ResultatDeplacement(appliquerForce(forceTot)))
@@ -174,6 +177,9 @@ agent Boid {
 		var force : Vector
 		var tmp : Vector
 		var len : double
+		var xelem : double
+		var yelem : double
+		var tmpelem : Vector
 
 		force = new Vector(0, 0)
 		tmp = new Vector(0, 0)
@@ -191,8 +197,41 @@ agent Boid {
 		 
 		for (elem : otherBoids.entrySet) {
 			if (elem.key != null && elem.value.groupe == this.body.groupe && /*visible(elem.value) && */elem.key != this.ID) {
+				
+				//hauteur et largeur de la map mis en dur
+				//TODO amener largeur et hauteur dynamiquement
+				if(this.body.position.x - elem.value.position.x < this.body.position.x - (elem.value.position.x - 800)){
+					if(this.body.position.x - elem.value.position.x < this.body.position.x - (elem.value.position.x + 800)){
+						xelem = elem.value.position.x
+					} else {
+						xelem = elem.value.position.x + 800
+					}
+				} else {
+					if(this.body.position.x - (elem.value.position.x - 800) < this.body.position.x - (elem.value.position.x + 800)){
+						xelem = elem.value.position.x - 800
+					} else {
+						xelem = elem.value.position.x + 800
+					}
+				}
+				
+				if (this.body.position.y - elem.value.position.y < this.body.position.y - (elem.value.position.y - 600)) {
+					if (this.body.position.y - elem.value.position.y < this.body.position.y - (elem.value.position.y + 600)) {
+						yelem = elem.value.position.y
+					} else {
+						yelem = elem.value.position.y + 600
+					}
+				} else {
+					if (this.body.position.y - (elem.value.position.y - 600) < this.body.position.y - (elem.value.position.y + 600)) {
+						yelem = elem.value.position.y - 600
+					} else {
+						yelem = elem.value.position.y + 600
+					}
+				}
+				
+				tmpelem = new Vector(xelem%800, yelem%600)
+				//tmpelem = new Vector(0, 0)
 				tmp.setXY(this.body.position)
-				tmp.moins(elem.value.position)
+				tmp.moins(tmpelem)
 				len = tmp.length()
 				tmp.fois(1 / (len * len))
 				force.plus(tmp)
@@ -355,11 +394,11 @@ agent Boid {
 		var acceleration : Vector
 		
 		acceleration = new Vector(force)
-		acceleration.fois(1/this.body.masse)
+		//acceleration.fois(1/this.body.masse)
 		info("acceleration : " + acceleration)
 
 		//DEFINITION EN DUR ICI
-		this.body.vitesse = new Vector(5, 5)
+		this.body.vitesse = new Vector(0, 0)
 		info("bodyVitesse : " + this.body.vitesse)
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
