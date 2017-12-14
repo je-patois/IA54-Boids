@@ -24,6 +24,7 @@ class BoidsFxApplication extends FxApplication {
 		stage.title = bundle.getString("TITLE")
 		stage.scene = scene
 		stage.centerOnScreen
+		root.requestFocus()
 		return loader
 	}
 }

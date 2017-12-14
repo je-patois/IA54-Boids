@@ -34,6 +34,11 @@ import fr.utbm.boids.events.Pause
 import fr.utbm.boids.events.Resume
 import javafx.scene.shape.Arc
 import javafx.scene.shape.ArcType
+import javafx.scene.transform.Rotate
+import javafx.scene.transform.Affine
+import javafx.scene.control.TextField
+import javafx.scene.shape.Line
+import java.util.concurrent.TimeUnit
 
 class BoidsFxViewerController extends FxViewerController  {
 
@@ -58,17 +63,16 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var boids_vision_label : Label
 	@FXML var boids_distance_deplacement_label : Label
 
-	// Sliders
+	// Input
 	@FXML var boids_quantity_input : ScrollBar
 	@FXML var map_selection_input : ScrollBar
-	@FXML var boids_population_input : ScrollBar
+	@FXML var boids_population_input : TextField
 	@FXML var boids_vision_input : ScrollBar
 	@FXML var boids_distance_deplacement_input : ScrollBar
 
 	// Valeurs
 	@FXML var boids_quantity_display : Label
 	@FXML var map_selection_display : Label
-	@FXML var boids_population_display : Label
 	@FXML var boids_vision_display : Label
 	@FXML var boids_distance_deplacement_display : Label
 	
@@ -76,14 +80,11 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var boids_quantity_max : Label
 	@FXML var map_min : Label
 	@FXML var map_max : Label
-	@FXML var boids_population_min : Label
-	@FXML var boids_population_max : Label
 	@FXML var boids_vision_min : Label
 	@FXML var boids_vision_max : Label
 	@FXML var boids_distance_deplacement_min : Label
 	@FXML var boids_distance_deplacement_max : Label
 	
-	// TODO coder la pause/reprise et l'affichage des infos au vol
 	@FXML var pause_button : Rectangle
 	@FXML var resume_button : Polygon
 	@FXML var boid_group : Label
@@ -95,11 +96,17 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var boid_masse : Label
 	@FXML var hide_infos : Button
 	@FXML var boids_infos_pane : Pane
+		
+	@FXML var boids_population_line : Line
+	@FXML var increment_boids_population : Label
+	@FXML var decrement_boids_population : Label
+	@FXML var boids_population_increment_circle : Circle
+	@FXML var boids_population_decrement_circle : Circle
 
 	var polygons : List<Polygon>
 	var polygonsCoordinates : List<List<Coordinates>>
 	var obstacles : List<Obstacle> = new ArrayList()
-	var nightMode : Boolean = false
+	var nightMode : Boolean = true
 	var togglePerception : Boolean = true
 
 	def getBoidsQuantity() : int {
@@ -111,7 +118,8 @@ class BoidsFxViewerController extends FxViewerController  {
 	}
 	
 	def getBoidsPopulation() : int {
-		boids_population_input.value as int
+		//boids_population_input.value as int
+		Integer.parseInt(boids_population_input.text)
 	}
 	
 	def getBoidsVision() : int {
@@ -135,24 +143,26 @@ class BoidsFxViewerController extends FxViewerController  {
 	}
  
 	@FXML protected def startSimu() : void {
-		var ^event = new ConfigureSimulation(this.mapSelection, this.boidsQuantity, this.boidsPopulation, this.boidsVision)
-		if (!launched) {
-			startAgentApplication() [
-				emitToAgents(^event)
-			]
-			launched = true
-			mapCreated = false
-			toggleUIState()
-			toggleMenuUIVisibility()
-			toggleSimuUIVisibility()
-			toggle_night_mode.background = new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
-			if(nightMode) {
-				toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
+		if(boids_population_input.text != '' && outputQuality(boids_population_input.text)) { 
+			var ^event = new ConfigureSimulation(this.mapSelection, this.boidsQuantity, this.boidsPopulation, this.boidsVision)
+			if (!launched) {
+				startAgentApplication() [
+					emitToAgents(^event)
+				]
+				launched = true
+				mapCreated = false
+				toggleUIState()
+				toggleMenuUIVisibility()
+				toggleSimuUIVisibility()
+				toggle_night_mode.background = new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
+				if(nightMode) {
+					toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
+				} else {
+					toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
+				}		
 			} else {
-				toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
-			}			
-		} else {
-			emitToAgents(^event)
+				emitToAgents(^event)
+			}
 		}
 	}
 	
@@ -187,7 +197,12 @@ class BoidsFxViewerController extends FxViewerController  {
 					/*System.out.println('LE TEST')
 					var testcircle = new Circle(395, 310, 1)
 					//System.out.println(polygons.get(0).contains(new Point2D(testcircle.centerX, testcircle.centerY)))
-					obstacle_group.getChildren().add(0, testcircle)*/
+					 * obstacle_group.getChildren().add(0, testcircle)
+					 */
+					 // TODO ici'a fai
+					/*var boidElement : Polygon = new Polygon(200, 200 - 7.5, 200 + 5, 200 + 7.5, 200 - 5, 200 + 7.5)
+					boidElement.rotate = Math.toDegrees(Math.atan(1/8))
+					obstacle_group.getChildren().add(0, boidElement)*/
 				}
 		};
 
@@ -264,6 +279,9 @@ class BoidsFxViewerController extends FxViewerController  {
 						var perceptionArc = new Arc()
 						perceptionArc.setCenterX(boid.position.x);
 						perceptionArc.setCenterY(boid.position.y);
+						//perceptionArc.setCenterX(boidElement.points.get(0))
+						//perceptionArc.setCenterY(boidElement.points.get(1))
+						
 						perceptionArc.setRadiusX(Double.parseDouble(boids_distance_deplacement_display.text));
 						perceptionArc.setRadiusY(Double.parseDouble(boids_distance_deplacement_display.text));
 						perceptionArc.setStartAngle(90 - angleRotation - Double.parseDouble(boids_vision_display.text))
@@ -303,12 +321,6 @@ class BoidsFxViewerController extends FxViewerController  {
 		];
 	}
 
-	@FXML protected def actionPopulationDisplay() : void {
-		boids_population_input.valueProperty().addListener [
-			boids_population_display.setText(String.format("%.0f", boids_population_input.getValue()));
-		];
-	}
-
 	@FXML protected def actionBoidsVisionDisplay() : void {
 		boids_vision_input.valueProperty().addListener [
 			boids_vision_display.setText(String.format("%.0f", boids_vision_input.getValue()));
@@ -321,6 +333,49 @@ class BoidsFxViewerController extends FxViewerController  {
 		];
 	}
 	
+	@FXML protected def resetBoidsPopulation() : void {
+		boids_population_input.text = ''
+	}
+	
+	@FXML protected def updateBoidsPopulation() : void {
+		if(boids_population_input.text != '') {
+			if (outputQuality(boids_population_input.text)) {
+				var currentValue : int = Integer.parseInt(boids_population_input.text)
+				if (currentValue >= 10) {
+					boids_population_input.text = '' + 10
+				} else if (currentValue <= 1) {
+					boids_population_input.text = '' + 1
+				}
+			}
+		}
+	}
+	
+	@FXML protected def incrementBoidsPopulation() : void {
+		if(boids_population_input.text != '' && outputQuality(boids_population_input.text)) {
+			var currentValue : int = Integer.parseInt(boids_population_input.text)
+			if(currentValue >= 10) {
+				boids_population_input.text = '' + 10
+			} else {
+				boids_population_input.text = '' + (currentValue + 1)
+			}
+		} else {
+			boids_population_input.text = '' + 1
+		}
+	}
+	
+	@FXML protected def decrementBoidsPopulation() : void {
+		if(boids_population_input.text != '' && outputQuality(boids_population_input.text)) {
+			var currentValue : int = Integer.parseInt(boids_population_input.text)
+			if(currentValue <= 1) {
+				boids_population_input.text = '' + 1
+			} else {
+				boids_population_input.text = '' + (currentValue - 1)
+			}
+		} else {
+			boids_population_input.text = '' + 1
+		}
+	}
+	
 	@FXML protected def toggleMode() : void {
 		if(nightMode) {
 			nightMode = false
@@ -328,10 +383,10 @@ class BoidsFxViewerController extends FxViewerController  {
 			night_mode_indicator.stroke = Color.rgb(0, 0, 0, 0.3)
 			perception_indicator.stroke = Color.rgb(0, 0, 0, 0.3)
 			var normalTextColor : Color = Color.BLACK
-			main_pane.background = new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
+			main_pane.background = new Background(new BackgroundFill(Color.rgb(244, 244, 244), CornerRadii.EMPTY, Insets.EMPTY))
 			boids_quantity_label.textFill = normalTextColor; boids_quantity_display.textFill = normalTextColor; boids_quantity_min.textFill = normalTextColor; boids_quantity_max.textFill = normalTextColor
 			map_selection_label.textFill = normalTextColor;	map_selection_display.textFill = normalTextColor; map_min.textFill = normalTextColor; map_max.textFill = normalTextColor
-			boids_population_label.textFill = normalTextColor; boids_population_display.textFill = normalTextColor; boids_population_min.textFill = normalTextColor; boids_population_max.textFill = normalTextColor
+			boids_population_label.textFill = normalTextColor; decrement_boids_population.textFill = normalTextColor; increment_boids_population.textFill = normalTextColor; boids_population_decrement_circle.stroke = normalTextColor; boids_population_increment_circle.stroke = normalTextColor; boids_population_line.stroke = normalTextColor; boids_population_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
 			boids_vision_label.textFill = normalTextColor; boids_vision_display.textFill = normalTextColor;	boids_vision_min.textFill = normalTextColor; boids_vision_max.textFill = normalTextColor
 			
 			boids_distance_deplacement_label.textFill = normalTextColor;
@@ -356,15 +411,11 @@ class BoidsFxViewerController extends FxViewerController  {
 			night_mode_indicator.stroke = Color.rgb(184, 193, 207, 0.3)
 			perception_indicator.stroke = Color.rgb(184, 193, 207, 0.3)
 			var nightTextColor : Color = Color.rgb(191, 191, 191)
-			main_pane.background = new Background(
-			new BackgroundFill(Color.rgb(34, 34, 34), CornerRadii.EMPTY, Insets.EMPTY))
+			main_pane.background = new Background(new BackgroundFill(Color.rgb(34, 34, 34), CornerRadii.EMPTY, Insets.EMPTY))
 			boids_quantity_label.textFill = nightTextColor;	boids_quantity_display.textFill = nightTextColor; boids_quantity_min.textFill = nightTextColor;	boids_quantity_max.textFill = nightTextColor
 			map_selection_label.textFill = nightTextColor; map_selection_display.textFill = nightTextColor;	map_min.textFill = nightTextColor;	map_max.textFill = nightTextColor
-			boids_population_label.textFill = nightTextColor; boids_population_display.textFill = nightTextColor; boids_population_min.textFill = nightTextColor; boids_population_max.textFill = nightTextColor
-			boids_vision_label.textFill = nightTextColor;
-			boids_vision_display.textFill = nightTextColor;
-			boids_vision_min.textFill = nightTextColor;
-			boids_vision_max.textFill = nightTextColor
+			boids_population_label.textFill = nightTextColor; decrement_boids_population.textFill = nightTextColor; increment_boids_population.textFill = nightTextColor; boids_population_decrement_circle.stroke = nightTextColor; boids_population_increment_circle.stroke = nightTextColor;	boids_population_line.stroke = nightTextColor;	boids_population_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
+			boids_vision_label.textFill = nightTextColor; boids_vision_display.textFill = nightTextColor; boids_vision_min.textFill = nightTextColor; boids_vision_max.textFill = nightTextColor
 
 			boids_distance_deplacement_label.textFill = nightTextColor
 			boids_distance_deplacement_display.textFill = nightTextColor
@@ -474,6 +525,79 @@ class BoidsFxViewerController extends FxViewerController  {
 		hide_infos.effect = null
 	}
 	
+	@FXML protected def incrementBoidsPopulationGlow() : void {
+		if (nightMode) {
+			boids_population_increment_circle.stroke = Color.rgb(235, 221, 26)
+			increment_boids_population.textFill = Color.rgb(235, 221, 26)
+		} else {
+			boids_population_increment_circle.stroke = Color.rgb(0, 0, 0)
+			increment_boids_population.textFill = Color.rgb(0, 0, 0)	
+		}
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_population_increment_circle.effect = glowEffect
+	}
+	
+	@FXML protected def incrementBoidsPopulationReset() : void {
+		if (nightMode) {
+			boids_population_increment_circle.stroke = Color.rgb(191, 191, 191)
+			increment_boids_population.textFill = Color.rgb(191, 191, 191)
+		}
+		else {
+			boids_population_increment_circle.stroke = Color.rgb(0, 0, 0, 0.3)
+			increment_boids_population.textFill = Color.rgb(0, 0, 0)
+		}
+		boids_population_increment_circle.effect = null
+		increment_boids_population.effect = null
+	}
+	
+	@FXML protected def decrementBoidsPopulationGlow() : void {
+		if (nightMode) {
+			boids_population_decrement_circle.stroke = Color.rgb(235, 221, 26)
+			decrement_boids_population.textFill = Color.rgb(235, 221, 26)
+		} else {
+			boids_population_decrement_circle.stroke = Color.rgb(0, 0, 0)
+			decrement_boids_population.textFill = Color.rgb(0, 0, 0)
+		}
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_population_decrement_circle.effect = glowEffect
+	}	
+	
+	@FXML protected def decrementBoidsPopulationReset() : void {
+		if (nightMode) {
+			boids_population_decrement_circle.stroke = Color.rgb(191, 191, 191)
+			decrement_boids_population.textFill = Color.rgb(191, 191, 191)
+		} else {
+			boids_population_decrement_circle.stroke = Color.rgb(0, 0, 0, 0.3)
+			increment_boids_population.textFill = Color.rgb(0, 0, 0)
+		}
+		boids_population_decrement_circle.effect = null
+		decrement_boids_population.effect = null
+	}
+	
+	@FXML protected def boidsPopulationGlow() : void {
+		if (nightMode) {
+			boids_population_input.style = '-fx-text-fill: rgb(235, 221, 26); -fx-background-color: transparent'
+		} else {
+			boids_population_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
+		}
+		boids_population_line.strokeWidth = 3
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_population_input.effect = glowEffect
+	}
+	
+	@FXML protected def boidsPopulationReset() : void {
+		if (nightMode) {
+			boids_population_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
+		} else {
+			boids_population_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
+		}
+		boids_population_line.strokeWidth = 1
+		boids_population_input.effect = null
+	}
+	
 	def toggleUIState() : void {
 		if(start_button.disable == true) start_button.disable = false else start_button.disable = true
 		if(boids_quantity_input.disable == true) boids_quantity_input.disable = false else boids_quantity_input.disable = true
@@ -506,7 +630,7 @@ class BoidsFxViewerController extends FxViewerController  {
 		emitToAgents(new Resume)
 	}
 	
-	def hideInfosVisibility() : void {
+	def hideInfosVisibility() : void { // TODO Renae en disable
 		this.resetTexts()
 		boids_infos_pane.visible = false
 		boids_infos_pane.disable = true
@@ -530,7 +654,7 @@ class BoidsFxViewerController extends FxViewerController  {
 		boid_new_vitesse.text = ''
 	}
 
-	def showInfosVisibility() : void {
+	def showInfosVisibility() : void { // TODO Rename en disable
 		boids_infos_pane.visible = true
 		boids_infos_pane.disable = false
 		/*boid_group.visible = true
@@ -541,5 +665,214 @@ class BoidsFxViewerController extends FxViewerController  {
 		boid_distance.visible = true
 		boid_new_vitesse.visible = true
 		hide_infos.visible = true*/
+	}
+	
+	def outputQuality(output : String) : Boolean {
+		var outputQuality : Boolean = false
+		try {
+			Integer.parseInt(boids_population_input.text)
+			outputQuality = true
+		} catch (e : NumberFormatException) {
+			System.out.println('Invalid number of populations!')
+		}
+		return outputQuality
+	}
+	
+	@FXML protected def changeFocus() : void {
+		main_pane.requestFocus()
+	}
+	
+	/* BOIDS QUANTITY GLOWING EFFECT */
+	
+	@FXML protected def boidsQuantityMinGlow() : void {
+		if (nightMode)
+			boids_quantity_min.textFill = Color.rgb(235, 221, 26)
+		else
+			boids_quantity_min.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_quantity_min.effect = glowEffect
+	}
+	
+	@FXML protected def boidsQuantityMaxGlow() : void {
+		if (nightMode)
+			boids_quantity_max.textFill = Color.rgb(235, 221, 26)
+		else
+			boids_quantity_max.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_quantity_max.effect = glowEffect
+	}
+	
+	@FXML protected def boidsQuantityMinReset() : void {
+		if (nightMode)
+			boids_quantity_min.textFill = Color.rgb(191, 191, 191)
+		else
+			boids_quantity_min.textFill = Color.rgb(0, 0, 0)
+		boids_quantity_min.effect = null
+	}
+	
+	@FXML protected def boidsQuantityMaxReset() : void {
+		if (nightMode)
+			boids_quantity_max.textFill = Color.rgb(191, 191, 191)
+		else
+			boids_quantity_max.textFill = Color.rgb(0, 0, 0)
+		boids_quantity_max.effect = null
+	}
+	
+	/* BOIDS PERCEPTION ANGLE GLOWING EFFECT */
+	 
+	@FXML protected def boidsVisionMinGlow() : void {
+		if (nightMode)
+			boids_vision_min.textFill = Color.rgb(235, 221, 26)
+		else
+			boids_vision_min.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_vision_min.effect = glowEffect
+	}
+
+	@FXML protected def boidsVisionMaxGlow() : void {
+		if (nightMode)
+			boids_vision_max.textFill = Color.rgb(235, 221, 26)
+		else
+			boids_vision_max.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_vision_max.effect = glowEffect
+	}
+
+	@FXML protected def boidsVisionMinReset() : void {
+		if (nightMode)
+			boids_vision_min.textFill = Color.rgb(191, 191, 191)
+		else
+			boids_vision_min.textFill = Color.rgb(0, 0, 0)
+		boids_vision_min.effect = null
+	}
+
+	@FXML protected def boidsVisionMaxReset() : void {
+		if (nightMode)
+			boids_vision_max.textFill = Color.rgb(191, 191, 191)
+		else
+			boids_vision_max.textFill = Color.rgb(0, 0, 0)
+		boids_vision_max.effect = null
+	}
+	
+	/* BOIDS DISTANCE PERCEPTION GLOWING EFFECT */
+	
+	@FXML protected def boidsDistanceVisionMinGlow() : void {
+		if (nightMode)
+			boids_distance_deplacement_min.textFill = Color.rgb(235, 221, 26)
+		else
+			boids_distance_deplacement_min.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_distance_deplacement_min.effect = glowEffect
+	}
+
+	@FXML protected def boidsDistanceVisionMaxGlow() : void {
+		if (nightMode)
+			boids_distance_deplacement_max.textFill = Color.rgb(235, 221, 26)
+		else
+			boids_distance_deplacement_max.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_distance_deplacement_max.effect = glowEffect
+	}
+
+	@FXML protected def boidsDistanceVisionMinReset() : void {
+		if (nightMode)
+			boids_distance_deplacement_min.textFill = Color.rgb(191, 191, 191)
+		else
+			boids_distance_deplacement_min.textFill = Color.rgb(0, 0, 0)
+		boids_distance_deplacement_min.effect = null
+	}
+
+	@FXML protected def boidsDistanceVisionMaxReset() : void {
+		if (nightMode)
+			boids_distance_deplacement_max.textFill = Color.rgb(191, 191, 191)
+		else
+			boids_distance_deplacement_max.textFill = Color.rgb(0, 0, 0)
+		boids_distance_deplacement_max.effect = null
+	}
+	
+	/* MAP GLOWING EFFECT */
+	
+	@FXML protected def mapMinGlow() : void {
+		if (nightMode)
+			map_min.textFill = Color.rgb(235, 221, 26)
+		else
+			map_min.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		map_min.effect = glowEffect
+	}
+
+	@FXML protected def mapMaxGlow() : void {
+		if (nightMode)
+			map_max.textFill = Color.rgb(235, 221, 26)
+		else
+			map_max.textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		map_max.effect = glowEffect
+	}
+
+	@FXML protected def mapMinReset() : void {
+		if (nightMode)
+			map_min.textFill = Color.rgb(191, 191, 191)
+		else
+			map_min.textFill = Color.rgb(0, 0, 0)
+		map_min.effect = null
+	}
+
+	@FXML protected def mapMaxReset() : void {
+		if (nightMode)
+			map_max.textFill = Color.rgb(191, 191, 191)
+		else
+			map_max.textFill = Color.rgb(0, 0, 0)
+		map_max.effect = null
+	}
+	
+	/* MAX/MIN values fast setters */
+	
+	@FXML protected def boidsQuantitySetToMin() : void {
+		boids_quantity_input.value = Integer.parseInt(boids_quantity_min.text)
+		boids_quantity_display.text = boids_quantity_min.text
+	}
+	
+	@FXML protected def boidsQuantitySetToMax() : void {
+		boids_quantity_input.value = Integer.parseInt(boids_quantity_max.text)
+		boids_quantity_display.text = boids_quantity_max.text
+	}
+
+	@FXML protected def boidsVisionSetToMin() : void {
+		boids_vision_input.value = Integer.parseInt(boids_vision_min.text)
+		boids_vision_display.text = boids_vision_min.text
+	}
+
+	@FXML protected def boidsVisionSetToMax() : void {
+		boids_vision_input.value = Integer.parseInt(boids_vision_max.text)
+		boids_vision_display.text = boids_vision_max.text
+	}
+
+	@FXML protected def boidsDistanceVisionSetToMin() : void {
+		boids_distance_deplacement_input.value = Integer.parseInt(boids_distance_deplacement_min.text)
+		boids_distance_deplacement_display.text = boids_distance_deplacement_min.text
+	}
+
+	@FXML protected def boidsDistanceVisionSetToMax() : void {
+		boids_distance_deplacement_input.value = Integer.parseInt(boids_distance_deplacement_max.text)
+		boids_distance_deplacement_display.text = boids_distance_deplacement_max.text
+	}
+
+	@FXML protected def mapSetToMin() : void {
+		map_selection_input.value = Integer.parseInt(map_min.text)
+		map_selection_display.text = map_min.text
+	}
+
+	@FXML protected def mapSetToMax() : void {
+		map_selection_input.value = Integer.parseInt(map_max.text)
+		map_selection_display.text = map_max.text
 	}
 }

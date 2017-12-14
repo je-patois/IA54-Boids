@@ -1,5 +1,6 @@
 package fr.utbm.boids.gui;
 
+import com.google.common.base.Objects;
 import com.google.common.util.concurrent.AtomicDouble;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Configuration;
@@ -27,6 +28,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.MouseEvent;
@@ -38,8 +40,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
@@ -102,7 +106,7 @@ public class BoidsFxViewerController extends FxViewerController {
   private ScrollBar map_selection_input;
   
   @FXML
-  private ScrollBar boids_population_input;
+  private TextField boids_population_input;
   
   @FXML
   private ScrollBar boids_vision_input;
@@ -115,9 +119,6 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @FXML
   private Label map_selection_display;
-  
-  @FXML
-  private Label boids_population_display;
   
   @FXML
   private Label boids_vision_display;
@@ -136,12 +137,6 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @FXML
   private Label map_max;
-  
-  @FXML
-  private Label boids_population_min;
-  
-  @FXML
-  private Label boids_population_max;
   
   @FXML
   private Label boids_vision_min;
@@ -188,13 +183,28 @@ public class BoidsFxViewerController extends FxViewerController {
   @FXML
   private Pane boids_infos_pane;
   
+  @FXML
+  private Line boids_population_line;
+  
+  @FXML
+  private Label increment_boids_population;
+  
+  @FXML
+  private Label decrement_boids_population;
+  
+  @FXML
+  private Circle boids_population_increment_circle;
+  
+  @FXML
+  private Circle boids_population_decrement_circle;
+  
   private List<Polygon> polygons;
   
   private List<List<Coordinates>> polygonsCoordinates;
   
   private List<Obstacle> obstacles = new ArrayList<Obstacle>();
   
-  private Boolean nightMode = Boolean.valueOf(false);
+  private Boolean nightMode = Boolean.valueOf(true);
   
   private Boolean togglePerception = Boolean.valueOf(true);
   
@@ -212,8 +222,7 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @Pure
   public int getBoidsPopulation() {
-    double _value = this.boids_population_input.getValue();
-    return ((int) _value);
+    return Integer.parseInt(this.boids_population_input.getText());
   }
   
   @Pure
@@ -247,31 +256,33 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @FXML
   protected void startSimu() {
-    int _mapSelection = this.getMapSelection();
-    int _boidsQuantity = this.getBoidsQuantity();
-    int _boidsPopulation = this.getBoidsPopulation();
-    int _boidsVision = this.getBoidsVision();
-    ConfigureSimulation event = new ConfigureSimulation(_mapSelection, _boidsQuantity, _boidsPopulation, _boidsVision);
-    if ((!this.launched)) {
-      final Procedure0 _function = () -> {
-        this.emitToAgents(event);
-      };
-      this.startAgentApplication(_function);
-      this.launched = true;
-      this.mapCreated = false;
-      this.toggleUIState();
-      this.toggleMenuUIVisibility();
-      this.toggleSimuUIVisibility();
-      BackgroundFill _backgroundFill = new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY);
-      Background _background = new Background(_backgroundFill);
-      this.toggle_night_mode.setBackground(_background);
-      if ((this.nightMode).booleanValue()) {
-        this.toggle_night_mode.setTextFill(Color.rgb(191, 191, 191, 0.3));
+    if (((!Objects.equal(this.boids_population_input.getText(), "")) && (this.outputQuality(this.boids_population_input.getText())).booleanValue())) {
+      int _mapSelection = this.getMapSelection();
+      int _boidsQuantity = this.getBoidsQuantity();
+      int _boidsPopulation = this.getBoidsPopulation();
+      int _boidsVision = this.getBoidsVision();
+      ConfigureSimulation event = new ConfigureSimulation(_mapSelection, _boidsQuantity, _boidsPopulation, _boidsVision);
+      if ((!this.launched)) {
+        final Procedure0 _function = () -> {
+          this.emitToAgents(event);
+        };
+        this.startAgentApplication(_function);
+        this.launched = true;
+        this.mapCreated = false;
+        this.toggleUIState();
+        this.toggleMenuUIVisibility();
+        this.toggleSimuUIVisibility();
+        BackgroundFill _backgroundFill = new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY);
+        Background _background = new Background(_backgroundFill);
+        this.toggle_night_mode.setBackground(_background);
+        if ((this.nightMode).booleanValue()) {
+          this.toggle_night_mode.setTextFill(Color.rgb(191, 191, 191, 0.3));
+        } else {
+          this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0, 0.3));
+        }
       } else {
-        this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0, 0.3));
+        this.emitToAgents(event);
       }
-    } else {
-      this.emitToAgents(event);
     }
   }
   
@@ -492,14 +503,6 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @FXML
-  protected void actionPopulationDisplay() {
-    final InvalidationListener _function = (Observable it) -> {
-      this.boids_population_display.setText(String.format("%.0f", Double.valueOf(this.boids_population_input.getValue())));
-    };
-    this.boids_population_input.valueProperty().addListener(_function);
-  }
-  
-  @FXML
   protected void actionBoidsVisionDisplay() {
     final InvalidationListener _function = (Observable it) -> {
       this.boids_vision_display.setText(String.format("%.0f", Double.valueOf(this.boids_vision_input.getValue())));
@@ -516,6 +519,58 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @FXML
+  protected void resetBoidsPopulation() {
+    this.boids_population_input.setText("");
+  }
+  
+  @FXML
+  protected void updateBoidsPopulation() {
+    String _text = this.boids_population_input.getText();
+    boolean _notEquals = (!Objects.equal(_text, ""));
+    if (_notEquals) {
+      Boolean _outputQuality = this.outputQuality(this.boids_population_input.getText());
+      if ((_outputQuality).booleanValue()) {
+        int currentValue = Integer.parseInt(this.boids_population_input.getText());
+        if ((currentValue >= 10)) {
+          this.boids_population_input.setText(("" + Integer.valueOf(10)));
+        } else {
+          if ((currentValue <= 1)) {
+            this.boids_population_input.setText(("" + Integer.valueOf(1)));
+          }
+        }
+      }
+    }
+  }
+  
+  @FXML
+  protected void incrementBoidsPopulation() {
+    if (((!Objects.equal(this.boids_population_input.getText(), "")) && (this.outputQuality(this.boids_population_input.getText())).booleanValue())) {
+      int currentValue = Integer.parseInt(this.boids_population_input.getText());
+      if ((currentValue >= 10)) {
+        this.boids_population_input.setText(("" + Integer.valueOf(10)));
+      } else {
+        this.boids_population_input.setText(("" + Integer.valueOf((currentValue + 1))));
+      }
+    } else {
+      this.boids_population_input.setText(("" + Integer.valueOf(1)));
+    }
+  }
+  
+  @FXML
+  protected void decrementBoidsPopulation() {
+    if (((!Objects.equal(this.boids_population_input.getText(), "")) && (this.outputQuality(this.boids_population_input.getText())).booleanValue())) {
+      int currentValue = Integer.parseInt(this.boids_population_input.getText());
+      if ((currentValue <= 1)) {
+        this.boids_population_input.setText(("" + Integer.valueOf(1)));
+      } else {
+        this.boids_population_input.setText(("" + Integer.valueOf((currentValue - 1))));
+      }
+    } else {
+      this.boids_population_input.setText(("" + Integer.valueOf(1)));
+    }
+  }
+  
+  @FXML
   protected void toggleMode() {
     if ((this.nightMode).booleanValue()) {
       this.nightMode = Boolean.valueOf(false);
@@ -523,7 +578,8 @@ public class BoidsFxViewerController extends FxViewerController {
       this.night_mode_indicator.setStroke(Color.rgb(0, 0, 0, 0.3));
       this.perception_indicator.setStroke(Color.rgb(0, 0, 0, 0.3));
       Color normalTextColor = Color.BLACK;
-      BackgroundFill _backgroundFill = new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY);
+      Color _rgb = Color.rgb(244, 244, 244);
+      BackgroundFill _backgroundFill = new BackgroundFill(_rgb, CornerRadii.EMPTY, Insets.EMPTY);
       Background _background = new Background(_backgroundFill);
       this.main_pane.setBackground(_background);
       this.boids_quantity_label.setTextFill(normalTextColor);
@@ -535,9 +591,12 @@ public class BoidsFxViewerController extends FxViewerController {
       this.map_min.setTextFill(normalTextColor);
       this.map_max.setTextFill(normalTextColor);
       this.boids_population_label.setTextFill(normalTextColor);
-      this.boids_population_display.setTextFill(normalTextColor);
-      this.boids_population_min.setTextFill(normalTextColor);
-      this.boids_population_max.setTextFill(normalTextColor);
+      this.decrement_boids_population.setTextFill(normalTextColor);
+      this.increment_boids_population.setTextFill(normalTextColor);
+      this.boids_population_decrement_circle.setStroke(normalTextColor);
+      this.boids_population_increment_circle.setStroke(normalTextColor);
+      this.boids_population_line.setStroke(normalTextColor);
+      this.boids_population_input.setStyle("-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent");
       this.boids_vision_label.setTextFill(normalTextColor);
       this.boids_vision_display.setTextFill(normalTextColor);
       this.boids_vision_min.setTextFill(normalTextColor);
@@ -563,8 +622,8 @@ public class BoidsFxViewerController extends FxViewerController {
       this.night_mode_indicator.setStroke(Color.rgb(184, 193, 207, 0.3));
       this.perception_indicator.setStroke(Color.rgb(184, 193, 207, 0.3));
       Color nightTextColor = Color.rgb(191, 191, 191);
-      Color _rgb = Color.rgb(34, 34, 34);
-      BackgroundFill _backgroundFill_1 = new BackgroundFill(_rgb, CornerRadii.EMPTY, Insets.EMPTY);
+      Color _rgb_1 = Color.rgb(34, 34, 34);
+      BackgroundFill _backgroundFill_1 = new BackgroundFill(_rgb_1, CornerRadii.EMPTY, Insets.EMPTY);
       Background _background_1 = new Background(_backgroundFill_1);
       this.main_pane.setBackground(_background_1);
       this.boids_quantity_label.setTextFill(nightTextColor);
@@ -576,9 +635,12 @@ public class BoidsFxViewerController extends FxViewerController {
       this.map_min.setTextFill(nightTextColor);
       this.map_max.setTextFill(nightTextColor);
       this.boids_population_label.setTextFill(nightTextColor);
-      this.boids_population_display.setTextFill(nightTextColor);
-      this.boids_population_min.setTextFill(nightTextColor);
-      this.boids_population_max.setTextFill(nightTextColor);
+      this.decrement_boids_population.setTextFill(nightTextColor);
+      this.increment_boids_population.setTextFill(nightTextColor);
+      this.boids_population_decrement_circle.setStroke(nightTextColor);
+      this.boids_population_increment_circle.setStroke(nightTextColor);
+      this.boids_population_line.setStroke(nightTextColor);
+      this.boids_population_input.setStyle("-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent");
       this.boids_vision_label.setTextFill(nightTextColor);
       this.boids_vision_display.setTextFill(nightTextColor);
       this.boids_vision_min.setTextFill(nightTextColor);
@@ -708,6 +770,84 @@ public class BoidsFxViewerController extends FxViewerController {
     this.hide_infos.setEffect(null);
   }
   
+  @FXML
+  protected void incrementBoidsPopulationGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_increment_circle.setStroke(Color.rgb(235, 221, 26));
+      this.increment_boids_population.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_population_increment_circle.setStroke(Color.rgb(0, 0, 0));
+      this.increment_boids_population.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_population_increment_circle.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void incrementBoidsPopulationReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_increment_circle.setStroke(Color.rgb(191, 191, 191));
+      this.increment_boids_population.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_population_increment_circle.setStroke(Color.rgb(0, 0, 0, 0.3));
+      this.increment_boids_population.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_population_increment_circle.setEffect(null);
+    this.increment_boids_population.setEffect(null);
+  }
+  
+  @FXML
+  protected void decrementBoidsPopulationGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_decrement_circle.setStroke(Color.rgb(235, 221, 26));
+      this.decrement_boids_population.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_population_decrement_circle.setStroke(Color.rgb(0, 0, 0));
+      this.decrement_boids_population.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_population_decrement_circle.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void decrementBoidsPopulationReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_decrement_circle.setStroke(Color.rgb(191, 191, 191));
+      this.decrement_boids_population.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_population_decrement_circle.setStroke(Color.rgb(0, 0, 0, 0.3));
+      this.increment_boids_population.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_population_decrement_circle.setEffect(null);
+    this.decrement_boids_population.setEffect(null);
+  }
+  
+  @FXML
+  protected void boidsPopulationGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_input.setStyle("-fx-text-fill: rgb(235, 221, 26); -fx-background-color: transparent");
+    } else {
+      this.boids_population_input.setStyle("-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent");
+    }
+    this.boids_population_line.setStrokeWidth(3);
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_population_input.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void boidsPopulationReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_input.setStyle("-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent");
+    } else {
+      this.boids_population_input.setStyle("-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent");
+    }
+    this.boids_population_line.setStrokeWidth(1);
+    this.boids_population_input.setEffect(null);
+  }
+  
   public void toggleUIState() {
     boolean _isDisable = this.start_button.isDisable();
     boolean _equals = (_isDisable == true);
@@ -814,6 +954,266 @@ public class BoidsFxViewerController extends FxViewerController {
   public void showInfosVisibility() {
     this.boids_infos_pane.setVisible(true);
     this.boids_infos_pane.setDisable(false);
+  }
+  
+  public Boolean outputQuality(final String output) {
+    Boolean outputQuality = Boolean.valueOf(false);
+    try {
+      Integer.parseInt(this.boids_population_input.getText());
+      outputQuality = Boolean.valueOf(true);
+    } catch (final Throwable _t) {
+      if (_t instanceof NumberFormatException) {
+        final NumberFormatException e = (NumberFormatException)_t;
+        System.out.println("Invalid number of populations!");
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+    return outputQuality;
+  }
+  
+  @FXML
+  protected void changeFocus() {
+    this.main_pane.requestFocus();
+  }
+  
+  /**
+   * BOIDS QUANTITY GLOWING EFFECT
+   */
+  @FXML
+  protected void boidsQuantityMinGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_min.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_quantity_min.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_quantity_min.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void boidsQuantityMaxGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_max.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_quantity_max.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_quantity_max.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void boidsQuantityMinReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_min.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_quantity_min.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_quantity_min.setEffect(null);
+  }
+  
+  @FXML
+  protected void boidsQuantityMaxReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_max.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_quantity_max.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_quantity_max.setEffect(null);
+  }
+  
+  /**
+   * BOIDS PERCEPTION ANGLE GLOWING EFFECT
+   */
+  @FXML
+  protected void boidsVisionMinGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_vision_min.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_vision_min.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_vision_min.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void boidsVisionMaxGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_vision_max.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_vision_max.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_vision_max.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void boidsVisionMinReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_vision_min.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_vision_min.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_vision_min.setEffect(null);
+  }
+  
+  @FXML
+  protected void boidsVisionMaxReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_vision_max.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_vision_max.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_vision_max.setEffect(null);
+  }
+  
+  /**
+   * BOIDS DISTANCE PERCEPTION GLOWING EFFECT
+   */
+  @FXML
+  protected void boidsDistanceVisionMinGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_distance_deplacement_min.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_distance_deplacement_min.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_distance_deplacement_min.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void boidsDistanceVisionMaxGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_distance_deplacement_max.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_distance_deplacement_max.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_distance_deplacement_max.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void boidsDistanceVisionMinReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_distance_deplacement_min.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_distance_deplacement_min.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_distance_deplacement_min.setEffect(null);
+  }
+  
+  @FXML
+  protected void boidsDistanceVisionMaxReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_distance_deplacement_max.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_distance_deplacement_max.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_distance_deplacement_max.setEffect(null);
+  }
+  
+  /**
+   * MAP GLOWING EFFECT
+   */
+  @FXML
+  protected void mapMinGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.map_min.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.map_min.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.map_min.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void mapMaxGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.map_max.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.map_max.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.map_max.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void mapMinReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.map_min.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.map_min.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.map_min.setEffect(null);
+  }
+  
+  @FXML
+  protected void mapMaxReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.map_max.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.map_max.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.map_max.setEffect(null);
+  }
+  
+  /**
+   * MAX/MIN values fast setters
+   */
+  @FXML
+  protected void boidsQuantitySetToMin() {
+    this.boids_quantity_input.setValue(Integer.parseInt(this.boids_quantity_min.getText()));
+    this.boids_quantity_display.setText(this.boids_quantity_min.getText());
+  }
+  
+  @FXML
+  protected void boidsQuantitySetToMax() {
+    this.boids_quantity_input.setValue(Integer.parseInt(this.boids_quantity_max.getText()));
+    this.boids_quantity_display.setText(this.boids_quantity_max.getText());
+  }
+  
+  @FXML
+  protected void boidsVisionSetToMin() {
+    this.boids_vision_input.setValue(Integer.parseInt(this.boids_vision_min.getText()));
+    this.boids_vision_display.setText(this.boids_vision_min.getText());
+  }
+  
+  @FXML
+  protected void boidsVisionSetToMax() {
+    this.boids_vision_input.setValue(Integer.parseInt(this.boids_vision_max.getText()));
+    this.boids_vision_display.setText(this.boids_vision_max.getText());
+  }
+  
+  @FXML
+  protected void boidsDistanceVisionSetToMin() {
+    this.boids_distance_deplacement_input.setValue(Integer.parseInt(this.boids_distance_deplacement_min.getText()));
+    this.boids_distance_deplacement_display.setText(this.boids_distance_deplacement_min.getText());
+  }
+  
+  @FXML
+  protected void boidsDistanceVisionSetToMax() {
+    this.boids_distance_deplacement_input.setValue(Integer.parseInt(this.boids_distance_deplacement_max.getText()));
+    this.boids_distance_deplacement_display.setText(this.boids_distance_deplacement_max.getText());
+  }
+  
+  @FXML
+  protected void mapSetToMin() {
+    this.map_selection_input.setValue(Integer.parseInt(this.map_min.getText()));
+    this.map_selection_display.setText(this.map_min.getText());
+  }
+  
+  @FXML
+  protected void mapSetToMax() {
+    this.map_selection_input.setValue(Integer.parseInt(this.map_max.getText()));
+    this.map_selection_display.setText(this.map_max.getText());
   }
   
   @Override

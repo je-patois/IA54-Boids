@@ -36,6 +36,7 @@ public class BoidsFxApplication extends FxApplication {
       stage.setTitle(bundle.getString("TITLE"));
       stage.setScene(scene);
       stage.centerOnScreen();
+      root.requestFocus();
       return loader;
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
