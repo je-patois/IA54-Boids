@@ -32,8 +32,6 @@ import javafx.^event.EventHandler
 import javafx.scene.shape.Rectangle
 import fr.utbm.boids.events.Pause
 import fr.utbm.boids.events.Resume
-import javafx.scene.shape.perceptionArc
-import javafx.scene.shape.perceptionArcType
 import javafx.scene.shape.Arc
 import javafx.scene.shape.ArcType
 
@@ -245,7 +243,8 @@ class BoidsFxViewerController extends FxViewerController  {
 				boids_group.getChildren().clear()
 				for (boid : list){
 					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y - 7.5, boid.position.x + 5, boid.position.y + 7.5, boid.position.x - 5, boid.position.y + 7.5)
-					boidElement.rotate = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
+					var angleRotation = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
+					boidElement.rotate = angleRotation
 					boidElement.setFill(Configuration::COLOR_FAMILY.get(boid.groupe))
 					
 					boidElement.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -262,29 +261,20 @@ class BoidsFxViewerController extends FxViewerController  {
 					}); 
 					
 					if(togglePerception) {
-						// var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_vision_display.text) * 80/100)
-						//var perceptionRadius : Circle = new Circle(boid.position.x, boid.position.y, Double.parseDouble(boids_distance_deplacement_display.text))
 						var perceptionArc = new Arc()
 						perceptionArc.setCenterX(boid.position.x);
 						perceptionArc.setCenterY(boid.position.y);
 						perceptionArc.setRadiusX(Double.parseDouble(boids_distance_deplacement_display.text));
 						perceptionArc.setRadiusY(Double.parseDouble(boids_distance_deplacement_display.text));
-						perceptionArc.setStartAngle(90 - Double.parseDouble(boids_vision_display.text));
+						perceptionArc.setStartAngle(90 - angleRotation - Double.parseDouble(boids_vision_display.text))
 						perceptionArc.setLength(Double.parseDouble(boids_vision_display.text) * 2 );
 						perceptionArc.setType(ArcType.ROUND);
-						perceptionArc.rotate = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
-						// perceptionRadius.setStrokeWidth(Double.parseDouble(boids_vision_display.text) * 20/100)
 						if(nightMode) {
-							// perceptionRadius.fill = Color.rgb(255, 245, 112, 0.2)
 							perceptionArc.fill = Color.rgb(255, 245, 112, 0.2)
-							// perceptionRadius.setStroke(Color.rgb(255, 255, 255, 0.1))
 						} else {
-							// perceptionRadius.fill = Color.rgb(255, 245, 112, 0.8)
 							perceptionArc.fill = Color.rgb(255, 245, 112, 0.8)
-							// perceptionRadius.setStroke(Color.rgb(255, 255, 255, 0.5))
 						}
 						boids_group.getChildren().add(0, boidElement)
-						// boids_group.getChildren.add(0, perceptionRadius)
 						boids_group.getChildren.add(0, perceptionArc)
 					} else {
 						boids_group.getChildren.add(0, boidElement)

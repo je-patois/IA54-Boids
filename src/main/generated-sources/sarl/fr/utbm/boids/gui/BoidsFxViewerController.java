@@ -402,7 +402,8 @@ public class BoidsFxViewerController extends FxViewerController {
             double _x_3 = boid.getVitesse().getX();
             double _y_3 = boid.getVitesse().getY();
             double _divide = (_x_3 / _y_3);
-            boidElement.setRotate(Math.toDegrees(Math.atan(_divide)));
+            double angleRotation = Math.toDegrees(Math.atan(_divide));
+            boidElement.setRotate(angleRotation);
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
             ____BoidsFxViewerController_1_0_1 _____BoidsFxViewerController_1_0_1 = new ____BoidsFxViewerController_1_0_1() {
               public void handle(final MouseEvent event) {
@@ -446,16 +447,12 @@ public class BoidsFxViewerController extends FxViewerController {
               perceptionArc.setRadiusX(Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText()));
               perceptionArc.setRadiusY(Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText()));
               double _parseDouble = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
-              double _minus_2 = (90 - _parseDouble);
+              double _minus_2 = ((90 - angleRotation) - _parseDouble);
               perceptionArc.setStartAngle(_minus_2);
               double _parseDouble_1 = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
               double _multiply = (_parseDouble_1 * 2);
               perceptionArc.setLength(_multiply);
               perceptionArc.setType(ArcType.ROUND);
-              double _x_4 = boid.getVitesse().getX();
-              double _y_4 = boid.getVitesse().getY();
-              double _divide_1 = (_x_4 / _y_4);
-              perceptionArc.setRotate(Math.toDegrees(Math.atan(_divide_1)));
               if ((BoidsFxViewerController.this.nightMode).booleanValue()) {
                 perceptionArc.setFill(Color.rgb(255, 245, 112, 0.2));
               } else {
