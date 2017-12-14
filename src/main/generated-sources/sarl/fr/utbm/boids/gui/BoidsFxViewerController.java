@@ -388,21 +388,44 @@ public class BoidsFxViewerController extends FxViewerController {
         for (final BoidBody boid : list) {
           {
             double _x = boid.getPosition().getX();
+            int _mapHeight = BoidsFxViewerController.this.getMapHeight();
             double _y = boid.getPosition().getY();
-            double _minus = (_y - 7.5);
+            double _minus = (_mapHeight - _y);
+            double _minus_1 = (_minus - 7.5);
             double _x_1 = boid.getPosition().getX();
             double _plus = (_x_1 + 5);
+            int _mapHeight_1 = BoidsFxViewerController.this.getMapHeight();
             double _y_1 = boid.getPosition().getY();
-            double _plus_1 = (_y_1 + 7.5);
+            double _minus_2 = (_mapHeight_1 - _y_1);
+            double _plus_1 = (_minus_2 + 7.5);
             double _x_2 = boid.getPosition().getX();
-            double _minus_1 = (_x_2 - 5);
+            double _minus_3 = (_x_2 - 5);
+            int _mapHeight_2 = BoidsFxViewerController.this.getMapHeight();
             double _y_2 = boid.getPosition().getY();
-            double _plus_2 = (_y_2 + 7.5);
-            Polygon boidElement = new Polygon(_x, _minus, _plus, _plus_1, _minus_1, _plus_2);
+            double _minus_4 = (_mapHeight_2 - _y_2);
+            double _plus_2 = (_minus_4 + 7.5);
+            Polygon boidElement = new Polygon(_x, _minus_1, _plus, _plus_1, _minus_3, _plus_2);
             double _x_3 = boid.getVitesse().getX();
             double _y_3 = boid.getVitesse().getY();
             double _divide = (_x_3 / _y_3);
             double angleRotation = Math.toDegrees(Math.atan(_divide));
+            if ((angleRotation < 0)) {
+              double _angleRotation = angleRotation;
+              angleRotation = (_angleRotation + 180);
+            }
+            double _x_4 = boid.getVitesse().getX();
+            boolean _lessThan = (_x_4 < 0);
+            if (_lessThan) {
+              double _y_4 = boid.getVitesse().getY();
+              boolean _lessThan_1 = (_y_4 < 0);
+              if (_lessThan_1) {
+                double _angleRotation_1 = angleRotation;
+                angleRotation = (_angleRotation_1 - 180);
+              } else {
+                double _angleRotation_2 = angleRotation;
+                angleRotation = (_angleRotation_2 + 180);
+              }
+            }
             boidElement.setRotate(angleRotation);
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
             ____BoidsFxViewerController_1_0_1 _____BoidsFxViewerController_1_0_1 = new ____BoidsFxViewerController_1_0_1() {
@@ -410,11 +433,11 @@ public class BoidsFxViewerController extends FxViewerController {
                 int _groupe = boid.getGroupe();
                 String _plus = ("Groupe: " + Integer.valueOf(_groupe));
                 BoidsFxViewerController.this.boid_group.setText(_plus);
-                double _x = boid.getVitesse().getX();
-                String _plus_1 = ("Vitesse: (" + Double.valueOf(_x));
+                String _format = String.format("%.3f", Double.valueOf(boid.getVitesse().getX()));
+                String _plus_1 = ("Vitesse: (" + _format);
                 String _plus_2 = (_plus_1 + ", ");
-                double _y = boid.getVitesse().getY();
-                String _plus_3 = (_plus_2 + Double.valueOf(_y));
+                String _format_1 = String.format("%.3f", Double.valueOf(boid.getVitesse().getY()));
+                String _plus_3 = (_plus_2 + _format_1);
                 String _plus_4 = (_plus_3 + ")");
                 BoidsFxViewerController.this.boid_vitesse.setText(_plus_4);
                 int _groupeVitesseMax = boid.getGroupeVitesseMax();
@@ -429,11 +452,11 @@ public class BoidsFxViewerController extends FxViewerController {
                 int _distanceVisibilite = boid.getDistanceVisibilite();
                 String _plus_8 = ("Distance percep.: " + Integer.valueOf(_distanceVisibilite));
                 BoidsFxViewerController.this.boid_distance.setText(_plus_8);
-                double _x_1 = boid.getNewVitesse().getX();
-                String _plus_9 = ("Nouvelle vitesse: (" + Double.valueOf(_x_1));
+                double _x = boid.getNewVitesse().getX();
+                String _plus_9 = ("Nouvelle vitesse: (" + Double.valueOf(_x));
                 String _plus_10 = (_plus_9 + ", ");
-                double _y_1 = boid.getNewVitesse().getY();
-                String _plus_11 = (_plus_10 + Double.valueOf(_y_1));
+                double _y = boid.getNewVitesse().getY();
+                String _plus_11 = (_plus_10 + Double.valueOf(_y));
                 String _plus_12 = (_plus_11 + ")");
                 BoidsFxViewerController.this.boid_new_vitesse.setText(_plus_12);
                 BoidsFxViewerController.this.showInfosVisibility();
@@ -443,12 +466,15 @@ public class BoidsFxViewerController extends FxViewerController {
             if ((BoidsFxViewerController.this.togglePerception).booleanValue()) {
               Arc perceptionArc = new Arc();
               perceptionArc.setCenterX(boid.getPosition().getX());
-              perceptionArc.setCenterY(boid.getPosition().getY());
+              int _mapHeight_3 = BoidsFxViewerController.this.getMapHeight();
+              double _y_5 = boid.getPosition().getY();
+              double _minus_5 = (_mapHeight_3 - _y_5);
+              perceptionArc.setCenterY(_minus_5);
               perceptionArc.setRadiusX(Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText()));
               perceptionArc.setRadiusY(Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText()));
               double _parseDouble = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
-              double _minus_2 = ((90 - angleRotation) - _parseDouble);
-              perceptionArc.setStartAngle(_minus_2);
+              double _minus_6 = ((90 - angleRotation) - _parseDouble);
+              perceptionArc.setStartAngle(_minus_6);
               double _parseDouble_1 = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
               double _multiply = (_parseDouble_1 * 2);
               perceptionArc.setLength(_multiply);

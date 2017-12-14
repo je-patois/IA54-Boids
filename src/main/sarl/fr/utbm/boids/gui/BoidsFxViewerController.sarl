@@ -242,15 +242,26 @@ class BoidsFxViewerController extends FxViewerController  {
 			def run() {
 				boids_group.getChildren().clear()
 				for (boid : list){
-					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y - 7.5, boid.position.x + 5, boid.position.y + 7.5, boid.position.x - 5, boid.position.y + 7.5)
+					var boidElement : Polygon = new Polygon(boid.position.x, getMapHeight - boid.position.y - 7.5, boid.position.x + 5, getMapHeight - boid.position.y + 7.5, boid.position.x - 5, getMapHeight -  boid.position.y + 7.5)
 					var angleRotation = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
+					if (angleRotation < 0){
+						angleRotation += 180
+					}
+					if (boid.vitesse.x < 0 ){
+						if (boid.vitesse.y < 0 ){
+							angleRotation -= 180
+						}else{
+							angleRotation += 180
+						}
+					 }
+					
 					boidElement.rotate = angleRotation
 					boidElement.setFill(Configuration::COLOR_FAMILY.get(boid.groupe))
 					
 					boidElement.setOnMousePressed(new EventHandler<MouseEvent>() {
 						def handle(^event : MouseEvent) {
 							boid_group.text = 'Groupe: ' + boid.groupe
-							boid_vitesse.text = 'Vitesse: (' + boid.vitesse.x + ', ' + boid.vitesse.y + ')' 
+							boid_vitesse.text = 'Vitesse: (' + String.format("%.3f", boid.vitesse.x) + ', ' + String.format("%.3f",boid.vitesse.y) + ')' 
 							boid_group_vitesse.text = 'Vitesse max. groupe: ' + boid.groupeVitesseMax
 							boid_masse.text = 'Masse: ' + boid.masse
 							boid_angle.text = 'Angle: ' + boid.angleVisibilite
@@ -263,7 +274,7 @@ class BoidsFxViewerController extends FxViewerController  {
 					if(togglePerception) {
 						var perceptionArc = new Arc()
 						perceptionArc.setCenterX(boid.position.x);
-						perceptionArc.setCenterY(boid.position.y);
+						perceptionArc.setCenterY(getMapHeight - boid.position.y);
 						perceptionArc.setRadiusX(Double.parseDouble(boids_distance_deplacement_display.text));
 						perceptionArc.setRadiusY(Double.parseDouble(boids_distance_deplacement_display.text));
 						perceptionArc.setStartAngle(90 - angleRotation - Double.parseDouble(boids_vision_display.text))
