@@ -627,6 +627,7 @@ class BoidsFxViewerController extends FxViewerController  {
 	}
 	
 	@FXML def pause() : void {
+		System.out.println("PAUSE DEMANDEE")
 		pause_button.visible = false
 		resume_button.visible = true
 		emitToAgents(new Pause)

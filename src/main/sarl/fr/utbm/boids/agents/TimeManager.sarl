@@ -12,14 +12,20 @@ import fr.utbm.boids.events.Cycle
 import fr.utbm.boids.events.Pause
 import fr.utbm.boids.Configuration
 import fr.utbm.boids.events.Resume
+import fr.utbm.boids.gui.BoidsFxViewerController
+import io.sarl.core.Behaviors
+import io.sarl.util.OpenEventSpace
 
 agent TimeManager {
-	uses Logging, DefaultContextInteractions, Lifecycle, Schedules
+	uses Logging, DefaultContextInteractions, Lifecycle, Schedules, Behaviors
 	
 	var online : boolean
+	var UISpace : OpenEventSpace
 	 
 	on Initialize {
 		loggingName = "Time Manager-" + this.ID
+		this.UISpace = occurrence.parameters.get(0) as OpenEventSpace
+		this.UISpace.register(asEventListener)
 		info("The time manager is started.")
 	}
 
@@ -34,15 +40,22 @@ agent TimeManager {
 	}
 	
 	on Pause {
-		//task('Iterate').cancel
-		this.online = false
+		if(online){
+			info('PAUSE')
+			task('Iterate').cancel
+			this.online = false
+		}
+		
 	}
 	
 	on Resume {
-		/*task('Iterate').every(Configuration::FREQUENCY) [
-			emit(new Cycle)
-		]*/
-		this.online = true
+		if (!online) {
+			this.online = true
+			task('Iterate').every(Configuration::FREQUENCY) [
+				if(this.online)
+					emit(new Cycle)
+			]
+		}
 	}
 
 	on EndSimulation {

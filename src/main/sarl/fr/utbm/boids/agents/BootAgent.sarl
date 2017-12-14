@@ -35,7 +35,7 @@ agent BootAgent {
 		ctrl.UISpace.register(asEventListener)
 		info("Starting simulation")
 		spawnInContext(typeof(Environment), innerContext, ctrl) 
-		spawnInContext(typeof(TimeManager), innerContext)
+		spawnInContext(typeof(TimeManager), innerContext, ctrl.UISpace)
 	}
 	
 	on ConfigureSimulation {
@@ -69,13 +69,13 @@ agent BootAgent {
 		innerContext.defaultSpace.emit(ID, evt)
 	}
 
-	on Pause {
+	/*on Pause {
 		innerContext.defaultSpace.emit(ID, new Pause)
-	}
+	}*/
 	
-	on Resume {
+	/*on Resume {
 		innerContext.defaultSpace.emit(ID, new Resume)
-	}
+	}*/
 
 	on EndSimulation [!hasMemberAgent] {
 		killMe

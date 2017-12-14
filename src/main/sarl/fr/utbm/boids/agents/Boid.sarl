@@ -81,8 +81,8 @@ agent Boid {
 		this.body.position = occurrence.position
 		this.body.vitesse = this.body.newVitesse
 		info("Validation de la position")
-		info ("vitesse boids :    " + this.body.vitesse)
-		info ("position boids : " + this.body.position)
+		info("vitesse boids :    " + this.body.vitesse)
+		info("position boids : " + this.body.position)
 	}
 	
 	@SuppressWarnings("equals_with_null")
