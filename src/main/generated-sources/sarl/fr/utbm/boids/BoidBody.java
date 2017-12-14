@@ -6,12 +6,15 @@ import fr.utbm.boids.Vector;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
+import java.util.UUID;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 @SarlSpecification("0.6")
 @SarlElementType(9)
 @SuppressWarnings("all")
 public class BoidBody extends EnvObjet {
+  private UUID id;
+  
   private Vector vitesse;
   
   private Vector newVitesse;
@@ -26,7 +29,8 @@ public class BoidBody extends EnvObjet {
   
   private int distanceVisibilite;
   
-  public BoidBody(final int groupe, final int groupeVitesseMax, final int masse, final int angleVisibilite, final int distanceVisibilite) {
+  public BoidBody(final UUID id, final int groupe, final int groupeVitesseMax, final int masse, final int angleVisibilite, final int distanceVisibilite) {
+    this.id = id;
     this.groupe = groupe;
     this.groupeVitesseMax = groupeVitesseMax;
     this.masse = masse;
@@ -47,6 +51,11 @@ public class BoidBody extends EnvObjet {
   /**
    * GETTER
    */
+  @Pure
+  public UUID getID() {
+    return this.id;
+  }
+  
   @Pure
   public Vector getVitesse() {
     return this.vitesse;
@@ -85,6 +94,10 @@ public class BoidBody extends EnvObjet {
   /**
    * SETTER
    */
+  public void setID(final UUID id) {
+    this.id = id;
+  }
+  
   public void setVitesse(final Vector v) {
     this.vitesse = v;
   }
@@ -161,6 +174,9 @@ public class BoidBody extends EnvObjet {
     if (getClass() != obj.getClass())
       return false;
     BoidBody other = (BoidBody) obj;
+    if (!java.util.Objects.equals(this.id, other.id)) {
+      return false;
+    }
     if (other.groupe != this.groupe)
       return false;
     if (other.groupeVitesseMax != this.groupeVitesseMax)
@@ -180,6 +196,7 @@ public class BoidBody extends EnvObjet {
   public int hashCode() {
     int result = super.hashCode();
     final int prime = 31;
+    result = prime * result + java.util.Objects.hashCode(this.id);
     result = prime * result + this.groupe;
     result = prime * result + this.groupeVitesseMax;
     result = prime * result + this.masse;

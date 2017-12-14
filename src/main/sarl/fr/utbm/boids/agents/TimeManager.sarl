@@ -41,7 +41,6 @@ agent TimeManager {
 	
 	on Pause {
 		if(online){
-			info('PAUSE')
 			task('Iterate').cancel
 			this.online = false
 		}

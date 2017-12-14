@@ -9,9 +9,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="main_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMousePressed="#changeFocus" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: rgb(34, 34, 34);" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.boids.gui.BoidsFxViewerController">
+<Pane fx:id="main_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMousePressed="#changeFocus" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgb(34, 34, 34);" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.boids.gui.BoidsFxViewerController">
    <children>
-      <Pane fx:id="UI_pane" layoutX="562.0" layoutY="41.0" prefHeight="472.0" prefWidth="221.0">
+      <Pane fx:id="UI_pane" layoutX="1006.0" layoutY="43.0" prefHeight="472.0" prefWidth="221.0">
          <children>
             <ScrollBar fx:id="map_selection_input" layoutX="20.0" layoutY="383.0" max="2.0" min="1.0" onMouseEntered="#actionMapSelectionDisplay" prefHeight="18.0" prefWidth="173.0" value="1.0" />
             <Label fx:id="map_selection_label" alignment="CENTER" layoutX="-2.0" layoutY="356.0" prefHeight="27.0" prefWidth="221.0" text="%MapSelectionLabel" textFill="#bfbfbf">
@@ -113,14 +113,15 @@
             </Button>
          </children>
       </Pane>
+      <Group fx:id="perception_group" />
       <Group fx:id="boids_group" />
       <Group fx:id="obstacle_group" />
-      <ToggleButton fx:id="toggle_night_mode" layoutX="690.0" layoutY="557.0" mnemonicParsing="false" onAction="#toggleMode" onMouseEntered="#toggleButtonGlow" onMouseExited="#toggleButtonReset" prefHeight="31.0" prefWidth="111.0" style="-fx-background-color: transparent;" text="%NightModeLabel" textFill="#bababa" />
-      <Circle fx:id="night_mode_indicator" fill="#00cc63" layoutX="694.0" layoutY="573.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" />
-      <Circle fx:id="perception_indicator" fill="#00cc63" layoutX="694.0" layoutY="547.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" visible="false" />
-      <ToggleButton fx:id="toggle_perception" layoutX="690.0" layoutY="531.0" mnemonicParsing="false" onAction="#togglePerception" onMouseEntered="#perceptionButtonGlow" onMouseExited="#perceptionButtonReset" prefHeight="31.0" prefWidth="111.0" style="-fx-background-color: transparent;" text="%PerceptionLabel" textFill="#bfbfbf4d" visible="false" />
-      <Rectangle fx:id="pause_button" arcHeight="5.0" arcWidth="5.0" fill="#ff5555" height="12.0" layoutX="770.0" layoutY="14.0" onMousePressed="#pause" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="13.0" />
-      <Polygon fx:id="resume_button" fill="#04d300" layoutX="778.0" layoutY="30.0" onMousePressed="#resume" rotate="90.0" scaleX="0.15" scaleY="0.15" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" visible="false">
+      <ToggleButton fx:id="toggle_night_mode" layoutX="1155.0" layoutY="675.0" mnemonicParsing="false" onAction="#toggleMode" onMouseEntered="#toggleButtonGlow" onMouseExited="#toggleButtonReset" prefHeight="31.0" prefWidth="111.0" style="-fx-background-color: transparent;" text="%NightModeLabel" textFill="#bababa" />
+      <Circle fx:id="night_mode_indicator" fill="#00cc63" layoutX="1159.0" layoutY="691.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" />
+      <Circle fx:id="perception_indicator" fill="#00cc63" layoutX="1159.0" layoutY="666.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" visible="false" />
+      <ToggleButton fx:id="toggle_perception" layoutX="1155.0" layoutY="650.0" mnemonicParsing="false" onAction="#togglePerception" onMouseEntered="#perceptionButtonGlow" onMouseExited="#perceptionButtonReset" prefHeight="31.0" prefWidth="111.0" style="-fx-background-color: transparent;" text="%PerceptionLabel" textFill="#bfbfbf4d" visible="false" />
+      <Rectangle fx:id="pause_button" arcHeight="5.0" arcWidth="5.0" fill="#ff5555" height="12.0" layoutX="1247.0" layoutY="14.0" onMousePressed="#pause" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="13.0" />
+      <Polygon fx:id="resume_button" fill="#04d300" layoutX="1254.0" layoutY="30.0" onMousePressed="#resume" rotate="90.0" scaleX="0.15" scaleY="0.15" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" visible="false">
         <points>
           <Double fx:value="-50.0" />
           <Double fx:value="40.0" />
@@ -130,7 +131,7 @@
           <Double fx:value="-60.0" />
         </points>
       </Polygon>
-      <Pane fx:id="boids_infos_pane" disable="true" layoutX="14.0" layoutY="17.0" prefHeight="148.0" prefWidth="433.0" visible="false">
+      <Pane fx:id="boids_infos_pane" layoutX="14.0" layoutY="17.0" prefHeight="148.0" prefWidth="433.0" visible="false">
          <children>
             <Label fx:id="boid_vitesse" layoutX="22.0" layoutY="14.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
             <Label fx:id="boid_group_vitesse" layoutX="22.0" layoutY="35.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
@@ -139,6 +140,7 @@
             <Label fx:id="boid_masse" layoutX="215.0" layoutY="35.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
             <Label fx:id="boid_distance" layoutX="215.0" layoutY="56.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
             <Label fx:id="boid_group" layoutX="22.0" layoutY="77.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
+            <Label fx:id="boid_position" layoutX="215.0" layoutY="77.0" prefHeight="21.0" prefWidth="221.0" textFill="#bfbfbf" />
             <Button fx:id="hide_infos" layoutX="19.0" layoutY="108.0" mnemonicParsing="false" onAction="#hideInfosVisibility" onMouseEntered="#infosButtonGlow" onMouseExited="#infosButtonReset" prefHeight="31.0" prefWidth="353.0" style="-fx-background-color: transparent;" text="Cacher" textFill="#bdbdbd4d" />
          </children>
       </Pane>

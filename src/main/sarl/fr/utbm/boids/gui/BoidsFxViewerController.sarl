@@ -39,6 +39,7 @@ import javafx.scene.transform.Affine
 import javafx.scene.control.TextField
 import javafx.scene.shape.Line
 import java.util.concurrent.TimeUnit
+import java.util.UUID
 
 class BoidsFxViewerController extends FxViewerController  {
 
@@ -49,6 +50,7 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var boids_group : Group // Groupe contenant les boids
 	@FXML var UI_pane : Pane // Pane contenant l'UI
 	@FXML var obstacle_group : Group // Groupe contenant les obstacles
+	@FXML var perception_group : Group // Groupe contenant les champs de perceptions des boids
 	
 	@FXML var toggle_night_mode : ToggleButton
 	@FXML var toggle_perception : ToggleButton
@@ -94,6 +96,7 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var boid_angle : Label
 	@FXML var boid_distance : Label
 	@FXML var boid_masse : Label
+	@FXML var boid_position : Label
 	@FXML var hide_infos : Button
 	@FXML var boids_infos_pane : Pane
 		
@@ -108,6 +111,8 @@ class BoidsFxViewerController extends FxViewerController  {
 	var obstacles : List<Obstacle> = new ArrayList()
 	var nightMode : Boolean = true
 	var togglePerception : Boolean = true
+	var currentBoid: UUID
+	var perceptions : List<Arc> = new ArrayList()
 
 	def getBoidsQuantity() : int {
 		boids_quantity_input.value as int
@@ -255,7 +260,9 @@ class BoidsFxViewerController extends FxViewerController  {
 		var command = new Runnable() {
 			@Override
 			def run() {
+				perception_group.getChildren().clear()
 				boids_group.getChildren().clear()
+				perceptions.clear()
 				for (boid : list){
 					var boidElement : Polygon = new Polygon(boid.position.x, getMapHeight - boid.position.y - 7.5, boid.position.x + 5, getMapHeight - boid.position.y + 7.5, boid.position.x - 5, getMapHeight -  boid.position.y + 7.5)
 					var angleRotation = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
@@ -275,13 +282,8 @@ class BoidsFxViewerController extends FxViewerController  {
 					
 					boidElement.setOnMousePressed(new EventHandler<MouseEvent>() {
 						def handle(^event : MouseEvent) {
-							boid_group.text = 'Groupe: ' + boid.groupe
-							boid_vitesse.text = 'Vitesse: (' + String.format("%.3f", boid.vitesse.x) + ', ' + String.format("%.3f",boid.vitesse.y) + ')' 
-							boid_group_vitesse.text = 'Vitesse max. groupe: ' + boid.groupeVitesseMax
-							boid_masse.text = 'Masse: ' + boid.masse
-							boid_angle.text = 'Angle: ' + boid.angleVisibilite
-							boid_distance.text = 'Distance percep.: ' + boid.distanceVisibilite
-							boid_new_vitesse.text = 'Nouvelle vitesse: (' + boid.newVitesse.x + ', ' + boid.newVitesse.y + ')'
+							currentBoid = boid.ID
+							updateInfos(boid)
 							showInfosVisibility()
 						}
 					}); 
@@ -301,12 +303,18 @@ class BoidsFxViewerController extends FxViewerController  {
 							perceptionArc.fill = Color.rgb(255, 245, 112, 0.8)
 						}
 						boids_group.getChildren().add(0, boidElement)
-						boids_group.getChildren.add(0, perceptionArc)
+						perception_group.getChildren.add(0, perceptionArc)
+						perceptions.add(perceptionArc)
 					} else {
 						boids_group.getChildren.add(0, boidElement)
 					}
-					
 				}
+
+				if (boids_infos_pane.visible) {
+					var boidBody : BoidBody = list.findFirst[item | item.ID == currentBoid]
+					updateInfos(boidBody)
+				}
+				
 			}
 		}
 		
@@ -448,9 +456,15 @@ class BoidsFxViewerController extends FxViewerController  {
 		if(togglePerception) {
 			togglePerception = false
 			perception_indicator.fill = Color.TRANSPARENT
+			perceptions.forEach[item : Arc |
+				item.fill = Color.TRANSPARENT
+			]
 		} else {
 			togglePerception = true
 			perception_indicator.fill = Color.rgb(0, 204, 99)
+			perceptions.forEach [ item : Arc |
+				if(nightMode) item.fill = Color.rgb(255, 245, 112, 0.2) else item.fill = Color.rgb(255, 245, 112, 0.8)
+			]
 		}
 	}
 	
@@ -627,7 +641,6 @@ class BoidsFxViewerController extends FxViewerController  {
 	}
 	
 	@FXML def pause() : void {
-		System.out.println("PAUSE DEMANDEE")
 		pause_button.visible = false
 		resume_button.visible = true
 		emitToAgents(new Pause)
@@ -639,18 +652,9 @@ class BoidsFxViewerController extends FxViewerController  {
 		emitToAgents(new Resume)
 	}
 	
-	def hideInfosVisibility() : void { // TODO Renae en disable
+	def hideInfosVisibility() : void {
 		this.resetTexts()
 		boids_infos_pane.visible = false
-		boids_infos_pane.disable = true
-		/*boid_group.visible = false
-		boid_vitesse.visible = false
-		boid_group_vitesse.visible = false
-		boid_masse.visible = false
-		boid_angle.visible = false
-		boid_distance.visible = false
-		boid_new_vitesse.visible = false
-		hide_infos.visible = false*/
 	}
 	
 	def resetTexts() : void {
@@ -663,17 +667,8 @@ class BoidsFxViewerController extends FxViewerController  {
 		boid_new_vitesse.text = ''
 	}
 
-	def showInfosVisibility() : void { // TODO Rename en disable
+	def showInfosVisibility() : void {
 		boids_infos_pane.visible = true
-		boids_infos_pane.disable = false
-		/*boid_group.visible = true
-		boid_vitesse.visible = true
-		boid_group_vitesse.visible = true
-		boid_masse.visible = true
-		boid_angle.visible = true
-		boid_distance.visible = true
-		boid_new_vitesse.visible = true
-		hide_infos.visible = true*/
 	}
 	
 	def outputQuality(output : String) : Boolean {
@@ -687,6 +682,17 @@ class BoidsFxViewerController extends FxViewerController  {
 		return outputQuality
 	}
 	
+	def updateInfos(boidBody : BoidBody) : void {
+		boid_group.text = 'Groupe: ' + boidBody.groupe
+		boid_vitesse.text = 'Vitesse: (' + String.format("%.3f", boidBody.vitesse.x) + ', ' + String.format("%.3f", boidBody.vitesse.y) + ')'
+		boid_group_vitesse.text = 'Vitesse max. groupe: ' + boidBody.groupeVitesseMax
+		boid_masse.text = 'Masse: ' + boidBody.masse
+		boid_angle.text = 'Angle: ' + boidBody.angleVisibilite
+		boid_distance.text = 'Distance percep.: ' + boidBody.distanceVisibilite
+		boid_new_vitesse.text = 'Nouvelle vitesse: (' + boidBody.newVitesse.x + ', ' + boidBody.newVitesse.y + ')'
+		boid_position.text = 'Position: (' + String.format("%.3f", boidBody.position.x) + ', ' + String.format("%.3f", boidBody.position.y) + ')'
+	}
+
 	@FXML protected def changeFocus() : void {
 		main_pane.requestFocus()
 	}

@@ -24,6 +24,7 @@ import fr.utbm.boids.gui.BoidsFxViewerController
 import fr.utbm.boids.events.Cycle
 import fr.utbm.boids.events.BoidInitialized
 import io.sarl.core.Logging
+import fr.utbm.boids.EnvInfos
 
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess, Behaviors
@@ -36,6 +37,7 @@ agent Environment {
 	var firstTime : boolean
 	var spawner : UUID
 	var inCycle : Boolean
+	var envInfos : EnvInfos
 	// var superBoid : boolean // TODO Un jour peut-être
 
 	on Initialize {
@@ -46,6 +48,7 @@ agent Environment {
 		this.firstTime = true
 		this.spawner = occurrence.spawner
 		this.inCycle = false
+		this.envInfos = new EnvInfos(this.ctrl.mapWidth, this.ctrl.mapHeight)
 		info("The Environment is started.")
 	}
 	
@@ -60,7 +63,7 @@ agent Environment {
 		info('Population size: ' + this.ctrl.boidsPopulation)
 		for (var i = 0; i < this.ctrl.boidsPopulation; i++) {
 			for (var j = 0 ; j < this.ctrl.boidsQuantity; j++){
-				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsVision, ctrl.boidsDistanceDeplacement)
+				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsVision, ctrl.boidsDistanceDeplacement, envInfos)
 			}
 		}
 		info(this.boidsList)
@@ -70,7 +73,7 @@ agent Environment {
 		if (occurrence.type == "Boid") {
 			boidsAddresses.put(occurrence.source.UUID, occurrence.source)
 			this.boidsList.put(occurrence.source.UUID, occurrence.body)
-			innerContext.defaultSpace.emit(ID, new StartPosition(this.ctrl.mapHeight, this.ctrl.mapWidth, this.ctrl.obstacles), Scopes.addresses(occurrence.source))
+			innerContext.defaultSpace.emit(ID, new StartPosition(this.ctrl.obstacles), Scopes.addresses(occurrence.source))
 		}
 	}
 

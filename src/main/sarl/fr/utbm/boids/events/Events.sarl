@@ -104,13 +104,9 @@ event StartingSimulation
  * @param obstacles - Liste des obstacles avec les données relatives à leur traitement
  */
 event StartPosition {
-	var height : int
-	var width : int
 	var obstacles : List<Obstacle>
 
-	new (h : int, l : int, obstacles : List<Obstacle>) {
-		this.height = h
-		this.width = l
+	new (obstacles : List<Obstacle>) {
 		this.obstacles = obstacles
 	}
 }

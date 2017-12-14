@@ -18,15 +18,9 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(14)
 @SuppressWarnings("all")
 public class StartPosition extends Event {
-  public int height;
-  
-  public int width;
-  
   public List<Obstacle> obstacles;
   
-  public StartPosition(final int h, final int l, final List<Obstacle> obstacles) {
-    this.height = h;
-    this.width = l;
+  public StartPosition(final List<Obstacle> obstacles) {
     this.obstacles = obstacles;
   }
   
@@ -34,17 +28,6 @@ public class StartPosition extends Event {
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    StartPosition other = (StartPosition) obj;
-    if (other.height != this.height)
-      return false;
-    if (other.width != this.width)
-      return false;
     return super.equals(obj);
   }
   
@@ -53,9 +36,6 @@ public class StartPosition extends Event {
   @SyntheticMember
   public int hashCode() {
     int result = super.hashCode();
-    final int prime = 31;
-    result = prime * result + this.height;
-    result = prime * result + this.width;
     return result;
   }
   
@@ -66,12 +46,10 @@ public class StartPosition extends Event {
   @Pure
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
-    result.append("height  = ").append(this.height);
-    result.append("width  = ").append(this.width);
     result.append("obstacles  = ").append(this.obstacles);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = -3205458700L;
+  private final static long serialVersionUID = -1015182199L;
 }

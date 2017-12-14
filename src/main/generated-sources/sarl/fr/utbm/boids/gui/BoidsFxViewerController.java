@@ -17,6 +17,7 @@ import io.sarl.lang.annotation.SyntheticMember;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -44,6 +45,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
@@ -68,6 +70,9 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @FXML
   private Group obstacle_group;
+  
+  @FXML
+  private Group perception_group;
   
   @FXML
   private ToggleButton toggle_night_mode;
@@ -178,6 +183,9 @@ public class BoidsFxViewerController extends FxViewerController {
   private Label boid_masse;
   
   @FXML
+  private Label boid_position;
+  
+  @FXML
   private Button hide_infos;
   
   @FXML
@@ -207,6 +215,10 @@ public class BoidsFxViewerController extends FxViewerController {
   private Boolean nightMode = Boolean.valueOf(true);
   
   private Boolean togglePerception = Boolean.valueOf(true);
+  
+  private UUID currentBoid;
+  
+  private List<Arc> perceptions = new ArrayList<Arc>();
   
   @Pure
   public int getBoidsQuantity() {
@@ -395,7 +407,9 @@ public class BoidsFxViewerController extends FxViewerController {
           public abstract void handle(final MouseEvent event);
         }
         
+        BoidsFxViewerController.this.perception_group.getChildren().clear();
         BoidsFxViewerController.this.boids_group.getChildren().clear();
+        BoidsFxViewerController.this.perceptions.clear();
         for (final BoidBody boid : list) {
           {
             double _x = boid.getPosition().getX();
@@ -441,35 +455,8 @@ public class BoidsFxViewerController extends FxViewerController {
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
             ____BoidsFxViewerController_1_0_1 _____BoidsFxViewerController_1_0_1 = new ____BoidsFxViewerController_1_0_1() {
               public void handle(final MouseEvent event) {
-                int _groupe = boid.getGroupe();
-                String _plus = ("Groupe: " + Integer.valueOf(_groupe));
-                BoidsFxViewerController.this.boid_group.setText(_plus);
-                String _format = String.format("%.3f", Double.valueOf(boid.getVitesse().getX()));
-                String _plus_1 = ("Vitesse: (" + _format);
-                String _plus_2 = (_plus_1 + ", ");
-                String _format_1 = String.format("%.3f", Double.valueOf(boid.getVitesse().getY()));
-                String _plus_3 = (_plus_2 + _format_1);
-                String _plus_4 = (_plus_3 + ")");
-                BoidsFxViewerController.this.boid_vitesse.setText(_plus_4);
-                int _groupeVitesseMax = boid.getGroupeVitesseMax();
-                String _plus_5 = ("Vitesse max. groupe: " + Integer.valueOf(_groupeVitesseMax));
-                BoidsFxViewerController.this.boid_group_vitesse.setText(_plus_5);
-                int _masse = boid.getMasse();
-                String _plus_6 = ("Masse: " + Integer.valueOf(_masse));
-                BoidsFxViewerController.this.boid_masse.setText(_plus_6);
-                int _angleVisibilite = boid.getAngleVisibilite();
-                String _plus_7 = ("Angle: " + Integer.valueOf(_angleVisibilite));
-                BoidsFxViewerController.this.boid_angle.setText(_plus_7);
-                int _distanceVisibilite = boid.getDistanceVisibilite();
-                String _plus_8 = ("Distance percep.: " + Integer.valueOf(_distanceVisibilite));
-                BoidsFxViewerController.this.boid_distance.setText(_plus_8);
-                double _x = boid.getNewVitesse().getX();
-                String _plus_9 = ("Nouvelle vitesse: (" + Double.valueOf(_x));
-                String _plus_10 = (_plus_9 + ", ");
-                double _y = boid.getNewVitesse().getY();
-                String _plus_11 = (_plus_10 + Double.valueOf(_y));
-                String _plus_12 = (_plus_11 + ")");
-                BoidsFxViewerController.this.boid_new_vitesse.setText(_plus_12);
+                BoidsFxViewerController.this.currentBoid = boid.getID();
+                BoidsFxViewerController.this.updateInfos(boid);
                 BoidsFxViewerController.this.showInfosVisibility();
               }
             };
@@ -496,11 +483,21 @@ public class BoidsFxViewerController extends FxViewerController {
                 perceptionArc.setFill(Color.rgb(255, 245, 112, 0.8));
               }
               BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
-              BoidsFxViewerController.this.boids_group.getChildren().add(0, perceptionArc);
+              BoidsFxViewerController.this.perception_group.getChildren().add(0, perceptionArc);
+              BoidsFxViewerController.this.perceptions.add(perceptionArc);
             } else {
               BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
             }
           }
+        }
+        boolean _isVisible = BoidsFxViewerController.this.boids_infos_pane.isVisible();
+        if (_isVisible) {
+          final Function1<BoidBody, Boolean> _function = (BoidBody item) -> {
+            UUID _iD = item.getID();
+            return Boolean.valueOf(Objects.equal(_iD, BoidsFxViewerController.this.currentBoid));
+          };
+          BoidBody boidBody = IterableExtensions.<BoidBody>findFirst(list, _function);
+          BoidsFxViewerController.this.updateInfos(boidBody);
         }
       }
     };
@@ -694,9 +691,21 @@ public class BoidsFxViewerController extends FxViewerController {
     if ((this.togglePerception).booleanValue()) {
       this.togglePerception = Boolean.valueOf(false);
       this.perception_indicator.setFill(Color.TRANSPARENT);
+      final Consumer<Arc> _function = (Arc item) -> {
+        item.setFill(Color.TRANSPARENT);
+      };
+      this.perceptions.forEach(_function);
     } else {
       this.togglePerception = Boolean.valueOf(true);
       this.perception_indicator.setFill(Color.rgb(0, 204, 99));
+      final Consumer<Arc> _function_1 = (Arc item) -> {
+        if ((this.nightMode).booleanValue()) {
+          item.setFill(Color.rgb(255, 245, 112, 0.2));
+        } else {
+          item.setFill(Color.rgb(255, 245, 112, 0.8));
+        }
+      };
+      this.perceptions.forEach(_function_1);
     }
   }
   
@@ -947,7 +956,6 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @FXML
   public void pause() {
-    System.out.println("PAUSE DEMANDEE");
     this.pause_button.setVisible(false);
     this.resume_button.setVisible(true);
     Pause _pause = new Pause();
@@ -965,7 +973,6 @@ public class BoidsFxViewerController extends FxViewerController {
   public void hideInfosVisibility() {
     this.resetTexts();
     this.boids_infos_pane.setVisible(false);
-    this.boids_infos_pane.setDisable(true);
   }
   
   public void resetTexts() {
@@ -980,7 +987,6 @@ public class BoidsFxViewerController extends FxViewerController {
   
   public void showInfosVisibility() {
     this.boids_infos_pane.setVisible(true);
-    this.boids_infos_pane.setDisable(false);
   }
   
   public Boolean outputQuality(final String output) {
@@ -997,6 +1003,45 @@ public class BoidsFxViewerController extends FxViewerController {
       }
     }
     return outputQuality;
+  }
+  
+  public void updateInfos(final BoidBody boidBody) {
+    int _groupe = boidBody.getGroupe();
+    String _plus = ("Groupe: " + Integer.valueOf(_groupe));
+    this.boid_group.setText(_plus);
+    String _format = String.format("%.3f", Double.valueOf(boidBody.getVitesse().getX()));
+    String _plus_1 = ("Vitesse: (" + _format);
+    String _plus_2 = (_plus_1 + ", ");
+    String _format_1 = String.format("%.3f", Double.valueOf(boidBody.getVitesse().getY()));
+    String _plus_3 = (_plus_2 + _format_1);
+    String _plus_4 = (_plus_3 + ")");
+    this.boid_vitesse.setText(_plus_4);
+    int _groupeVitesseMax = boidBody.getGroupeVitesseMax();
+    String _plus_5 = ("Vitesse max. groupe: " + Integer.valueOf(_groupeVitesseMax));
+    this.boid_group_vitesse.setText(_plus_5);
+    int _masse = boidBody.getMasse();
+    String _plus_6 = ("Masse: " + Integer.valueOf(_masse));
+    this.boid_masse.setText(_plus_6);
+    int _angleVisibilite = boidBody.getAngleVisibilite();
+    String _plus_7 = ("Angle: " + Integer.valueOf(_angleVisibilite));
+    this.boid_angle.setText(_plus_7);
+    int _distanceVisibilite = boidBody.getDistanceVisibilite();
+    String _plus_8 = ("Distance percep.: " + Integer.valueOf(_distanceVisibilite));
+    this.boid_distance.setText(_plus_8);
+    double _x = boidBody.getNewVitesse().getX();
+    String _plus_9 = ("Nouvelle vitesse: (" + Double.valueOf(_x));
+    String _plus_10 = (_plus_9 + ", ");
+    double _y = boidBody.getNewVitesse().getY();
+    String _plus_11 = (_plus_10 + Double.valueOf(_y));
+    String _plus_12 = (_plus_11 + ")");
+    this.boid_new_vitesse.setText(_plus_12);
+    String _format_2 = String.format("%.3f", Double.valueOf(boidBody.getPosition().getX()));
+    String _plus_13 = ("Position: (" + _format_2);
+    String _plus_14 = (_plus_13 + ", ");
+    String _format_3 = String.format("%.3f", Double.valueOf(boidBody.getPosition().getY()));
+    String _plus_15 = (_plus_14 + _format_3);
+    String _plus_16 = (_plus_15 + ")");
+    this.boid_position.setText(_plus_16);
   }
   
   @FXML
@@ -1262,6 +1307,9 @@ public class BoidsFxViewerController extends FxViewerController {
       return false;
     if (other.togglePerception != this.togglePerception)
       return false;
+    if (!java.util.Objects.equals(this.currentBoid, other.currentBoid)) {
+      return false;
+    }
     return super.equals(obj);
   }
   
@@ -1275,6 +1323,7 @@ public class BoidsFxViewerController extends FxViewerController {
     result = prime * result + (this.mapCreated ? 1231 : 1237);
     result = prime * result + (this.nightMode ? 1231 : 1237);
     result = prime * result + (this.togglePerception ? 1231 : 1237);
+    result = prime * result + java.util.Objects.hashCode(this.currentBoid);
     return result;
   }
   

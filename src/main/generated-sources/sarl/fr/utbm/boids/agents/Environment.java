@@ -2,6 +2,7 @@ package fr.utbm.boids.agents;
 
 import com.google.common.base.Objects;
 import fr.utbm.boids.BoidBody;
+import fr.utbm.boids.EnvInfos;
 import fr.utbm.boids.Vector;
 import fr.utbm.boids.agents.Boid;
 import fr.utbm.boids.environment.Obstacle;
@@ -65,6 +66,8 @@ public class Environment extends Agent {
   
   private Boolean inCycle;
   
+  private EnvInfos envInfos;
+  
   @SyntheticMember
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
@@ -79,6 +82,10 @@ public class Environment extends Agent {
     this.firstTime = true;
     this.spawner = occurrence.spawner;
     this.inCycle = Boolean.valueOf(false);
+    int _mapWidth = this.ctrl.getMapWidth();
+    int _mapHeight = this.ctrl.getMapHeight();
+    EnvInfos _envInfos = new EnvInfos(_mapWidth, _mapHeight);
+    this.envInfos = _envInfos;
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("The Environment is started.");
   }
@@ -105,7 +112,7 @@ public class Environment extends Agent {
       for (int j = 0; (j < this.ctrl.getBoidsQuantity()); j++) {
         Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
         InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-        _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.spawnInContext(Boid.class, _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext(), Integer.valueOf((i + 1)), Integer.valueOf(this.ctrl.getBoidsVision()), Integer.valueOf(this.ctrl.getBoidsDistanceDeplacement()));
+        _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.spawnInContext(Boid.class, _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext(), Integer.valueOf((i + 1)), Integer.valueOf(this.ctrl.getBoidsVision()), Integer.valueOf(this.ctrl.getBoidsDistanceDeplacement()), this.envInfos);
       }
     }
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
@@ -119,10 +126,8 @@ public class Environment extends Agent {
       this.boidsAddresses.put(occurrence.getSource().getUUID(), occurrence.getSource());
       this.boidsList.put(occurrence.getSource().getUUID(), occurrence.body);
       InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-      int _mapHeight = this.ctrl.getMapHeight();
-      int _mapWidth = this.ctrl.getMapWidth();
       List<Obstacle> _obstacles = this.ctrl.getObstacles();
-      StartPosition _startPosition = new StartPosition(_mapHeight, _mapWidth, _obstacles);
+      StartPosition _startPosition = new StartPosition(_obstacles);
       _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _startPosition, Scopes.addresses(occurrence.getSource()));
     }
   }
