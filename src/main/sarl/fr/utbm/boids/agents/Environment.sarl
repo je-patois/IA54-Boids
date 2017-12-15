@@ -32,7 +32,7 @@ agent Environment {
 	var boidsList : Map<UUID,BoidBody>	//liste complète des corps de boids
 	var boidsGrid : Map<Vector, UUID>
 	var boidsAddresses : Map<UUID, Address>
-	var boidsUpdated : int
+	var boidsUpdated : Integer
 	var ctrl : BoidsFxViewerController = null
 	var firstTime : boolean
 	var spawner : UUID
@@ -115,38 +115,41 @@ agent Environment {
 			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
 		}
 		
-		boidsUpdated += 1
-		info("maintenant updated = " + this.boidsUpdated)
-
-		if(this.boidsUpdated == this.ctrl.boidsQuantity * this.ctrl.boidsPopulation && this.firstTime == true) {
-			info('boidsUpdated: ' + this.boidsUpdated + ', boidsTotal: ' + this.ctrl.boidsQuantity * this.ctrl.boidsPopulation)
-			wake(new BoidsSideReady)
-			this.firstTime = false
+		synchronized (boidsUpdated) {
+			boidsUpdated = boidsUpdated + 1 
+	
+			if(this.boidsUpdated == this.ctrl.boidsQuantity * this.ctrl.boidsPopulation && this.firstTime == true) {
+				//info('boidsUpdated: ' + this.boidsUpdated + ', boidsTotal: ' + this.ctrl.boidsQuantity * this.ctrl.boidsPopulation)
+				wake(new BoidsSideReady)
+				this.firstTime = false
+			}
 		}
 	}
 	
 	on Cycle{
 		if(!inCycle) {
-			info ("demande de rafraichissement : " + this.boidsUpdated)
-			// if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
-			if (this.boidsUpdated >= boidsList.size) {
-				inCycle = true
-
-				// envoi des nouveaux corps des boids
-				ctrl.updateGraphics(this.boidsList.values)
-
-				// remise à zéro de la liste des changements
-				synchronized (boidsGrid){
-					this.boidsGrid = new HashMap<Vector, UUID>
-				}
-				
-				//On se prépare pour la prochaine itération
-				this.boidsUpdated = 0
-				boidsAddresses.forEach[id, address|
-					innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
-				]
-				inCycle = false	
-			}	
+			synchronized (boidsUpdated){
+				//info ("demande de rafraichissement : " + this.boidsUpdated)
+				// if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
+				if (this.boidsUpdated >= boidsList.size) {
+					inCycle = true
+	
+					// envoi des nouveaux corps des boids
+					ctrl.updateGraphics(this.boidsList.values)
+	
+					// remise à zéro de la liste des changements
+					synchronized (boidsGrid){
+						this.boidsGrid = new HashMap<Vector, UUID>
+					}
+					
+					//On se prépare pour la prochaine itération
+					this.boidsUpdated = 0
+					boidsAddresses.forEach[id, address|
+						innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
+					]
+					inCycle = false	
+				}	
+			}
 		}
 	}
 
