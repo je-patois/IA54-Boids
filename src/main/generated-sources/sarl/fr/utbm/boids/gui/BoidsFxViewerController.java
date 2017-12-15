@@ -32,6 +32,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.Glow;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -93,9 +94,6 @@ public class BoidsFxViewerController extends FxViewerController {
   private Label boids_quantity_label;
   
   @FXML
-  private Label map_selection_label;
-  
-  @FXML
   private Label boids_population_label;
   
   @FXML
@@ -106,9 +104,6 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @FXML
   private ScrollBar boids_quantity_input;
-  
-  @FXML
-  private ScrollBar map_selection_input;
   
   @FXML
   private TextField boids_population_input;
@@ -123,9 +118,6 @@ public class BoidsFxViewerController extends FxViewerController {
   private Label boids_quantity_display;
   
   @FXML
-  private Label map_selection_display;
-  
-  @FXML
   private Label boids_vision_display;
   
   @FXML
@@ -136,12 +128,6 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @FXML
   private Label boids_quantity_max;
-  
-  @FXML
-  private Label map_min;
-  
-  @FXML
-  private Label map_max;
   
   @FXML
   private Label boids_vision_min;
@@ -206,6 +192,38 @@ public class BoidsFxViewerController extends FxViewerController {
   @FXML
   private Circle boids_population_decrement_circle;
   
+  @FXML
+  private ImageView preview_map_1;
+  
+  @FXML
+  private ImageView preview_map_2;
+  
+  @FXML
+  private Rectangle preview_map_1_border;
+  
+  @FXML
+  private Rectangle preview_map_2_border;
+  
+  @FXML
+  private Label map_label_1;
+  
+  @FXML
+  private Label map_label_2;
+  
+  @FXML
+  private Pane simulation_parameters_pane;
+  
+  @FXML
+  private Pane map_selection_pane;
+  
+  @FXML
+  private ImageView tick_map_1;
+  
+  @FXML
+  private ImageView tick_map_2;
+  
+  private int selectedMap = 1;
+  
   private List<Polygon> polygons;
   
   private List<List<Coordinates>> polygonsCoordinates;
@@ -228,8 +246,7 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @Pure
   public int getMapSelection() {
-    double _value = this.map_selection_input.getValue();
-    return ((int) _value);
+    return this.selectedMap;
   }
   
   @Pure
@@ -518,14 +535,6 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @FXML
-  protected void actionMapSelectionDisplay() {
-    final InvalidationListener _function = (Observable it) -> {
-      this.map_selection_display.setText(String.format("%.0f", Double.valueOf(this.map_selection_input.getValue())));
-    };
-    this.map_selection_input.valueProperty().addListener(_function);
-  }
-  
-  @FXML
   protected void actionBoidsVisionDisplay() {
     final InvalidationListener _function = (Observable it) -> {
       this.boids_vision_display.setText(String.format("%.0f", Double.valueOf(this.boids_vision_input.getValue())));
@@ -609,10 +618,6 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_quantity_display.setTextFill(normalTextColor);
       this.boids_quantity_min.setTextFill(normalTextColor);
       this.boids_quantity_max.setTextFill(normalTextColor);
-      this.map_selection_label.setTextFill(normalTextColor);
-      this.map_selection_display.setTextFill(normalTextColor);
-      this.map_min.setTextFill(normalTextColor);
-      this.map_max.setTextFill(normalTextColor);
       this.boids_population_label.setTextFill(normalTextColor);
       this.decrement_boids_population.setTextFill(normalTextColor);
       this.increment_boids_population.setTextFill(normalTextColor);
@@ -635,10 +640,29 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boid_angle.setTextFill(Color.rgb(0, 0, 0, 0.7));
       this.boid_distance.setTextFill(Color.rgb(0, 0, 0, 0.7));
       this.boid_new_vitesse.setTextFill(Color.rgb(0, 0, 0, 0.7));
+      this.boid_position.setTextFill(Color.rgb(0, 0, 0, 0.7));
       this.toggle_night_mode.setTextFill(Color.rgb(0, 0, 0, 0.3));
       this.toggle_perception.setTextFill(Color.rgb(0, 0, 0, 0.3));
       this.hide_infos.setTextFill(Color.rgb(0, 0, 0, 0.3));
       this.start_button.setTextFill(normalTextColor);
+      if ((this.selectedMap != 1)) {
+        this.preview_map_1_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+        this.map_label_1.setTextFill(normalTextColor);
+      } else {
+        if ((this.selectedMap == 1)) {
+          this.preview_map_1_border.setStroke(Color.rgb(0, 0, 0));
+          this.map_label_1.setTextFill(Color.rgb(0, 0, 0));
+        }
+      }
+      if ((this.selectedMap != 2)) {
+        this.preview_map_2_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+        this.map_label_2.setTextFill(normalTextColor);
+      } else {
+        if ((this.selectedMap == 2)) {
+          this.preview_map_2_border.setStroke(Color.rgb(0, 0, 0));
+          this.map_label_2.setTextFill(Color.rgb(0, 0, 0));
+        }
+      }
     } else {
       this.nightMode = Boolean.valueOf(true);
       this.night_mode_indicator.setFill(Color.rgb(0, 204, 99));
@@ -653,10 +677,6 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_quantity_display.setTextFill(nightTextColor);
       this.boids_quantity_min.setTextFill(nightTextColor);
       this.boids_quantity_max.setTextFill(nightTextColor);
-      this.map_selection_label.setTextFill(nightTextColor);
-      this.map_selection_display.setTextFill(nightTextColor);
-      this.map_min.setTextFill(nightTextColor);
-      this.map_max.setTextFill(nightTextColor);
       this.boids_population_label.setTextFill(nightTextColor);
       this.decrement_boids_population.setTextFill(nightTextColor);
       this.increment_boids_population.setTextFill(nightTextColor);
@@ -679,10 +699,29 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boid_angle.setTextFill(Color.rgb(191, 191, 191, 0.7));
       this.boid_distance.setTextFill(Color.rgb(191, 191, 191, 0.7));
       this.boid_new_vitesse.setTextFill(Color.rgb(191, 191, 191, 0.7));
+      this.boid_position.setTextFill(Color.rgb(191, 191, 191, 0.7));
       this.toggle_night_mode.setTextFill(Color.rgb(191, 191, 191, 0.3));
       this.toggle_perception.setTextFill(Color.rgb(191, 191, 191, 0.3));
       this.hide_infos.setTextFill(Color.rgb(191, 191, 191, 0.3));
       this.start_button.setTextFill(nightTextColor);
+      if ((this.selectedMap != 1)) {
+        this.preview_map_1_border.setStroke(nightTextColor);
+        this.map_label_1.setTextFill(nightTextColor);
+      } else {
+        if ((this.selectedMap == 1)) {
+          this.preview_map_1_border.setStroke(Color.rgb(235, 221, 26));
+          this.map_label_1.setTextFill(Color.rgb(235, 221, 26));
+        }
+      }
+      if ((this.selectedMap != 2)) {
+        this.preview_map_2_border.setStroke(nightTextColor);
+        this.map_label_2.setTextFill(nightTextColor);
+      } else {
+        if ((this.selectedMap == 2)) {
+          this.preview_map_2_border.setStroke(Color.rgb(235, 221, 26));
+          this.map_label_2.setTextFill(Color.rgb(235, 221, 26));
+        }
+      }
     }
   }
   
@@ -898,30 +937,23 @@ public class BoidsFxViewerController extends FxViewerController {
     } else {
       this.boids_quantity_input.setDisable(true);
     }
-    boolean _isDisable_2 = this.map_selection_input.isDisable();
+    boolean _isDisable_2 = this.boids_population_input.isDisable();
     boolean _equals_2 = (_isDisable_2 == true);
     if (_equals_2) {
-      this.map_selection_input.setDisable(false);
-    } else {
-      this.map_selection_input.setDisable(true);
-    }
-    boolean _isDisable_3 = this.boids_population_input.isDisable();
-    boolean _equals_3 = (_isDisable_3 == true);
-    if (_equals_3) {
       this.boids_population_input.setDisable(false);
     } else {
       this.boids_population_input.setDisable(true);
     }
-    boolean _isDisable_4 = this.boids_vision_input.isDisable();
-    boolean _equals_4 = (_isDisable_4 == true);
-    if (_equals_4) {
+    boolean _isDisable_3 = this.boids_vision_input.isDisable();
+    boolean _equals_3 = (_isDisable_3 == true);
+    if (_equals_3) {
       this.boids_vision_input.setDisable(false);
     } else {
       this.boids_vision_input.setDisable(true);
     }
-    boolean _isDisable_5 = this.boids_distance_deplacement_input.isDisable();
-    boolean _equals_5 = (_isDisable_5 == true);
-    if (_equals_5) {
+    boolean _isDisable_4 = this.boids_distance_deplacement_input.isDisable();
+    boolean _equals_4 = (_isDisable_4 == true);
+    if (_equals_4) {
       this.boids_distance_deplacement_input.setDisable(false);
     } else {
       this.boids_distance_deplacement_input.setDisable(true);
@@ -1191,53 +1223,6 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   /**
-   * MAP GLOWING EFFECT
-   */
-  @FXML
-  protected void mapMinGlow() {
-    if ((this.nightMode).booleanValue()) {
-      this.map_min.setTextFill(Color.rgb(235, 221, 26));
-    } else {
-      this.map_min.setTextFill(Color.rgb(0, 0, 0));
-    }
-    Glow glowEffect = new Glow();
-    glowEffect.setLevel(0.8);
-    this.map_min.setEffect(glowEffect);
-  }
-  
-  @FXML
-  protected void mapMaxGlow() {
-    if ((this.nightMode).booleanValue()) {
-      this.map_max.setTextFill(Color.rgb(235, 221, 26));
-    } else {
-      this.map_max.setTextFill(Color.rgb(0, 0, 0));
-    }
-    Glow glowEffect = new Glow();
-    glowEffect.setLevel(0.8);
-    this.map_max.setEffect(glowEffect);
-  }
-  
-  @FXML
-  protected void mapMinReset() {
-    if ((this.nightMode).booleanValue()) {
-      this.map_min.setTextFill(Color.rgb(191, 191, 191));
-    } else {
-      this.map_min.setTextFill(Color.rgb(0, 0, 0));
-    }
-    this.map_min.setEffect(null);
-  }
-  
-  @FXML
-  protected void mapMaxReset() {
-    if ((this.nightMode).booleanValue()) {
-      this.map_max.setTextFill(Color.rgb(191, 191, 191));
-    } else {
-      this.map_max.setTextFill(Color.rgb(0, 0, 0));
-    }
-    this.map_max.setEffect(null);
-  }
-  
-  /**
    * MAX/MIN values fast setters
    */
   @FXML
@@ -1277,15 +1262,125 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @FXML
-  protected void mapSetToMin() {
-    this.map_selection_input.setValue(Integer.parseInt(this.map_min.getText()));
-    this.map_selection_display.setText(this.map_min.getText());
+  protected void previewMap1Glow() {
+    if ((this.selectedMap != 1)) {
+      if ((this.nightMode).booleanValue()) {
+        this.preview_map_1_border.setStroke(Color.rgb(235, 221, 26, 0.6));
+        this.map_label_1.setTextFill(Color.rgb(235, 221, 26, 0.6));
+      } else {
+        this.preview_map_1_border.setStroke(Color.rgb(0, 0, 0, 0.35));
+        this.map_label_1.setTextFill(Color.rgb(0, 0, 0, 0.6));
+      }
+      Glow glowEffect = new Glow();
+      glowEffect.setLevel(1);
+      this.preview_map_1_border.setEffect(glowEffect);
+      this.map_label_1.setEffect(glowEffect);
+    }
   }
   
   @FXML
-  protected void mapSetToMax() {
-    this.map_selection_input.setValue(Integer.parseInt(this.map_max.getText()));
-    this.map_selection_display.setText(this.map_max.getText());
+  protected void previewMap1Reset() {
+    if ((this.selectedMap != 1)) {
+      if ((this.nightMode).booleanValue()) {
+        this.preview_map_1_border.setStroke(Color.rgb(191, 191, 191));
+        this.map_label_1.setTextFill(Color.rgb(191, 191, 191));
+      } else {
+        this.preview_map_1_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+        this.map_label_1.setTextFill(Color.rgb(0, 0, 0, 0.6));
+      }
+      this.preview_map_1_border.setEffect(null);
+      this.map_label_1.setEffect(null);
+    }
+  }
+  
+  @FXML
+  protected void previewMap2Glow() {
+    if ((this.selectedMap != 2)) {
+      if ((this.nightMode).booleanValue()) {
+        this.preview_map_2_border.setStroke(Color.rgb(235, 221, 26, 0.6));
+        this.map_label_2.setTextFill(Color.rgb(235, 221, 26, 0.6));
+      } else {
+        this.preview_map_2_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+        this.map_label_2.setTextFill(Color.rgb(0, 0, 0, 0.6));
+      }
+      Glow glowEffect = new Glow();
+      glowEffect.setLevel(1);
+      this.preview_map_2_border.setEffect(glowEffect);
+      this.map_label_2.setEffect(glowEffect);
+    }
+  }
+  
+  @FXML
+  protected void previewMap2Reset() {
+    if ((this.selectedMap != 2)) {
+      if ((this.nightMode).booleanValue()) {
+        this.preview_map_2_border.setStroke(Color.rgb(191, 191, 191));
+        this.map_label_2.setTextFill(Color.rgb(191, 191, 191));
+      } else {
+        this.preview_map_2_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+        this.map_label_2.setTextFill(Color.rgb(0, 0, 0, 0.6));
+      }
+      this.preview_map_2_border.setEffect(null);
+      this.map_label_2.setEffect(null);
+    }
+  }
+  
+  @FXML
+  protected void selectMap(final MouseEvent e) {
+    String _substring = e.getSource().toString().substring(0, 1);
+    boolean _equals = Objects.equal(_substring, "I");
+    if (_equals) {
+      Object _source = e.getSource();
+      Object _source_1 = e.getSource();
+      int _length = ((ImageView) _source_1).getId().length();
+      int _minus = (_length - 1);
+      this.selectedMap = Integer.parseInt(((ImageView) _source).getId().substring(_minus));
+    } else {
+      Object _source_2 = e.getSource();
+      Object _source_3 = e.getSource();
+      int _length_1 = ((Label) _source_3).getId().length();
+      int _minus_1 = (_length_1 - 1);
+      this.selectedMap = Integer.parseInt(((Label) _source_2).getId().substring(_minus_1));
+    }
+    this.resetMaps();
+    final int _switchValue = this.selectedMap;
+    switch (_switchValue) {
+      case 1:
+        if ((this.nightMode).booleanValue()) {
+          this.preview_map_1_border.setStroke(Color.rgb(235, 221, 26));
+          this.map_label_1.setTextFill(Color.rgb(235, 221, 26));
+        } else {
+          this.preview_map_1_border.setStroke(Color.rgb(0, 0, 0));
+          this.map_label_1.setTextFill(Color.rgb(0, 0, 0));
+        }
+        Glow glowEffect = new Glow();
+        glowEffect.setLevel(0.8);
+        this.preview_map_1_border.setEffect(glowEffect);
+        this.map_label_1.setEffect(glowEffect);
+        this.tick_map_1.setVisible(true);
+        break;
+      case 2:
+        if ((this.nightMode).booleanValue()) {
+          this.preview_map_2_border.setStroke(Color.rgb(235, 221, 26));
+          this.map_label_2.setTextFill(Color.rgb(235, 221, 26));
+        } else {
+          this.preview_map_2_border.setStroke(Color.rgb(0, 0, 0));
+          this.map_label_2.setTextFill(Color.rgb(0, 0, 0));
+        }
+        Glow glowEffect_1 = new Glow();
+        glowEffect_1.setLevel(0.8);
+        this.preview_map_2_border.setEffect(glowEffect_1);
+        this.map_label_2.setEffect(glowEffect_1);
+        this.tick_map_2.setVisible(true);
+        break;
+    }
+  }
+  
+  protected void resetMaps() {
+    this.previewMap1Reset();
+    this.previewMap2Reset();
+    this.tick_map_1.setVisible(false);
+    this.tick_map_2.setVisible(false);
   }
   
   @Override
@@ -1302,6 +1397,8 @@ public class BoidsFxViewerController extends FxViewerController {
     if (other.launched != this.launched)
       return false;
     if (other.mapCreated != this.mapCreated)
+      return false;
+    if (other.selectedMap != this.selectedMap)
       return false;
     if (other.nightMode != this.nightMode)
       return false;
@@ -1321,6 +1418,7 @@ public class BoidsFxViewerController extends FxViewerController {
     final int prime = 31;
     result = prime * result + (this.launched ? 1231 : 1237);
     result = prime * result + (this.mapCreated ? 1231 : 1237);
+    result = prime * result + this.selectedMap;
     result = prime * result + (this.nightMode ? 1231 : 1237);
     result = prime * result + (this.togglePerception ? 1231 : 1237);
     result = prime * result + java.util.Objects.hashCode(this.currentBoid);

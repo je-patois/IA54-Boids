@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.shape.*?>
@@ -11,104 +12,139 @@
 
 <Pane fx:id="main_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMousePressed="#changeFocus" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgb(34, 34, 34);" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.boids.gui.BoidsFxViewerController">
    <children>
-      <Pane fx:id="UI_pane" layoutX="1006.0" layoutY="43.0" prefHeight="472.0" prefWidth="221.0">
+      <Pane fx:id="UI_pane" layoutX="46.0" layoutY="43.0" prefHeight="606.0" prefWidth="1181.0">
          <children>
-            <ScrollBar fx:id="map_selection_input" layoutX="20.0" layoutY="383.0" max="2.0" min="1.0" onMouseEntered="#actionMapSelectionDisplay" prefHeight="18.0" prefWidth="173.0" value="1.0" />
-            <Label fx:id="map_selection_label" alignment="CENTER" layoutX="-2.0" layoutY="356.0" prefHeight="27.0" prefWidth="221.0" text="%MapSelectionLabel" textFill="#bfbfbf">
+            <Pane fx:id="simulation_parameters_pane" layoutX="891.0" layoutY="14.0" prefHeight="372.0" prefWidth="284.0">
+               <children>
+            			   
+                  <Label fx:id="boids_vision_label" alignment="CENTER" layoutX="32.0" layoutY="205.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsVisionLabel" textFill="#bfbfbf">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <ScrollBar fx:id="boids_vision_input" layoutX="54.0" layoutY="232.0" max="180.0" onMouseEntered="#actionBoidsVisionDisplay" prefHeight="18.0" prefWidth="173.0" value="30.0" />
+                  <Label fx:id="boids_vision_display" alignment="CENTER" layoutX="54.0" layoutY="252.0" prefHeight="21.0" prefWidth="173.0" text="30" textFill="#bfbfbf">
+            				<font>
+            					  <Font size="16.0" />
+            				</font>
+            			</Label>
+                  
+            			<Label fx:id="boids_quantity_label" alignment="CENTER" layoutX="30.0" layoutY="129.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsQuantityLabel" textFill="#bfbfbf">
+            			<font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+            			<ScrollBar fx:id="boids_quantity_input" layoutX="51.0" layoutY="153.0" min="1.0" onMouseEntered="#actionBoidsQuantityDisplay" prefHeight="18.0" prefWidth="173.0" value="1.0" />
+                  <Label fx:id="boids_quantity_display" alignment="CENTER" layoutX="51.0" layoutY="171.0" prefHeight="25.0" prefWidth="173.0" text="1" textFill="#bfbfbf">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+            			   
+                  <Label fx:id="boids_distance_deplacement_label" alignment="CENTER" layoutX="33.0" layoutY="284.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsDistanceDeplacementLabel" textFill="#bfbfbf">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <ScrollBar fx:id="boids_distance_deplacement_input" layoutX="54.0" layoutY="309.0" max="400.0" min="20.0" onMouseEntered="#actionBoidsDistanceDeplacementDisplay" prefHeight="18.0" prefWidth="173.0" unitIncrement="10.0" value="20.0" />
+            			<Label fx:id="boids_distance_deplacement_display" alignment="CENTER" layoutX="54.0" layoutY="326.0" prefHeight="21.0" prefWidth="173.0" text="20" textFill="#bfbfbf">
+            				<font>
+            					  <Font size="16.0" />
+            				</font>
+            			</Label>
+                  <Label fx:id="boids_quantity_min" layoutX="37.0" layoutY="156.0" onMouseEntered="#boidsQuantityMinGlow" onMouseExited="#boidsQuantityMinReset" onMousePressed="#boidsQuantitySetToMin" text="1" textFill="#bfbfbf">
+                     <font>
+                        <Font size="8.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="boids_quantity_max" layoutX="231.0" layoutY="156.0" onMouseEntered="#boidsQuantityMaxGlow" onMouseExited="#boidsQuantityMaxReset" onMousePressed="#boidsQuantitySetToMax" text="100" textFill="#bfbfbf">
+                     <font>
+                        <Font size="8.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="boids_vision_min" layoutX="40.0" layoutY="235.0" onMouseEntered="#boidsVisionMinGlow" onMouseExited="#boidsVisionMinReset" onMousePressed="#boidsVisionSetToMin" text="0" textFill="#bfbfbf">
+                     <font>
+                        <Font size="8.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="boids_vision_max" layoutX="234.0" layoutY="235.0" onMouseEntered="#boidsVisionMaxGlow" onMouseExited="#boidsVisionMaxReset" onMousePressed="#boidsVisionSetToMax" text="180" textFill="#bfbfbf">
+                     <font>
+                        <Font size="8.0" />
+                     </font>
+                  </Label>
+            			<Label fx:id="boids_distance_deplacement_min" layoutX="40.0" layoutY="312.0" onMouseEntered="#boidsDistanceVisionMinGlow" onMouseExited="#boidsDistanceVisionMinReset" onMousePressed="#boidsDistanceVisionSetToMin" text="20" textFill="#bfbfbf">
+                     <font>
+                        <Font size="8.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="boids_distance_deplacement_max" layoutX="234.0" layoutY="312.0" onMouseEntered="#boidsDistanceVisionMaxGlow" onMouseExited="#boidsDistanceVisionMaxReset" onMousePressed="#boidsDistanceVisionSetToMax" text="400" textFill="#bfbfbf">
+                     <font>
+                        <Font size="8.0" />
+                     </font>
+                  </Label>
+                  <Circle fx:id="boids_population_decrement_circle" fill="#1f93ff00" layoutX="53.0" layoutY="93.0" onMouseEntered="#decrementBoidsPopulationGlow" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
+                  <Circle fx:id="boids_population_increment_circle" fill="#1f93ff00" layoutX="233.0" layoutY="93.0" onMouseEntered="#incrementBoidsPopulationGlow" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
+                  <TextField fx:id="boids_population_input" alignment="CENTER" layoutX="70.0" layoutY="77.0" onKeyReleased="#updateBoidsPopulation" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" onMousePressed="#resetBoidsPopulation" prefHeight="31.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-text-fill: rgb(191, 191, 191);" text="1" />
+                  <Label fx:id="decrement_boids_population" layoutX="50.0" layoutY="82.0" onMouseEntered="#decrementBoidsPopulationGlow" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" text="-" textFill="#bfbfbf" />
+                  <Label fx:id="increment_boids_population" layoutX="228.0" layoutY="82.0" onMouseEntered="#incrementBoidsPopulationGlow" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" text="+" textFill="#bfbfbf" />
+            			   
+                              <Label fx:id="boids_population_label" alignment="CENTER" layoutX="34.0" layoutY="50.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsPopulationQuantityLabel" textFill="#bfbfbf">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Line fx:id="boids_population_line" endX="50.0" layoutX="169.0" layoutY="104.0" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" startX="-100.0" stroke="#bfbfbf" />
+                  <Label alignment="CENTER" layoutX="1.0" layoutY="-4.0" prefHeight="37.0" prefWidth="284.0" text="%SettingsLabel" textFill="#00b0f7">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Pane fx:id="map_selection_pane" layoutX="1.0" layoutY="2.0" prefHeight="305.0" prefWidth="886.0">
+               <children>
+                  <Rectangle fx:id="preview_map_1_border" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="179.0" layoutX="55.0" layoutY="79.0" stroke="#ebdd1a" strokeType="INSIDE" strokeWidth="5.0" width="319.0">
+                     <effect>
+                        <Glow level="0.8" />
+                     </effect>
+                  </Rectangle>
+                  <ImageView fx:id="preview_map_1" fitHeight="212.0" fitWidth="319.0" layoutX="55.0" layoutY="79.0" onMouseEntered="#previewMap1Glow" onMouseExited="#previewMap1Reset" onMousePressed="#selectMap" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../map/Preview%20map%201%20-%20No%20Border.png" />
+                     </image>
+                  </ImageView>
+                  <Rectangle fx:id="preview_map_2_border" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="179.0" layoutX="507.0" layoutY="79.0" stroke="#bfbfbf" strokeType="INSIDE" strokeWidth="5.0" width="319.0" />
+                  <ImageView fx:id="preview_map_2" fitHeight="212.0" fitWidth="319.0" layoutX="507.0" layoutY="79.0" onMouseEntered="#previewMap2Glow" onMouseExited="#previewMap2Reset" onMousePressed="#selectMap" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../map/Preview%20map%202%20-%20No%20Border.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" layoutY="6.0" prefHeight="36.0" prefWidth="886.0" text="%MapSelectionLabel" textFill="#00b0f0">
+                     <font>
+                        <Font name="System Bold" size="25.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="map_label_1" alignment="CENTER" layoutX="54.0" layoutY="263.0" onMouseEntered="#previewMap1Glow" onMouseExited="#previewMap1Reset" onMousePressed="#selectMap" prefHeight="21.0" prefWidth="319.0" text="Map 1 - Vide" textFill="#ebdd1a">
+                     <effect>
+                        <Glow level="0.8" />
+                     </effect>
+                  </Label>
+                  <Label fx:id="map_label_2" alignment="CENTER" layoutX="508.0" layoutY="263.0" onMouseEntered="#previewMap2Glow" onMouseExited="#previewMap2Reset" onMousePressed="#selectMap" prefHeight="21.0" prefWidth="319.0" text="Map 2 - Obstacles" textFill="#bfbfbf" />
+                  <ImageView fx:id="tick_map_1" fitHeight="51.0" fitWidth="50.0" layoutX="323.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../map/Tick.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="tick_map_2" fitHeight="51.0" fitWidth="50.0" layoutX="776.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                     <image>
+                        <Image url="@../map/Tick.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+            <Button fx:id="start_button" layoutX="972.0" layoutY="443.0" mnemonicParsing="false" onAction="#startSimu" onMouseEntered="#startButtonGlow" onMouseExited="#startButtonReset" prefHeight="51.0" prefWidth="123.0" style="-fx-background-color: transparent;" text="Start" textAlignment="CENTER" textFill="#bfbfbf">
                <font>
-                  <Font size="18.0" />
-               </font></Label>
-            <Label fx:id="map_selection_display" alignment="CENTER" layoutX="20.0" layoutY="401.0" prefHeight="25.0" prefWidth="173.0" text="1" textFill="#bfbfbf">
-               <font>
-                  <Font size="16.0" />
-               </font></Label>
-			   
-            <Label fx:id="boids_vision_label" alignment="CENTER" layoutX="-2.0" layoutY="189.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsVisionLabel" textFill="#bfbfbf">
-               <font>
-                  <Font size="18.0" />
-               </font></Label>
-            <ScrollBar fx:id="boids_vision_input" layoutX="20.0" layoutY="216.0" max="180.0" onMouseEntered="#actionBoidsVisionDisplay" prefHeight="18.0" prefWidth="173.0" value="30.0" />
-            <Label fx:id="boids_vision_display" alignment="CENTER" layoutX="20.0" layoutY="236.0" prefHeight="21.0" prefWidth="173.0" text="30" textFill="#bfbfbf">
-				<font>
-					  <Font size="16.0" />
-				</font>
-			</Label>
-            
-			<Label fx:id="boids_quantity_label" alignment="CENTER" layoutX="-4.0" layoutY="113.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsQuantityLabel" textFill="#bfbfbf">
-			<font>
-                  <Font size="18.0" />
-               </font></Label>
-			<ScrollBar fx:id="boids_quantity_input" layoutX="17.0" layoutY="137.0" min="1.0" onMouseEntered="#actionBoidsQuantityDisplay" prefHeight="18.0" prefWidth="173.0" value="1.0" />
-            <Label fx:id="boids_quantity_display" alignment="CENTER" layoutX="17.0" layoutY="155.0" prefHeight="25.0" prefWidth="173.0" text="1" textFill="#bfbfbf">
-               <font>
-                  <Font size="16.0" />
-               </font></Label>
-			   
-            <Label fx:id="boids_distance_deplacement_label" alignment="CENTER" layoutX="-1.0" layoutY="268.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsDistanceDeplacementLabel" textFill="#bfbfbf">
-               <font>
-                  <Font size="18.0" />
-               </font></Label>
-            <ScrollBar fx:id="boids_distance_deplacement_input" layoutX="20.0" layoutY="293.0" max="400.0" min="20.0" onMouseEntered="#actionBoidsDistanceDeplacementDisplay" prefHeight="18.0" prefWidth="173.0" unitIncrement="10.0" value="20.0" />
-			<Label fx:id="boids_distance_deplacement_display" alignment="CENTER" layoutX="20.0" layoutY="310.0" prefHeight="21.0" prefWidth="173.0" text="20" textFill="#bfbfbf">
-				<font>
-					  <Font size="16.0" />
-				</font>
-			</Label>
-            <Label fx:id="boids_quantity_min" layoutX="3.0" layoutY="140.0" onMouseEntered="#boidsQuantityMinGlow" onMouseExited="#boidsQuantityMinReset" onMousePressed="#boidsQuantitySetToMin" text="1" textFill="#bfbfbf">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-            <Label fx:id="boids_quantity_max" layoutX="197.0" layoutY="140.0" onMouseEntered="#boidsQuantityMaxGlow" onMouseExited="#boidsQuantityMaxReset" onMousePressed="#boidsQuantitySetToMax" text="100" textFill="#bfbfbf">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-            <Label fx:id="boids_vision_min" layoutX="6.0" layoutY="219.0" onMouseEntered="#boidsVisionMinGlow" onMouseExited="#boidsVisionMinReset" onMousePressed="#boidsVisionSetToMin" text="0" textFill="#bfbfbf">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-            <Label fx:id="boids_vision_max" layoutX="200.0" layoutY="219.0" onMouseEntered="#boidsVisionMaxGlow" onMouseExited="#boidsVisionMaxReset" onMousePressed="#boidsVisionSetToMax" text="180" textFill="#bfbfbf">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-            <Label fx:id="map_min" layoutX="6.0" layoutY="386.0" onMouseEntered="#mapMinGlow" onMouseExited="#mapMinReset" onMousePressed="#mapSetToMin" text="1" textFill="#bfbfbf">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-            <Label fx:id="map_max" layoutX="200.0" layoutY="386.0" onMouseEntered="#mapMaxGlow" onMouseExited="#mapMaxReset" onMousePressed="#mapSetToMax" text="2" textFill="#bfbfbf">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-			<Label fx:id="boids_distance_deplacement_min" layoutX="6.0" layoutY="296.0" onMouseEntered="#boidsDistanceVisionMinGlow" onMouseExited="#boidsDistanceVisionMinReset" onMousePressed="#boidsDistanceVisionSetToMin" text="20" textFill="#bfbfbf">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-            <Label fx:id="boids_distance_deplacement_max" layoutX="200.0" layoutY="296.0" onMouseEntered="#boidsDistanceVisionMaxGlow" onMouseExited="#boidsDistanceVisionMaxReset" onMousePressed="#boidsDistanceVisionSetToMax" text="400" textFill="#bfbfbf">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-            <Circle fx:id="boids_population_decrement_circle" fill="#1f93ff00" layoutX="19.0" layoutY="77.0" onMouseEntered="#decrementBoidsPopulationGlow" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
-            <Circle fx:id="boids_population_increment_circle" fill="#1f93ff00" layoutX="199.0" layoutY="77.0" onMouseEntered="#incrementBoidsPopulationGlow" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
-            <TextField fx:id="boids_population_input" alignment="CENTER" layoutX="36.0" layoutY="61.0" onKeyReleased="#updateBoidsPopulation" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" onMousePressed="#resetBoidsPopulation" prefHeight="31.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-text-fill: rgb(191, 191, 191);" text="1" />
-            <Label fx:id="decrement_boids_population" layoutX="16.0" layoutY="66.0" onMouseEntered="#decrementBoidsPopulationGlow" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" text="-" textFill="#bfbfbf" />
-            <Label fx:id="increment_boids_population" layoutX="194.0" layoutY="66.0" onMouseEntered="#incrementBoidsPopulationGlow" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" text="+" textFill="#bfbfbf" />
-      			   
-                  <Label fx:id="boids_population_label" alignment="CENTER" layoutY="34.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsPopulationQuantityLabel" textFill="#bfbfbf">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Line fx:id="boids_population_line" endX="50.0" layoutX="135.0" layoutY="88.0" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" startX="-100.0" stroke="#bfbfbf" />
-            <Button fx:id="start_button" layoutX="73.0" layoutY="424.0" mnemonicParsing="false" onAction="#startSimu" onMouseEntered="#startButtonGlow" onMouseExited="#startButtonReset" prefHeight="21.0" prefWidth="74.0" style="-fx-background-color: transparent;" text="Start" textAlignment="CENTER" textFill="#bfbfbf">
-               <font>
-                  <Font name="System Bold" size="16.0" />
+                  <Font name="System Bold" size="24.0" />
                </font>
             </Button>
          </children>
@@ -133,14 +169,14 @@
       </Polygon>
       <Pane fx:id="boids_infos_pane" layoutX="14.0" layoutY="17.0" prefHeight="148.0" prefWidth="433.0" visible="false">
          <children>
-            <Label fx:id="boid_vitesse" layoutX="22.0" layoutY="14.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
-            <Label fx:id="boid_group_vitesse" layoutX="22.0" layoutY="35.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
-            <Label fx:id="boid_new_vitesse" layoutX="215.0" layoutY="14.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
-            <Label fx:id="boid_angle" layoutX="22.0" layoutY="56.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
-            <Label fx:id="boid_masse" layoutX="215.0" layoutY="35.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
-            <Label fx:id="boid_distance" layoutX="215.0" layoutY="56.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
-            <Label fx:id="boid_group" layoutX="22.0" layoutY="77.0" prefHeight="21.0" prefWidth="173.0" textFill="#bfbfbf" />
-            <Label fx:id="boid_position" layoutX="215.0" layoutY="77.0" prefHeight="21.0" prefWidth="221.0" textFill="#bfbfbf" />
+            <Label fx:id="boid_vitesse" layoutX="22.0" layoutY="14.0" prefHeight="21.0" prefWidth="173.0" textFill="#bdbdbdb2" />
+            <Label fx:id="boid_group_vitesse" layoutX="22.0" layoutY="35.0" prefHeight="21.0" prefWidth="173.0" textFill="#bdbdbdb2" />
+            <Label fx:id="boid_new_vitesse" layoutX="215.0" layoutY="14.0" prefHeight="21.0" prefWidth="173.0" textFill="#bdbdbdb2" />
+            <Label fx:id="boid_angle" layoutX="22.0" layoutY="56.0" prefHeight="21.0" prefWidth="173.0" textFill="#bdbdbdb2" />
+            <Label fx:id="boid_masse" layoutX="215.0" layoutY="35.0" prefHeight="21.0" prefWidth="173.0" textFill="#bdbdbdb2" />
+            <Label fx:id="boid_distance" layoutX="215.0" layoutY="56.0" prefHeight="21.0" prefWidth="173.0" textFill="#bdbdbdb2" />
+            <Label fx:id="boid_group" layoutX="22.0" layoutY="77.0" prefHeight="21.0" prefWidth="173.0" textFill="#bdbdbdb2" />
+            <Label fx:id="boid_position" layoutX="215.0" layoutY="77.0" prefHeight="21.0" prefWidth="221.0" textFill="#bdbdbdb2" />
             <Button fx:id="hide_infos" layoutX="19.0" layoutY="108.0" mnemonicParsing="false" onAction="#hideInfosVisibility" onMouseEntered="#infosButtonGlow" onMouseExited="#infosButtonReset" prefHeight="31.0" prefWidth="353.0" style="-fx-background-color: transparent;" text="Cacher" textFill="#bdbdbd4d" />
          </children>
       </Pane>

@@ -40,6 +40,7 @@ import javafx.scene.control.TextField
 import javafx.scene.shape.Line
 import java.util.concurrent.TimeUnit
 import java.util.UUID
+import javafx.scene.image.ImageView
 
 class BoidsFxViewerController extends FxViewerController  {
 
@@ -60,28 +61,23 @@ class BoidsFxViewerController extends FxViewerController  {
 
 	// Titres
 	@FXML var boids_quantity_label : Label
-	@FXML var map_selection_label : Label
 	@FXML var boids_population_label : Label
 	@FXML var boids_vision_label : Label
 	@FXML var boids_distance_deplacement_label : Label
 
 	// Input
 	@FXML var boids_quantity_input : ScrollBar
-	@FXML var map_selection_input : ScrollBar
 	@FXML var boids_population_input : TextField
 	@FXML var boids_vision_input : ScrollBar
 	@FXML var boids_distance_deplacement_input : ScrollBar
 
 	// Valeurs
 	@FXML var boids_quantity_display : Label
-	@FXML var map_selection_display : Label
 	@FXML var boids_vision_display : Label
 	@FXML var boids_distance_deplacement_display : Label
 	
 	@FXML var boids_quantity_min : Label
 	@FXML var boids_quantity_max : Label
-	@FXML var map_min : Label
-	@FXML var map_max : Label
 	@FXML var boids_vision_min : Label
 	@FXML var boids_vision_max : Label
 	@FXML var boids_distance_deplacement_min : Label
@@ -105,6 +101,20 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var decrement_boids_population : Label
 	@FXML var boids_population_increment_circle : Circle
 	@FXML var boids_population_decrement_circle : Circle
+	
+	@FXML var preview_map_1 : ImageView
+	@FXML var preview_map_2 : ImageView
+	@FXML var preview_map_1_border : Rectangle
+	@FXML var preview_map_2_border : Rectangle
+	@FXML var map_label_1 : Label
+	@FXML var map_label_2 : Label
+	
+	@FXML var simulation_parameters_pane : Pane
+	@FXML var map_selection_pane : Pane
+	@FXML var tick_map_1 : ImageView
+	@FXML var tick_map_2 : ImageView
+	
+	var selectedMap : int = 1
 
 	var polygons : List<Polygon>
 	var polygonsCoordinates : List<List<Coordinates>>
@@ -119,7 +129,7 @@ class BoidsFxViewerController extends FxViewerController  {
 	}
 	
 	def getMapSelection() : int {
-		map_selection_input.value as int
+		return this.selectedMap
 	}
 	
 	def getBoidsPopulation() : int {
@@ -331,12 +341,6 @@ class BoidsFxViewerController extends FxViewerController  {
 		];
 	}
 
-	@FXML protected def actionMapSelectionDisplay() : void {
-		map_selection_input.valueProperty().addListener [
-			map_selection_display.setText(String.format("%.0f", map_selection_input.getValue()));
-		];
-	}
-
 	@FXML protected def actionBoidsVisionDisplay() : void {
 		boids_vision_input.valueProperty().addListener [
 			boids_vision_display.setText(String.format("%.0f", boids_vision_input.getValue()));
@@ -401,7 +405,6 @@ class BoidsFxViewerController extends FxViewerController  {
 			var normalTextColor : Color = Color.BLACK
 			main_pane.background = new Background(new BackgroundFill(Color.rgb(244, 244, 244), CornerRadii.EMPTY, Insets.EMPTY))
 			boids_quantity_label.textFill = normalTextColor; boids_quantity_display.textFill = normalTextColor; boids_quantity_min.textFill = normalTextColor; boids_quantity_max.textFill = normalTextColor
-			map_selection_label.textFill = normalTextColor;	map_selection_display.textFill = normalTextColor; map_min.textFill = normalTextColor; map_max.textFill = normalTextColor
 			boids_population_label.textFill = normalTextColor; decrement_boids_population.textFill = normalTextColor; increment_boids_population.textFill = normalTextColor; boids_population_decrement_circle.stroke = normalTextColor; boids_population_increment_circle.stroke = normalTextColor; boids_population_line.stroke = normalTextColor; boids_population_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
 			boids_vision_label.textFill = normalTextColor; boids_vision_display.textFill = normalTextColor;	boids_vision_min.textFill = normalTextColor; boids_vision_max.textFill = normalTextColor
 			
@@ -417,10 +420,28 @@ class BoidsFxViewerController extends FxViewerController  {
 			boid_angle.textFill = Color.rgb(0, 0, 0, 0.7)
 			boid_distance.textFill = Color.rgb(0, 0, 0, 0.7)
 			boid_new_vitesse.textFill = Color.rgb(0, 0, 0, 0.7)
+			boid_position.textFill = Color.rgb(0, 0, 0, 0.7)
 			toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
 			toggle_perception.textFill = Color.rgb(0, 0, 0, 0.3)
 			hide_infos.textFill = Color.rgb(0, 0, 0, 0.3)
 			start_button.textFill = normalTextColor
+
+			if(this.selectedMap != 1) {
+				preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_1.textFill = normalTextColor
+			} else if (this.selectedMap == 1) {
+				preview_map_1_border.stroke = Color.rgb(0, 0, 0)
+				map_label_1.textFill = Color.rgb(0, 0, 0)
+			}
+			
+			if(this.selectedMap != 2) {
+				preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_2.textFill = normalTextColor
+			} else if (this.selectedMap == 2) {
+				preview_map_2_border.stroke = Color.rgb(0, 0, 0)
+				map_label_2.textFill = Color.rgb(0, 0, 0)
+			}
+			
 		} else {
 			nightMode = true
 			night_mode_indicator.fill = Color.rgb(0, 204, 99)
@@ -429,7 +450,6 @@ class BoidsFxViewerController extends FxViewerController  {
 			var nightTextColor : Color = Color.rgb(191, 191, 191)
 			main_pane.background = new Background(new BackgroundFill(Color.rgb(34, 34, 34), CornerRadii.EMPTY, Insets.EMPTY))
 			boids_quantity_label.textFill = nightTextColor;	boids_quantity_display.textFill = nightTextColor; boids_quantity_min.textFill = nightTextColor;	boids_quantity_max.textFill = nightTextColor
-			map_selection_label.textFill = nightTextColor; map_selection_display.textFill = nightTextColor;	map_min.textFill = nightTextColor;	map_max.textFill = nightTextColor
 			boids_population_label.textFill = nightTextColor; decrement_boids_population.textFill = nightTextColor; increment_boids_population.textFill = nightTextColor; boids_population_decrement_circle.stroke = nightTextColor; boids_population_increment_circle.stroke = nightTextColor;	boids_population_line.stroke = nightTextColor;	boids_population_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
 			boids_vision_label.textFill = nightTextColor; boids_vision_display.textFill = nightTextColor; boids_vision_min.textFill = nightTextColor; boids_vision_max.textFill = nightTextColor
 
@@ -445,10 +465,27 @@ class BoidsFxViewerController extends FxViewerController  {
 			boid_angle.textFill = Color.rgb(191, 191, 191, 0.7)
 			boid_distance.textFill = Color.rgb(191, 191, 191, 0.7)
 			boid_new_vitesse.textFill = Color.rgb(191, 191, 191, 0.7)
+			boid_position.textFill = Color.rgb(191, 191, 191, 0.7)
 			toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
 			toggle_perception.textFill = Color.rgb(191, 191, 191, 0.3)
 			hide_infos.textFill = Color.rgb(191, 191, 191, 0.3)
 			start_button.textFill = nightTextColor
+
+			if(this.selectedMap != 1) {
+				preview_map_1_border.stroke = nightTextColor
+				map_label_1.textFill = nightTextColor
+			} else if (this.selectedMap == 1) {
+				preview_map_1_border.stroke = Color.rgb(235, 221, 26)
+				map_label_1.textFill = Color.rgb(235, 221, 26)
+			}
+			if (this.selectedMap != 2) {
+				preview_map_2_border.stroke = nightTextColor
+				map_label_2.textFill = nightTextColor
+			} else if (this.selectedMap == 2) {
+				preview_map_2_border.stroke = Color.rgb(235, 221, 26)
+				map_label_2.textFill = Color.rgb(235, 221, 26)
+			}
+			
 		}
 	}
 	
@@ -623,7 +660,6 @@ class BoidsFxViewerController extends FxViewerController  {
 	def toggleUIState() : void {
 		if(start_button.disable == true) start_button.disable = false else start_button.disable = true
 		if(boids_quantity_input.disable == true) boids_quantity_input.disable = false else boids_quantity_input.disable = true
-		if(map_selection_input.disable == true) map_selection_input.disable = false else map_selection_input.disable = true
 		if(boids_population_input.disable == true) boids_population_input.disable = false else boids_population_input.disable = true
 		if(boids_vision_input.disable == true) boids_vision_input.disable = false else boids_vision_input.disable = true
 
@@ -811,44 +847,6 @@ class BoidsFxViewerController extends FxViewerController  {
 		boids_distance_deplacement_max.effect = null
 	}
 	
-	/* MAP GLOWING EFFECT */
-	
-	@FXML protected def mapMinGlow() : void {
-		if (nightMode)
-			map_min.textFill = Color.rgb(235, 221, 26)
-		else
-			map_min.textFill = Color.rgb(0, 0, 0)
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		map_min.effect = glowEffect
-	}
-
-	@FXML protected def mapMaxGlow() : void {
-		if (nightMode)
-			map_max.textFill = Color.rgb(235, 221, 26)
-		else
-			map_max.textFill = Color.rgb(0, 0, 0)
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		map_max.effect = glowEffect
-	}
-
-	@FXML protected def mapMinReset() : void {
-		if (nightMode)
-			map_min.textFill = Color.rgb(191, 191, 191)
-		else
-			map_min.textFill = Color.rgb(0, 0, 0)
-		map_min.effect = null
-	}
-
-	@FXML protected def mapMaxReset() : void {
-		if (nightMode)
-			map_max.textFill = Color.rgb(191, 191, 191)
-		else
-			map_max.textFill = Color.rgb(0, 0, 0)
-		map_max.effect = null
-	}
-	
 	/* MAX/MIN values fast setters */
 	
 	@FXML protected def boidsQuantitySetToMin() : void {
@@ -879,15 +877,118 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML protected def boidsDistanceVisionSetToMax() : void {
 		boids_distance_deplacement_input.value = Integer.parseInt(boids_distance_deplacement_max.text)
 		boids_distance_deplacement_display.text = boids_distance_deplacement_max.text
+	}	
+	
+	@FXML protected def previewMap1Glow() : void {
+		if(selectedMap != 1) {
+			if (nightMode) {
+				preview_map_1_border.stroke = Color.rgb(235, 221, 26, 0.6)
+				map_label_1.textFill = Color.rgb(235, 221, 26, 0.6)	
+			}
+			else {
+				preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.35)
+				map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)	
+			}
+			var glowEffect = new Glow()
+			glowEffect.level = 1
+			preview_map_1_border.effect = glowEffect
+			map_label_1.effect = glowEffect
+		}
 	}
 
-	@FXML protected def mapSetToMin() : void {
-		map_selection_input.value = Integer.parseInt(map_min.text)
-		map_selection_display.text = map_min.text
+	@FXML protected def previewMap1Reset() : void {
+		if(selectedMap != 1) {
+			if (nightMode) {
+				preview_map_1_border.stroke = Color.rgb(191, 191, 191)
+				map_label_1.textFill = Color.rgb(191, 191, 191)	
+			}
+			else {
+				preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)	
+			}
+			preview_map_1_border.effect = null
+			map_label_1.effect = null	
+		}
 	}
 
-	@FXML protected def mapSetToMax() : void {
-		map_selection_input.value = Integer.parseInt(map_max.text)
-		map_selection_display.text = map_max.text
+	@FXML protected def previewMap2Glow() : void {
+		if(selectedMap != 2) {
+			if (nightMode) {
+				preview_map_2_border.stroke = Color.rgb(235, 221, 26, 0.6)
+				map_label_2.textFill = Color.rgb(235, 221, 26, 0.6)
+			}
+			else {
+				preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)		
+			}	
+			var glowEffect = new Glow()
+			glowEffect.level = 1
+			preview_map_2_border.effect = glowEffect
+			map_label_2.effect = glowEffect	
+		}
+	}
+
+	@FXML protected def previewMap2Reset() : void {
+		if(selectedMap != 2) {
+			if (nightMode) {
+				preview_map_2_border.stroke = Color.rgb(191, 191, 191)
+				map_label_2.textFill = Color.rgb(191, 191, 191)	
+			}
+			else {
+				preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)	
+			}
+			preview_map_2_border.effect = null
+			map_label_2.effect = null	
+		}
+	}
+	
+	@FXML protected def selectMap(e : MouseEvent) : void {
+		if(e.getSource().toString.substring(0, 1) == 'I') { // I pour ImageView
+			this.selectedMap = Integer.parseInt((e.getSource() as ImageView).getId().substring((e.getSource() as ImageView).getId().length() - 1))
+		} else {
+			this.selectedMap = Integer.parseInt((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1))	
+		}
+		resetMaps()
+		switch(this.selectedMap) {
+			case 1: {
+				if (nightMode) {
+					preview_map_1_border.stroke = Color.rgb(235, 221, 26)
+					map_label_1.textFill = Color.rgb(235, 221, 26)
+				} else {
+					preview_map_1_border.stroke = Color.rgb(0, 0, 0)
+					map_label_1.textFill = Color.rgb(0, 0, 0)
+				}	
+
+				var glowEffect = new Glow()
+				glowEffect.level = 0.8
+				preview_map_1_border.effect = glowEffect
+				map_label_1.effect = glowEffect
+				tick_map_1.visible = true
+			}
+			case 2: {
+				if (nightMode) {
+					preview_map_2_border.stroke = Color.rgb(235, 221, 26)
+					map_label_2.textFill = Color.rgb(235, 221, 26)
+				} else {
+					preview_map_2_border.stroke = Color.rgb(0, 0, 0)
+					map_label_2.textFill = Color.rgb(0, 0, 0)
+				}
+
+				var glowEffect = new Glow()
+				glowEffect.level = 0.8
+				preview_map_2_border.effect = glowEffect
+				map_label_2.effect = glowEffect
+				tick_map_2.visible = true
+			}
+		}
+	}
+	
+	protected def resetMaps() : void {
+		previewMap1Reset()
+		previewMap2Reset()
+		
+		tick_map_1.visible = false
+		tick_map_2.visible = false
 	}
 }

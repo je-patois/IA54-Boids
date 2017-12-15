@@ -9,5 +9,4 @@ final class Configuration {
 
 	/** Couleurs attribuées aux familles de boids */
 	public static val COLOR_FAMILY = #{1 -> Color.rgb(0, 174, 255), 2 -> Color.rgb(255, 66, 66), 3 -> Color.rgb(0, 217, 112), 4 -> Color.rgb(211, 66, 255), 5 -> Color.rgb(255, 149, 20), 6 -> Color.rgb(252, 61, 240), 7 -> Color.rgb(176, 155, 111), 8 -> Color.rgb(74, 243, 255), 9 -> Color.rgb(41, 204, 182), 10 -> Color.rgb(54, 74, 255)}
-
 }
