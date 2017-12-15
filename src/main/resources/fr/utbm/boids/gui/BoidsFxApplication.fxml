@@ -12,22 +12,10 @@
 
 <Pane fx:id="main_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMousePressed="#changeFocus" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgb(34, 34, 34);" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.boids.gui.BoidsFxViewerController">
    <children>
-      <Pane fx:id="UI_pane" layoutX="46.0" layoutY="43.0" prefHeight="606.0" prefWidth="1181.0">
+      <Pane fx:id="UI_pane" layoutX="46.0" layoutY="43.0" prefHeight="643.0" prefWidth="1181.0">
          <children>
-            <Pane fx:id="simulation_parameters_pane" layoutX="891.0" layoutY="14.0" prefHeight="372.0" prefWidth="284.0">
+            <Pane fx:id="simulation_parameters_pane" layoutX="891.0" layoutY="14.0" onMouseEntered="#paneTitleGlow" onMouseExited="#paneTitleReset" prefHeight="256.0" prefWidth="284.0">
                <children>
-            			   
-                  <Label fx:id="boids_vision_label" alignment="CENTER" layoutX="32.0" layoutY="205.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsVisionLabel" textFill="#bfbfbf">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <ScrollBar fx:id="boids_vision_input" layoutX="54.0" layoutY="232.0" max="180.0" onMouseEntered="#actionBoidsVisionDisplay" prefHeight="18.0" prefWidth="173.0" value="30.0" />
-                  <Label fx:id="boids_vision_display" alignment="CENTER" layoutX="54.0" layoutY="252.0" prefHeight="21.0" prefWidth="173.0" text="30" textFill="#bfbfbf">
-            				<font>
-            					  <Font size="16.0" />
-            				</font>
-            			</Label>
                   
             			<Label fx:id="boids_quantity_label" alignment="CENTER" layoutX="30.0" layoutY="129.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsQuantityLabel" textFill="#bfbfbf">
             			<font>
@@ -40,44 +28,12 @@
                         <Font size="16.0" />
                      </font>
                   </Label>
-            			   
-                  <Label fx:id="boids_distance_deplacement_label" alignment="CENTER" layoutX="33.0" layoutY="284.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsDistanceDeplacementLabel" textFill="#bfbfbf">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <ScrollBar fx:id="boids_distance_deplacement_input" layoutX="54.0" layoutY="309.0" max="400.0" min="20.0" onMouseEntered="#actionBoidsDistanceDeplacementDisplay" prefHeight="18.0" prefWidth="173.0" unitIncrement="10.0" value="20.0" />
-            			<Label fx:id="boids_distance_deplacement_display" alignment="CENTER" layoutX="54.0" layoutY="326.0" prefHeight="21.0" prefWidth="173.0" text="20" textFill="#bfbfbf">
-            				<font>
-            					  <Font size="16.0" />
-            				</font>
-            			</Label>
                   <Label fx:id="boids_quantity_min" layoutX="37.0" layoutY="156.0" onMouseEntered="#boidsQuantityMinGlow" onMouseExited="#boidsQuantityMinReset" onMousePressed="#boidsQuantitySetToMin" text="1" textFill="#bfbfbf">
                      <font>
                         <Font size="8.0" />
                      </font>
                   </Label>
                   <Label fx:id="boids_quantity_max" layoutX="231.0" layoutY="156.0" onMouseEntered="#boidsQuantityMaxGlow" onMouseExited="#boidsQuantityMaxReset" onMousePressed="#boidsQuantitySetToMax" text="100" textFill="#bfbfbf">
-                     <font>
-                        <Font size="8.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="boids_vision_min" layoutX="40.0" layoutY="235.0" onMouseEntered="#boidsVisionMinGlow" onMouseExited="#boidsVisionMinReset" onMousePressed="#boidsVisionSetToMin" text="0" textFill="#bfbfbf">
-                     <font>
-                        <Font size="8.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="boids_vision_max" layoutX="234.0" layoutY="235.0" onMouseEntered="#boidsVisionMaxGlow" onMouseExited="#boidsVisionMaxReset" onMousePressed="#boidsVisionSetToMax" text="180" textFill="#bfbfbf">
-                     <font>
-                        <Font size="8.0" />
-                     </font>
-                  </Label>
-            			<Label fx:id="boids_distance_deplacement_min" layoutX="40.0" layoutY="312.0" onMouseEntered="#boidsDistanceVisionMinGlow" onMouseExited="#boidsDistanceVisionMinReset" onMousePressed="#boidsDistanceVisionSetToMin" text="20" textFill="#bfbfbf">
-                     <font>
-                        <Font size="8.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="boids_distance_deplacement_max" layoutX="234.0" layoutY="312.0" onMouseEntered="#boidsDistanceVisionMaxGlow" onMouseExited="#boidsDistanceVisionMaxReset" onMousePressed="#boidsDistanceVisionSetToMax" text="400" textFill="#bfbfbf">
                      <font>
                         <Font size="8.0" />
                      </font>
@@ -94,14 +50,15 @@
                      </font>
                   </Label>
                   <Line fx:id="boids_population_line" endX="50.0" layoutX="169.0" layoutY="104.0" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" startX="-100.0" stroke="#bfbfbf" />
-                  <Label alignment="CENTER" layoutX="1.0" layoutY="-4.0" prefHeight="37.0" prefWidth="284.0" text="%SettingsLabel" textFill="#00b0f7">
+                  <Label fx:id="settings_label" alignment="CENTER" layoutX="1.0" layoutY="-4.0" prefHeight="37.0" prefWidth="284.0" text="%SettingsLabel" textFill="#00b0f7">
                      <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font name="System Bold" size="23.0" />
                      </font>
                   </Label>
+                  <Label fx:id="see_advanced_settings_label" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="210.0" onMouseEntered="#applyGlowEffectOnLabel" onMouseExited="#unapplyGlowEffectOnLabel" onMousePressed="#toggleAdvancedSettingsVisibility" prefHeight="21.0" prefWidth="284.0" text="%SeeAdvancedSettingsLabel" textFill="#c7c7c7" />
                </children>
             </Pane>
-            <Pane fx:id="map_selection_pane" layoutX="1.0" layoutY="2.0" prefHeight="305.0" prefWidth="886.0">
+            <Pane fx:id="map_selection_pane" layoutX="1.0" layoutY="2.0" onMouseEntered="#paneTitleGlow" onMouseExited="#paneTitleReset" prefHeight="305.0" prefWidth="886.0">
                <children>
                   <Rectangle fx:id="preview_map_1_border" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="179.0" layoutX="55.0" layoutY="79.0" stroke="#ebdd1a" strokeType="INSIDE" strokeWidth="5.0" width="319.0">
                      <effect>
@@ -119,7 +76,7 @@
                         <Image url="@../map/Preview%20map%202%20-%20No%20Border.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="CENTER" layoutY="6.0" prefHeight="36.0" prefWidth="886.0" text="%MapSelectionLabel" textFill="#00b0f0">
+                  <Label fx:id="map_selection_label" alignment="CENTER" layoutY="6.0" prefHeight="36.0" prefWidth="886.0" text="%MapSelectionLabel" textFill="#00b0f0">
                      <font>
                         <Font name="System Bold" size="25.0" />
                      </font>
@@ -142,11 +99,641 @@
                   </ImageView>
                </children>
             </Pane>
-            <Button fx:id="start_button" layoutX="972.0" layoutY="443.0" mnemonicParsing="false" onAction="#startSimu" onMouseEntered="#startButtonGlow" onMouseExited="#startButtonReset" prefHeight="51.0" prefWidth="123.0" style="-fx-background-color: transparent;" text="Start" textAlignment="CENTER" textFill="#bfbfbf">
+            <Button fx:id="start_button" layoutX="986.0" layoutY="421.0" mnemonicParsing="false" onAction="#startSimu" onMouseEntered="#startButtonGlow" onMouseExited="#startButtonReset" prefHeight="51.0" prefWidth="123.0" style="-fx-background-color: transparent;" text="%Start" textAlignment="CENTER" textFill="#bfbfbf">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
+            <ScrollPane fx:id="advanced_settings_pane" layoutY="312.0" onMouseEntered="#paneTitleGlow" onMouseExited="#paneTitleReset" prefHeight="332.0" prefWidth="886.0" visible="false">
+              <content>
+                <AnchorPane fx:id="advanced_settings_anchor_pane" minHeight="0.0" minWidth="0.0" prefHeight="599.0" prefWidth="865.0">
+                     <children>
+                        <Label fx:id="advanced_settings_label" alignment="CENTER" layoutX="-2.0" layoutY="14.0" prefHeight="36.0" prefWidth="872.0" text="%AdvancedSettingsLabel" textFill="#00b0f0">
+                           <font>
+                              <Font name="System Bold" size="25.0" />
+                           </font>
+                        </Label>
+                        <Pane fx:id="pane_group_1" layoutX="7.0" layoutY="67.0" onMouseEntered="#subPaneTitleGlow" onMouseExited="#subPaneTitleReset" prefHeight="253.0" prefWidth="200.0">
+                           <children>
+                              <ScrollBar fx:id="mass_1" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
+                              <ScrollBar fx:id="speed_1" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
+                              <ScrollBar fx:id="angle_1" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
+                              <ScrollBar fx:id="distance_1" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <Label fx:id="mass_label_1" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
+                              <Label fx:id="speed_label_1" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
+                              <Label fx:id="angle_label_1" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
+                              <Label fx:id="distance_label_1" alignment="CENTER" layoutX="53.0" layoutY="202.0" text="%Distance" textFill="#bfbfbf" />
+                              <Label fx:id="group_label_1" alignment="CENTER" layoutY="1.0" prefHeight="21.0" prefWidth="201.0" text="Groupe 1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_min_1" layoutX="8.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_max_1" layoutX="180.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_min_1" layoutX="8.0" layoutY="121.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_max_1" layoutX="180.0" layoutY="122.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="40" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_min_1" layoutX="8.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="0" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_max_1" layoutX="180.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="180" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_min_1" layoutX="8.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_max_1" layoutX="180.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="400" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_display_1" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="82.0" text="2" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_display_1" alignment="CENTER_RIGHT" layoutX="94.0" layoutY="137.0" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_display_1" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="191.0" text="30" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_display_1" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="pane_group_2" layoutX="207.0" layoutY="67.0" onMouseEntered="#subPaneTitleGlow" onMouseExited="#subPaneTitleReset" prefHeight="253.0" prefWidth="200.0">
+                           <children>
+                              <ScrollBar fx:id="mass_2" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
+                              <ScrollBar fx:id="speed_2" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
+                              <ScrollBar fx:id="angle_2" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
+                              <ScrollBar fx:id="distance_2" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <Label fx:id="mass_label_2" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
+                              <Label fx:id="speed_label_2" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
+                              <Label fx:id="angle_label_2" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
+                              <Label fx:id="distance_label_2" alignment="CENTER" layoutX="53.0" layoutY="202.0" text="%Distance" textFill="#bfbfbf" />
+                              <Label fx:id="group_label_2" alignment="CENTER" layoutY="1.0" prefHeight="21.0" prefWidth="201.0" text="Groupe 2" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_min_2" layoutX="8.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_max_2" layoutX="180.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_min_2" layoutX="8.0" layoutY="121.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_max_2" layoutX="180.0" layoutY="122.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="40" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_min_2" layoutX="8.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="0" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_max_2" layoutX="180.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="180" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_min_2" layoutX="8.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_max_2" layoutX="180.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="400" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_display_2" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_display_2" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="191.0" text="30" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_display_2" alignment="CENTER_RIGHT" layoutX="95.0" layoutY="137.0" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_display_2" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="82.0" text="2" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="pane_group_3" layoutX="407.0" layoutY="67.0" onMouseEntered="#subPaneTitleGlow" onMouseExited="#subPaneTitleReset" prefHeight="253.0" prefWidth="200.0">
+                           <children>
+                              <ScrollBar fx:id="mass_3" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
+                              <ScrollBar fx:id="speed_3" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
+                              <ScrollBar fx:id="angle_3" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
+                              <ScrollBar fx:id="distance_3" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <Label fx:id="mass_label_3" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
+                              <Label fx:id="speed_label_3" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
+                              <Label fx:id="angle_label_3" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
+                              <Label fx:id="distance_label_3" alignment="CENTER" layoutX="53.0" layoutY="202.0" text="%Distance" textFill="#bfbfbf" />
+                              <Label fx:id="group_label_3" alignment="CENTER" layoutY="1.0" prefHeight="21.0" prefWidth="201.0" text="Groupe 3" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_min_3" layoutX="8.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_max_3" layoutX="180.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_min_3" layoutX="8.0" layoutY="121.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_max_3" layoutX="180.0" layoutY="122.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="40" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_min_3" layoutX="8.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="0" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_max_3" layoutX="180.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="180" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_min_3" layoutX="8.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_max_3" layoutX="180.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="400" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_display_3" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_display_3" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="191.0" text="30" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_display_3" alignment="CENTER_RIGHT" layoutX="99.0" layoutY="137.0" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_display_3" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="82.0" text="2" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="pane_group_4" layoutX="607.0" layoutY="67.0" onMouseEntered="#subPaneTitleGlow" onMouseExited="#subPaneTitleReset" prefHeight="253.0" prefWidth="200.0">
+                           <children>
+                              <ScrollBar fx:id="mass_4" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
+                              <ScrollBar fx:id="speed_4" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
+                              <ScrollBar fx:id="angle_4" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
+                              <ScrollBar fx:id="distance_4" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <Label fx:id="mass_label_4" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
+                              <Label fx:id="speed_label_4" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
+                              <Label fx:id="angle_label_4" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
+                              <Label fx:id="distance_label_4" alignment="CENTER" layoutX="53.0" layoutY="202.0" text="%Distance" textFill="#bfbfbf" />
+                              <Label fx:id="group_label_4" alignment="CENTER" layoutY="1.0" prefHeight="21.0" prefWidth="201.0" text="Groupe 4" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_min_4" layoutX="8.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_max_4" layoutX="180.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_min_4" layoutX="8.0" layoutY="121.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_max_4" layoutX="180.0" layoutY="122.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="40" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_min_4" layoutX="8.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="0" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_max_4" layoutX="180.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="180" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_min_4" layoutX="8.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_max_4" layoutX="180.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="400" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_display_4" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_display_4" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="191.0" text="30" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_display_4" alignment="CENTER_RIGHT" layoutX="99.0" layoutY="137.0" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_display_4" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="82.0" text="2" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="pane_group_5" layoutX="7.0" layoutY="326.0" onMouseEntered="#subPaneTitleGlow" onMouseExited="#subPaneTitleReset" prefHeight="253.0" prefWidth="200.0">
+                           <children>
+                              <ScrollBar fx:id="mass_5" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
+                              <ScrollBar fx:id="speed_5" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
+                              <ScrollBar fx:id="angle_5" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
+                              <ScrollBar fx:id="distance_5" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <Label fx:id="mass_label_5" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
+                              <Label fx:id="speed_label_5" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
+                              <Label fx:id="angle_label_5" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
+                              <Label fx:id="distance_label_5" alignment="CENTER" layoutX="53.0" layoutY="202.0" text="%Distance" textFill="#bfbfbf" />
+                              <Label fx:id="group_label_5" alignment="CENTER" layoutY="1.0" prefHeight="21.0" prefWidth="201.0" text="Groupe 5" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_min_5" layoutX="8.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_max_5" layoutX="180.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_min_5" layoutX="8.0" layoutY="121.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_max_5" layoutX="180.0" layoutY="122.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="40" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_min_5" layoutX="8.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="0" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_max_5" layoutX="180.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="180" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_min_5" layoutX="8.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_max_5" layoutX="180.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="400" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_display_5" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="241.0" onMouseEntered="#subMinMaxValueGlow" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_display_5" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="191.0" text="30" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_display_5" alignment="CENTER_RIGHT" layoutX="94.0" layoutY="137.0" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_display_5" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="82.0" text="2" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="pane_group_6" layoutX="207.0" layoutY="326.0" onMouseEntered="#subPaneTitleGlow" onMouseExited="#subPaneTitleReset" prefHeight="253.0" prefWidth="200.0">
+                           <children>
+                              <ScrollBar fx:id="mass_6" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
+                              <ScrollBar fx:id="speed_6" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
+                              <ScrollBar fx:id="angle_6" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
+                              <ScrollBar fx:id="distance_6" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <Label fx:id="mass_label_6" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
+                              <Label fx:id="speed_label_6" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
+                              <Label fx:id="angle_label_6" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
+                              <Label fx:id="distance_label_6" alignment="CENTER" layoutX="53.0" layoutY="202.0" text="%Distance" textFill="#bfbfbf" />
+                              <Label fx:id="group_label_6" alignment="CENTER" layoutY="1.0" prefHeight="21.0" prefWidth="201.0" text="Groupe 6" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_min_6" layoutX="8.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_max_6" layoutX="180.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_min_6" layoutX="8.0" layoutY="121.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_max_6" layoutX="180.0" layoutY="122.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="40" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_min_6" layoutX="8.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="0" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_max_6" layoutX="180.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="180" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_min_6" layoutX="8.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_max_6" layoutX="180.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="400" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_display_6" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="82.0" text="2" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_display_6" alignment="CENTER_RIGHT" layoutX="95.0" layoutY="137.0" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_display_6" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="191.0" text="30" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_display_6" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="pane_group_7" layoutX="407.0" layoutY="326.0" onMouseEntered="#subPaneTitleGlow" onMouseExited="#subPaneTitleReset" prefHeight="253.0" prefWidth="200.0">
+                           <children>
+                              <ScrollBar fx:id="mass_7" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
+                              <ScrollBar fx:id="speed_7" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
+                              <ScrollBar fx:id="angle_7" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
+                              <ScrollBar fx:id="distance_7" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <Label fx:id="mass_label_7" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
+                              <Label fx:id="speed_label_7" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
+                              <Label fx:id="angle_label_7" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
+                              <Label fx:id="distance_label_7" alignment="CENTER" layoutX="53.0" layoutY="202.0" text="%Distance" textFill="#bfbfbf" />
+                              <Label fx:id="group_label_7" alignment="CENTER" layoutY="1.0" prefHeight="21.0" prefWidth="201.0" text="Groupe 7" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_min_7" layoutX="8.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_max_7" layoutX="180.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_min_7" layoutX="8.0" layoutY="121.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_max_7" layoutX="180.0" layoutY="122.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="40" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_min_7" layoutX="8.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="0" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_max_7" layoutX="180.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="180" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_min_7" layoutX="8.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_max_7" layoutX="180.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="400" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_display_7" alignment="CENTER_RIGHT" layoutX="99.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_display_7" alignment="CENTER_RIGHT" layoutX="99.0" layoutY="191.0" text="30" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_display_7" alignment="CENTER_RIGHT" layoutX="96.0" layoutY="137.0" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_display_7" alignment="CENTER_RIGHT" layoutX="99.0" layoutY="82.0" text="2" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="pane_group_8" layoutX="607.0" layoutY="326.0" onMouseEntered="#subPaneTitleGlow" onMouseExited="#subPaneTitleReset" prefHeight="253.0" prefWidth="200.0">
+                           <children>
+                              <ScrollBar fx:id="mass_8" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
+                              <ScrollBar fx:id="speed_8" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
+                              <ScrollBar fx:id="angle_8" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
+                              <ScrollBar fx:id="distance_8" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <Label fx:id="mass_label_8" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
+                              <Label fx:id="speed_label_8" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
+                              <Label fx:id="angle_label_8" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
+                              <Label fx:id="distance_label_8" alignment="CENTER" layoutX="53.0" layoutY="202.0" text="%Distance" textFill="#bfbfbf" />
+                              <Label fx:id="group_label_8" alignment="CENTER" layoutY="1.0" prefHeight="21.0" prefWidth="201.0" text="Groupe 8" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_min_8" layoutX="8.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_max_8" layoutX="180.0" layoutY="67.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastMassValues" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_min_8" layoutX="8.0" layoutY="121.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="1" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_max_8" layoutX="180.0" layoutY="122.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastSpeedValues" text="40" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_min_8" layoutX="8.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="0" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_max_8" layoutX="180.0" layoutY="178.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastAngleValues" text="180" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_min_8" layoutX="8.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_max_8" layoutX="180.0" layoutY="226.0" onMouseEntered="#subMinMaxValueGlow" onMouseExited="#subMinMaxValueReset" onMousePressed="#setFastDistanceValues" text="400" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="distance_display_8" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="angle_display_8" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="191.0" text="30" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="speed_display_8" alignment="CENTER_RIGHT" layoutX="95.0" layoutY="137.0" text="10" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="mass_display_8" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="82.0" text="2" textFill="#bfbfbf">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Label fx:id="reset_group_values" layoutX="775.0" layoutY="14.0" onMouseEntered="#applyGlowEffectOnLabel" onMouseExited="#unapplyGlowEffectOnLabel" onMousePressed="#resetGroupValues" text="Réinitialiser" textFill="#bdbdbd" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
          </children>
       </Pane>
       <Group fx:id="perception_group" />

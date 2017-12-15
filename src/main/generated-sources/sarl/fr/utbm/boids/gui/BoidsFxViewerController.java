@@ -9,6 +9,7 @@ import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.events.Pause;
 import fr.utbm.boids.events.Resume;
 import fr.utbm.boids.gui.fx.FxViewerController;
+import fr.utbm.boids.util.BoidGroupInfos;
 import fr.utbm.boids.util.Coordinates;
 import fr.utbm.boids.util.LineTool;
 import io.sarl.lang.annotation.SarlElementType;
@@ -29,11 +30,13 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -97,49 +100,19 @@ public class BoidsFxViewerController extends FxViewerController {
   private Label boids_population_label;
   
   @FXML
-  private Label boids_vision_label;
-  
-  @FXML
-  private Label boids_distance_deplacement_label;
-  
-  @FXML
   private ScrollBar boids_quantity_input;
   
   @FXML
   private TextField boids_population_input;
   
   @FXML
-  private ScrollBar boids_vision_input;
-  
-  @FXML
-  private ScrollBar boids_distance_deplacement_input;
-  
-  @FXML
   private Label boids_quantity_display;
-  
-  @FXML
-  private Label boids_vision_display;
-  
-  @FXML
-  private Label boids_distance_deplacement_display;
   
   @FXML
   private Label boids_quantity_min;
   
   @FXML
   private Label boids_quantity_max;
-  
-  @FXML
-  private Label boids_vision_min;
-  
-  @FXML
-  private Label boids_vision_max;
-  
-  @FXML
-  private Label boids_distance_deplacement_min;
-  
-  @FXML
-  private Label boids_distance_deplacement_max;
   
   @FXML
   private Rectangle pause_button;
@@ -222,7 +195,558 @@ public class BoidsFxViewerController extends FxViewerController {
   @FXML
   private ImageView tick_map_2;
   
+  @FXML
+  private Pane pane_group_1;
+  
+  @FXML
+  private Pane pane_group_2;
+  
+  @FXML
+  private Pane pane_group_3;
+  
+  @FXML
+  private Pane pane_group_4;
+  
+  @FXML
+  private Pane pane_group_5;
+  
+  @FXML
+  private Pane pane_group_6;
+  
+  @FXML
+  private Pane pane_group_7;
+  
+  @FXML
+  private Pane pane_group_8;
+  
+  @FXML
+  private Label group_label_1;
+  
+  @FXML
+  private Label group_label_2;
+  
+  @FXML
+  private Label group_label_3;
+  
+  @FXML
+  private Label group_label_4;
+  
+  @FXML
+  private Label group_label_5;
+  
+  @FXML
+  private Label group_label_6;
+  
+  @FXML
+  private Label group_label_7;
+  
+  @FXML
+  private Label group_label_8;
+  
+  @FXML
+  private Label mass_label_1;
+  
+  @FXML
+  private Label mass_label_2;
+  
+  @FXML
+  private Label mass_label_3;
+  
+  @FXML
+  private Label mass_label_4;
+  
+  @FXML
+  private Label mass_label_5;
+  
+  @FXML
+  private Label mass_label_6;
+  
+  @FXML
+  private Label mass_label_7;
+  
+  @FXML
+  private Label mass_label_8;
+  
+  @FXML
+  private ScrollBar mass_1;
+  
+  @FXML
+  private ScrollBar mass_2;
+  
+  @FXML
+  private ScrollBar mass_3;
+  
+  @FXML
+  private ScrollBar mass_4;
+  
+  @FXML
+  private ScrollBar mass_5;
+  
+  @FXML
+  private ScrollBar mass_6;
+  
+  @FXML
+  private ScrollBar mass_7;
+  
+  @FXML
+  private ScrollBar mass_8;
+  
+  @FXML
+  private Label mass_min_1;
+  
+  @FXML
+  private Label mass_max_1;
+  
+  @FXML
+  private Label mass_display_1;
+  
+  @FXML
+  private Label mass_min_2;
+  
+  @FXML
+  private Label mass_max_2;
+  
+  @FXML
+  private Label mass_display_2;
+  
+  @FXML
+  private Label mass_min_3;
+  
+  @FXML
+  private Label mass_max_3;
+  
+  @FXML
+  private Label mass_display_3;
+  
+  @FXML
+  private Label mass_min_4;
+  
+  @FXML
+  private Label mass_max_4;
+  
+  @FXML
+  private Label mass_display_4;
+  
+  @FXML
+  private Label mass_min_5;
+  
+  @FXML
+  private Label mass_max_5;
+  
+  @FXML
+  private Label mass_display_5;
+  
+  @FXML
+  private Label mass_min_6;
+  
+  @FXML
+  private Label mass_max_6;
+  
+  @FXML
+  private Label mass_display_6;
+  
+  @FXML
+  private Label mass_min_7;
+  
+  @FXML
+  private Label mass_max_7;
+  
+  @FXML
+  private Label mass_display_7;
+  
+  @FXML
+  private Label mass_min_8;
+  
+  @FXML
+  private Label mass_max_8;
+  
+  @FXML
+  private Label mass_display_8;
+  
+  @FXML
+  private Label speed_label_1;
+  
+  @FXML
+  private ScrollBar speed_1;
+  
+  @FXML
+  private Label speed_min_1;
+  
+  @FXML
+  private Label speed_max_1;
+  
+  @FXML
+  private Label speed_display_1;
+  
+  @FXML
+  private Label speed_label_2;
+  
+  @FXML
+  private ScrollBar speed_2;
+  
+  @FXML
+  private Label speed_min_2;
+  
+  @FXML
+  private Label speed_max_2;
+  
+  @FXML
+  private Label speed_display_2;
+  
+  @FXML
+  private Label speed_label_3;
+  
+  @FXML
+  private ScrollBar speed_3;
+  
+  @FXML
+  private Label speed_min_3;
+  
+  @FXML
+  private Label speed_max_3;
+  
+  @FXML
+  private Label speed_display_3;
+  
+  @FXML
+  private Label speed_label_4;
+  
+  @FXML
+  private ScrollBar speed_4;
+  
+  @FXML
+  private Label speed_min_4;
+  
+  @FXML
+  private Label speed_max_4;
+  
+  @FXML
+  private Label speed_display_4;
+  
+  @FXML
+  private Label speed_label_5;
+  
+  @FXML
+  private ScrollBar speed_5;
+  
+  @FXML
+  private Label speed_min_5;
+  
+  @FXML
+  private Label speed_max_5;
+  
+  @FXML
+  private Label speed_display_5;
+  
+  @FXML
+  private Label speed_label_6;
+  
+  @FXML
+  private ScrollBar speed_6;
+  
+  @FXML
+  private Label speed_min_6;
+  
+  @FXML
+  private Label speed_max_6;
+  
+  @FXML
+  private Label speed_display_6;
+  
+  @FXML
+  private Label speed_label_7;
+  
+  @FXML
+  private ScrollBar speed_7;
+  
+  @FXML
+  private Label speed_min_7;
+  
+  @FXML
+  private Label speed_max_7;
+  
+  @FXML
+  private Label speed_display_7;
+  
+  @FXML
+  private Label speed_label_8;
+  
+  @FXML
+  private ScrollBar speed_8;
+  
+  @FXML
+  private Label speed_min_8;
+  
+  @FXML
+  private Label speed_max_8;
+  
+  @FXML
+  private Label speed_display_8;
+  
+  @FXML
+  private Label angle_label_1;
+  
+  @FXML
+  private ScrollBar angle_1;
+  
+  @FXML
+  private Label angle_min_1;
+  
+  @FXML
+  private Label angle_max_1;
+  
+  @FXML
+  private Label angle_display_1;
+  
+  @FXML
+  private Label angle_label_2;
+  
+  @FXML
+  private ScrollBar angle_2;
+  
+  @FXML
+  private Label angle_min_2;
+  
+  @FXML
+  private Label angle_max_2;
+  
+  @FXML
+  private Label angle_display_2;
+  
+  @FXML
+  private Label angle_label_3;
+  
+  @FXML
+  private ScrollBar angle_3;
+  
+  @FXML
+  private Label angle_min_3;
+  
+  @FXML
+  private Label angle_max_3;
+  
+  @FXML
+  private Label angle_display_3;
+  
+  @FXML
+  private Label angle_label_4;
+  
+  @FXML
+  private ScrollBar angle_4;
+  
+  @FXML
+  private Label angle_min_4;
+  
+  @FXML
+  private Label angle_max_4;
+  
+  @FXML
+  private Label angle_display_4;
+  
+  @FXML
+  private Label angle_label_5;
+  
+  @FXML
+  private ScrollBar angle_5;
+  
+  @FXML
+  private Label angle_min_5;
+  
+  @FXML
+  private Label angle_max_5;
+  
+  @FXML
+  private Label angle_display_5;
+  
+  @FXML
+  private Label angle_label_6;
+  
+  @FXML
+  private ScrollBar angle_6;
+  
+  @FXML
+  private Label angle_min_6;
+  
+  @FXML
+  private Label angle_max_6;
+  
+  @FXML
+  private Label angle_display_6;
+  
+  @FXML
+  private Label angle_label_7;
+  
+  @FXML
+  private ScrollBar angle_7;
+  
+  @FXML
+  private Label angle_min_7;
+  
+  @FXML
+  private Label angle_max_7;
+  
+  @FXML
+  private Label angle_display_7;
+  
+  @FXML
+  private Label angle_label_8;
+  
+  @FXML
+  private ScrollBar angle_8;
+  
+  @FXML
+  private Label angle_min_8;
+  
+  @FXML
+  private Label angle_max_8;
+  
+  @FXML
+  private Label angle_display_8;
+  
+  @FXML
+  private Label distance_label_1;
+  
+  @FXML
+  private ScrollBar distance_1;
+  
+  @FXML
+  private Label distance_min_1;
+  
+  @FXML
+  private Label distance_max_1;
+  
+  @FXML
+  private Label distance_display_1;
+  
+  @FXML
+  private Label distance_label_2;
+  
+  @FXML
+  private ScrollBar distance_2;
+  
+  @FXML
+  private Label distance_min_2;
+  
+  @FXML
+  private Label distance_max_2;
+  
+  @FXML
+  private Label distance_display_2;
+  
+  @FXML
+  private Label distance_label_3;
+  
+  @FXML
+  private ScrollBar distance_3;
+  
+  @FXML
+  private Label distance_min_3;
+  
+  @FXML
+  private Label distance_max_3;
+  
+  @FXML
+  private Label distance_display_3;
+  
+  @FXML
+  private Label distance_label_4;
+  
+  @FXML
+  private ScrollBar distance_4;
+  
+  @FXML
+  private Label distance_min_4;
+  
+  @FXML
+  private Label distance_max_4;
+  
+  @FXML
+  private Label distance_display_4;
+  
+  @FXML
+  private Label distance_label_5;
+  
+  @FXML
+  private ScrollBar distance_5;
+  
+  @FXML
+  private Label distance_min_5;
+  
+  @FXML
+  private Label distance_max_5;
+  
+  @FXML
+  private Label distance_display_5;
+  
+  @FXML
+  private Label distance_label_6;
+  
+  @FXML
+  private ScrollBar distance_6;
+  
+  @FXML
+  private Label distance_min_6;
+  
+  @FXML
+  private Label distance_max_6;
+  
+  @FXML
+  private Label distance_display_6;
+  
+  @FXML
+  private Label distance_label_7;
+  
+  @FXML
+  private ScrollBar distance_7;
+  
+  @FXML
+  private Label distance_min_7;
+  
+  @FXML
+  private Label distance_max_7;
+  
+  @FXML
+  private Label distance_display_7;
+  
+  @FXML
+  private Label distance_label_8;
+  
+  @FXML
+  private ScrollBar distance_8;
+  
+  @FXML
+  private Label distance_min_8;
+  
+  @FXML
+  private Label distance_max_8;
+  
+  @FXML
+  private Label distance_display_8;
+  
+  @FXML
+  private ScrollPane advanced_settings_pane;
+  
+  @FXML
+  private AnchorPane advanced_settings_anchor_pane;
+  
+  @FXML
+  private Label map_selection_label;
+  
+  @FXML
+  private Label settings_label;
+  
+  @FXML
+  private Label advanced_settings_label;
+  
+  @FXML
+  private Label see_advanced_settings_label;
+  
+  @FXML
+  private Label reset_group_values;
+  
   private int selectedMap = 1;
+  
+  private List<BoidGroupInfos> boidsSettings = new ArrayList<BoidGroupInfos>();
   
   private List<Polygon> polygons;
   
@@ -255,12 +779,6 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @Pure
-  public int getBoidsVision() {
-    double _value = this.boids_vision_input.getValue();
-    return ((int) _value);
-  }
-  
-  @Pure
   public int getMapWidth() {
     double _width = this.main_pane.getWidth();
     return ((int) _width);
@@ -278,19 +796,90 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @Pure
-  public int getBoidsDistanceDeplacement() {
-    double _value = this.boids_distance_deplacement_input.getValue();
-    return ((int) _value);
+  public List<BoidGroupInfos> getBoidsSettings() {
+    return this.boidsSettings;
   }
   
   @FXML
   protected void startSimu() {
     if (((!Objects.equal(this.boids_population_input.getText(), "")) && (this.outputQuality(this.boids_population_input.getText())).booleanValue())) {
+      for (int i = 1; (i < (this.getBoidsPopulation() + 1)); i++) {
+        if ((i == 1)) {
+          int _parseInt = Integer.parseInt(this.mass_display_1.getText());
+          int _parseInt_1 = Integer.parseInt(this.speed_display_1.getText());
+          int _parseInt_2 = Integer.parseInt(this.angle_display_1.getText());
+          int _parseInt_3 = Integer.parseInt(this.distance_display_1.getText());
+          BoidGroupInfos _boidGroupInfos = new BoidGroupInfos(_parseInt, _parseInt_1, _parseInt_2, _parseInt_3);
+          this.boidsSettings.add(_boidGroupInfos);
+        } else {
+          if ((i == 2)) {
+            int _parseInt_4 = Integer.parseInt(this.mass_display_2.getText());
+            int _parseInt_5 = Integer.parseInt(this.speed_display_2.getText());
+            int _parseInt_6 = Integer.parseInt(this.angle_display_2.getText());
+            int _parseInt_7 = Integer.parseInt(this.distance_display_2.getText());
+            BoidGroupInfos _boidGroupInfos_1 = new BoidGroupInfos(_parseInt_4, _parseInt_5, _parseInt_6, _parseInt_7);
+            this.boidsSettings.add(_boidGroupInfos_1);
+          } else {
+            if ((i == 3)) {
+              int _parseInt_8 = Integer.parseInt(this.mass_display_3.getText());
+              int _parseInt_9 = Integer.parseInt(this.speed_display_3.getText());
+              int _parseInt_10 = Integer.parseInt(this.angle_display_3.getText());
+              int _parseInt_11 = Integer.parseInt(this.distance_display_3.getText());
+              BoidGroupInfos _boidGroupInfos_2 = new BoidGroupInfos(_parseInt_8, _parseInt_9, _parseInt_10, _parseInt_11);
+              this.boidsSettings.add(_boidGroupInfos_2);
+            } else {
+              if ((i == 4)) {
+                int _parseInt_12 = Integer.parseInt(this.mass_display_4.getText());
+                int _parseInt_13 = Integer.parseInt(this.speed_display_4.getText());
+                int _parseInt_14 = Integer.parseInt(this.angle_display_4.getText());
+                int _parseInt_15 = Integer.parseInt(this.distance_display_4.getText());
+                BoidGroupInfos _boidGroupInfos_3 = new BoidGroupInfos(_parseInt_12, _parseInt_13, _parseInt_14, _parseInt_15);
+                this.boidsSettings.add(_boidGroupInfos_3);
+              } else {
+                if ((i == 5)) {
+                  int _parseInt_16 = Integer.parseInt(this.mass_display_5.getText());
+                  int _parseInt_17 = Integer.parseInt(this.speed_display_5.getText());
+                  int _parseInt_18 = Integer.parseInt(this.angle_display_5.getText());
+                  int _parseInt_19 = Integer.parseInt(this.distance_display_5.getText());
+                  BoidGroupInfos _boidGroupInfos_4 = new BoidGroupInfos(_parseInt_16, _parseInt_17, _parseInt_18, _parseInt_19);
+                  this.boidsSettings.add(_boidGroupInfos_4);
+                } else {
+                  if ((i == 6)) {
+                    int _parseInt_20 = Integer.parseInt(this.mass_display_6.getText());
+                    int _parseInt_21 = Integer.parseInt(this.speed_display_6.getText());
+                    int _parseInt_22 = Integer.parseInt(this.angle_display_6.getText());
+                    int _parseInt_23 = Integer.parseInt(this.distance_display_6.getText());
+                    BoidGroupInfos _boidGroupInfos_5 = new BoidGroupInfos(_parseInt_20, _parseInt_21, _parseInt_22, _parseInt_23);
+                    this.boidsSettings.add(_boidGroupInfos_5);
+                  } else {
+                    if ((i == 7)) {
+                      int _parseInt_24 = Integer.parseInt(this.mass_display_7.getText());
+                      int _parseInt_25 = Integer.parseInt(this.speed_display_7.getText());
+                      int _parseInt_26 = Integer.parseInt(this.angle_display_7.getText());
+                      int _parseInt_27 = Integer.parseInt(this.distance_display_7.getText());
+                      BoidGroupInfos _boidGroupInfos_6 = new BoidGroupInfos(_parseInt_24, _parseInt_25, _parseInt_26, _parseInt_27);
+                      this.boidsSettings.add(_boidGroupInfos_6);
+                    } else {
+                      if ((i == 8)) {
+                        int _parseInt_28 = Integer.parseInt(this.mass_display_8.getText());
+                        int _parseInt_29 = Integer.parseInt(this.speed_display_8.getText());
+                        int _parseInt_30 = Integer.parseInt(this.angle_display_8.getText());
+                        int _parseInt_31 = Integer.parseInt(this.distance_display_8.getText());
+                        BoidGroupInfos _boidGroupInfos_7 = new BoidGroupInfos(_parseInt_28, _parseInt_29, _parseInt_30, _parseInt_31);
+                        this.boidsSettings.add(_boidGroupInfos_7);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
       int _mapSelection = this.getMapSelection();
       int _boidsQuantity = this.getBoidsQuantity();
       int _boidsPopulation = this.getBoidsPopulation();
-      int _boidsVision = this.getBoidsVision();
-      ConfigureSimulation event = new ConfigureSimulation(_mapSelection, _boidsQuantity, _boidsPopulation, _boidsVision);
+      ConfigureSimulation event = new ConfigureSimulation(_mapSelection, _boidsQuantity, _boidsPopulation);
       if ((!this.launched)) {
         final Procedure0 _function = () -> {
           this.emitToAgents(event);
@@ -485,13 +1074,15 @@ public class BoidsFxViewerController extends FxViewerController {
               double _y_5 = boid.getPosition().getY();
               double _minus_5 = (_mapHeight_3 - _y_5);
               perceptionArc.setCenterY(_minus_5);
-              perceptionArc.setRadiusX(Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText()));
-              perceptionArc.setRadiusY(Double.parseDouble(BoidsFxViewerController.this.boids_distance_deplacement_display.getText()));
-              double _parseDouble = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
-              double _minus_6 = ((90 - angleRotation) - _parseDouble);
+              int _distanceVisibilite = boid.getDistanceVisibilite();
+              perceptionArc.setRadiusX(((double) _distanceVisibilite));
+              int _distanceVisibilite_1 = boid.getDistanceVisibilite();
+              perceptionArc.setRadiusY(((double) _distanceVisibilite_1));
+              int _angleVisibilite = boid.getAngleVisibilite();
+              double _minus_6 = ((90 - angleRotation) - _angleVisibilite);
               perceptionArc.setStartAngle(_minus_6);
-              double _parseDouble_1 = Double.parseDouble(BoidsFxViewerController.this.boids_vision_display.getText());
-              double _multiply = (_parseDouble_1 * 2);
+              int _angleVisibilite_1 = boid.getAngleVisibilite();
+              int _multiply = (_angleVisibilite_1 * 2);
               perceptionArc.setLength(_multiply);
               perceptionArc.setType(ArcType.ROUND);
               if ((BoidsFxViewerController.this.nightMode).booleanValue()) {
@@ -535,22 +1126,6 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @FXML
-  protected void actionBoidsVisionDisplay() {
-    final InvalidationListener _function = (Observable it) -> {
-      this.boids_vision_display.setText(String.format("%.0f", Double.valueOf(this.boids_vision_input.getValue())));
-    };
-    this.boids_vision_input.valueProperty().addListener(_function);
-  }
-  
-  @FXML
-  protected void actionBoidsDistanceDeplacementDisplay() {
-    final InvalidationListener _function = (Observable it) -> {
-      this.boids_distance_deplacement_display.setText(String.format("%.0f", Double.valueOf(this.boids_distance_deplacement_input.getValue())));
-    };
-    this.boids_distance_deplacement_input.valueProperty().addListener(_function);
-  }
-  
-  @FXML
   protected void resetBoidsPopulation() {
     this.boids_population_input.setText("");
   }
@@ -563,13 +1138,14 @@ public class BoidsFxViewerController extends FxViewerController {
       Boolean _outputQuality = this.outputQuality(this.boids_population_input.getText());
       if ((_outputQuality).booleanValue()) {
         int currentValue = Integer.parseInt(this.boids_population_input.getText());
-        if ((currentValue >= 10)) {
-          this.boids_population_input.setText(("" + Integer.valueOf(10)));
+        if ((currentValue >= 8)) {
+          this.boids_population_input.setText(("" + Integer.valueOf(8)));
         } else {
           if ((currentValue <= 1)) {
             this.boids_population_input.setText(("" + Integer.valueOf(1)));
           }
         }
+        this.showGroupConfiguration();
       }
     }
   }
@@ -578,11 +1154,12 @@ public class BoidsFxViewerController extends FxViewerController {
   protected void incrementBoidsPopulation() {
     if (((!Objects.equal(this.boids_population_input.getText(), "")) && (this.outputQuality(this.boids_population_input.getText())).booleanValue())) {
       int currentValue = Integer.parseInt(this.boids_population_input.getText());
-      if ((currentValue >= 10)) {
-        this.boids_population_input.setText(("" + Integer.valueOf(10)));
+      if ((currentValue >= 8)) {
+        this.boids_population_input.setText(("" + Integer.valueOf(8)));
       } else {
         this.boids_population_input.setText(("" + Integer.valueOf((currentValue + 1))));
       }
+      this.showGroupConfiguration();
     } else {
       this.boids_population_input.setText(("" + Integer.valueOf(1)));
     }
@@ -597,6 +1174,7 @@ public class BoidsFxViewerController extends FxViewerController {
       } else {
         this.boids_population_input.setText(("" + Integer.valueOf((currentValue - 1))));
       }
+      this.showGroupConfiguration();
     } else {
       this.boids_population_input.setText(("" + Integer.valueOf(1)));
     }
@@ -625,14 +1203,6 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_population_increment_circle.setStroke(normalTextColor);
       this.boids_population_line.setStroke(normalTextColor);
       this.boids_population_input.setStyle("-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent");
-      this.boids_vision_label.setTextFill(normalTextColor);
-      this.boids_vision_display.setTextFill(normalTextColor);
-      this.boids_vision_min.setTextFill(normalTextColor);
-      this.boids_vision_max.setTextFill(normalTextColor);
-      this.boids_distance_deplacement_label.setTextFill(normalTextColor);
-      this.boids_distance_deplacement_display.setTextFill(normalTextColor);
-      this.boids_distance_deplacement_min.setTextFill(normalTextColor);
-      this.boids_distance_deplacement_max.setTextFill(normalTextColor);
       this.boid_group.setTextFill(Color.rgb(0, 0, 0, 0.7));
       this.boid_vitesse.setTextFill(Color.rgb(0, 0, 0, 0.7));
       this.boid_group_vitesse.setTextFill(Color.rgb(0, 0, 0, 0.7));
@@ -645,6 +1215,143 @@ public class BoidsFxViewerController extends FxViewerController {
       this.toggle_perception.setTextFill(Color.rgb(0, 0, 0, 0.3));
       this.hide_infos.setTextFill(Color.rgb(0, 0, 0, 0.3));
       this.start_button.setTextFill(normalTextColor);
+      this.see_advanced_settings_label.setTextFill(normalTextColor);
+      this.group_label_1.setTextFill(normalTextColor);
+      this.mass_label_1.setTextFill(normalTextColor);
+      this.mass_min_1.setTextFill(normalTextColor);
+      this.mass_max_1.setTextFill(normalTextColor);
+      this.mass_display_1.setTextFill(normalTextColor);
+      this.speed_label_1.setTextFill(normalTextColor);
+      this.speed_min_1.setTextFill(normalTextColor);
+      this.speed_max_1.setTextFill(normalTextColor);
+      this.speed_display_1.setTextFill(normalTextColor);
+      this.angle_label_1.setTextFill(normalTextColor);
+      this.angle_min_1.setTextFill(normalTextColor);
+      this.angle_max_1.setTextFill(normalTextColor);
+      this.angle_display_1.setTextFill(normalTextColor);
+      this.distance_label_1.setTextFill(normalTextColor);
+      this.distance_min_1.setTextFill(normalTextColor);
+      this.distance_max_1.setTextFill(normalTextColor);
+      this.distance_display_1.setTextFill(normalTextColor);
+      this.group_label_2.setTextFill(normalTextColor);
+      this.mass_label_2.setTextFill(normalTextColor);
+      this.mass_min_2.setTextFill(normalTextColor);
+      this.mass_max_2.setTextFill(normalTextColor);
+      this.mass_display_2.setTextFill(normalTextColor);
+      this.speed_label_2.setTextFill(normalTextColor);
+      this.speed_min_2.setTextFill(normalTextColor);
+      this.speed_max_2.setTextFill(normalTextColor);
+      this.speed_display_2.setTextFill(normalTextColor);
+      this.angle_label_2.setTextFill(normalTextColor);
+      this.angle_min_2.setTextFill(normalTextColor);
+      this.angle_max_2.setTextFill(normalTextColor);
+      this.angle_display_2.setTextFill(normalTextColor);
+      this.distance_label_2.setTextFill(normalTextColor);
+      this.distance_min_2.setTextFill(normalTextColor);
+      this.distance_max_2.setTextFill(normalTextColor);
+      this.distance_display_2.setTextFill(normalTextColor);
+      this.group_label_3.setTextFill(normalTextColor);
+      this.mass_label_3.setTextFill(normalTextColor);
+      this.mass_min_3.setTextFill(normalTextColor);
+      this.mass_max_3.setTextFill(normalTextColor);
+      this.mass_display_3.setTextFill(normalTextColor);
+      this.speed_label_3.setTextFill(normalTextColor);
+      this.speed_min_3.setTextFill(normalTextColor);
+      this.speed_max_3.setTextFill(normalTextColor);
+      this.speed_display_3.setTextFill(normalTextColor);
+      this.angle_label_3.setTextFill(normalTextColor);
+      this.angle_min_3.setTextFill(normalTextColor);
+      this.angle_max_3.setTextFill(normalTextColor);
+      this.angle_display_3.setTextFill(normalTextColor);
+      this.distance_label_3.setTextFill(normalTextColor);
+      this.distance_min_3.setTextFill(normalTextColor);
+      this.distance_max_3.setTextFill(normalTextColor);
+      this.distance_display_3.setTextFill(normalTextColor);
+      this.group_label_4.setTextFill(normalTextColor);
+      this.mass_label_4.setTextFill(normalTextColor);
+      this.mass_min_4.setTextFill(normalTextColor);
+      this.mass_max_4.setTextFill(normalTextColor);
+      this.mass_display_4.setTextFill(normalTextColor);
+      this.speed_label_4.setTextFill(normalTextColor);
+      this.speed_min_4.setTextFill(normalTextColor);
+      this.speed_max_4.setTextFill(normalTextColor);
+      this.speed_display_4.setTextFill(normalTextColor);
+      this.angle_label_4.setTextFill(normalTextColor);
+      this.angle_min_4.setTextFill(normalTextColor);
+      this.angle_max_4.setTextFill(normalTextColor);
+      this.angle_display_4.setTextFill(normalTextColor);
+      this.distance_label_4.setTextFill(normalTextColor);
+      this.distance_min_4.setTextFill(normalTextColor);
+      this.distance_max_4.setTextFill(normalTextColor);
+      this.distance_display_4.setTextFill(normalTextColor);
+      this.group_label_5.setTextFill(normalTextColor);
+      this.mass_label_5.setTextFill(normalTextColor);
+      this.mass_min_5.setTextFill(normalTextColor);
+      this.mass_max_5.setTextFill(normalTextColor);
+      this.mass_display_5.setTextFill(normalTextColor);
+      this.speed_label_5.setTextFill(normalTextColor);
+      this.speed_min_5.setTextFill(normalTextColor);
+      this.speed_max_5.setTextFill(normalTextColor);
+      this.speed_display_5.setTextFill(normalTextColor);
+      this.angle_label_5.setTextFill(normalTextColor);
+      this.angle_min_5.setTextFill(normalTextColor);
+      this.angle_max_5.setTextFill(normalTextColor);
+      this.angle_display_5.setTextFill(normalTextColor);
+      this.distance_label_5.setTextFill(normalTextColor);
+      this.distance_min_5.setTextFill(normalTextColor);
+      this.distance_max_5.setTextFill(normalTextColor);
+      this.distance_display_5.setTextFill(normalTextColor);
+      this.group_label_6.setTextFill(normalTextColor);
+      this.mass_label_6.setTextFill(normalTextColor);
+      this.mass_min_6.setTextFill(normalTextColor);
+      this.mass_max_6.setTextFill(normalTextColor);
+      this.mass_display_6.setTextFill(normalTextColor);
+      this.speed_label_6.setTextFill(normalTextColor);
+      this.speed_min_6.setTextFill(normalTextColor);
+      this.speed_max_6.setTextFill(normalTextColor);
+      this.speed_display_6.setTextFill(normalTextColor);
+      this.angle_label_6.setTextFill(normalTextColor);
+      this.angle_min_6.setTextFill(normalTextColor);
+      this.angle_max_6.setTextFill(normalTextColor);
+      this.angle_display_6.setTextFill(normalTextColor);
+      this.distance_label_6.setTextFill(normalTextColor);
+      this.distance_min_6.setTextFill(normalTextColor);
+      this.distance_max_6.setTextFill(normalTextColor);
+      this.distance_display_6.setTextFill(normalTextColor);
+      this.group_label_7.setTextFill(normalTextColor);
+      this.mass_label_7.setTextFill(normalTextColor);
+      this.mass_min_7.setTextFill(normalTextColor);
+      this.mass_max_7.setTextFill(normalTextColor);
+      this.mass_display_7.setTextFill(normalTextColor);
+      this.speed_label_7.setTextFill(normalTextColor);
+      this.speed_min_7.setTextFill(normalTextColor);
+      this.speed_max_7.setTextFill(normalTextColor);
+      this.speed_display_7.setTextFill(normalTextColor);
+      this.angle_label_7.setTextFill(normalTextColor);
+      this.angle_min_7.setTextFill(normalTextColor);
+      this.angle_max_7.setTextFill(normalTextColor);
+      this.angle_display_7.setTextFill(normalTextColor);
+      this.distance_label_7.setTextFill(normalTextColor);
+      this.distance_min_7.setTextFill(normalTextColor);
+      this.distance_max_7.setTextFill(normalTextColor);
+      this.distance_display_7.setTextFill(normalTextColor);
+      this.group_label_8.setTextFill(normalTextColor);
+      this.mass_label_8.setTextFill(normalTextColor);
+      this.mass_min_8.setTextFill(normalTextColor);
+      this.mass_max_8.setTextFill(normalTextColor);
+      this.mass_display_8.setTextFill(normalTextColor);
+      this.speed_label_8.setTextFill(normalTextColor);
+      this.speed_min_8.setTextFill(normalTextColor);
+      this.speed_max_8.setTextFill(normalTextColor);
+      this.speed_display_8.setTextFill(normalTextColor);
+      this.angle_label_8.setTextFill(normalTextColor);
+      this.angle_min_8.setTextFill(normalTextColor);
+      this.angle_max_8.setTextFill(normalTextColor);
+      this.angle_display_8.setTextFill(normalTextColor);
+      this.distance_label_8.setTextFill(normalTextColor);
+      this.distance_min_8.setTextFill(normalTextColor);
+      this.distance_max_8.setTextFill(normalTextColor);
+      this.distance_display_8.setTextFill(normalTextColor);
       if ((this.selectedMap != 1)) {
         this.preview_map_1_border.setStroke(Color.rgb(0, 0, 0, 0.6));
         this.map_label_1.setTextFill(normalTextColor);
@@ -684,14 +1391,6 @@ public class BoidsFxViewerController extends FxViewerController {
       this.boids_population_increment_circle.setStroke(nightTextColor);
       this.boids_population_line.setStroke(nightTextColor);
       this.boids_population_input.setStyle("-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent");
-      this.boids_vision_label.setTextFill(nightTextColor);
-      this.boids_vision_display.setTextFill(nightTextColor);
-      this.boids_vision_min.setTextFill(nightTextColor);
-      this.boids_vision_max.setTextFill(nightTextColor);
-      this.boids_distance_deplacement_label.setTextFill(nightTextColor);
-      this.boids_distance_deplacement_display.setTextFill(nightTextColor);
-      this.boids_distance_deplacement_min.setTextFill(nightTextColor);
-      this.boids_distance_deplacement_max.setTextFill(nightTextColor);
       this.boid_group.setTextFill(Color.rgb(191, 191, 191, 0.7));
       this.boid_vitesse.setTextFill(Color.rgb(191, 191, 191, 0.7));
       this.boid_group_vitesse.setTextFill(Color.rgb(191, 191, 191, 0.7));
@@ -704,6 +1403,143 @@ public class BoidsFxViewerController extends FxViewerController {
       this.toggle_perception.setTextFill(Color.rgb(191, 191, 191, 0.3));
       this.hide_infos.setTextFill(Color.rgb(191, 191, 191, 0.3));
       this.start_button.setTextFill(nightTextColor);
+      this.see_advanced_settings_label.setTextFill(nightTextColor);
+      this.group_label_1.setTextFill(nightTextColor);
+      this.mass_label_1.setTextFill(nightTextColor);
+      this.mass_min_1.setTextFill(nightTextColor);
+      this.mass_max_1.setTextFill(nightTextColor);
+      this.mass_display_1.setTextFill(nightTextColor);
+      this.speed_label_1.setTextFill(nightTextColor);
+      this.speed_min_1.setTextFill(nightTextColor);
+      this.speed_max_1.setTextFill(nightTextColor);
+      this.speed_display_1.setTextFill(nightTextColor);
+      this.angle_label_1.setTextFill(nightTextColor);
+      this.angle_min_1.setTextFill(nightTextColor);
+      this.angle_max_1.setTextFill(nightTextColor);
+      this.angle_display_1.setTextFill(nightTextColor);
+      this.distance_label_1.setTextFill(nightTextColor);
+      this.distance_min_1.setTextFill(nightTextColor);
+      this.distance_max_1.setTextFill(nightTextColor);
+      this.distance_display_1.setTextFill(nightTextColor);
+      this.group_label_2.setTextFill(nightTextColor);
+      this.mass_label_2.setTextFill(nightTextColor);
+      this.mass_min_2.setTextFill(nightTextColor);
+      this.mass_max_2.setTextFill(nightTextColor);
+      this.mass_display_2.setTextFill(nightTextColor);
+      this.speed_label_2.setTextFill(nightTextColor);
+      this.speed_min_2.setTextFill(nightTextColor);
+      this.speed_max_2.setTextFill(nightTextColor);
+      this.speed_display_2.setTextFill(nightTextColor);
+      this.angle_label_2.setTextFill(nightTextColor);
+      this.angle_min_2.setTextFill(nightTextColor);
+      this.angle_max_2.setTextFill(nightTextColor);
+      this.angle_display_2.setTextFill(nightTextColor);
+      this.distance_label_2.setTextFill(nightTextColor);
+      this.distance_min_2.setTextFill(nightTextColor);
+      this.distance_max_2.setTextFill(nightTextColor);
+      this.distance_display_2.setTextFill(nightTextColor);
+      this.group_label_3.setTextFill(nightTextColor);
+      this.mass_label_3.setTextFill(nightTextColor);
+      this.mass_min_3.setTextFill(nightTextColor);
+      this.mass_max_3.setTextFill(nightTextColor);
+      this.mass_display_3.setTextFill(nightTextColor);
+      this.speed_label_3.setTextFill(nightTextColor);
+      this.speed_min_3.setTextFill(nightTextColor);
+      this.speed_max_3.setTextFill(nightTextColor);
+      this.speed_display_3.setTextFill(nightTextColor);
+      this.angle_label_3.setTextFill(nightTextColor);
+      this.angle_min_3.setTextFill(nightTextColor);
+      this.angle_max_3.setTextFill(nightTextColor);
+      this.angle_display_3.setTextFill(nightTextColor);
+      this.distance_label_3.setTextFill(nightTextColor);
+      this.distance_min_3.setTextFill(nightTextColor);
+      this.distance_max_3.setTextFill(nightTextColor);
+      this.distance_display_3.setTextFill(nightTextColor);
+      this.group_label_4.setTextFill(nightTextColor);
+      this.mass_label_4.setTextFill(nightTextColor);
+      this.mass_min_4.setTextFill(nightTextColor);
+      this.mass_max_4.setTextFill(nightTextColor);
+      this.mass_display_4.setTextFill(nightTextColor);
+      this.speed_label_4.setTextFill(nightTextColor);
+      this.speed_min_4.setTextFill(nightTextColor);
+      this.speed_max_4.setTextFill(nightTextColor);
+      this.speed_display_4.setTextFill(nightTextColor);
+      this.angle_label_4.setTextFill(nightTextColor);
+      this.angle_min_4.setTextFill(nightTextColor);
+      this.angle_max_4.setTextFill(nightTextColor);
+      this.angle_display_4.setTextFill(nightTextColor);
+      this.distance_label_4.setTextFill(nightTextColor);
+      this.distance_min_4.setTextFill(nightTextColor);
+      this.distance_max_4.setTextFill(nightTextColor);
+      this.distance_display_4.setTextFill(nightTextColor);
+      this.group_label_5.setTextFill(nightTextColor);
+      this.mass_label_5.setTextFill(nightTextColor);
+      this.mass_min_5.setTextFill(nightTextColor);
+      this.mass_max_5.setTextFill(nightTextColor);
+      this.mass_display_5.setTextFill(nightTextColor);
+      this.speed_label_5.setTextFill(nightTextColor);
+      this.speed_min_5.setTextFill(nightTextColor);
+      this.speed_max_5.setTextFill(nightTextColor);
+      this.speed_display_5.setTextFill(nightTextColor);
+      this.angle_label_5.setTextFill(nightTextColor);
+      this.angle_min_5.setTextFill(nightTextColor);
+      this.angle_max_5.setTextFill(nightTextColor);
+      this.angle_display_5.setTextFill(nightTextColor);
+      this.distance_label_5.setTextFill(nightTextColor);
+      this.distance_min_5.setTextFill(nightTextColor);
+      this.distance_max_5.setTextFill(nightTextColor);
+      this.distance_display_5.setTextFill(nightTextColor);
+      this.group_label_6.setTextFill(nightTextColor);
+      this.mass_label_6.setTextFill(nightTextColor);
+      this.mass_min_6.setTextFill(nightTextColor);
+      this.mass_max_6.setTextFill(nightTextColor);
+      this.mass_display_6.setTextFill(nightTextColor);
+      this.speed_label_6.setTextFill(nightTextColor);
+      this.speed_min_6.setTextFill(nightTextColor);
+      this.speed_max_6.setTextFill(nightTextColor);
+      this.speed_display_6.setTextFill(nightTextColor);
+      this.angle_label_6.setTextFill(nightTextColor);
+      this.angle_min_6.setTextFill(nightTextColor);
+      this.angle_max_6.setTextFill(nightTextColor);
+      this.angle_display_6.setTextFill(nightTextColor);
+      this.distance_label_6.setTextFill(nightTextColor);
+      this.distance_min_6.setTextFill(nightTextColor);
+      this.distance_max_6.setTextFill(nightTextColor);
+      this.distance_display_6.setTextFill(nightTextColor);
+      this.group_label_7.setTextFill(nightTextColor);
+      this.mass_label_7.setTextFill(nightTextColor);
+      this.mass_min_7.setTextFill(nightTextColor);
+      this.mass_max_7.setTextFill(nightTextColor);
+      this.mass_display_7.setTextFill(nightTextColor);
+      this.speed_label_7.setTextFill(nightTextColor);
+      this.speed_min_7.setTextFill(nightTextColor);
+      this.speed_max_7.setTextFill(nightTextColor);
+      this.speed_display_7.setTextFill(nightTextColor);
+      this.angle_label_7.setTextFill(nightTextColor);
+      this.angle_min_7.setTextFill(nightTextColor);
+      this.angle_max_7.setTextFill(nightTextColor);
+      this.angle_display_7.setTextFill(nightTextColor);
+      this.distance_label_7.setTextFill(nightTextColor);
+      this.distance_min_7.setTextFill(nightTextColor);
+      this.distance_max_7.setTextFill(nightTextColor);
+      this.distance_display_7.setTextFill(nightTextColor);
+      this.group_label_8.setTextFill(nightTextColor);
+      this.mass_label_8.setTextFill(nightTextColor);
+      this.mass_min_8.setTextFill(nightTextColor);
+      this.mass_max_8.setTextFill(nightTextColor);
+      this.mass_display_8.setTextFill(nightTextColor);
+      this.speed_label_8.setTextFill(nightTextColor);
+      this.speed_min_8.setTextFill(nightTextColor);
+      this.speed_max_8.setTextFill(nightTextColor);
+      this.speed_display_8.setTextFill(nightTextColor);
+      this.angle_label_8.setTextFill(nightTextColor);
+      this.angle_min_8.setTextFill(nightTextColor);
+      this.angle_max_8.setTextFill(nightTextColor);
+      this.angle_display_8.setTextFill(nightTextColor);
+      this.distance_label_8.setTextFill(nightTextColor);
+      this.distance_min_8.setTextFill(nightTextColor);
+      this.distance_max_8.setTextFill(nightTextColor);
+      this.distance_display_8.setTextFill(nightTextColor);
       if ((this.selectedMap != 1)) {
         this.preview_map_1_border.setStroke(nightTextColor);
         this.map_label_1.setTextFill(nightTextColor);
@@ -944,20 +1780,6 @@ public class BoidsFxViewerController extends FxViewerController {
     } else {
       this.boids_population_input.setDisable(true);
     }
-    boolean _isDisable_3 = this.boids_vision_input.isDisable();
-    boolean _equals_3 = (_isDisable_3 == true);
-    if (_equals_3) {
-      this.boids_vision_input.setDisable(false);
-    } else {
-      this.boids_vision_input.setDisable(true);
-    }
-    boolean _isDisable_4 = this.boids_distance_deplacement_input.isDisable();
-    boolean _equals_4 = (_isDisable_4 == true);
-    if (_equals_4) {
-      this.boids_distance_deplacement_input.setDisable(false);
-    } else {
-      this.boids_distance_deplacement_input.setDisable(true);
-    }
   }
   
   public void toggleMenuUIVisibility() {
@@ -1129,100 +1951,6 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   /**
-   * BOIDS PERCEPTION ANGLE GLOWING EFFECT
-   */
-  @FXML
-  protected void boidsVisionMinGlow() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_vision_min.setTextFill(Color.rgb(235, 221, 26));
-    } else {
-      this.boids_vision_min.setTextFill(Color.rgb(0, 0, 0));
-    }
-    Glow glowEffect = new Glow();
-    glowEffect.setLevel(0.8);
-    this.boids_vision_min.setEffect(glowEffect);
-  }
-  
-  @FXML
-  protected void boidsVisionMaxGlow() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_vision_max.setTextFill(Color.rgb(235, 221, 26));
-    } else {
-      this.boids_vision_max.setTextFill(Color.rgb(0, 0, 0));
-    }
-    Glow glowEffect = new Glow();
-    glowEffect.setLevel(0.8);
-    this.boids_vision_max.setEffect(glowEffect);
-  }
-  
-  @FXML
-  protected void boidsVisionMinReset() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_vision_min.setTextFill(Color.rgb(191, 191, 191));
-    } else {
-      this.boids_vision_min.setTextFill(Color.rgb(0, 0, 0));
-    }
-    this.boids_vision_min.setEffect(null);
-  }
-  
-  @FXML
-  protected void boidsVisionMaxReset() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_vision_max.setTextFill(Color.rgb(191, 191, 191));
-    } else {
-      this.boids_vision_max.setTextFill(Color.rgb(0, 0, 0));
-    }
-    this.boids_vision_max.setEffect(null);
-  }
-  
-  /**
-   * BOIDS DISTANCE PERCEPTION GLOWING EFFECT
-   */
-  @FXML
-  protected void boidsDistanceVisionMinGlow() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_distance_deplacement_min.setTextFill(Color.rgb(235, 221, 26));
-    } else {
-      this.boids_distance_deplacement_min.setTextFill(Color.rgb(0, 0, 0));
-    }
-    Glow glowEffect = new Glow();
-    glowEffect.setLevel(0.8);
-    this.boids_distance_deplacement_min.setEffect(glowEffect);
-  }
-  
-  @FXML
-  protected void boidsDistanceVisionMaxGlow() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_distance_deplacement_max.setTextFill(Color.rgb(235, 221, 26));
-    } else {
-      this.boids_distance_deplacement_max.setTextFill(Color.rgb(0, 0, 0));
-    }
-    Glow glowEffect = new Glow();
-    glowEffect.setLevel(0.8);
-    this.boids_distance_deplacement_max.setEffect(glowEffect);
-  }
-  
-  @FXML
-  protected void boidsDistanceVisionMinReset() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_distance_deplacement_min.setTextFill(Color.rgb(191, 191, 191));
-    } else {
-      this.boids_distance_deplacement_min.setTextFill(Color.rgb(0, 0, 0));
-    }
-    this.boids_distance_deplacement_min.setEffect(null);
-  }
-  
-  @FXML
-  protected void boidsDistanceVisionMaxReset() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_distance_deplacement_max.setTextFill(Color.rgb(191, 191, 191));
-    } else {
-      this.boids_distance_deplacement_max.setTextFill(Color.rgb(0, 0, 0));
-    }
-    this.boids_distance_deplacement_max.setEffect(null);
-  }
-  
-  /**
    * MAX/MIN values fast setters
    */
   @FXML
@@ -1235,30 +1963,6 @@ public class BoidsFxViewerController extends FxViewerController {
   protected void boidsQuantitySetToMax() {
     this.boids_quantity_input.setValue(Integer.parseInt(this.boids_quantity_max.getText()));
     this.boids_quantity_display.setText(this.boids_quantity_max.getText());
-  }
-  
-  @FXML
-  protected void boidsVisionSetToMin() {
-    this.boids_vision_input.setValue(Integer.parseInt(this.boids_vision_min.getText()));
-    this.boids_vision_display.setText(this.boids_vision_min.getText());
-  }
-  
-  @FXML
-  protected void boidsVisionSetToMax() {
-    this.boids_vision_input.setValue(Integer.parseInt(this.boids_vision_max.getText()));
-    this.boids_vision_display.setText(this.boids_vision_max.getText());
-  }
-  
-  @FXML
-  protected void boidsDistanceVisionSetToMin() {
-    this.boids_distance_deplacement_input.setValue(Integer.parseInt(this.boids_distance_deplacement_min.getText()));
-    this.boids_distance_deplacement_display.setText(this.boids_distance_deplacement_min.getText());
-  }
-  
-  @FXML
-  protected void boidsDistanceVisionSetToMax() {
-    this.boids_distance_deplacement_input.setValue(Integer.parseInt(this.boids_distance_deplacement_max.getText()));
-    this.boids_distance_deplacement_display.setText(this.boids_distance_deplacement_max.getText());
   }
   
   @FXML
@@ -1381,6 +2085,1028 @@ public class BoidsFxViewerController extends FxViewerController {
     this.previewMap2Reset();
     this.tick_map_1.setVisible(false);
     this.tick_map_2.setVisible(false);
+  }
+  
+  @FXML
+  protected void applyGlowEffectOnLabel(final MouseEvent e) {
+    if ((this.nightMode).booleanValue()) {
+      Object _source = e.getSource();
+      ((Label) _source).setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      Object _source_1 = e.getSource();
+      ((Label) _source_1).setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    Object _source_2 = e.getSource();
+    ((Label) _source_2).setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void unapplyGlowEffectOnLabel(final MouseEvent e) {
+    if ((this.nightMode).booleanValue()) {
+      Object _source = e.getSource();
+      ((Label) _source).setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      Object _source_1 = e.getSource();
+      ((Label) _source_1).setTextFill(Color.rgb(0, 0, 0));
+    }
+    Object _source_2 = e.getSource();
+    ((Label) _source_2).setEffect(null);
+  }
+  
+  @FXML
+  protected void paneTitleGlow(final MouseEvent e) {
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    String _substring = e.getSource().toString().substring(0, 1);
+    boolean _equals = Objects.equal(_substring, "P");
+    if (_equals) {
+      Object _source = e.getSource();
+      String pane = ((Pane) _source).getId();
+      boolean _equals_1 = Objects.equal(pane, "map_selection_pane");
+      if (_equals_1) {
+        this.map_selection_label.setEffect(glowEffect);
+      } else {
+        boolean _equals_2 = Objects.equal(pane, "simulation_parameters_pane");
+        if (_equals_2) {
+          this.settings_label.setEffect(glowEffect);
+        }
+      }
+    } else {
+      Object _source_1 = e.getSource();
+      String pane_1 = ((ScrollPane) _source_1).getId();
+      boolean _equals_3 = Objects.equal(pane_1, "advanced_settings_pane");
+      if (_equals_3) {
+        this.advanced_settings_label.setEffect(glowEffect);
+      }
+    }
+  }
+  
+  @FXML
+  protected void toggleAdvancedSettingsVisibility() {
+    boolean _isVisible = this.advanced_settings_pane.isVisible();
+    if (_isVisible) {
+      this.advanced_settings_pane.setVisible(false);
+    } else {
+      this.advanced_settings_pane.setVisible(true);
+    }
+    this.showGroupConfiguration();
+  }
+  
+  @FXML
+  protected void showGroupConfiguration() {
+    int _boidsPopulation = this.getBoidsPopulation();
+    boolean _lessEqualsThan = (_boidsPopulation <= 4);
+    if (_lessEqualsThan) {
+      this.advanced_settings_anchor_pane.setPrefHeight(330);
+    } else {
+      this.advanced_settings_anchor_pane.setPrefHeight(600);
+    }
+    int _boidsPopulation_1 = this.getBoidsPopulation();
+    boolean _greaterEqualsThan = (_boidsPopulation_1 >= 1);
+    if (_greaterEqualsThan) {
+      this.pane_group_1.setVisible(true);
+    } else {
+      this.pane_group_1.setVisible(false);
+    }
+    int _boidsPopulation_2 = this.getBoidsPopulation();
+    boolean _greaterEqualsThan_1 = (_boidsPopulation_2 >= 2);
+    if (_greaterEqualsThan_1) {
+      this.pane_group_2.setVisible(true);
+    } else {
+      this.pane_group_2.setVisible(false);
+    }
+    int _boidsPopulation_3 = this.getBoidsPopulation();
+    boolean _greaterEqualsThan_2 = (_boidsPopulation_3 >= 3);
+    if (_greaterEqualsThan_2) {
+      this.pane_group_3.setVisible(true);
+    } else {
+      this.pane_group_3.setVisible(false);
+    }
+    int _boidsPopulation_4 = this.getBoidsPopulation();
+    boolean _greaterEqualsThan_3 = (_boidsPopulation_4 >= 4);
+    if (_greaterEqualsThan_3) {
+      this.pane_group_4.setVisible(true);
+    } else {
+      this.pane_group_4.setVisible(false);
+    }
+    int _boidsPopulation_5 = this.getBoidsPopulation();
+    boolean _greaterEqualsThan_4 = (_boidsPopulation_5 >= 5);
+    if (_greaterEqualsThan_4) {
+      this.pane_group_5.setVisible(true);
+    } else {
+      this.pane_group_5.setVisible(false);
+    }
+    int _boidsPopulation_6 = this.getBoidsPopulation();
+    boolean _greaterEqualsThan_5 = (_boidsPopulation_6 >= 6);
+    if (_greaterEqualsThan_5) {
+      this.pane_group_6.setVisible(true);
+    } else {
+      this.pane_group_6.setVisible(false);
+    }
+    int _boidsPopulation_7 = this.getBoidsPopulation();
+    boolean _greaterEqualsThan_6 = (_boidsPopulation_7 >= 7);
+    if (_greaterEqualsThan_6) {
+      this.pane_group_7.setVisible(true);
+    } else {
+      this.pane_group_7.setVisible(false);
+    }
+    int _boidsPopulation_8 = this.getBoidsPopulation();
+    boolean _greaterEqualsThan_7 = (_boidsPopulation_8 >= 8);
+    if (_greaterEqualsThan_7) {
+      this.pane_group_8.setVisible(true);
+    } else {
+      this.pane_group_8.setVisible(false);
+    }
+  }
+  
+  @FXML
+  protected void paneTitleReset() {
+    this.map_selection_label.setEffect(null);
+    this.settings_label.setEffect(null);
+    this.advanced_settings_label.setEffect(null);
+  }
+  
+  @FXML
+  protected void subPaneTitleGlow(final MouseEvent e) {
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    Object _source = e.getSource();
+    String _id = ((Pane) _source).getId();
+    boolean _equals = Objects.equal(_id, "pane_group_1");
+    if (_equals) {
+      this.group_label_1.setEffect(glowEffect);
+    } else {
+      Object _source_1 = e.getSource();
+      String _id_1 = ((Pane) _source_1).getId();
+      boolean _equals_1 = Objects.equal(_id_1, "pane_group_2");
+      if (_equals_1) {
+        this.group_label_2.setEffect(glowEffect);
+      } else {
+        Object _source_2 = e.getSource();
+        String _id_2 = ((Pane) _source_2).getId();
+        boolean _equals_2 = Objects.equal(_id_2, "pane_group_3");
+        if (_equals_2) {
+          this.group_label_3.setEffect(glowEffect);
+        } else {
+          Object _source_3 = e.getSource();
+          String _id_3 = ((Pane) _source_3).getId();
+          boolean _equals_3 = Objects.equal(_id_3, "pane_group_4");
+          if (_equals_3) {
+            this.group_label_4.setEffect(glowEffect);
+          } else {
+            Object _source_4 = e.getSource();
+            String _id_4 = ((Pane) _source_4).getId();
+            boolean _equals_4 = Objects.equal(_id_4, "pane_group_5");
+            if (_equals_4) {
+              this.group_label_5.setEffect(glowEffect);
+            } else {
+              Object _source_5 = e.getSource();
+              String _id_5 = ((Pane) _source_5).getId();
+              boolean _equals_5 = Objects.equal(_id_5, "pane_group_6");
+              if (_equals_5) {
+                this.group_label_6.setEffect(glowEffect);
+              } else {
+                Object _source_6 = e.getSource();
+                String _id_6 = ((Pane) _source_6).getId();
+                boolean _equals_6 = Objects.equal(_id_6, "pane_group_7");
+                if (_equals_6) {
+                  this.group_label_7.setEffect(glowEffect);
+                } else {
+                  Object _source_7 = e.getSource();
+                  String _id_7 = ((Pane) _source_7).getId();
+                  boolean _equals_7 = Objects.equal(_id_7, "pane_group_8");
+                  if (_equals_7) {
+                    this.group_label_8.setEffect(glowEffect);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  @FXML
+  protected void subPaneTitleReset() {
+    this.group_label_1.setEffect(null);
+    this.group_label_2.setEffect(null);
+    this.group_label_3.setEffect(null);
+    this.group_label_4.setEffect(null);
+    this.group_label_5.setEffect(null);
+    this.group_label_6.setEffect(null);
+    this.group_label_7.setEffect(null);
+    this.group_label_8.setEffect(null);
+  }
+  
+  @FXML
+  protected void resetGroupValues() {
+    this.mass_1.setValue(Configuration.DEFAULT_MASS);
+    this.mass_display_1.setText(Integer.valueOf(Configuration.DEFAULT_MASS).toString());
+    this.speed_1.setValue(Configuration.DEFAULT_SPEED);
+    this.speed_display_1.setText(Integer.valueOf(Configuration.DEFAULT_SPEED).toString());
+    this.angle_1.setValue(Configuration.DEFAULT_ANGLE);
+    this.angle_display_1.setText(Integer.valueOf(Configuration.DEFAULT_ANGLE).toString());
+    this.distance_1.setValue(Configuration.DEFAULT_DISTANCE);
+    this.distance_display_1.setText(Integer.valueOf(Configuration.DEFAULT_DISTANCE).toString());
+    this.mass_2.setValue(Configuration.DEFAULT_MASS);
+    this.mass_display_2.setText(Integer.valueOf(Configuration.DEFAULT_MASS).toString());
+    this.speed_2.setValue(Configuration.DEFAULT_SPEED);
+    this.speed_display_2.setText(Integer.valueOf(Configuration.DEFAULT_SPEED).toString());
+    this.angle_2.setValue(Configuration.DEFAULT_ANGLE);
+    this.angle_display_2.setText(Integer.valueOf(Configuration.DEFAULT_ANGLE).toString());
+    this.distance_2.setValue(Configuration.DEFAULT_DISTANCE);
+    this.distance_display_2.setText(Integer.valueOf(Configuration.DEFAULT_DISTANCE).toString());
+    this.mass_3.setValue(Configuration.DEFAULT_MASS);
+    this.mass_display_3.setText(Integer.valueOf(Configuration.DEFAULT_MASS).toString());
+    this.speed_3.setValue(Configuration.DEFAULT_SPEED);
+    this.speed_display_3.setText(Integer.valueOf(Configuration.DEFAULT_SPEED).toString());
+    this.angle_3.setValue(Configuration.DEFAULT_ANGLE);
+    this.angle_display_3.setText(Integer.valueOf(Configuration.DEFAULT_ANGLE).toString());
+    this.distance_3.setValue(Configuration.DEFAULT_DISTANCE);
+    this.distance_display_3.setText(Integer.valueOf(Configuration.DEFAULT_DISTANCE).toString());
+    this.mass_4.setValue(Configuration.DEFAULT_MASS);
+    this.mass_display_4.setText(Integer.valueOf(Configuration.DEFAULT_MASS).toString());
+    this.speed_4.setValue(Configuration.DEFAULT_SPEED);
+    this.speed_display_4.setText(Integer.valueOf(Configuration.DEFAULT_SPEED).toString());
+    this.angle_4.setValue(Configuration.DEFAULT_ANGLE);
+    this.angle_display_4.setText(Integer.valueOf(Configuration.DEFAULT_ANGLE).toString());
+    this.distance_4.setValue(Configuration.DEFAULT_DISTANCE);
+    this.distance_display_4.setText(Integer.valueOf(Configuration.DEFAULT_DISTANCE).toString());
+    this.mass_5.setValue(Configuration.DEFAULT_MASS);
+    this.mass_display_5.setText(Integer.valueOf(Configuration.DEFAULT_MASS).toString());
+    this.speed_5.setValue(Configuration.DEFAULT_SPEED);
+    this.speed_display_5.setText(Integer.valueOf(Configuration.DEFAULT_SPEED).toString());
+    this.angle_5.setValue(Configuration.DEFAULT_ANGLE);
+    this.angle_display_5.setText(Integer.valueOf(Configuration.DEFAULT_ANGLE).toString());
+    this.distance_5.setValue(Configuration.DEFAULT_DISTANCE);
+    this.distance_display_5.setText(Integer.valueOf(Configuration.DEFAULT_DISTANCE).toString());
+    this.mass_6.setValue(Configuration.DEFAULT_MASS);
+    this.mass_display_6.setText(Integer.valueOf(Configuration.DEFAULT_MASS).toString());
+    this.speed_6.setValue(Configuration.DEFAULT_SPEED);
+    this.speed_display_6.setText(Integer.valueOf(Configuration.DEFAULT_SPEED).toString());
+    this.angle_6.setValue(Configuration.DEFAULT_ANGLE);
+    this.angle_display_6.setText(Integer.valueOf(Configuration.DEFAULT_ANGLE).toString());
+    this.distance_6.setValue(Configuration.DEFAULT_DISTANCE);
+    this.distance_display_6.setText(Integer.valueOf(Configuration.DEFAULT_DISTANCE).toString());
+    this.mass_7.setValue(Configuration.DEFAULT_MASS);
+    this.mass_display_7.setText(Integer.valueOf(Configuration.DEFAULT_MASS).toString());
+    this.speed_7.setValue(Configuration.DEFAULT_SPEED);
+    this.speed_display_7.setText(Integer.valueOf(Configuration.DEFAULT_SPEED).toString());
+    this.angle_7.setValue(Configuration.DEFAULT_ANGLE);
+    this.angle_display_7.setText(Integer.valueOf(Configuration.DEFAULT_ANGLE).toString());
+    this.distance_7.setValue(Configuration.DEFAULT_DISTANCE);
+    this.distance_display_7.setText(Integer.valueOf(Configuration.DEFAULT_DISTANCE).toString());
+    this.mass_8.setValue(Configuration.DEFAULT_MASS);
+    this.mass_display_8.setText(Integer.valueOf(Configuration.DEFAULT_MASS).toString());
+    this.speed_8.setValue(Configuration.DEFAULT_SPEED);
+    this.speed_display_8.setText(Integer.valueOf(Configuration.DEFAULT_SPEED).toString());
+    this.angle_8.setValue(Configuration.DEFAULT_ANGLE);
+    this.angle_display_8.setText(Integer.valueOf(Configuration.DEFAULT_ANGLE).toString());
+    this.distance_8.setValue(Configuration.DEFAULT_DISTANCE);
+    this.distance_display_8.setText(Integer.valueOf(Configuration.DEFAULT_DISTANCE).toString());
+  }
+  
+  @FXML
+  protected void massListener(final MouseEvent e) {
+    Object _source = e.getSource();
+    final InvalidationListener _function = (Observable it) -> {
+      Object _source_1 = e.getSource();
+      String _id = ((ScrollBar) _source_1).getId();
+      boolean _equals = Objects.equal(_id, "mass_1");
+      if (_equals) {
+        Object _source_2 = e.getSource();
+        this.mass_display_1.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_2).getValue())));
+      } else {
+        Object _source_3 = e.getSource();
+        String _id_1 = ((ScrollBar) _source_3).getId();
+        boolean _equals_1 = Objects.equal(_id_1, "mass_2");
+        if (_equals_1) {
+          Object _source_4 = e.getSource();
+          this.mass_display_2.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_4).getValue())));
+        } else {
+          Object _source_5 = e.getSource();
+          String _id_2 = ((ScrollBar) _source_5).getId();
+          boolean _equals_2 = Objects.equal(_id_2, "mass_3");
+          if (_equals_2) {
+            Object _source_6 = e.getSource();
+            this.mass_display_3.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_6).getValue())));
+          } else {
+            Object _source_7 = e.getSource();
+            String _id_3 = ((ScrollBar) _source_7).getId();
+            boolean _equals_3 = Objects.equal(_id_3, "mass_4");
+            if (_equals_3) {
+              Object _source_8 = e.getSource();
+              this.mass_display_4.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_8).getValue())));
+            } else {
+              Object _source_9 = e.getSource();
+              String _id_4 = ((ScrollBar) _source_9).getId();
+              boolean _equals_4 = Objects.equal(_id_4, "mass_5");
+              if (_equals_4) {
+                Object _source_10 = e.getSource();
+                this.mass_display_5.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_10).getValue())));
+              } else {
+                Object _source_11 = e.getSource();
+                String _id_5 = ((ScrollBar) _source_11).getId();
+                boolean _equals_5 = Objects.equal(_id_5, "mass_6");
+                if (_equals_5) {
+                  Object _source_12 = e.getSource();
+                  this.mass_display_6.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_12).getValue())));
+                } else {
+                  Object _source_13 = e.getSource();
+                  String _id_6 = ((ScrollBar) _source_13).getId();
+                  boolean _equals_6 = Objects.equal(_id_6, "mass_7");
+                  if (_equals_6) {
+                    Object _source_14 = e.getSource();
+                    this.mass_display_7.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_14).getValue())));
+                  } else {
+                    Object _source_15 = e.getSource();
+                    String _id_7 = ((ScrollBar) _source_15).getId();
+                    boolean _equals_7 = Objects.equal(_id_7, "mass_8");
+                    if (_equals_7) {
+                      Object _source_16 = e.getSource();
+                      this.mass_display_8.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_16).getValue())));
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    ((ScrollBar) _source).valueProperty().addListener(_function);
+  }
+  
+  @FXML
+  protected void speedListener(final MouseEvent e) {
+    Object _source = e.getSource();
+    final InvalidationListener _function = (Observable it) -> {
+      Object _source_1 = e.getSource();
+      String _id = ((ScrollBar) _source_1).getId();
+      boolean _equals = Objects.equal(_id, "speed_1");
+      if (_equals) {
+        Object _source_2 = e.getSource();
+        this.speed_display_1.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_2).getValue())));
+      } else {
+        Object _source_3 = e.getSource();
+        String _id_1 = ((ScrollBar) _source_3).getId();
+        boolean _equals_1 = Objects.equal(_id_1, "speed_2");
+        if (_equals_1) {
+          Object _source_4 = e.getSource();
+          this.speed_display_2.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_4).getValue())));
+        } else {
+          Object _source_5 = e.getSource();
+          String _id_2 = ((ScrollBar) _source_5).getId();
+          boolean _equals_2 = Objects.equal(_id_2, "speed_3");
+          if (_equals_2) {
+            Object _source_6 = e.getSource();
+            this.speed_display_3.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_6).getValue())));
+          } else {
+            Object _source_7 = e.getSource();
+            String _id_3 = ((ScrollBar) _source_7).getId();
+            boolean _equals_3 = Objects.equal(_id_3, "speed_4");
+            if (_equals_3) {
+              Object _source_8 = e.getSource();
+              this.speed_display_4.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_8).getValue())));
+            } else {
+              Object _source_9 = e.getSource();
+              String _id_4 = ((ScrollBar) _source_9).getId();
+              boolean _equals_4 = Objects.equal(_id_4, "speed_5");
+              if (_equals_4) {
+                Object _source_10 = e.getSource();
+                this.speed_display_5.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_10).getValue())));
+              } else {
+                Object _source_11 = e.getSource();
+                String _id_5 = ((ScrollBar) _source_11).getId();
+                boolean _equals_5 = Objects.equal(_id_5, "speed_6");
+                if (_equals_5) {
+                  Object _source_12 = e.getSource();
+                  this.speed_display_6.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_12).getValue())));
+                } else {
+                  Object _source_13 = e.getSource();
+                  String _id_6 = ((ScrollBar) _source_13).getId();
+                  boolean _equals_6 = Objects.equal(_id_6, "speed_7");
+                  if (_equals_6) {
+                    Object _source_14 = e.getSource();
+                    this.speed_display_7.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_14).getValue())));
+                  } else {
+                    Object _source_15 = e.getSource();
+                    String _id_7 = ((ScrollBar) _source_15).getId();
+                    boolean _equals_7 = Objects.equal(_id_7, "speed_8");
+                    if (_equals_7) {
+                      Object _source_16 = e.getSource();
+                      this.speed_display_8.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_16).getValue())));
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    ((ScrollBar) _source).valueProperty().addListener(_function);
+  }
+  
+  @FXML
+  protected void angleListener(final MouseEvent e) {
+    Object _source = e.getSource();
+    final InvalidationListener _function = (Observable it) -> {
+      Object _source_1 = e.getSource();
+      String _id = ((ScrollBar) _source_1).getId();
+      boolean _equals = Objects.equal(_id, "angle_1");
+      if (_equals) {
+        Object _source_2 = e.getSource();
+        this.angle_display_1.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_2).getValue())));
+      } else {
+        Object _source_3 = e.getSource();
+        String _id_1 = ((ScrollBar) _source_3).getId();
+        boolean _equals_1 = Objects.equal(_id_1, "angle_2");
+        if (_equals_1) {
+          Object _source_4 = e.getSource();
+          this.angle_display_2.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_4).getValue())));
+        } else {
+          Object _source_5 = e.getSource();
+          String _id_2 = ((ScrollBar) _source_5).getId();
+          boolean _equals_2 = Objects.equal(_id_2, "angle_3");
+          if (_equals_2) {
+            Object _source_6 = e.getSource();
+            this.angle_display_3.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_6).getValue())));
+          } else {
+            Object _source_7 = e.getSource();
+            String _id_3 = ((ScrollBar) _source_7).getId();
+            boolean _equals_3 = Objects.equal(_id_3, "angle_4");
+            if (_equals_3) {
+              Object _source_8 = e.getSource();
+              this.angle_display_4.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_8).getValue())));
+            } else {
+              Object _source_9 = e.getSource();
+              String _id_4 = ((ScrollBar) _source_9).getId();
+              boolean _equals_4 = Objects.equal(_id_4, "angle_5");
+              if (_equals_4) {
+                Object _source_10 = e.getSource();
+                this.angle_display_5.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_10).getValue())));
+              } else {
+                Object _source_11 = e.getSource();
+                String _id_5 = ((ScrollBar) _source_11).getId();
+                boolean _equals_5 = Objects.equal(_id_5, "angle_6");
+                if (_equals_5) {
+                  Object _source_12 = e.getSource();
+                  this.angle_display_6.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_12).getValue())));
+                } else {
+                  Object _source_13 = e.getSource();
+                  String _id_6 = ((ScrollBar) _source_13).getId();
+                  boolean _equals_6 = Objects.equal(_id_6, "angle_7");
+                  if (_equals_6) {
+                    Object _source_14 = e.getSource();
+                    this.angle_display_7.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_14).getValue())));
+                  } else {
+                    Object _source_15 = e.getSource();
+                    String _id_7 = ((ScrollBar) _source_15).getId();
+                    boolean _equals_7 = Objects.equal(_id_7, "angle_8");
+                    if (_equals_7) {
+                      Object _source_16 = e.getSource();
+                      this.angle_display_8.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_16).getValue())));
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    ((ScrollBar) _source).valueProperty().addListener(_function);
+  }
+  
+  @FXML
+  protected void distanceListener(final MouseEvent e) {
+    Object _source = e.getSource();
+    final InvalidationListener _function = (Observable it) -> {
+      Object _source_1 = e.getSource();
+      String _id = ((ScrollBar) _source_1).getId();
+      boolean _equals = Objects.equal(_id, "distance_1");
+      if (_equals) {
+        Object _source_2 = e.getSource();
+        this.distance_display_1.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_2).getValue())));
+      } else {
+        Object _source_3 = e.getSource();
+        String _id_1 = ((ScrollBar) _source_3).getId();
+        boolean _equals_1 = Objects.equal(_id_1, "distance_2");
+        if (_equals_1) {
+          Object _source_4 = e.getSource();
+          this.distance_display_2.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_4).getValue())));
+        } else {
+          Object _source_5 = e.getSource();
+          String _id_2 = ((ScrollBar) _source_5).getId();
+          boolean _equals_2 = Objects.equal(_id_2, "distance_3");
+          if (_equals_2) {
+            Object _source_6 = e.getSource();
+            this.distance_display_3.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_6).getValue())));
+          } else {
+            Object _source_7 = e.getSource();
+            String _id_3 = ((ScrollBar) _source_7).getId();
+            boolean _equals_3 = Objects.equal(_id_3, "distance_4");
+            if (_equals_3) {
+              Object _source_8 = e.getSource();
+              this.distance_display_4.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_8).getValue())));
+            } else {
+              Object _source_9 = e.getSource();
+              String _id_4 = ((ScrollBar) _source_9).getId();
+              boolean _equals_4 = Objects.equal(_id_4, "distance_5");
+              if (_equals_4) {
+                Object _source_10 = e.getSource();
+                this.distance_display_5.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_10).getValue())));
+              } else {
+                Object _source_11 = e.getSource();
+                String _id_5 = ((ScrollBar) _source_11).getId();
+                boolean _equals_5 = Objects.equal(_id_5, "distance_6");
+                if (_equals_5) {
+                  Object _source_12 = e.getSource();
+                  this.distance_display_6.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_12).getValue())));
+                } else {
+                  Object _source_13 = e.getSource();
+                  String _id_6 = ((ScrollBar) _source_13).getId();
+                  boolean _equals_6 = Objects.equal(_id_6, "distance_7");
+                  if (_equals_6) {
+                    Object _source_14 = e.getSource();
+                    this.distance_display_7.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_14).getValue())));
+                  } else {
+                    Object _source_15 = e.getSource();
+                    String _id_7 = ((ScrollBar) _source_15).getId();
+                    boolean _equals_7 = Objects.equal(_id_7, "distance_8");
+                    if (_equals_7) {
+                      Object _source_16 = e.getSource();
+                      this.distance_display_8.setText(String.format("%.0f", Double.valueOf(((ScrollBar) _source_16).getValue())));
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    ((ScrollBar) _source).valueProperty().addListener(_function);
+  }
+  
+  @FXML
+  protected void subMinMaxValueGlow(final MouseEvent e) {
+    if ((this.nightMode).booleanValue()) {
+      Object _source = e.getSource();
+      ((Label) _source).setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      Object _source_1 = e.getSource();
+      ((Label) _source_1).setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    Object _source_2 = e.getSource();
+    ((Label) _source_2).setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void subMinMaxValueReset(final MouseEvent e) {
+    if ((this.nightMode).booleanValue()) {
+      Object _source = e.getSource();
+      ((Label) _source).setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      Object _source_1 = e.getSource();
+      ((Label) _source_1).setTextFill(Color.rgb(0, 0, 0));
+    }
+    Object _source_2 = e.getSource();
+    ((Label) _source_2).setEffect(null);
+  }
+  
+  @FXML
+  protected void setFastMassValues(final MouseEvent e) {
+    Object _source = e.getSource();
+    Object _source_1 = e.getSource();
+    int _length = ((Label) _source_1).getId().length();
+    int _minus = (_length - 1);
+    String _substring = ((Label) _source).getId().substring(_minus);
+    boolean _equals = Objects.equal(_substring, "1");
+    if (_equals) {
+      Object _source_2 = e.getSource();
+      this.mass_1.setValue(Integer.parseInt(((Label) _source_2).getText()));
+      Object _source_3 = e.getSource();
+      this.mass_display_1.setText(((Label) _source_3).getText());
+    } else {
+      Object _source_4 = e.getSource();
+      Object _source_5 = e.getSource();
+      int _length_1 = ((Label) _source_5).getId().length();
+      int _minus_1 = (_length_1 - 1);
+      String _substring_1 = ((Label) _source_4).getId().substring(_minus_1);
+      boolean _equals_1 = Objects.equal(_substring_1, "2");
+      if (_equals_1) {
+        Object _source_6 = e.getSource();
+        this.mass_2.setValue(Integer.parseInt(((Label) _source_6).getText()));
+        Object _source_7 = e.getSource();
+        this.mass_display_2.setText(((Label) _source_7).getText());
+      } else {
+        Object _source_8 = e.getSource();
+        Object _source_9 = e.getSource();
+        int _length_2 = ((Label) _source_9).getId().length();
+        int _minus_2 = (_length_2 - 1);
+        String _substring_2 = ((Label) _source_8).getId().substring(_minus_2);
+        boolean _equals_2 = Objects.equal(_substring_2, "3");
+        if (_equals_2) {
+          Object _source_10 = e.getSource();
+          this.mass_3.setValue(Integer.parseInt(((Label) _source_10).getText()));
+          Object _source_11 = e.getSource();
+          this.mass_display_3.setText(((Label) _source_11).getText());
+        } else {
+          Object _source_12 = e.getSource();
+          Object _source_13 = e.getSource();
+          int _length_3 = ((Label) _source_13).getId().length();
+          int _minus_3 = (_length_3 - 1);
+          String _substring_3 = ((Label) _source_12).getId().substring(_minus_3);
+          boolean _equals_3 = Objects.equal(_substring_3, "4");
+          if (_equals_3) {
+            Object _source_14 = e.getSource();
+            this.mass_4.setValue(Integer.parseInt(((Label) _source_14).getText()));
+            Object _source_15 = e.getSource();
+            this.mass_display_4.setText(((Label) _source_15).getText());
+          } else {
+            Object _source_16 = e.getSource();
+            Object _source_17 = e.getSource();
+            int _length_4 = ((Label) _source_17).getId().length();
+            int _minus_4 = (_length_4 - 1);
+            String _substring_4 = ((Label) _source_16).getId().substring(_minus_4);
+            boolean _equals_4 = Objects.equal(_substring_4, "5");
+            if (_equals_4) {
+              Object _source_18 = e.getSource();
+              this.mass_5.setValue(Integer.parseInt(((Label) _source_18).getText()));
+              Object _source_19 = e.getSource();
+              this.mass_display_5.setText(((Label) _source_19).getText());
+            } else {
+              Object _source_20 = e.getSource();
+              Object _source_21 = e.getSource();
+              int _length_5 = ((Label) _source_21).getId().length();
+              int _minus_5 = (_length_5 - 1);
+              String _substring_5 = ((Label) _source_20).getId().substring(_minus_5);
+              boolean _equals_5 = Objects.equal(_substring_5, "6");
+              if (_equals_5) {
+                Object _source_22 = e.getSource();
+                this.mass_6.setValue(Integer.parseInt(((Label) _source_22).getText()));
+                Object _source_23 = e.getSource();
+                this.mass_display_6.setText(((Label) _source_23).getText());
+              } else {
+                Object _source_24 = e.getSource();
+                Object _source_25 = e.getSource();
+                int _length_6 = ((Label) _source_25).getId().length();
+                int _minus_6 = (_length_6 - 1);
+                String _substring_6 = ((Label) _source_24).getId().substring(_minus_6);
+                boolean _equals_6 = Objects.equal(_substring_6, "7");
+                if (_equals_6) {
+                  Object _source_26 = e.getSource();
+                  this.mass_7.setValue(Integer.parseInt(((Label) _source_26).getText()));
+                  Object _source_27 = e.getSource();
+                  this.mass_display_7.setText(((Label) _source_27).getText());
+                } else {
+                  Object _source_28 = e.getSource();
+                  Object _source_29 = e.getSource();
+                  int _length_7 = ((Label) _source_29).getId().length();
+                  int _minus_7 = (_length_7 - 1);
+                  String _substring_7 = ((Label) _source_28).getId().substring(_minus_7);
+                  boolean _equals_7 = Objects.equal(_substring_7, "8");
+                  if (_equals_7) {
+                    Object _source_30 = e.getSource();
+                    this.mass_8.setValue(Integer.parseInt(((Label) _source_30).getText()));
+                    Object _source_31 = e.getSource();
+                    this.mass_display_8.setText(((Label) _source_31).getText());
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  @FXML
+  protected void setFastSpeedValues(final MouseEvent e) {
+    Object _source = e.getSource();
+    Object _source_1 = e.getSource();
+    int _length = ((Label) _source_1).getId().length();
+    int _minus = (_length - 1);
+    String _substring = ((Label) _source).getId().substring(_minus);
+    boolean _equals = Objects.equal(_substring, "1");
+    if (_equals) {
+      Object _source_2 = e.getSource();
+      this.speed_1.setValue(Integer.parseInt(((Label) _source_2).getText()));
+      Object _source_3 = e.getSource();
+      this.speed_display_1.setText(((Label) _source_3).getText());
+    } else {
+      Object _source_4 = e.getSource();
+      Object _source_5 = e.getSource();
+      int _length_1 = ((Label) _source_5).getId().length();
+      int _minus_1 = (_length_1 - 1);
+      String _substring_1 = ((Label) _source_4).getId().substring(_minus_1);
+      boolean _equals_1 = Objects.equal(_substring_1, "2");
+      if (_equals_1) {
+        Object _source_6 = e.getSource();
+        this.speed_2.setValue(Integer.parseInt(((Label) _source_6).getText()));
+        Object _source_7 = e.getSource();
+        this.speed_display_2.setText(((Label) _source_7).getText());
+      } else {
+        Object _source_8 = e.getSource();
+        Object _source_9 = e.getSource();
+        int _length_2 = ((Label) _source_9).getId().length();
+        int _minus_2 = (_length_2 - 1);
+        String _substring_2 = ((Label) _source_8).getId().substring(_minus_2);
+        boolean _equals_2 = Objects.equal(_substring_2, "3");
+        if (_equals_2) {
+          Object _source_10 = e.getSource();
+          this.speed_3.setValue(Integer.parseInt(((Label) _source_10).getText()));
+          Object _source_11 = e.getSource();
+          this.speed_display_3.setText(((Label) _source_11).getText());
+        } else {
+          Object _source_12 = e.getSource();
+          Object _source_13 = e.getSource();
+          int _length_3 = ((Label) _source_13).getId().length();
+          int _minus_3 = (_length_3 - 1);
+          String _substring_3 = ((Label) _source_12).getId().substring(_minus_3);
+          boolean _equals_3 = Objects.equal(_substring_3, "4");
+          if (_equals_3) {
+            Object _source_14 = e.getSource();
+            this.speed_4.setValue(Integer.parseInt(((Label) _source_14).getText()));
+            Object _source_15 = e.getSource();
+            this.speed_display_4.setText(((Label) _source_15).getText());
+          } else {
+            Object _source_16 = e.getSource();
+            Object _source_17 = e.getSource();
+            int _length_4 = ((Label) _source_17).getId().length();
+            int _minus_4 = (_length_4 - 1);
+            String _substring_4 = ((Label) _source_16).getId().substring(_minus_4);
+            boolean _equals_4 = Objects.equal(_substring_4, "5");
+            if (_equals_4) {
+              Object _source_18 = e.getSource();
+              this.speed_5.setValue(Integer.parseInt(((Label) _source_18).getText()));
+              Object _source_19 = e.getSource();
+              this.speed_display_5.setText(((Label) _source_19).getText());
+            } else {
+              Object _source_20 = e.getSource();
+              Object _source_21 = e.getSource();
+              int _length_5 = ((Label) _source_21).getId().length();
+              int _minus_5 = (_length_5 - 1);
+              String _substring_5 = ((Label) _source_20).getId().substring(_minus_5);
+              boolean _equals_5 = Objects.equal(_substring_5, "6");
+              if (_equals_5) {
+                Object _source_22 = e.getSource();
+                this.speed_6.setValue(Integer.parseInt(((Label) _source_22).getText()));
+                Object _source_23 = e.getSource();
+                this.speed_display_6.setText(((Label) _source_23).getText());
+              } else {
+                Object _source_24 = e.getSource();
+                Object _source_25 = e.getSource();
+                int _length_6 = ((Label) _source_25).getId().length();
+                int _minus_6 = (_length_6 - 1);
+                String _substring_6 = ((Label) _source_24).getId().substring(_minus_6);
+                boolean _equals_6 = Objects.equal(_substring_6, "7");
+                if (_equals_6) {
+                  Object _source_26 = e.getSource();
+                  this.speed_7.setValue(Integer.parseInt(((Label) _source_26).getText()));
+                  Object _source_27 = e.getSource();
+                  this.speed_display_7.setText(((Label) _source_27).getText());
+                } else {
+                  Object _source_28 = e.getSource();
+                  Object _source_29 = e.getSource();
+                  int _length_7 = ((Label) _source_29).getId().length();
+                  int _minus_7 = (_length_7 - 1);
+                  String _substring_7 = ((Label) _source_28).getId().substring(_minus_7);
+                  boolean _equals_7 = Objects.equal(_substring_7, "8");
+                  if (_equals_7) {
+                    Object _source_30 = e.getSource();
+                    this.speed_8.setValue(Integer.parseInt(((Label) _source_30).getText()));
+                    Object _source_31 = e.getSource();
+                    this.speed_display_8.setText(((Label) _source_31).getText());
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  @FXML
+  protected void setFastAngleValues(final MouseEvent e) {
+    Object _source = e.getSource();
+    Object _source_1 = e.getSource();
+    int _length = ((Label) _source_1).getId().length();
+    int _minus = (_length - 1);
+    String _substring = ((Label) _source).getId().substring(_minus);
+    boolean _equals = Objects.equal(_substring, "1");
+    if (_equals) {
+      Object _source_2 = e.getSource();
+      this.angle_1.setValue(Integer.parseInt(((Label) _source_2).getText()));
+      Object _source_3 = e.getSource();
+      this.angle_display_1.setText(((Label) _source_3).getText());
+    } else {
+      Object _source_4 = e.getSource();
+      Object _source_5 = e.getSource();
+      int _length_1 = ((Label) _source_5).getId().length();
+      int _minus_1 = (_length_1 - 1);
+      String _substring_1 = ((Label) _source_4).getId().substring(_minus_1);
+      boolean _equals_1 = Objects.equal(_substring_1, "2");
+      if (_equals_1) {
+        Object _source_6 = e.getSource();
+        this.angle_2.setValue(Integer.parseInt(((Label) _source_6).getText()));
+        Object _source_7 = e.getSource();
+        this.angle_display_2.setText(((Label) _source_7).getText());
+      } else {
+        Object _source_8 = e.getSource();
+        Object _source_9 = e.getSource();
+        int _length_2 = ((Label) _source_9).getId().length();
+        int _minus_2 = (_length_2 - 1);
+        String _substring_2 = ((Label) _source_8).getId().substring(_minus_2);
+        boolean _equals_2 = Objects.equal(_substring_2, "3");
+        if (_equals_2) {
+          Object _source_10 = e.getSource();
+          this.angle_3.setValue(Integer.parseInt(((Label) _source_10).getText()));
+          Object _source_11 = e.getSource();
+          this.angle_display_3.setText(((Label) _source_11).getText());
+        } else {
+          Object _source_12 = e.getSource();
+          Object _source_13 = e.getSource();
+          int _length_3 = ((Label) _source_13).getId().length();
+          int _minus_3 = (_length_3 - 1);
+          String _substring_3 = ((Label) _source_12).getId().substring(_minus_3);
+          boolean _equals_3 = Objects.equal(_substring_3, "4");
+          if (_equals_3) {
+            Object _source_14 = e.getSource();
+            this.angle_4.setValue(Integer.parseInt(((Label) _source_14).getText()));
+            Object _source_15 = e.getSource();
+            this.angle_display_4.setText(((Label) _source_15).getText());
+          } else {
+            Object _source_16 = e.getSource();
+            Object _source_17 = e.getSource();
+            int _length_4 = ((Label) _source_17).getId().length();
+            int _minus_4 = (_length_4 - 1);
+            String _substring_4 = ((Label) _source_16).getId().substring(_minus_4);
+            boolean _equals_4 = Objects.equal(_substring_4, "5");
+            if (_equals_4) {
+              Object _source_18 = e.getSource();
+              this.angle_5.setValue(Integer.parseInt(((Label) _source_18).getText()));
+              Object _source_19 = e.getSource();
+              this.angle_display_5.setText(((Label) _source_19).getText());
+            } else {
+              Object _source_20 = e.getSource();
+              Object _source_21 = e.getSource();
+              int _length_5 = ((Label) _source_21).getId().length();
+              int _minus_5 = (_length_5 - 1);
+              String _substring_5 = ((Label) _source_20).getId().substring(_minus_5);
+              boolean _equals_5 = Objects.equal(_substring_5, "6");
+              if (_equals_5) {
+                Object _source_22 = e.getSource();
+                this.angle_6.setValue(Integer.parseInt(((Label) _source_22).getText()));
+                Object _source_23 = e.getSource();
+                this.angle_display_6.setText(((Label) _source_23).getText());
+              } else {
+                Object _source_24 = e.getSource();
+                Object _source_25 = e.getSource();
+                int _length_6 = ((Label) _source_25).getId().length();
+                int _minus_6 = (_length_6 - 1);
+                String _substring_6 = ((Label) _source_24).getId().substring(_minus_6);
+                boolean _equals_6 = Objects.equal(_substring_6, "7");
+                if (_equals_6) {
+                  Object _source_26 = e.getSource();
+                  this.angle_7.setValue(Integer.parseInt(((Label) _source_26).getText()));
+                  Object _source_27 = e.getSource();
+                  this.angle_display_7.setText(((Label) _source_27).getText());
+                } else {
+                  Object _source_28 = e.getSource();
+                  Object _source_29 = e.getSource();
+                  int _length_7 = ((Label) _source_29).getId().length();
+                  int _minus_7 = (_length_7 - 1);
+                  String _substring_7 = ((Label) _source_28).getId().substring(_minus_7);
+                  boolean _equals_7 = Objects.equal(_substring_7, "8");
+                  if (_equals_7) {
+                    Object _source_30 = e.getSource();
+                    this.angle_8.setValue(Integer.parseInt(((Label) _source_30).getText()));
+                    Object _source_31 = e.getSource();
+                    this.angle_display_8.setText(((Label) _source_31).getText());
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  @FXML
+  protected void setFastDistanceValues(final MouseEvent e) {
+    Object _source = e.getSource();
+    Object _source_1 = e.getSource();
+    int _length = ((Label) _source_1).getId().length();
+    int _minus = (_length - 1);
+    String _substring = ((Label) _source).getId().substring(_minus);
+    boolean _equals = Objects.equal(_substring, "1");
+    if (_equals) {
+      Object _source_2 = e.getSource();
+      this.distance_1.setValue(Integer.parseInt(((Label) _source_2).getText()));
+      Object _source_3 = e.getSource();
+      this.distance_display_1.setText(((Label) _source_3).getText());
+    } else {
+      Object _source_4 = e.getSource();
+      Object _source_5 = e.getSource();
+      int _length_1 = ((Label) _source_5).getId().length();
+      int _minus_1 = (_length_1 - 1);
+      String _substring_1 = ((Label) _source_4).getId().substring(_minus_1);
+      boolean _equals_1 = Objects.equal(_substring_1, "2");
+      if (_equals_1) {
+        Object _source_6 = e.getSource();
+        this.distance_2.setValue(Integer.parseInt(((Label) _source_6).getText()));
+        Object _source_7 = e.getSource();
+        this.distance_display_2.setText(((Label) _source_7).getText());
+      } else {
+        Object _source_8 = e.getSource();
+        Object _source_9 = e.getSource();
+        int _length_2 = ((Label) _source_9).getId().length();
+        int _minus_2 = (_length_2 - 1);
+        String _substring_2 = ((Label) _source_8).getId().substring(_minus_2);
+        boolean _equals_2 = Objects.equal(_substring_2, "3");
+        if (_equals_2) {
+          Object _source_10 = e.getSource();
+          this.distance_3.setValue(Integer.parseInt(((Label) _source_10).getText()));
+          Object _source_11 = e.getSource();
+          this.distance_display_3.setText(((Label) _source_11).getText());
+        } else {
+          Object _source_12 = e.getSource();
+          Object _source_13 = e.getSource();
+          int _length_3 = ((Label) _source_13).getId().length();
+          int _minus_3 = (_length_3 - 1);
+          String _substring_3 = ((Label) _source_12).getId().substring(_minus_3);
+          boolean _equals_3 = Objects.equal(_substring_3, "4");
+          if (_equals_3) {
+            Object _source_14 = e.getSource();
+            this.distance_4.setValue(Integer.parseInt(((Label) _source_14).getText()));
+            Object _source_15 = e.getSource();
+            this.distance_display_4.setText(((Label) _source_15).getText());
+          } else {
+            Object _source_16 = e.getSource();
+            Object _source_17 = e.getSource();
+            int _length_4 = ((Label) _source_17).getId().length();
+            int _minus_4 = (_length_4 - 1);
+            String _substring_4 = ((Label) _source_16).getId().substring(_minus_4);
+            boolean _equals_4 = Objects.equal(_substring_4, "5");
+            if (_equals_4) {
+              Object _source_18 = e.getSource();
+              this.distance_5.setValue(Integer.parseInt(((Label) _source_18).getText()));
+              Object _source_19 = e.getSource();
+              this.distance_display_5.setText(((Label) _source_19).getText());
+            } else {
+              Object _source_20 = e.getSource();
+              Object _source_21 = e.getSource();
+              int _length_5 = ((Label) _source_21).getId().length();
+              int _minus_5 = (_length_5 - 1);
+              String _substring_5 = ((Label) _source_20).getId().substring(_minus_5);
+              boolean _equals_5 = Objects.equal(_substring_5, "6");
+              if (_equals_5) {
+                Object _source_22 = e.getSource();
+                this.distance_6.setValue(Integer.parseInt(((Label) _source_22).getText()));
+                Object _source_23 = e.getSource();
+                this.distance_display_6.setText(((Label) _source_23).getText());
+              } else {
+                Object _source_24 = e.getSource();
+                Object _source_25 = e.getSource();
+                int _length_6 = ((Label) _source_25).getId().length();
+                int _minus_6 = (_length_6 - 1);
+                String _substring_6 = ((Label) _source_24).getId().substring(_minus_6);
+                boolean _equals_6 = Objects.equal(_substring_6, "7");
+                if (_equals_6) {
+                  Object _source_26 = e.getSource();
+                  this.distance_7.setValue(Integer.parseInt(((Label) _source_26).getText()));
+                  Object _source_27 = e.getSource();
+                  this.distance_display_7.setText(((Label) _source_27).getText());
+                } else {
+                  Object _source_28 = e.getSource();
+                  Object _source_29 = e.getSource();
+                  int _length_7 = ((Label) _source_29).getId().length();
+                  int _minus_7 = (_length_7 - 1);
+                  String _substring_7 = ((Label) _source_28).getId().substring(_minus_7);
+                  boolean _equals_7 = Objects.equal(_substring_7, "8");
+                  if (_equals_7) {
+                    Object _source_30 = e.getSource();
+                    this.distance_8.setValue(Integer.parseInt(((Label) _source_30).getText()));
+                    Object _source_31 = e.getSource();
+                    this.distance_display_8.setText(((Label) _source_31).getText());
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
   
   @Override

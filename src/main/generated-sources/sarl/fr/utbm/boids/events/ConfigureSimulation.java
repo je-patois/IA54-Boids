@@ -11,7 +11,6 @@ import org.eclipse.xtext.xbase.lib.Pure;
  * @param mapSelection - Map choisie
  * @param boidsQuantity - Nombre de boids par population
  * @param boidsPopulation - Nombre de populations
- * @param boidsVision - Radius de perception des boids
  */
 @SarlSpecification("0.6")
 @SarlElementType(14)
@@ -23,13 +22,10 @@ public class ConfigureSimulation extends Event {
   
   public final int boidsPopulation;
   
-  public final int boidsVision;
-  
-  public ConfigureSimulation(final int mS, final int bQ, final int bP, final int bV) {
+  public ConfigureSimulation(final int mS, final int bQ, final int bP) {
     this.mapSelection = mS;
     this.boidsQuantity = bQ;
     this.boidsPopulation = bP;
-    this.boidsVision = bV;
   }
   
   @Override
@@ -49,8 +45,6 @@ public class ConfigureSimulation extends Event {
       return false;
     if (other.boidsPopulation != this.boidsPopulation)
       return false;
-    if (other.boidsVision != this.boidsVision)
-      return false;
     return super.equals(obj);
   }
   
@@ -63,7 +57,6 @@ public class ConfigureSimulation extends Event {
     result = prime * result + this.mapSelection;
     result = prime * result + this.boidsQuantity;
     result = prime * result + this.boidsPopulation;
-    result = prime * result + this.boidsVision;
     return result;
   }
   
@@ -77,10 +70,9 @@ public class ConfigureSimulation extends Event {
     result.append("mapSelection  = ").append(this.mapSelection);
     result.append("boidsQuantity  = ").append(this.boidsQuantity);
     result.append("boidsPopulation  = ").append(this.boidsPopulation);
-    result.append("boidsVision  = ").append(this.boidsVision);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = 654767120L;
+  private final static long serialVersionUID = 88220545L;
 }

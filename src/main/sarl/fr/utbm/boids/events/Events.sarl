@@ -8,25 +8,23 @@ import fr.utbm.boids.BoidBody
 import java.util.Map
 import fr.utbm.boids.environment.Obstacle
 import java.util.List
+import fr.utbm.boids.util.BoidGroupInfos
 
 /**
  * Transfert des paramètres utilisateurs au BootAgent
  * @param mapSelection - Map choisie
  * @param boidsQuantity - Nombre de boids par population
  * @param boidsPopulation - Nombre de populations
- * @param boidsVision - Radius de perception des boids
  */
 event ConfigureSimulation {
 	val mapSelection : int
 	val boidsQuantity : int
 	val boidsPopulation : int
-	val boidsVision : int
 	
-	new(mS : int, bQ : int, bP : int, bV : int) {
+	new(mS : int, bQ : int, bP : int) {
 		mapSelection = mS
 		boidsQuantity = bQ
 		boidsPopulation = bP
-		boidsVision = bV
 	}
 }
 

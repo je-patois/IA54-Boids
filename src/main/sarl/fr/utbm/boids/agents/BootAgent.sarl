@@ -16,8 +16,6 @@ import fr.utbm.boids.events.BoidsReady
 import io.sarl.lang.core.Address
 import fr.utbm.boids.events.TimeManagingStart
 import fr.utbm.boids.Configuration
-import fr.utbm.boids.events.Pause
-import fr.utbm.boids.events.Resume
 
 agent BootAgent {
 	uses Logging, Behaviors, InnerContextAccess, Lifecycle
@@ -25,7 +23,6 @@ agent BootAgent {
 	var map : int
 	var boidsQuantity : int
 	var boidsPopulation : int
-	var boidsVision : int
 	var exited : boolean = false
 	var ctrl : BoidsFxViewerController = null
 
@@ -43,11 +40,9 @@ agent BootAgent {
 		this.boidsQuantity = occurrence.boidsQuantity
 		this.map = occurrence.mapSelection
 		this.boidsPopulation = occurrence.boidsPopulation
-		this.boidsVision = occurrence.boidsVision;
 		info('Map: ' + this.map)
 		info('Boids quantity: ' + this.boidsQuantity)
 		info('Boids population: ' + this.boidsPopulation)
-		info('Boids vision: ' + this.boidsVision)
 		this.generateMap()
 	}
 	

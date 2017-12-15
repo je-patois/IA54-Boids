@@ -1,0 +1,48 @@
+package fr.utbm.boids.util
+
+class BoidGroupInfos {
+	
+	private var mass: int
+	private var speed : int
+	private var angle : int
+	private var distance : int
+	
+	new(mass : int, speed : int, angle : int, distance : int) {
+		this.mass = mass
+		this.speed = speed
+		this.angle = angle
+		this.distance = distance
+	}
+	
+	def getMass() : int {
+		return this.mass
+	}
+	
+	def setMass(mass :int) : void {
+		this.mass = mass
+	}
+	
+	def getSpeed() : int {
+		return this.speed
+	}
+	
+	def setSpeed(speed : int) : void {
+		this.speed = speed
+	}
+	
+	def getAngle() : int {
+		return this.angle
+	}
+	
+	def setAngle(angle: int) : void {
+		this.angle = angle
+	}
+	
+	def getDistance() : int {
+		return this.distance
+	}
+	
+	def setDistance(distance : int) : void {
+		this.distance = distance
+	}
+}

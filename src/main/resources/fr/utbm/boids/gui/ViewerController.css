@@ -70,3 +70,11 @@
 .scroll-bar:horizontal:focused {
  -fx-background-color: transparent,rgb(96,96,96),rgb(96,96,96);
 }
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane {
+   -fx-background-color: transparent;
+}

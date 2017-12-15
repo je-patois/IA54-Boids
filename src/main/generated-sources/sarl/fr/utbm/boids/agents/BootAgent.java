@@ -46,8 +46,6 @@ public class BootAgent extends Agent {
   
   private int boidsPopulation;
   
-  private int boidsVision;
-  
   private boolean exited = false;
   
   private BoidsFxViewerController ctrl = null;
@@ -79,15 +77,12 @@ public class BootAgent extends Agent {
     this.boidsQuantity = occurrence.boidsQuantity;
     this.map = occurrence.mapSelection;
     this.boidsPopulation = occurrence.boidsPopulation;
-    this.boidsVision = occurrence.boidsVision;
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(("Map: " + Integer.valueOf(this.map)));
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(("Boids quantity: " + Integer.valueOf(this.boidsQuantity)));
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(("Boids population: " + Integer.valueOf(this.boidsPopulation)));
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_4.info(("Boids vision: " + Integer.valueOf(this.boidsVision)));
     this.generateMap();
   }
   
@@ -267,8 +262,6 @@ public class BootAgent extends Agent {
       return false;
     if (other.boidsPopulation != this.boidsPopulation)
       return false;
-    if (other.boidsVision != this.boidsVision)
-      return false;
     if (other.exited != this.exited)
       return false;
     return super.equals(obj);
@@ -283,7 +276,6 @@ public class BootAgent extends Agent {
     result = prime * result + this.map;
     result = prime * result + this.boidsQuantity;
     result = prime * result + this.boidsPopulation;
-    result = prime * result + this.boidsVision;
     result = prime * result + (this.exited ? 1231 : 1237);
     return result;
   }
