@@ -24,6 +24,7 @@ import fr.utbm.boids.gui.BoidsFxViewerController
 import fr.utbm.boids.events.Cycle
 import fr.utbm.boids.events.BoidInitialized
 import io.sarl.core.Logging
+import fr.utbm.boids.EnvInfos
 
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess, Behaviors
@@ -31,11 +32,12 @@ agent Environment {
 	var boidsList : Map<UUID,BoidBody>	//liste complète des corps de boids
 	var boidsGrid : Map<Vector, UUID>
 	var boidsAddresses : Map<UUID, Address>
-	var boidsUpdated : int
+	var boidsUpdated : Integer
 	var ctrl : BoidsFxViewerController = null
 	var firstTime : boolean
 	var spawner : UUID
 	var inCycle : Boolean
+	var envInfos : EnvInfos
 	// var superBoid : boolean // TODO Un jour peut-être
 
 	on Initialize {
@@ -46,6 +48,7 @@ agent Environment {
 		this.firstTime = true
 		this.spawner = occurrence.spawner
 		this.inCycle = false
+		this.envInfos = new EnvInfos(this.ctrl.mapWidth, this.ctrl.mapHeight)
 		info("The Environment is started.")
 	}
 	
@@ -60,17 +63,17 @@ agent Environment {
 		info('Population size: ' + this.ctrl.boidsPopulation)
 		for (var i = 0; i < this.ctrl.boidsPopulation; i++) {
 			for (var j = 0 ; j < this.ctrl.boidsQuantity; j++){
-				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsVision, ctrl.boidsDistanceDeplacement)
+				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsSettings.get(i).speed, ctrl.boidsSettings.get(i).mass, ctrl.boidsSettings.get(i).angle, ctrl.boidsSettings.get(i).distance, envInfos)
 			}
 		}
-		info(this.boidsList)
+		//info(this.boidsList)
 	}
 
 	on BoidInitialized [occurrence.isInInnerDefaultSpace] {
 		if (occurrence.type == "Boid") {
 			boidsAddresses.put(occurrence.source.UUID, occurrence.source)
 			this.boidsList.put(occurrence.source.UUID, occurrence.body)
-			innerContext.defaultSpace.emit(ID, new StartPosition(this.ctrl.mapHeight, this.ctrl.mapWidth, this.ctrl.obstacles), Scopes.addresses(occurrence.source))
+			innerContext.defaultSpace.emit(ID, new StartPosition(this.ctrl.obstacles), Scopes.addresses(occurrence.source))
 		}
 	}
 
@@ -112,38 +115,41 @@ agent Environment {
 			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
 		}
 		
-		boidsUpdated += 1
-		info("maintenant updated = " + this.boidsUpdated)
-
-		if(this.boidsUpdated == this.ctrl.boidsQuantity * this.ctrl.boidsPopulation && this.firstTime == true) {
-			info('boidsUpdated: ' + this.boidsUpdated + ', boidsTotal: ' + this.ctrl.boidsQuantity * this.ctrl.boidsPopulation)
-			wake(new BoidsSideReady)
-			this.firstTime = false
+		synchronized (boidsUpdated) {
+			boidsUpdated = boidsUpdated + 1 
+	
+			if(this.boidsUpdated == this.ctrl.boidsQuantity * this.ctrl.boidsPopulation && this.firstTime == true) {
+				//info('boidsUpdated: ' + this.boidsUpdated + ', boidsTotal: ' + this.ctrl.boidsQuantity * this.ctrl.boidsPopulation)
+				wake(new BoidsSideReady)
+				this.firstTime = false
+			}
 		}
 	}
 	
 	on Cycle{
 		if(!inCycle) {
-			info ("demande de rafraichissement : " + this.boidsUpdated)
-			// if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
-			if (this.boidsUpdated >= boidsList.size) {
-				inCycle = true
-
-				// envoi des nouveaux corps des boids
-				ctrl.updateGraphics(this.boidsList.values)
-
-				// remise à zéro de la liste des changements
-				synchronized (boidsGrid){
-					this.boidsGrid = new HashMap<Vector, UUID>
-				}
-				
-				//On se prépare pour la prochaine itération
-				this.boidsUpdated = 0
-				boidsAddresses.forEach[id, address|
-					innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
-				]
-				inCycle = false	
-			}	
+			synchronized (boidsUpdated){
+				//info ("demande de rafraichissement : " + this.boidsUpdated)
+				// if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
+				if (this.boidsUpdated >= boidsList.size) {
+					inCycle = true
+	
+					// envoi des nouveaux corps des boids
+					ctrl.updateGraphics(this.boidsList.values)
+	
+					// remise à zéro de la liste des changements
+					synchronized (boidsGrid){
+						this.boidsGrid = new HashMap<Vector, UUID>
+					}
+					
+					//On se prépare pour la prochaine itération
+					this.boidsUpdated = 0
+					boidsAddresses.forEach[id, address|
+						innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
+					]
+					inCycle = false	
+				}	
+			}
 		}
 	}
 

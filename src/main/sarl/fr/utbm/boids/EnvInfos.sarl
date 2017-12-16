@@ -1,0 +1,33 @@
+package fr.utbm.boids
+
+class EnvInfos {
+	
+	private var width : int
+	private var height : int
+	
+	new() {
+		this.width = 0
+		this.height = 0	
+	}
+	
+	new(width : int, height : int) {
+		this.width = width
+		this.height = height
+	}
+	
+	def getWidth() : int {
+		return this.width
+	}
+	
+	def setWidth(width : int) : void {
+		this.width = width
+	}
+	
+	def getHeight() : int {
+		return this.height
+	}
+	
+	def setHeight(height : int) : void {
+		this.height = height
+	}
+}
