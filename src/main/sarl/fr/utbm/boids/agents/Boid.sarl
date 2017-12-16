@@ -20,6 +20,7 @@ import fr.utbm.boids.gui.fx.EndSimulation
 import java.util.Map
 import fr.utbm.boids.events.BoidInitialized
 import fr.utbm.boids.EnvInfos
+import java.util.HashMap
 
 agent Boid {
 	uses Logging, DefaultContextInteractions, Lifecycle
@@ -27,6 +28,7 @@ agent Boid {
 	var body : BoidBody
 	var parentAgent : UUID
 	var envInfos : EnvInfos
+	var seenBoids : Map<UUID, BoidBody>
 	
 	/*
 	 * gestion des évènements
@@ -38,6 +40,7 @@ agent Boid {
 		parentAgent = occurrence.spawner
 		this.body = new BoidBody(this.ID, occurrence.parameters.get(0) as Integer, occurrence.parameters.get(1) as Integer, occurrence.parameters.get(2) as Integer, occurrence.parameters.get(3) as Integer, occurrence.parameters.get(4) as Integer)
 		this.envInfos = occurrence.parameters.get(5) as EnvInfos
+		seenBoids = new HashMap<UUID, BoidBody>
 		emit(new BoidInitialized(this.body, 'Boid'))
 	}
 	
@@ -89,20 +92,22 @@ agent Boid {
 		var forceTot : Vector
 
 		forceTot = new Vector(0, 0)
+		
+		seenBoids = perception(boids)
 		 
 		if (boids != null) {
 			
 			//on applique la séparation 
-			forceTot.plus(separation(boids))
+			forceTot.plus(separation(seenBoids))
 			
 			//on applique la cohésion
-			forceTot.plus(cohesion(boids))				
+			forceTot.plus(cohesion(seenBoids))				
 			
 			//on applique l'alignement
-			forceTot.plus(alignement(boids))
+			forceTot.plus(alignement(seenBoids))
 
 			//on applique la répulsion
-			forceTot.plus(repulsion(boids))
+			forceTot.plus(repulsion(seenBoids))
 			
 			//on applique la force résultant de la détection des obstacles
 		 
@@ -328,6 +333,16 @@ agent Boid {
 	on EndSimulation [isFrom(this.parentAgent)] {
 		emit(new EndSimulation) [it.UUID == this.parentAgent]
 		killMe
+	}
+	
+	def perception(boids : Map<UUID, BoidBody>) : Map<UUID, BoidBody> {
+		seenBoids.clear()
+		for (elem : boids.entrySet) {
+			if (elem.key !== null && visible(elem.value)) {
+				seenBoids.put(elem.key, elem.value)
+			}
+		}
+		return seenBoids
 	}
 	
 }
