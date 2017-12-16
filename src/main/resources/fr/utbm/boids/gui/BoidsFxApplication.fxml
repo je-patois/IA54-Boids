@@ -726,11 +726,11 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Circle fx:id="boids_population_decrement_circle" fill="#1f93ff00" layoutX="52.0" layoutY="121.0" onMouseEntered="#applyGlowEffectOnCustomModifiers" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
-                  <Circle fx:id="boids_population_increment_circle" fill="#1f93ff00" layoutX="232.0" layoutY="121.0" onMouseEntered="#applyGlowEffectOnCustomModifiers" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
+                  <Circle fx:id="boids_population_decrement_circle" fill="#1f93ff00" layoutX="52.0" layoutY="121.0" onMouseEntered="#decrementBoidsPopulationGlow" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
+                  <Circle fx:id="boids_population_increment_circle" fill="#1f93ff00" layoutX="232.0" layoutY="121.0" onMouseEntered="#incrementBoidsPopulationGlow" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
                   <TextField fx:id="boids_population_input" alignment="CENTER" layoutX="69.0" layoutY="105.0" onKeyReleased="#updateField" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" onMousePressed="#resetField" prefHeight="31.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-text-fill: rgb(191, 191, 191);" text="1" />
-                  <Label fx:id="decrement_boids_population" layoutX="49.0" layoutY="110.0" onMouseEntered="#applyGlowEffectOnCustomModifiers" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" text="-" textFill="#bfbfbf" />
-                  <Label fx:id="increment_boids_population" layoutX="227.0" layoutY="110.0" onMouseEntered="#applyGlowEffectOnCustomModifiers" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" text="+" textFill="#bfbfbf" />
+                  <Label fx:id="decrement_boids_population" layoutX="49.0" layoutY="110.0" onMouseEntered="#decrementBoidsPopulationGlow" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" text="-" textFill="#bfbfbf" />
+                  <Label fx:id="increment_boids_population" layoutX="227.0" layoutY="110.0" onMouseEntered="#incrementBoidsPopulationGlow" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" text="+" textFill="#bfbfbf" />
             			   
                                     <Label fx:id="boids_population_label" alignment="CENTER" layoutX="33.0" layoutY="78.0" prefHeight="27.0" prefWidth="221.0" text="%BoidsPopulationQuantityLabel" textFill="#bfbfbf">
                      <font>
@@ -745,11 +745,11 @@
                   </Label>
                   <Label fx:id="see_advanced_settings_label" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="262.0" onMouseEntered="#applyGlowEffectOnLabel" onMouseExited="#unapplyGlowEffectOnLabel" onMousePressed="#toggleAdvancedSettingsVisibility" prefHeight="21.0" prefWidth="284.0" text="%SeeAdvancedSettingsLabel" textFill="#c7c7c7" />
                   <Line fx:id="boids_quantity_line" endX="50.0" layoutX="171.0" layoutY="216.0" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" startX="-100.0" stroke="#bfbfbf" />
-                  <Label fx:id="increment_boids_quantity" layoutX="230.0" layoutY="194.0" onMouseEntered="#applyGlowEffectOnCustomModifiers" onMouseExited="#incrementBoidsQuantityReset" onMousePressed="#incrementBoidsQuantity" text="+" textFill="#bfbfbf" />
-                  <Label fx:id="decrement_boids_quantity" layoutX="52.0" layoutY="194.0" onMouseEntered="#applyGlowEffectOnCustomModifiers" onMouseExited="#decrementBoidsQuantityReset" onMousePressed="#decrementBoidsQuantity" text="-" textFill="#bfbfbf" />
+                  <Label fx:id="increment_boids_quantity" layoutX="230.0" layoutY="194.0" onMouseEntered="#incrementBoidsQuantityGlow" onMouseExited="#incrementBoidsQuantityReset" onMousePressed="#incrementBoidsQuantity" text="+" textFill="#bfbfbf" />
+                  <Label fx:id="decrement_boids_quantity" layoutX="52.0" layoutY="194.0" onMouseEntered="#decrementBoidsQuantityGlow" onMouseExited="#decrementBoidsQuantityReset" onMousePressed="#decrementBoidsQuantity" text="-" textFill="#bfbfbf" />
                   <TextField fx:id="boids_quantity_input" alignment="CENTER" layoutX="72.0" layoutY="189.0" onKeyReleased="#updateField" onMouseEntered="#boidsQuantityGlow" onMouseExited="#boidsQuantityReset" onMousePressed="#resetField" prefHeight="31.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-text-fill: rgb(191, 191, 191);" text="1" />
-                  <Circle fx:id="boids_quantity_increment_circle" fill="#1f93ff00" layoutX="235.0" layoutY="205.0" onMouseEntered="#applyGlowEffectOnCustomModifiers" onMouseExited="#incrementBoidsQuantityReset" onMousePressed="#incrementBoidsQuantity" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
-                  <Circle fx:id="boids_quantity_decrement_circle" fill="#1f93ff00" layoutX="55.0" layoutY="205.0" onMouseEntered="#applyGlowEffectOnCustomModifiers" onMouseExited="#decrementBoidsQuantityReset" onMousePressed="#decrementBoidsQuantity" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
+                  <Circle fx:id="boids_quantity_increment_circle" fill="#1f93ff00" layoutX="235.0" layoutY="205.0" onMouseEntered="#incrementBoidsQuantityGlow" onMouseExited="#incrementBoidsQuantityReset" onMousePressed="#incrementBoidsQuantity" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
+                  <Circle fx:id="boids_quantity_decrement_circle" fill="#1f93ff00" layoutX="55.0" layoutY="205.0" onMouseEntered="#decrementBoidsQuantityGlow" onMouseExited="#decrementBoidsQuantityReset" onMousePressed="#decrementBoidsQuantity" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
                </children>
             </Pane>
          </children>

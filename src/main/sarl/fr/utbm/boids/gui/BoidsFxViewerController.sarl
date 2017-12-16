@@ -738,6 +738,68 @@ class BoidsFxViewerController extends FxViewerController {
 	}
 	
 	/** 
+	 * Applique l'effet Glow sur l'incrémenteur du nombre de populations
+	 */
+	@FXML protected def incrementBoidsPopulationGlow() : void {
+		if (nightMode) {
+			boids_population_increment_circle.stroke = Color.rgb(235, 221, 26)
+			increment_boids_population.textFill = Color.rgb(235, 221, 26)
+		} else {
+			boids_population_increment_circle.stroke = Color.rgb(0, 0, 0)
+			increment_boids_population.textFill = Color.rgb(0, 0, 0)
+		}
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_population_increment_circle.effect = glowEffect
+	}
+	
+	/** 
+	 * Applique l'effet Glow sur le décrémenteur du nombre de populations
+	 */
+	@FXML protected def incrementBoidsPopulationReset() : void {
+		if (nightMode) {
+			boids_population_increment_circle.stroke = Color.rgb(191, 191, 191)
+			increment_boids_population.textFill = Color.rgb(191, 191, 191)
+		} else {
+			boids_population_increment_circle.stroke = Color.rgb(0, 0, 0, 0.3)
+			increment_boids_population.textFill = Color.rgb(0, 0, 0)
+		}
+		boids_population_increment_circle.effect = null
+		increment_boids_population.effect = null
+	}
+	
+	/** 
+	 * Désapplique l'effet Glow sur l'incrémenteur du nombre de populations
+	 */
+	@FXML protected def decrementBoidsPopulationGlow() : void {
+		if (nightMode) {
+			boids_population_decrement_circle.stroke = Color.rgb(235, 221, 26)
+			decrement_boids_population.textFill = Color.rgb(235, 221, 26)
+		} else {
+			boids_population_decrement_circle.stroke = Color.rgb(0, 0, 0)
+			decrement_boids_population.textFill = Color.rgb(0, 0, 0)
+		}
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_population_decrement_circle.effect = glowEffect
+	}
+	
+	/** 
+	 * Désapplique l'effet Glow sur le décrémenteur du nombre de populations
+	 */
+	@FXML protected def decrementBoidsPopulationReset() : void {
+		if (nightMode) {
+			boids_population_decrement_circle.stroke = Color.rgb(191, 191, 191)
+			decrement_boids_population.textFill = Color.rgb(191, 191, 191)
+		} else {
+			boids_population_decrement_circle.stroke = Color.rgb(0, 0, 0, 0.3)
+			increment_boids_population.textFill = Color.rgb(0, 0, 0)
+		}
+		boids_population_decrement_circle.effect = null
+		decrement_boids_population.effect = null
+	}
+	
+	/** 
 	 * Applique l'effet Glow sur le TextField du nombre de populations
 	 */
 	@FXML protected def boidsPopulationGlow() : void {
@@ -751,6 +813,7 @@ class BoidsFxViewerController extends FxViewerController {
 		glowEffect.level = 0.8
 		boids_population_input.effect = glowEffect
 	}
+	
 	/** 
 	 * Désapplique l'effet Glow sur le TextField du nombre de populations
 	 */
@@ -1770,7 +1833,6 @@ class BoidsFxViewerController extends FxViewerController {
 				preview_map_4_border.stroke = Color.rgb(235, 221, 26)
 				map_label_4.textFill = Color.rgb(235, 221, 26)
 			}
-			
 		}
 	}
 }

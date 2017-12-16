@@ -2329,6 +2329,72 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   /**
+   * Applique l'effet Glow sur l'incrémenteur du nombre de populations
+   */
+  @FXML
+  protected void incrementBoidsPopulationGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_increment_circle.setStroke(Color.rgb(235, 221, 26));
+      this.increment_boids_population.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_population_increment_circle.setStroke(Color.rgb(0, 0, 0));
+      this.increment_boids_population.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_population_increment_circle.setEffect(glowEffect);
+  }
+  
+  /**
+   * Applique l'effet Glow sur le décrémenteur du nombre de populations
+   */
+  @FXML
+  protected void incrementBoidsPopulationReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_increment_circle.setStroke(Color.rgb(191, 191, 191));
+      this.increment_boids_population.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_population_increment_circle.setStroke(Color.rgb(0, 0, 0, 0.3));
+      this.increment_boids_population.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_population_increment_circle.setEffect(null);
+    this.increment_boids_population.setEffect(null);
+  }
+  
+  /**
+   * Désapplique l'effet Glow sur l'incrémenteur du nombre de populations
+   */
+  @FXML
+  protected void decrementBoidsPopulationGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_decrement_circle.setStroke(Color.rgb(235, 221, 26));
+      this.decrement_boids_population.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_population_decrement_circle.setStroke(Color.rgb(0, 0, 0));
+      this.decrement_boids_population.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_population_decrement_circle.setEffect(glowEffect);
+  }
+  
+  /**
+   * Désapplique l'effet Glow sur le décrémenteur du nombre de populations
+   */
+  @FXML
+  protected void decrementBoidsPopulationReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_population_decrement_circle.setStroke(Color.rgb(191, 191, 191));
+      this.decrement_boids_population.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_population_decrement_circle.setStroke(Color.rgb(0, 0, 0, 0.3));
+      this.increment_boids_population.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_population_decrement_circle.setEffect(null);
+    this.decrement_boids_population.setEffect(null);
+  }
+  
+  /**
    * Applique l'effet Glow sur le TextField du nombre de populations
    */
   @FXML
@@ -4271,42 +4337,17 @@ public class BoidsFxViewerController extends FxViewerController {
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    BoidsFxViewerController other = (BoidsFxViewerController) obj;
-    if (other.launched != this.launched)
-      return false;
-    if (other.mapCreated != this.mapCreated)
-      return false;
-    if (other.selectedMap != this.selectedMap)
-      return false;
-    if (other.nightMode != this.nightMode)
-      return false;
-    if (other.togglePerception != this.togglePerception)
-      return false;
-    if (!java.util.Objects.equals(this.currentBoid, other.currentBoid)) {
-      return false;
-    }
-    return super.equals(obj);
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    int result = super.hashCode();
-    final int prime = 31;
-    result = prime * result + (this.launched ? 1231 : 1237);
-    result = prime * result + (this.mapCreated ? 1231 : 1237);
-    result = prime * result + this.selectedMap;
-    result = prime * result + (this.nightMode ? 1231 : 1237);
-    result = prime * result + (this.togglePerception ? 1231 : 1237);
-    result = prime * result + java.util.Objects.hashCode(this.currentBoid);
-    return result;
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
   }
   
   @SyntheticMember
