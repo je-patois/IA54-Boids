@@ -21,6 +21,7 @@ import java.util.Map
 import fr.utbm.boids.events.BoidInitialized
 import fr.utbm.boids.EnvInfos
 import java.util.HashMap
+import fr.utbm.boids.events.PositionModification
 
 agent Boid {
 	uses Logging, DefaultContextInteractions, Lifecycle
@@ -40,7 +41,7 @@ agent Boid {
 		parentAgent = occurrence.spawner
 		this.body = new BoidBody(this.ID, occurrence.parameters.get(0) as Integer, occurrence.parameters.get(1) as Integer, occurrence.parameters.get(2) as Integer, occurrence.parameters.get(3) as Integer, occurrence.parameters.get(4) as Integer)
 		this.envInfos = occurrence.parameters.get(5) as EnvInfos
-		seenBoids = new HashMap<UUID, BoidBody>
+		this.seenBoids = new HashMap<UUID, BoidBody>
 		emit(new BoidInitialized(this.body, 'Boid'))
 	}
 	
@@ -177,7 +178,7 @@ agent Boid {
 		tmp = new Vector(0, 0)
 		 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe && visible(elem.value) && elem.key != this.ID) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe) {
 				
 				/*if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - envInfos.width)){
 					if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x + envInfos.width)){
@@ -232,7 +233,7 @@ agent Boid {
 		force = new Vector(0,0)
 		 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.key != ID  && elem.value.groupe == this.body.groupe  && visible(elem.value)) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe) {
 				nbTot++
 				force.plus(elem.value.position)
 			}
@@ -259,7 +260,7 @@ agent Boid {
 		tmp = new Vector(0,0)
 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.key != ID && elem.value.groupe == this.body.groupe && visible(elem.value)) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe) {
 				nbTot++
 				tmp.setXY(elem.value.position)
 				tmp.fois(1 / tmp.length)
@@ -286,7 +287,7 @@ agent Boid {
 		tmp = new Vector(0,0)
 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe != this.body.groupe && visible(elem.value)) {
+			if (elem.key != null && elem.value.groupe != this.body.groupe) {
 				tmp.setXY(this.body.position)
 				tmp.moins(elem.value.position)
 				len = tmp.length
@@ -338,11 +339,16 @@ agent Boid {
 	def perception(boids : Map<UUID, BoidBody>) : Map<UUID, BoidBody> {
 		seenBoids.clear()
 		for (elem : boids.entrySet) {
-			if (elem.key !== null && visible(elem.value)) {
+			if (elem.key !== null && visible(elem.value) && elem.key != this.ID) {
 				seenBoids.put(elem.key, elem.value)
 			}
 		}
 		return seenBoids
+	}
+	
+	on PositionModification {
+		this.body.position.x = occurrence.x
+		this.body.position.y = envInfos.height - occurrence.y
 	}
 	
 }

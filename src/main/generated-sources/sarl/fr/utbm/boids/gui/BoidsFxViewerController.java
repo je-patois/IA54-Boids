@@ -4,9 +4,11 @@ import com.google.common.base.Objects;
 import com.google.common.util.concurrent.AtomicDouble;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Configuration;
+import fr.utbm.boids.Vector;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.events.Pause;
+import fr.utbm.boids.events.PositionModification;
 import fr.utbm.boids.events.Resume;
 import fr.utbm.boids.gui.fx.FxViewerController;
 import fr.utbm.boids.util.BoidGroupInfos;
@@ -17,8 +19,12 @@ import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -49,6 +55,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import org.eclipse.xtext.xbase.lib.DoubleExtensions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
@@ -111,9 +118,24 @@ public class BoidsFxViewerController extends FxViewerController {
   private UUID currentBoid;
   
   /**
+   * Polygone actuellement suivi
+   */
+  private Polygon currentPolygon = null;
+  
+  private double orgSceneX;
+  
+  private double orgSceneY;
+  
+  private double orgTranslateX;
+  
+  private double orgTranslateY;
+  
+  private List<Double> savedPosition = new ArrayList<Double>();
+  
+  /**
    * Liste des arcs de perception
    */
-  private List<Arc> perceptions = new ArrayList<Arc>();
+  private Map<BoidBody, Arc> perceptions = new HashMap<BoidBody, Arc>();
   
   /**
    * Pane principal
@@ -1868,6 +1890,14 @@ public class BoidsFxViewerController extends FxViewerController {
           public abstract void handle(final MouseEvent event);
         }
         
+        abstract class ____BoidsFxViewerController_2_1_2 implements EventHandler<MouseEvent> {
+          public abstract void handle(final MouseEvent event);
+        }
+        
+        abstract class ____BoidsFxViewerController_2_2_3 implements EventHandler<MouseEvent> {
+          public abstract void handle(final MouseEvent event);
+        }
+        
         BoidsFxViewerController.this.perception_group.getChildren().clear();
         BoidsFxViewerController.this.boids_group.getChildren().clear();
         BoidsFxViewerController.this.perceptions.clear();
@@ -1914,42 +1944,141 @@ public class BoidsFxViewerController extends FxViewerController {
             }
             boidElement.setRotate(angleRotation);
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
+            BoidsFxViewerController.this.perceptionManagement(boid, angleRotation, boidElement, boid.getPosition().getX(), boid.getPosition().getY(), Boolean.valueOf(false));
             ____BoidsFxViewerController_2_0_1 _____BoidsFxViewerController_2_0_1 = new ____BoidsFxViewerController_2_0_1() {
               public void handle(final MouseEvent event) {
+                if ((BoidsFxViewerController.this.currentPolygon != null)) {
+                  BoidsFxViewerController.this.currentPolygon.setStrokeWidth(0);
+                }
                 BoidsFxViewerController.this.currentBoid = boid.getID();
+                Object _source = event.getSource();
+                BoidsFxViewerController.this.currentPolygon = ((Polygon) _source);
                 BoidsFxViewerController.this.updateInfos(boid);
                 BoidsFxViewerController.this.showInfosVisibility();
+                Object _source_1 = event.getSource();
+                ((Polygon) _source_1).setStrokeWidth(3);
+                if ((BoidsFxViewerController.this.nightMode).booleanValue()) {
+                  Object _source_2 = event.getSource();
+                  ((Polygon) _source_2).setStroke(Color.rgb(255, 255, 255, 0.5));
+                } else {
+                  Object _source_3 = event.getSource();
+                  ((Polygon) _source_3).setStroke(Color.rgb(0, 0, 0, 0.5));
+                }
+                BoidsFxViewerController.this.orgSceneX = event.getSceneX();
+                BoidsFxViewerController.this.orgSceneY = event.getSceneY();
+                Object _source_4 = event.getSource();
+                BoidsFxViewerController.this.orgTranslateX = ((Polygon) _source_4).getTranslateX();
+                Object _source_5 = event.getSource();
+                BoidsFxViewerController.this.orgTranslateY = ((Polygon) _source_5).getTranslateY();
+                BoidsFxViewerController.this.savedPosition.clear();
+                Object _source_6 = event.getSource();
+                final Consumer<Double> _function = (Double point) -> {
+                  BoidsFxViewerController.this.savedPosition.add(Double.valueOf(point));
+                };
+                ((Polygon) _source_6).getPoints().forEach(_function);
+                BoidsFxViewerController.this.perception_group.getChildren().remove(BoidsFxViewerController.this.perceptions.get(boid));
+                BoidsFxViewerController.this.perceptions.remove(boid);
               }
             };
             boidElement.setOnMousePressed(_____BoidsFxViewerController_2_0_1);
-            if ((BoidsFxViewerController.this.togglePerception).booleanValue()) {
-              Arc perceptionArc = new Arc();
-              perceptionArc.setCenterX(boid.getPosition().getX());
-              int _mapHeight_3 = BoidsFxViewerController.this.getMapHeight();
-              double _y_5 = boid.getPosition().getY();
-              double _minus_5 = (_mapHeight_3 - _y_5);
-              perceptionArc.setCenterY(_minus_5);
-              int _distanceVisibilite = boid.getDistanceVisibilite();
-              perceptionArc.setRadiusX(((double) _distanceVisibilite));
-              int _distanceVisibilite_1 = boid.getDistanceVisibilite();
-              perceptionArc.setRadiusY(((double) _distanceVisibilite_1));
-              int _angleVisibilite = boid.getAngleVisibilite();
-              double _minus_6 = ((90 - angleRotation) - _angleVisibilite);
-              perceptionArc.setStartAngle(_minus_6);
-              int _angleVisibilite_1 = boid.getAngleVisibilite();
-              int _multiply = (_angleVisibilite_1 * 2);
-              perceptionArc.setLength(_multiply);
-              perceptionArc.setType(ArcType.ROUND);
-              if ((BoidsFxViewerController.this.nightMode).booleanValue()) {
-                perceptionArc.setFill(Color.rgb(255, 245, 112, 0.2));
-              } else {
-                perceptionArc.setFill(Color.rgb(255, 245, 112, 0.8));
+            ____BoidsFxViewerController_2_1_2 _____BoidsFxViewerController_2_1_2 = new ____BoidsFxViewerController_2_1_2() {
+              @Override
+              public void handle(final MouseEvent event) {
+                double _sceneX = event.getSceneX();
+                double offsetX = (_sceneX - BoidsFxViewerController.this.orgSceneX);
+                double _sceneY = event.getSceneY();
+                double offsetY = (_sceneY - BoidsFxViewerController.this.orgSceneY);
+                double newTranslateX = (BoidsFxViewerController.this.orgTranslateX + offsetX);
+                double newTranslateY = (BoidsFxViewerController.this.orgTranslateY + offsetY);
+                Object _source = event.getSource();
+                ((Polygon) _source).setTranslateX(newTranslateX);
+                Object _source_1 = event.getSource();
+                ((Polygon) _source_1).setTranslateY(newTranslateY);
               }
-              BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
-              BoidsFxViewerController.this.perception_group.getChildren().add(0, perceptionArc);
-              BoidsFxViewerController.this.perceptions.add(perceptionArc);
-            } else {
-              BoidsFxViewerController.this.boids_group.getChildren().add(0, boidElement);
+            };
+            boidElement.setOnMouseDragged(_____BoidsFxViewerController_2_1_2);
+            ____BoidsFxViewerController_2_2_3 _____BoidsFxViewerController_2_2_3 = new ____BoidsFxViewerController_2_2_3() {
+              @Override
+              public void handle(final MouseEvent event) {
+                Object _source = event.getSource();
+                Double _get = ((Polygon) _source).getPoints().get(0);
+                Object _source_1 = event.getSource();
+                Double _get_1 = ((Polygon) _source_1).getPoints().get(2);
+                double _plus = DoubleExtensions.operator_plus(_get, _get_1);
+                Object _source_2 = event.getSource();
+                Double _get_2 = ((Polygon) _source_2).getPoints().get(4);
+                double _plus_1 = (_plus + (_get_2).doubleValue());
+                final double calculX = (_plus_1 / 3);
+                Object _source_3 = event.getSource();
+                Double _get_3 = ((Polygon) _source_3).getPoints().get(1);
+                Object _source_4 = event.getSource();
+                Double _get_4 = ((Polygon) _source_4).getPoints().get(3);
+                double _plus_2 = DoubleExtensions.operator_plus(_get_3, _get_4);
+                Object _source_5 = event.getSource();
+                Double _get_5 = ((Polygon) _source_5).getPoints().get(5);
+                double _plus_3 = (_plus_2 + (_get_5).doubleValue());
+                final double calculY = (_plus_3 / 3);
+                AtomicBoolean valid = new AtomicBoolean(true);
+                final Consumer<Polygon> _function = (Polygon p) -> {
+                  Object _source_6 = event.getSource();
+                  double _translateX = ((Polygon) _source_6).getTranslateX();
+                  double _plus_4 = (calculX + _translateX);
+                  Object _source_7 = event.getSource();
+                  double _translateY = ((Polygon) _source_7).getTranslateY();
+                  double _plus_5 = (calculY + _translateY);
+                  boolean _contains = p.contains(_plus_4, _plus_5);
+                  if (_contains) {
+                    valid.set(false);
+                  }
+                };
+                BoidsFxViewerController.this.polygons.forEach(_function);
+                boolean _get_6 = valid.get();
+                if (_get_6) {
+                  Vector _position = boid.getPosition();
+                  Object _source_6 = event.getSource();
+                  double _translateX = ((Polygon) _source_6).getTranslateX();
+                  double _plus_4 = (calculX + _translateX);
+                  _position.setX(_plus_4);
+                  Vector _position_1 = boid.getPosition();
+                  Object _source_7 = event.getSource();
+                  double _translateY = ((Polygon) _source_7).getTranslateY();
+                  double _plus_5 = (calculY + _translateY);
+                  _position_1.setY(_plus_5);
+                  Object _source_8 = event.getSource();
+                  double _translateX_1 = ((Polygon) _source_8).getTranslateX();
+                  double _plus_6 = (calculX + _translateX_1);
+                  Object _source_9 = event.getSource();
+                  double _translateY_1 = ((Polygon) _source_9).getTranslateY();
+                  double _plus_7 = (calculY + _translateY_1);
+                  BoidsFxViewerController.this.changePosition(BoidsFxViewerController.this.currentBoid, _plus_6, _plus_7);
+                  BoidsFxViewerController.this.updateInfos(boid);
+                } else {
+                  Object _source_10 = event.getSource();
+                  ((Polygon) _source_10).setTranslateX(0);
+                  Object _source_11 = event.getSource();
+                  ((Polygon) _source_11).setTranslateY(0);
+                }
+                Object _source_12 = event.getSource();
+                Object _source_13 = event.getSource();
+                Object _source_14 = event.getSource();
+                double _translateX_2 = ((Polygon) _source_14).getTranslateX();
+                double _plus_8 = (calculX + _translateX_2);
+                Object _source_15 = event.getSource();
+                double _translateY_2 = ((Polygon) _source_15).getTranslateY();
+                double _plus_9 = (calculY + _translateY_2);
+                BoidsFxViewerController.this.perceptionManagement(boid, ((Polygon) _source_12).getRotate(), ((Polygon) _source_13), _plus_8, _plus_9, Boolean.valueOf(true));
+              }
+            };
+            boidElement.setOnMouseReleased(_____BoidsFxViewerController_2_2_3);
+            UUID _iD = boid.getID();
+            boolean _equals = Objects.equal(_iD, BoidsFxViewerController.this.currentBoid);
+            if (_equals) {
+              boidElement.setStrokeWidth(3);
+              if ((BoidsFxViewerController.this.nightMode).booleanValue()) {
+                boidElement.setStroke(Color.rgb(255, 255, 255, 0.5));
+              } else {
+                boidElement.setStroke(Color.rgb(0, 0, 0, 0.5));
+              }
             }
           }
         }
@@ -1970,6 +2099,59 @@ public class BoidsFxViewerController extends FxViewerController {
     } else {
       Platform.runLater(command);
     }
+  }
+  
+  @FXML
+  public Arc perceptionManagement(final BoidBody boid, final double angleRotation, final Polygon boidElement, final double x, final double y, final Boolean erase) {
+    Arc _xifexpression = null;
+    if ((this.togglePerception).booleanValue()) {
+      Arc _xblockexpression = null;
+      {
+        Arc perceptionArc = new Arc();
+        perceptionArc.setCenterX(x);
+        if ((!(erase).booleanValue())) {
+          int _mapHeight = this.getMapHeight();
+          double _y = boid.getPosition().getY();
+          double _minus = (_mapHeight - _y);
+          perceptionArc.setCenterY(_minus);
+        } else {
+          perceptionArc.setCenterY((y - 3));
+        }
+        int _distanceVisibilite = boid.getDistanceVisibilite();
+        perceptionArc.setRadiusX(((double) _distanceVisibilite));
+        int _distanceVisibilite_1 = boid.getDistanceVisibilite();
+        perceptionArc.setRadiusY(((double) _distanceVisibilite_1));
+        int _angleVisibilite = boid.getAngleVisibilite();
+        double _minus_1 = ((90 - angleRotation) - _angleVisibilite);
+        perceptionArc.setStartAngle(_minus_1);
+        int _angleVisibilite_1 = boid.getAngleVisibilite();
+        int _multiply = (_angleVisibilite_1 * 2);
+        perceptionArc.setLength(_multiply);
+        perceptionArc.setType(ArcType.ROUND);
+        if ((this.nightMode).booleanValue()) {
+          perceptionArc.setFill(Color.rgb(255, 245, 112, 0.2));
+        } else {
+          perceptionArc.setFill(Color.rgb(255, 245, 112, 0.8));
+        }
+        if ((!(erase).booleanValue())) {
+          this.boids_group.getChildren().add(0, boidElement);
+        }
+        this.perception_group.getChildren().add(0, perceptionArc);
+        _xblockexpression = this.perceptions.put(boid, perceptionArc);
+      }
+      _xifexpression = _xblockexpression;
+    } else {
+      if ((!(erase).booleanValue())) {
+        this.boids_group.getChildren().add(0, boidElement);
+      }
+    }
+    return _xifexpression;
+  }
+  
+  @FXML
+  public void changePosition(final UUID id, final double x, final double y) {
+    PositionModification _positionModification = new PositionModification(id, x, y);
+    this.emitToAgents(_positionModification);
   }
   
   /**
@@ -2002,14 +2184,14 @@ public class BoidsFxViewerController extends FxViewerController {
     if ((this.togglePerception).booleanValue()) {
       this.togglePerception = Boolean.valueOf(false);
       this.perception_indicator.setFill(Color.TRANSPARENT);
-      final Consumer<Arc> _function = (Arc item) -> {
+      final BiConsumer<BoidBody, Arc> _function = (BoidBody body, Arc item) -> {
         item.setFill(Color.TRANSPARENT);
       };
       this.perceptions.forEach(_function);
     } else {
       this.togglePerception = Boolean.valueOf(true);
       this.perception_indicator.setFill(Color.rgb(0, 204, 99));
-      final Consumer<Arc> _function_1 = (Arc item) -> {
+      final BiConsumer<BoidBody, Arc> _function_1 = (BoidBody body, Arc item) -> {
         if ((this.nightMode).booleanValue()) {
           item.setFill(Color.rgb(255, 245, 112, 0.2));
         } else {
@@ -2057,7 +2239,10 @@ public class BoidsFxViewerController extends FxViewerController {
     String _format_2 = String.format("%.3f", Double.valueOf(boidBody.getPosition().getX()));
     String _plus_13 = ("Position: (" + _format_2);
     String _plus_14 = (_plus_13 + ", ");
-    String _format_3 = String.format("%.3f", Double.valueOf(boidBody.getPosition().getY()));
+    int _mapHeight = this.getMapHeight();
+    double _y_1 = boidBody.getPosition().getY();
+    double _minus = (_mapHeight - _y_1);
+    String _format_3 = String.format("%.3f", Double.valueOf(_minus));
     String _plus_15 = (_plus_14 + _format_3);
     String _plus_16 = (_plus_15 + ")");
     this.boid_position.setText(_plus_16);
@@ -2585,6 +2770,9 @@ public class BoidsFxViewerController extends FxViewerController {
   public void hideInfosVisibility() {
     this.resetTexts();
     this.boids_infos_pane.setVisible(false);
+    this.currentPolygon.setStrokeWidth(0);
+    this.currentPolygon = null;
+    this.currentBoid = null;
   }
   
   /**
@@ -4357,6 +4545,14 @@ public class BoidsFxViewerController extends FxViewerController {
     if (!java.util.Objects.equals(this.currentBoid, other.currentBoid)) {
       return false;
     }
+    if (Double.doubleToLongBits(other.orgSceneX) != Double.doubleToLongBits(this.orgSceneX))
+      return false;
+    if (Double.doubleToLongBits(other.orgSceneY) != Double.doubleToLongBits(this.orgSceneY))
+      return false;
+    if (Double.doubleToLongBits(other.orgTranslateX) != Double.doubleToLongBits(this.orgTranslateX))
+      return false;
+    if (Double.doubleToLongBits(other.orgTranslateY) != Double.doubleToLongBits(this.orgTranslateY))
+      return false;
     return super.equals(obj);
   }
   
@@ -4372,6 +4568,10 @@ public class BoidsFxViewerController extends FxViewerController {
     result = prime * result + (this.nightMode ? 1231 : 1237);
     result = prime * result + (this.togglePerception ? 1231 : 1237);
     result = prime * result + java.util.Objects.hashCode(this.currentBoid);
+    result = prime * result + (int) (Double.doubleToLongBits(this.orgSceneX) ^ (Double.doubleToLongBits(this.orgSceneX) >>> 32));
+    result = prime * result + (int) (Double.doubleToLongBits(this.orgSceneY) ^ (Double.doubleToLongBits(this.orgSceneY) >>> 32));
+    result = prime * result + (int) (Double.doubleToLongBits(this.orgTranslateX) ^ (Double.doubleToLongBits(this.orgTranslateX) >>> 32));
+    result = prime * result + (int) (Double.doubleToLongBits(this.orgTranslateY) ^ (Double.doubleToLongBits(this.orgTranslateY) >>> 32));
     return result;
   }
   

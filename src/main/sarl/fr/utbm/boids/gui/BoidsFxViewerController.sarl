@@ -42,6 +42,14 @@ import javafx.scene.control.ScrollPane
 import fr.utbm.boids.util.BoidGroupInfos
 import javafx.scene.layout.AnchorPane
 import javafx.scene.input.KeyEvent
+import javafx.scene.input.DragEvent
+import javafx.scene.input.Dragboard
+import javafx.scene.input.TransferMode
+import javafx.scene.input.ClipboardContent
+import fr.utbm.boids.events.PositionModification
+import java.util.Map
+import java.util.HashMap
+import java.util.concurrent.atomic.AtomicBoolean
 
 class BoidsFxViewerController extends FxViewerController {
 
@@ -66,8 +74,15 @@ class BoidsFxViewerController extends FxViewerController {
 	var togglePerception : Boolean = true
 	/** Boid actuellement suivi */
 	var currentBoid : UUID
+	/** Polygone actuellement suivi */
+	var currentPolygon : Polygon = null
+	var orgSceneX : double
+	var orgSceneY : double
+	var orgTranslateX : double
+	var orgTranslateY : double
+	var savedPosition : List<Double> = new ArrayList()
 	/** Liste des arcs de perception */
-	var perceptions : List<Arc> = new ArrayList()
+	var perceptions : Map<BoidBody, Arc> = new HashMap<BoidBody, Arc>
 
 	/** Pane principal */
 	@FXML var main_pane : Pane
@@ -203,9 +218,9 @@ class BoidsFxViewerController extends FxViewerController {
 	/** Indicateur du groupe du Boid */	@FXML var boid_group : Label; /** Indicateur de la vitesse actuelle du boid */ @FXML var boid_vitesse : Label; /** Indicateur de la nouvelle vitesse du boid */ @FXML var boid_new_vitesse : Label; /** Indicateur de la vitesse maximale du groupe du boid */ @FXML var boid_group_vitesse : Label; /** Indicateur de l'angle de vision du boid */	@FXML var boid_angle : Label; /** Indicateur de la distancce de vision du boid */ @FXML var boid_distance : Label; /** Indicateur de la masse du boid */ @FXML var boid_masse : Label; /** Indicateur de la position du boid */ @FXML var boid_position : Label
 	/** Bouton permettant de masquer la fenêtre de visualisation des informations du boid */
 	@FXML var hide_infos : Button
-
 	
-
+	
+	
 	/* --- --- --- GETTERS & SETTERS --- --- --- */
 	
 	/** Retourne le nombre de boids */
@@ -286,7 +301,7 @@ class BoidsFxViewerController extends FxViewerController {
 					toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
 				} else {
 					toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
-				}		
+				}	
 			} else {
 				emitToAgents(^event)
 			}
@@ -298,6 +313,7 @@ class BoidsFxViewerController extends FxViewerController {
 	 */
 	def buildMap(map : int) : List<Obstacle> {
 		pause_button.visible = true
+		
 		if(map == 1) {
 			return new ArrayList()
 		}
@@ -367,7 +383,6 @@ class BoidsFxViewerController extends FxViewerController {
 			}
 		}
 	}
-	
 	/** 
 	 * Génère les coordonnées relatives aux polygones
 	 */
@@ -430,35 +445,80 @@ class BoidsFxViewerController extends FxViewerController {
 					
 					boidElement.rotate = angleRotation
 					boidElement.setFill(Configuration::COLOR_FAMILY.get(boid.groupe))
+
+					perceptionManagement(boid, angleRotation, boidElement, boid.position.x, boid.position.y, false)
 					
 					boidElement.setOnMousePressed(new EventHandler<MouseEvent>() {
 						def handle(^event : MouseEvent) {
+							if(currentPolygon !== null)
+								currentPolygon.strokeWidth = 0
 							currentBoid = boid.ID
+							currentPolygon = (^event.source as Polygon)
 							updateInfos(boid)
 							showInfosVisibility()
+							(^event.source as Polygon).strokeWidth = 3
+							if(nightMode) (^event.source as Polygon).stroke = Color.rgb(255, 255, 255, 0.5) else (^event.source as Polygon).stroke = Color.rgb(0, 0, 0, 0.5)
+							orgSceneX = ^event.getSceneX()
+							orgSceneY = ^event.getSceneY()
+							orgTranslateX = (^event.source as Polygon).getTranslateX()
+							orgTranslateY = (^event.source as Polygon).getTranslateY()
+
+							savedPosition.clear()
+							(^event.source as Polygon).points.forEach[point : double |
+								savedPosition.add(point)
+							]
+
+							perception_group.getChildren.remove(perceptions.get(boid))
+							perceptions.remove(boid)
 						}
 					}); 
 					
-					if(togglePerception) {
-						var perceptionArc = new Arc()
-						perceptionArc.setCenterX(boid.position.x);
-						perceptionArc.setCenterY(getMapHeight - boid.position.y);
-						perceptionArc.setRadiusX(boid.distanceVisibilite as double);
-						perceptionArc.setRadiusY(boid.distanceVisibilite as double);
-						perceptionArc.setStartAngle(90 - angleRotation - boid.angleVisibilite)
-						perceptionArc.setLength(boid.angleVisibilite * 2);
-						perceptionArc.setType(ArcType.ROUND);
-						if(nightMode) {
-							perceptionArc.fill = Color.rgb(255, 245, 112, 0.2)
-						} else {
-							perceptionArc.fill = Color.rgb(255, 245, 112, 0.8)
+					boidElement.setOnMouseDragged(new EventHandler<MouseEvent>() {
+						@Override
+						def handle(^event : MouseEvent) {
+							var offsetX : double = ^event.getSceneX() - orgSceneX
+							var offsetY : double = ^event.getSceneY() - orgSceneY
+							
+							var newTranslateX : double = orgTranslateX + offsetX;
+							var newTranslateY : double = orgTranslateY + offsetY;
+							
+							(^event.source as Polygon).setTranslateX(newTranslateX)
+							(^event.source as Polygon).setTranslateY(newTranslateY)
 						}
-						boids_group.getChildren().add(0, boidElement)
-						perception_group.getChildren.add(0, perceptionArc)
-						perceptions.add(perceptionArc)
-					} else {
-						boids_group.getChildren.add(0, boidElement)
+					});
+					
+					boidElement.setOnMouseReleased(new EventHandler<MouseEvent>() {
+						@Override
+						def handle(^event : MouseEvent) {
+							val calculX : double = ((^event.source as Polygon).points.get(0) + (^event.source as Polygon).points.get(2) + (^event.source as Polygon).points.get(4)) / 3
+							val calculY : double = ((^event.source as Polygon).points.get(1) + (^event.source as Polygon).points.get(3) + (^event.source as Polygon).points.get(5)) / 3
+
+							var valid : AtomicBoolean = new AtomicBoolean(true)
+							polygons.forEach [ p : Polygon |
+								if(p.contains(calculX + (^event.source as Polygon).translateX, calculY + (^event.source as Polygon).translateY))
+									valid.set(false)
+							]
+							
+							if (valid.get()) {
+								boid.position.x = calculX + (^event.source as Polygon).translateX;
+								boid.position.y = calculY + (^event.source as Polygon).translateY;
+								changePosition(currentBoid, calculX + (^event.source as Polygon).translateX, calculY + (^event.source as Polygon).translateY)
+								updateInfos(boid)
+							} else {
+								(^event.source as Polygon).translateX = 0
+								(^event.source as Polygon).translateY = 0
+							}
+							perceptionManagement(boid, (^event.source as Polygon).getRotate(), (^event.source as Polygon), calculX + (^event.source as Polygon).translateX, calculY + (^event.source as Polygon).translateY, true)
+							
+						}
+					});
+					
+					if(boid.ID == currentBoid) {
+						boidElement.strokeWidth = 3
+						if(nightMode) boidElement.stroke = Color.rgb(255, 255, 255, 0.5) else boidElement.stroke = Color.rgb(0, 0, 0, 0.5)
 					}
+					
+					//perceptionManagement(boid, angleRotation, boidElement, boid.position.x, boid.position.y, false)
 				}
 
 				if (boids_infos_pane.visible) {
@@ -473,6 +533,33 @@ class BoidsFxViewerController extends FxViewerController {
 		} else {
 			Platform.runLater(command);
 		}	
+	}
+	
+	@FXML def perceptionManagement(boid : BoidBody, angleRotation : double, boidElement : Polygon, x : double, y : double, erase : Boolean) {
+		if (togglePerception) {
+			var perceptionArc = new Arc()
+			perceptionArc.setCenterX(x);
+			if(!erase) perceptionArc.setCenterY(getMapHeight - boid.position.y) else perceptionArc.setCenterY(y - 3) // Sans le -3 c'est décalé, et je vois vraiment pas pourquoi
+			perceptionArc.setRadiusX(boid.distanceVisibilite as double);
+			perceptionArc.setRadiusY(boid.distanceVisibilite as double);
+			perceptionArc.setStartAngle(90 - angleRotation - boid.angleVisibilite)
+			perceptionArc.setLength(boid.angleVisibilite * 2);
+			perceptionArc.setType(ArcType.ROUND);
+			if (nightMode) {
+				perceptionArc.fill = Color.rgb(255, 245, 112, 0.2)
+			} else {
+				perceptionArc.fill = Color.rgb(255, 245, 112, 0.8)
+			}
+			if(!erase) boids_group.getChildren().add(0, boidElement)
+			perception_group.getChildren.add(0, perceptionArc)
+			perceptions.put(boid, perceptionArc)
+		} else {
+			if(!erase) boids_group.getChildren.add(0, boidElement)
+		}
+	}
+	
+	@FXML def changePosition(id : UUID, x : double, y : double) : void {
+		emitToAgents(new PositionModification(id, x, y))
 	}
 
 	/** 
@@ -500,13 +587,13 @@ class BoidsFxViewerController extends FxViewerController {
 		if (togglePerception) {
 			togglePerception = false
 			perception_indicator.fill = Color.TRANSPARENT
-			perceptions.forEach [ item : Arc |
+			perceptions.forEach [ body : BoidBody, item : Arc |
 				item.fill = Color.TRANSPARENT
 			]
 		} else {
 			togglePerception = true
 			perception_indicator.fill = Color.rgb(0, 204, 99)
-			perceptions.forEach [ item : Arc |
+			perceptions.forEach [ body : BoidBody, item : Arc |
 				if(nightMode) item.fill = Color.rgb(255, 245, 112, 0.2) else item.fill = Color.rgb(255, 245, 112, 0.8)
 			]
 		}
@@ -525,8 +612,7 @@ class BoidsFxViewerController extends FxViewerController {
 		boid_angle.text = 'Angle: ' + boidBody.angleVisibilite
 		boid_distance.text = 'Distance percep.: ' + boidBody.distanceVisibilite
 		boid_new_vitesse.text = 'Nouvelle vitesse: (' + boidBody.newVitesse.x + ', ' + boidBody.newVitesse.y + ')'
-		boid_position.text = 'Position: (' + String.format("%.3f", boidBody.position.x) + ', ' +
-			String.format("%.3f", boidBody.position.y) + ')'
+		boid_position.text = 'Position: (' + String.format("%.3f", boidBody.position.x) + ', ' + String.format("%.3f", mapHeight - boidBody.position.y) + ')'
 	}
 	
 	
@@ -950,6 +1036,9 @@ class BoidsFxViewerController extends FxViewerController {
 	def hideInfosVisibility() : void {
 		this.resetTexts()
 		boids_infos_pane.visible = false
+		currentPolygon.strokeWidth = 0
+		currentPolygon = null
+		currentBoid = null
 	}
 
 	/**

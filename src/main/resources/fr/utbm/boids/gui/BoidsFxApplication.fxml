@@ -782,7 +782,7 @@
             <Label fx:id="boid_distance" layoutX="215.0" layoutY="56.0" prefHeight="21.0" prefWidth="173.0" textFill="#bdbdbdb2" />
             <Label fx:id="boid_group" layoutX="22.0" layoutY="77.0" prefHeight="21.0" prefWidth="173.0" textFill="#bdbdbdb2" />
             <Label fx:id="boid_position" layoutX="215.0" layoutY="77.0" prefHeight="21.0" prefWidth="221.0" textFill="#bdbdbdb2" />
-            <Button fx:id="hide_infos" layoutX="19.0" layoutY="108.0" mnemonicParsing="false" onAction="#hideInfosVisibility" onMouseEntered="#applyGlowEffectOnButton" onMouseExited="#unapplyGlowEffectOnButton" prefHeight="31.0" prefWidth="353.0" style="-fx-background-color: transparent;" text="Cacher" textFill="#bdbdbd4d" />
+            <Button fx:id="hide_infos" layoutX="176.0" layoutY="108.0" mnemonicParsing="false" onAction="#hideInfosVisibility" onMouseEntered="#applyGlowEffectOnButton" onMouseExited="#unapplyGlowEffectOnButton" prefHeight="31.0" prefWidth="69.0" style="-fx-background-color: transparent;" text="%Hide" textFill="#bdbdbd4d" />
          </children>
       </Pane>
    </children>

@@ -16,6 +16,7 @@ import fr.utbm.boids.events.BoidsReady
 import io.sarl.lang.core.Address
 import fr.utbm.boids.events.TimeManagingStart
 import fr.utbm.boids.Configuration
+import fr.utbm.boids.events.PositionModification
 
 agent BootAgent {
 	uses Logging, Behaviors, InnerContextAccess, Lifecycle
@@ -63,14 +64,10 @@ agent BootAgent {
 		evt.source = new Address(innerContext.defaultSpace.spaceID, ID);
 		innerContext.defaultSpace.emit(ID, evt)
 	}
-
-	/*on Pause {
-		innerContext.defaultSpace.emit(ID, new Pause)
-	}*/
 	
-	/*on Resume {
-		innerContext.defaultSpace.emit(ID, new Resume)
-	}*/
+	on PositionModification [!isFromMe] {
+		innerContext.defaultSpace.emit(ID, new PositionModification(occurrence.boid, occurrence.x, occurrence.y))
+	}
 
 	on EndSimulation [!hasMemberAgent] {
 		killMe
