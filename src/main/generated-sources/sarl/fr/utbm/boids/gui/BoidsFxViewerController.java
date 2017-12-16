@@ -2139,7 +2139,7 @@ public class BoidsFxViewerController extends FxViewerController {
               Object _source_7 = e.getSource();
               ((TextField) _source_7).setText(("" + Integer.valueOf(50)));
             } else {
-              if ((currentValue <= 1)) {
+              if ((currentValue < 1)) {
                 Object _source_8 = e.getSource();
                 ((TextField) _source_8).setText(("" + Integer.valueOf(1)));
               }
@@ -4337,17 +4337,42 @@ public class BoidsFxViewerController extends FxViewerController {
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    BoidsFxViewerController other = (BoidsFxViewerController) obj;
+    if (other.launched != this.launched)
+      return false;
+    if (other.mapCreated != this.mapCreated)
+      return false;
+    if (other.selectedMap != this.selectedMap)
+      return false;
+    if (other.nightMode != this.nightMode)
+      return false;
+    if (other.togglePerception != this.togglePerception)
+      return false;
+    if (!java.util.Objects.equals(this.currentBoid, other.currentBoid)) {
+      return false;
+    }
+    return super.equals(obj);
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    int result = super.hashCode();
+    final int prime = 31;
+    result = prime * result + (this.launched ? 1231 : 1237);
+    result = prime * result + (this.mapCreated ? 1231 : 1237);
+    result = prime * result + this.selectedMap;
+    result = prime * result + (this.nightMode ? 1231 : 1237);
+    result = prime * result + (this.togglePerception ? 1231 : 1237);
+    result = prime * result + java.util.Objects.hashCode(this.currentBoid);
+    return result;
   }
   
   @SyntheticMember

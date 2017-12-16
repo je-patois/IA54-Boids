@@ -581,7 +581,7 @@ class BoidsFxViewerController extends FxViewerController {
 				} else if((e.source as TextField).id == 'boids_quantity_input') {
 					if (currentValue >= 50) {
 						(e.source as TextField).text = '' + 50
-					} else if (currentValue <= 1) {
+					} else if (currentValue < 1) {
 						(e.source as TextField).text = '' + 1
 					}
 				}

@@ -685,7 +685,7 @@
                               <Image url="@../map/Tick.png" />
                            </image>
                         </ImageView>
-                        <ImageView fx:id="tick_map_2" fitHeight="51.0" fitWidth="50.0" layoutX="514.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                        <ImageView fx:id="tick_map_2" fitHeight="51.0" fitWidth="50.0" layoutX="528.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true" visible="false">
                            <image>
                               <Image url="@../map/Tick.png" />
                            </image>
