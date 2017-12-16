@@ -63,11 +63,10 @@ agent Environment {
 		info('Population size: ' + this.ctrl.boidsPopulation)
 		for (var i = 0; i < this.ctrl.boidsPopulation; i++) {
 			for (var j = 0 ; j < this.ctrl.boidsQuantity; j++){
-				// spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsVision, ctrl.boidsDistanceDeplacement, envInfos)
 				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsSettings.get(i).speed, ctrl.boidsSettings.get(i).mass, ctrl.boidsSettings.get(i).angle, ctrl.boidsSettings.get(i).distance, envInfos)
 			}
 		}
-		info(this.boidsList)
+		//info(this.boidsList)
 	}
 
 	on BoidInitialized [occurrence.isInInnerDefaultSpace] {

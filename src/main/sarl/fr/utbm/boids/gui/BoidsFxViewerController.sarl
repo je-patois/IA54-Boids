@@ -41,309 +41,217 @@ import javafx.scene.image.ImageView
 import javafx.scene.control.ScrollPane
 import fr.utbm.boids.util.BoidGroupInfos
 import javafx.scene.layout.AnchorPane
+import javafx.scene.input.KeyEvent
 
-class BoidsFxViewerController extends FxViewerController  {
+class BoidsFxViewerController extends FxViewerController {
 
+	/** Etat de la simulation */
 	var launched = false
+	/** Etat de la map */
 	var mapCreated = false
-
-	@FXML var main_pane : Pane
-	@FXML var boids_group : Group // Groupe contenant les boids
-	@FXML var UI_pane : Pane // Pane contenant l'UI
-	@FXML var obstacle_group : Group // Groupe contenant les obstacles
-	@FXML var perception_group : Group // Groupe contenant les champs de perceptions des boids
-	
-	@FXML var toggle_night_mode : ToggleButton
-	@FXML var toggle_perception : ToggleButton
-	@FXML var start_button : Button
-	@FXML var night_mode_indicator : Circle
-	@FXML var perception_indicator : Circle
-
-	// Titres
-	@FXML var boids_quantity_label : Label
-	@FXML var boids_population_label : Label
-
-	// Input
-	@FXML var boids_quantity_input : TextField
-	@FXML var boids_population_input : TextField
-
-	
-	@FXML var pause_button : Rectangle
-	@FXML var resume_button : Polygon
-	@FXML var boid_group : Label
-	@FXML var boid_vitesse : Label
-	@FXML var boid_new_vitesse : Label
-	@FXML var boid_group_vitesse : Label
-	@FXML var boid_angle : Label
-	@FXML var boid_distance : Label
-	@FXML var boid_masse : Label
-	@FXML var boid_position : Label
-	@FXML var hide_infos : Button
-	@FXML var boids_infos_pane : Pane
-		
-	@FXML var boids_population_line : Line
-	@FXML var increment_boids_population : Label
-	@FXML var decrement_boids_population : Label
-	@FXML var boids_population_increment_circle : Circle
-	@FXML var boids_population_decrement_circle : Circle
-	
-	@FXML var preview_map_1 : ImageView
-	@FXML var preview_map_2 : ImageView
-	@FXML var preview_map_3 : ImageView
-	@FXML var preview_map_4 : ImageView
-	@FXML var preview_map_1_border : Rectangle
-	@FXML var preview_map_2_border : Rectangle
-	@FXML var preview_map_3_border : Rectangle
-	@FXML var preview_map_4_border : Rectangle
-	@FXML var map_label_1 : Label
-	@FXML var map_label_2 : Label
-	@FXML var map_label_3 : Label
-	@FXML var map_label_4 : Label
-	
-	@FXML var simulation_parameters_pane : Pane
-	@FXML var map_selection_pane : ScrollPane
-	@FXML var tick_map_1 : ImageView
-	@FXML var tick_map_2 : ImageView
-	@FXML var tick_map_3 : ImageView
-	@FXML var tick_map_4 : ImageView
-	
-	@FXML var pane_group_1 : Pane
-	@FXML var pane_group_2 : Pane
-	@FXML var pane_group_3 : Pane
-	@FXML var pane_group_4 : Pane
-	@FXML var pane_group_5 : Pane
-	@FXML var pane_group_6 : Pane
-	@FXML var pane_group_7 : Pane
-	@FXML var pane_group_8 : Pane
-	
-	@FXML var group_label_1 : Label
-	@FXML var group_label_2 : Label
-	@FXML var group_label_3 : Label
-	@FXML var group_label_4 : Label
-	@FXML var group_label_5 : Label
-	@FXML var group_label_6 : Label
-	@FXML var group_label_7 : Label
-	@FXML var group_label_8 : Label
-	
-	@FXML var mass_label_1 : Label
-	@FXML var mass_label_2 : Label
-	@FXML var mass_label_3 : Label
-	@FXML var mass_label_4 : Label
-	@FXML var mass_label_5 : Label
-	@FXML var mass_label_6 : Label
-	@FXML var mass_label_7 : Label
-	@FXML var mass_label_8 : Label
-	@FXML var mass_1 : ScrollBar
-	@FXML var mass_2 : ScrollBar
-	@FXML var mass_3 : ScrollBar
-	@FXML var mass_4 : ScrollBar
-	@FXML var mass_5 : ScrollBar
-	@FXML var mass_6 : ScrollBar
-	@FXML var mass_7 : ScrollBar
-	@FXML var mass_8 : ScrollBar
-	@FXML var mass_min_1 : Label
-	@FXML var mass_max_1 : Label
-	@FXML var mass_display_1 : Label
-	@FXML var mass_min_2 : Label
-	@FXML var mass_max_2 : Label
-	@FXML var mass_display_2 : Label
-	@FXML var mass_min_3 : Label
-	@FXML var mass_max_3 : Label
-	@FXML var mass_display_3 : Label
-	@FXML var mass_min_4 : Label
-	@FXML var mass_max_4 : Label
-	@FXML var mass_display_4 : Label
-	@FXML var mass_min_5 : Label
-	@FXML var mass_max_5 : Label
-	@FXML var mass_display_5 : Label
-	@FXML var mass_min_6 : Label
-	@FXML var mass_max_6 : Label
-	@FXML var mass_display_6 : Label
-	@FXML var mass_min_7 : Label
-	@FXML var mass_max_7 : Label
-	@FXML var mass_display_7 : Label
-	@FXML var mass_min_8 : Label
-	@FXML var mass_max_8 : Label
-	@FXML var mass_display_8 : Label
-	
-	@FXML var speed_label_1 : Label
-	@FXML var speed_1 : ScrollBar
-	@FXML var speed_min_1 : Label
-	@FXML var speed_max_1 : Label
-	@FXML var speed_display_1 : Label
-	@FXML var speed_label_2 : Label
-	@FXML var speed_2 : ScrollBar
-	@FXML var speed_min_2 : Label
-	@FXML var speed_max_2 : Label
-	@FXML var speed_display_2 : Label
-	@FXML var speed_label_3 : Label
-	@FXML var speed_3 : ScrollBar
-	@FXML var speed_min_3 : Label
-	@FXML var speed_max_3 : Label
-	@FXML var speed_display_3 : Label
-	@FXML var speed_label_4 : Label
-	@FXML var speed_4 : ScrollBar
-	@FXML var speed_min_4 : Label
-	@FXML var speed_max_4 : Label
-	@FXML var speed_display_4 : Label
-	@FXML var speed_label_5 : Label
-	@FXML var speed_5 : ScrollBar
-	@FXML var speed_min_5 : Label
-	@FXML var speed_max_5 : Label
-	@FXML var speed_display_5 : Label
-	@FXML var speed_label_6 : Label
-	@FXML var speed_6 : ScrollBar
-	@FXML var speed_min_6 : Label
-	@FXML var speed_max_6 : Label
-	@FXML var speed_display_6 : Label
-	@FXML var speed_label_7 : Label
-	@FXML var speed_7 : ScrollBar
-	@FXML var speed_min_7 : Label
-	@FXML var speed_max_7 : Label
-	@FXML var speed_display_7 : Label
-	@FXML var speed_label_8 : Label
-	@FXML var speed_8 : ScrollBar
-	@FXML var speed_min_8 : Label
-	@FXML var speed_max_8 : Label
-	@FXML var speed_display_8 : Label
-	
-	@FXML var angle_label_1 : Label
-	@FXML var angle_1 : ScrollBar
-	@FXML var angle_min_1 : Label
-	@FXML var angle_max_1 : Label
-	@FXML var angle_display_1 : Label
-	@FXML var angle_label_2 : Label
-	@FXML var angle_2 : ScrollBar
-	@FXML var angle_min_2 : Label
-	@FXML var angle_max_2 : Label
-	@FXML var angle_display_2 : Label
-	@FXML var angle_label_3 : Label
-	@FXML var angle_3 : ScrollBar
-	@FXML var angle_min_3 : Label
-	@FXML var angle_max_3 : Label
-	@FXML var angle_display_3 : Label
-	@FXML var angle_label_4 : Label
-	@FXML var angle_4 : ScrollBar
-	@FXML var angle_min_4 : Label
-	@FXML var angle_max_4 : Label
-	@FXML var angle_display_4 : Label
-	@FXML var angle_label_5 : Label
-	@FXML var angle_5 : ScrollBar
-	@FXML var angle_min_5 : Label
-	@FXML var angle_max_5 : Label
-	@FXML var angle_display_5 : Label
-	@FXML var angle_label_6 : Label
-	@FXML var angle_6 : ScrollBar
-	@FXML var angle_min_6 : Label
-	@FXML var angle_max_6 : Label
-	@FXML var angle_display_6 : Label
-	@FXML var angle_label_7 : Label
-	@FXML var angle_7 : ScrollBar
-	@FXML var angle_min_7 : Label
-	@FXML var angle_max_7 : Label
-	@FXML var angle_display_7 : Label
-	@FXML var angle_label_8 : Label
-	@FXML var angle_8 : ScrollBar
-	@FXML var angle_min_8 : Label
-	@FXML var angle_max_8 : Label
-	@FXML var angle_display_8 : Label
-	
-	@FXML var distance_label_1 : Label
-	@FXML var distance_1 : ScrollBar
-	@FXML var distance_min_1 : Label
-	@FXML var distance_max_1 : Label
-	@FXML var distance_display_1 : Label
-	@FXML var distance_label_2 : Label
-	@FXML var distance_2 : ScrollBar
-	@FXML var distance_min_2 : Label
-	@FXML var distance_max_2 : Label
-	@FXML var distance_display_2 : Label
-	@FXML var distance_label_3 : Label
-	@FXML var distance_3 : ScrollBar
-	@FXML var distance_min_3 : Label
-	@FXML var distance_max_3 : Label
-	@FXML var distance_display_3 : Label
-	@FXML var distance_label_4 : Label
-	@FXML var distance_4 : ScrollBar
-	@FXML var distance_min_4 : Label
-	@FXML var distance_max_4 : Label
-	@FXML var distance_display_4 : Label
-	@FXML var distance_label_5 : Label
-	@FXML var distance_5 : ScrollBar
-	@FXML var distance_min_5 : Label
-	@FXML var distance_max_5 : Label
-	@FXML var distance_display_5 : Label
-	@FXML var distance_label_6 : Label
-	@FXML var distance_6 : ScrollBar
-	@FXML var distance_min_6 : Label
-	@FXML var distance_max_6 : Label
-	@FXML var distance_display_6 : Label
-	@FXML var distance_label_7 : Label
-	@FXML var distance_7 : ScrollBar
-	@FXML var distance_min_7 : Label
-	@FXML var distance_max_7 : Label
-	@FXML var distance_display_7 : Label
-	@FXML var distance_label_8 : Label
-	@FXML var distance_8 : ScrollBar
-	@FXML var distance_min_8 : Label
-	@FXML var distance_max_8 : Label
-	@FXML var distance_display_8 : Label
-	
-	@FXML var advanced_settings_pane : ScrollPane
-	@FXML var advanced_settings_anchor_pane : AnchorPane
-	@FXML var map_selection_label : Label
-	@FXML var settings_label : Label
-	@FXML var advanced_settings_label : Label
-	@FXML var see_advanced_settings_label : Label
-	@FXML var reset_group_values : Label
-	
-	@FXML var boids_quantity_increment_circle : Circle
-	@FXML var boids_quantity_decrement_circle : Circle
-	@FXML var increment_boids_quantity : Label
-	@FXML var decrement_boids_quantity : Label
-	@FXML var boids_quantity_line : Line
-	
+	/** Map sélectionnée */
 	var selectedMap : int = 1
+	/** Paramètres des différentes familles de boids */
 	var boidsSettings : List<BoidGroupInfos> = new ArrayList()
 
+	/** Liste des  polygones de la map */
 	var polygons : List<Polygon>
+	/** Liste des coordonnées relatives aux polygones de la map */
 	var polygonsCoordinates : List<List<Coordinates>>
+	/** Liste des obstacles de la map */
 	var obstacles : List<Obstacle> = new ArrayList()
+	/** Activation/Désactivation du mode nuit */
 	var nightMode : Boolean = true
+	/** Activation/Désactivation de la perception */
 	var togglePerception : Boolean = true
-	var currentBoid: UUID
+	/** Boid actuellement suivi */
+	var currentBoid : UUID
+	/** Liste des arcs de perception */
 	var perceptions : List<Arc> = new ArrayList()
 
+	/** Pane principal */
+	@FXML var main_pane : Pane
+	
+	/** Groupe contenant les boids */
+	@FXML var boids_group : Group
+	/** Groupe contenant les obstacles */
+	@FXML var obstacle_group : Group
+	/** Groupe contenant les champs de perceptions des boids */
+	@FXML var perception_group : Group
+	
+	/** Bouton lançant la simulation */
+	@FXML var start_button : Button
+	/** Bouton pause */
+	@FXML var pause_button : Rectangle
+	/** Bouton reprise */
+	@FXML var resume_button : Polygon
+	
+	/** Active/Désactive le mode nuit */@FXML var toggle_night_mode : ToggleButton; /** Indicateur du mode */ @FXML var night_mode_indicator : Circle
+	/** Active/Désactive les champs perceptions des boids */@FXML var toggle_perception : ToggleButton; /** Indicateur des champs de percetpion des boids */ @FXML var perception_indicator : Circle
+	
+	
+	
+	/* --- --- --- UI PANE --- --- --- */
+	
+	/** Pane contenant l'UI */
+	@FXML var UI_pane: Pane
+	/** Intitulé de la quantité de boids */
+	@FXML var boids_quantity_label : Label
+	/** Intitulé du nombre de population */
+	@FXML var boids_population_label : Label
+
+	/** Champ pour le nombre de boids */
+	@FXML var boids_quantity_input : TextField
+	/** Champ pour le nombre de population */
+	@FXML var boids_population_input : TextField
+
+
+
+	/* --- --- --- SIMULATION PARAMETERS PANE --- --- --- */
+
+	/** Pane contenant les paramètrages globaux de la simulation */
+	@FXML var simulation_parameters_pane : Pane
+	/** Intitulé de la fenêtre des paramètres de la simulation */
+	@FXML var settings_label : Label
+	/** Redirection vers la fenêtre des paramètres avancés */
+	@FXML var see_advanced_settings_label : Label
+	
+	/* - Paramètrage nombre de populations */
+	/** Ligne sous le nombre de population */@FXML var boids_population_line : Line; /** Bouton + pour le nombre de populations */@FXML var increment_boids_population : Label; /** Bouton - pour le nombre de populations */ @FXML var decrement_boids_population : Label; /** Cercle entourant le bouton + du nombre de populations */ @FXML var boids_population_increment_circle : Circle; /** Cercle entourant le bouton - du nombre de populations */	@FXML var boids_population_decrement_circle : Circle
+
+	/* - Paramètrage nombre de boids */
+	/** Ligne sous le nombre de boids */ @FXML var boids_quantity_line : Line; /** Bouton + pour le nombre de boids */ @FXML var increment_boids_quantity : Label; /** Bouton - pour le nombre de populations */ @FXML var decrement_boids_quantity : Label; /** Cercle entourant le bouton + du nombre de boids */ @FXML var boids_quantity_increment_circle : Circle; /** Cercle entourant le bouton - du nombre de boids */	@FXML var boids_quantity_decrement_circle : Circle
+	
+	
+	
+	/* --- --- --- MAP SELECTION PANE --- --- --- */
+	
+	/** ScrollPane contenant le paramétrage de la map */
+	@FXML var map_selection_pane : ScrollPane
+	/** Intitulé de la fenêtre de paramétrage de la map */
+	@FXML var map_selection_label : Label
+	
+	/** Image de preview de la map 1 */ @FXML var preview_map_1 : ImageView; /** Image de preview de la map 2 */ @FXML var preview_map_2 : ImageView; /** Image de preview de la map 3 */ @FXML var preview_map_3 : ImageView; /** Image de preview de la map 4 */ @FXML var preview_map_4 : ImageView
+	/** Encadre l'image de preview de la map 1 */ @FXML var preview_map_1_border : Rectangle; /** Encadre l'image de la preview de la map 2 */ @FXML var preview_map_2_border : Rectangle; /** Encadre l'image de la preview de la map 3 */ @FXML var preview_map_3_border : Rectangle;	/** Encadre l'image de la preview de la map 4 */ @FXML var preview_map_4_border : Rectangle
+	/** Intitulé de la map 1 */ @FXML var map_label_1 : Label; /** Intitulé de la map 2 */ @FXML var map_label_2 : Label; /** Intitulé de la map 3 */ @FXML var map_label_3 : Label; /** Intitulé de la map 4 */ @FXML var map_label_4 : Label
+	/** Image de sélection de la map 1 */@FXML var tick_map_1 : ImageView; /** Image de sélection de la map 2 */ @FXML var tick_map_2 : ImageView; /** Image de sélection de la map 3 */ @FXML var tick_map_3 : ImageView; /** Image de sélection de la map 4 */ @FXML var tick_map_4 : ImageView
+	
+	
+	
+	/* --- --- --- ADVANCED SETTINGS PANE --- --- --- */
+	
+	/* - Panes - */
+	/** ScrollPane contenant les paramètres avancés */
+	@FXML var advanced_settings_pane : ScrollPane
+	/** Anchor du ScrollPane des paramètres avancés */
+	@FXML var advanced_settings_anchor_pane : AnchorPane
+	/** Pane relatif au groupe 1 */ @FXML var pane_group_1 : Pane; /** Pane relatif au groupe 2 */ @FXML var pane_group_2 : Pane; /** Pane relatif au groupe 3 */ @FXML var pane_group_3 : Pane; /** Pane relatif au groupe 4 */ @FXML var pane_group_4 : Pane; /* Pane relatif au groupe 5 */ @FXML var pane_group_5 : Pane; /** Pane relatif au groupe 6 */ @FXML var pane_group_6 : Pane; /** Pane relatif au groupe 7 */ @FXML var pane_group_7 : Pane; /** Pane relatif au groupe 8 */ @FXML var pane_group_8 : Pane
+	/** Intitulé de la fenêtre des paramètres avancés */
+	@FXML var advanced_settings_label : Label
+	/** Bouton de réinitalisation des valeurs */
+	@FXML var reset_group_values : Label
+	
+	/* - Intitulés - */
+	/** Intitulé pour le groupe 1 */ @FXML var group_label_1 : Label; /** Intitulé pour le groupe 2 */ @FXML var group_label_2 : Label; /** Intitulé pour le groupe 3 */ @FXML var group_label_3 : Label; /** Intitulé pour le groupe 4 */ @FXML var group_label_4 : Label; /** Initutlé pour le groupe 5 */ @FXML var group_label_5 : Label; /** Intitulé pour le groupe 6 */ @FXML var group_label_6 : Label; /** Intitulé pour le groupe 7 */ @FXML var group_label_7 : Label; /** Intitulé pour le groupe 8 */ @FXML var group_label_8 : Label
+	
+	/* - Masse - */
+	/** Intitulé pour la masse du groupe 1 */ @FXML var mass_label_1 : Label; /** Scrollbar pour la masse du groupe 1 */ @FXML var mass_1 : ScrollBar; /** masse minimale pour le groupe 1 */ @FXML var mass_min_1 : Label; /** Masse maximale pour le groupe 1 */ @FXML var mass_max_1 : Label; /** Affichage de la masse pour le groupe 1 */ @FXML var mass_display_1 : Label
+	/** Intitulé pour la masse du groupe 2 */ @FXML var mass_label_2 : Label; /** Scrollbar pour la masse du groupe 2 */ @FXML var mass_2 : ScrollBar; /** Masse minimale pour le groupe 2 */ @FXML var mass_min_2 : Label; /** Masse maximale pour le groupe 2 */ @FXML var mass_max_2 : Label; /** Affichage de la masse pour le groupe 2 */ @FXML var mass_display_2 : Label
+	/** Intitulé pour la masse du groupe 3 */ @FXML var mass_label_3 : Label; /** Scrollbar pour la masse du groupe 3 */ @FXML var mass_3 : ScrollBar; /** Masse minimale pour le groupe 3 */ @FXML var mass_min_3 : Label; /** Masse maximale pour le groupe 3 */ @FXML var mass_max_3 : Label; /** Affichage de la masse pour le groupe 3 */ @FXML var mass_display_3 : Label
+	/** Intitulé pour la masse du groupe 4 */ @FXML var mass_label_4 : Label; /** Scrollbar pour la masse du groupe 4 */ @FXML var mass_4 : ScrollBar; /** Masse minimale pour le groupe 4 */ @FXML var mass_min_4 : Label; /** Masse maximale pour le groupe 4 */ @FXML var mass_max_4 : Label; /** Affichage de la masse pour le groupe 4 */ @FXML var mass_display_4 : Label
+	/** Intitulé pour la masse du groupe 5 */ @FXML var mass_label_5 : Label; /** Scrollbar pour la masse du groupe 5 */ @FXML var mass_5 : ScrollBar; /** Masse minimale pour le groupe 5 */ @FXML var mass_min_5 : Label; /** Masse maximale pour le groupe 5 */ @FXML var mass_max_5 : Label; /** Affichage de la masse pour le groupe 5 */ @FXML var mass_display_5 : Label
+	/** Initutlé pour la masse du groupe 6 */ @FXML var mass_label_6 : Label; /** Scrollbar pour la masse du groupe 6 */ @FXML var mass_6 : ScrollBar; /** Masse minimale pour le groupe 6 */ @FXML var mass_min_6 : Label; /** Masse maximale pour le groupe 6 */ @FXML var mass_max_6 : Label; /** Affichage de la masse pour le groupe 6 */ @FXML var mass_display_6 : Label
+	/** Intitulé pour la masse du groupe 7 */ @FXML var mass_label_7 : Label; /** Scrollbar pour la masse du groupe 7 */ @FXML var mass_7 : ScrollBar; /** Masse minimale pour le groupe 7 */ @FXML var mass_min_7 : Label; /** Masse maximale pour le groupe 7 */ @FXML var mass_max_7 : Label; /** Affichage de la masse pour le groupe 7 */ @FXML var mass_display_7 : Label
+	/** Intitulé pour la masse du grouep 8 */ @FXML var mass_label_8 : Label; /** Scrollbar pour la masse du groupe 8 */ @FXML var mass_8 : ScrollBar; /** Masse minimale pour le groupe 8 */ @FXML var mass_min_8 : Label; /** Masse maximale pour le groupe 8 */ @FXML var mass_max_8 : Label; /** Affichage de la masse pour le groupe 8 */ @FXML var mass_display_8 : Label
+	
+	/* - Speed - */
+	/** Intitulé pour la vitesse du groupe 1 */ @FXML var speed_label_1 : Label; /** Scrollbar pour la vitesse du groupe 1 */ @FXML var speed_1 : ScrollBar; /** Vitesse minimale pour le groupe 1 */ @FXML var speed_min_1 : Label; /** Vitesse maximale pour le groupe 1 */ @FXML var speed_max_1 : Label; /** Affichage de la vitesse pour le groupe 1 */ @FXML var speed_display_1 : Label
+	/** Intitulé pour la vitesse du groupe 2 */ @FXML var speed_label_2 : Label; /** Scrollbar pour la vitesse du groupe 2 */ @FXML var speed_2 : ScrollBar; /** Vitesse minimale pour le groupe 2 */ @FXML var speed_min_2 : Label; /** Vitesse maximale pour le groupe 2 */ @FXML var speed_max_2 : Label; /** Affichage de la vitesse pour le groupe 2 */ @FXML var speed_display_2 : Label
+	/** Intitulé pour la vitesse du groupe 3 */ @FXML var speed_label_3 : Label; /** Scrollbar pour la vitesse du groupe 3 */ @FXML var speed_3 : ScrollBar; /** Vitesse minimale pour le groupe 3 */ @FXML var speed_min_3 : Label; /** Vitesse maximale pour le groupe 3 */ @FXML var speed_max_3 : Label; /** Affichage de la vitesse pour le groupe 3 */ @FXML var speed_display_3 : Label
+	/** Intitulé pour la vitesse du groupe 4 */ @FXML var speed_label_4 : Label; /** Scrollbar pour la vitesse du groupe 4 */ @FXML var speed_4 : ScrollBar; /** Vitesse minimale pour le groupe 4 */ @FXML var speed_min_4 : Label; /** Vitesse maximale pour le groupe 4 */ @FXML var speed_max_4 : Label; /** Affichage de la vitesse pour le groupe 4 */ @FXML var speed_display_4 : Label
+	/** Intitulé pour la vitesse du groupe 5 */ @FXML var speed_label_5 : Label; /** Scrollbar pour la vitesse du groupe 5 */ @FXML var speed_5 : ScrollBar; /** Vitesse minimale pour le groupe 5 */ @FXML var speed_min_5 : Label; /** Vitesse maximale pour le groupe 5 */ @FXML var speed_max_5 : Label; /** Affichage de la vitesse pour le groupe 5 */ @FXML var speed_display_5 : Label
+	/** Initutlé pour la vitesse du groupe 6 */ @FXML var speed_label_6 : Label; /** Scrollbar pour la vitesse du groupe 6 */ @FXML var speed_6 : ScrollBar; /** Vitesse minimale pour le groupe 6 */ @FXML var speed_min_6 : Label; /** Vitesse maximale pour le groupe 6 */ @FXML var speed_max_6 : Label; /** Affichage de la vitesse pour le groupe 6 */ @FXML var speed_display_6 : Label
+	/** Intitulé pour la vitesse du groupe 7 */ @FXML var speed_label_7 : Label; /** Scrollbar pour la vitesse du groupe 7 */ @FXML var speed_7 : ScrollBar; /** Vitesse minimale pour le groupe 7 */ @FXML var speed_min_7 : Label; /** Vitesse maximale pour le groupe 7 */ @FXML var speed_max_7 : Label; /** Affichage de la vitesse pour le groupe 7 */ @FXML var speed_display_7 : Label
+	/** Intitulé pour la vitesse du grouep 8 */ @FXML var speed_label_8 : Label; /** Scrollbar pour la vitesse du groupe 8 */ @FXML var speed_8 : ScrollBar; /** Vitesse minimale pour le groupe 8 */ @FXML var speed_min_8 : Label; /** Vitesse maximale pour le groupe 8 */ @FXML var speed_max_8 : Label; /** Affichage de la vitesse pour le groupe 8 */ @FXML var speed_display_8 : Label
+	
+	/* - Angle de vision - */
+	/** Intitulé pour l'angle du groupe 1 */ @FXML var angle_label_1 : Label; /** Scrollbar pour l'angle du groupe 1 */ @FXML var angle_1 : ScrollBar; /** Angle minimal pour le groupe 1 */ @FXML var angle_min_1 : Label; /** Angle maximal pour le groupe 1 */ @FXML var angle_max_1 : Label; /** Affichage de l'angle pour le groupe 1 */ @FXML var angle_display_1 : Label
+	/** Intitulé pour l'angle du groupe 2 */ @FXML var angle_label_2 : Label; /** Scrollbar pour l'angle du groupe 2 */ @FXML var angle_2 : ScrollBar; /** Angle minimal pour le groupe 2 */ @FXML var angle_min_2 : Label; /** Angle maximal pour le groupe 2 */ @FXML var angle_max_2 : Label; /** Affichage de l'angle pour le groupe 2 */ @FXML var angle_display_2 : Label
+	/** Intitulé pour l'angle du groupe 3 */ @FXML var angle_label_3 : Label; /** Scrollbar pour l'angle du groupe 3 */ @FXML var angle_3 : ScrollBar; /** Angle minimal pour le groupe 3 */ @FXML var angle_min_3 : Label; /** Angle maximal pour le groupe 3 */ @FXML var angle_max_3 : Label; /** Affichage de l'angle pour le groupe 3 */ @FXML var angle_display_3 : Label
+	/** Intitulé pour l'angle du groupe 4 */ @FXML var angle_label_4 : Label; /** Scrollbar pour l'angle du groupe 4 */ @FXML var angle_4 : ScrollBar; /** Angle minimal pour le groupe 4 */ @FXML var angle_min_4 : Label; /** Angle maximal pour le groupe 4 */ @FXML var angle_max_4 : Label; /** Affichage de l'angle pour le groupe 4 */ @FXML var angle_display_4 : Label
+	/** Intitulé pour l'angle du groupe 5 */ @FXML var angle_label_5 : Label; /** Scrollbar pour l'angle du groupe 5 */ @FXML var angle_5 : ScrollBar; /** Angle minimal pour le groupe 5 */ @FXML var angle_min_5 : Label; /** Angle maximal pour le groupe 5 */ @FXML var angle_max_5 : Label; /** Affichage de l'angle pour le groupe 5 */ @FXML var angle_display_5 : Label
+	/** Initutlé pour l'angle du groupe 6 */ @FXML var angle_label_6 : Label; /** Scrollbar pour l'angle du groupe 6 */ @FXML var angle_6 : ScrollBar; /** Angle minimal pour le groupe 6 */ @FXML var angle_min_6 : Label; /** Angle maximal pour le groupe 6 */ @FXML var angle_max_6 : Label; /** Affichage de l'angle pour le groupe 6 */ @FXML var angle_display_6 : Label
+	/** Intitulé pour l'angle du groupe 7 */ @FXML var angle_label_7 : Label; /** Scrollbar pour l'angle du groupe 7 */ @FXML var angle_7 : ScrollBar; /** Angle minimal pour le groupe 7 */ @FXML var angle_min_7 : Label; /** Angle maximal pour le groupe 7 */ @FXML var angle_max_7 : Label; /** Affichage de l'angle pour le groupe 7 */ @FXML var angle_display_7 : Label
+	/** Intitulé pour l'angle du grouep 8 */ @FXML var angle_label_8 : Label; /** Scrollbar pour l'angle du groupe 8 */ @FXML var angle_8 : ScrollBar; /** Angle minimal pour le groupe 8 */ @FXML var angle_min_8 : Label; /** Angle maximal pour le groupe 8 */ @FXML var angle_max_8 : Label; /** Affichage de l'angle pour le groupe 8 */ @FXML var angle_display_8 : Label
+	
+	/* - Distance de vision - */
+	/** Intitulé pour la distance du groupe 1 */ @FXML var distance_label_1 : Label; /** Scrollbar pour la distance du groupe 1 */ @FXML var distance_1 : ScrollBar; /** Distance minimale pour le groupe 1 */ @FXML var distance_min_1 : Label; /** Distance maximale pour le groupe 1 */ @FXML var distance_max_1 : Label; /** Affichage de la distance pour le groupe 1 */ @FXML var distance_display_1 : Label
+	/** Intitulé pour la distance du groupe 2 */ @FXML var distance_label_2 : Label; /** Scrollbar pour la distance du groupe 2 */ @FXML var distance_2 : ScrollBar; /** Distance minimale pour le groupe 2 */ @FXML var distance_min_2 : Label; /** Distance maximale pour le groupe 2 */ @FXML var distance_max_2 : Label; /** Affichage de la distance pour le groupe 2 */ @FXML var distance_display_2 : Label
+	/** Intitulé pour la distance du groupe 3 */ @FXML var distance_label_3 : Label; /** Scrollbar pour la distance du groupe 3 */ @FXML var distance_3 : ScrollBar; /** Distance minimale pour le groupe 3 */ @FXML var distance_min_3 : Label; /** Distance maximale pour le groupe 3 */ @FXML var distance_max_3 : Label; /** Affichage de la distance pour le groupe 3 */ @FXML var distance_display_3 : Label
+	/** Intitulé pour la distance du groupe 4 */ @FXML var distance_label_4 : Label; /** Scrollbar pour la distance du groupe 4 */ @FXML var distance_4 : ScrollBar; /** Distance minimale pour le groupe 4 */ @FXML var distance_min_4 : Label; /** Distance maximale pour le groupe 4 */ @FXML var distance_max_4 : Label; /** Affichage de la distance pour le groupe 4 */ @FXML var distance_display_4 : Label
+	/** Intitulé pour la distance du groupe 5 */ @FXML var distance_label_5 : Label; /** Scrollbar pour la distance du groupe 5 */ @FXML var distance_5 : ScrollBar; /** Distance minimale pour le groupe 5 */ @FXML var distance_min_5 : Label; /** Distance maximale pour le groupe 5 */ @FXML var distance_max_5 : Label; /** Affichage de la distance pour le groupe 5 */ @FXML var distance_display_5 : Label
+	/** Initutlé pour la distance du groupe 6 */ @FXML var distance_label_6 : Label; /** Scrollbar pour la distance du groupe 6 */ @FXML var distance_6 : ScrollBar; /** Distance minimale pour le groupe 6 */ @FXML var distance_min_6 : Label; /** Distance maximale pour le groupe 6 */ @FXML var distance_max_6 : Label; /** Affichage de la distance pour le groupe 6 */ @FXML var distance_display_6 : Label
+	/** Intitulé pour la distance du groupe 7 */ @FXML var distance_label_7 : Label; /** Scrollbar pour la distance du groupe 7 */ @FXML var distance_7 : ScrollBar; /** Distance minimale pour le groupe 7 */ @FXML var distance_min_7 : Label; /** Distance maximale pour le groupe 7 */ @FXML var distance_max_7 : Label; /** Affichage de la distance pour le groupe 7 */ @FXML var distance_display_7 : Label
+	/** Intitulé pour la distance du grouep 8 */ @FXML var distance_label_8 : Label; /** Scrollbar pour la distance du groupe 8 */ @FXML var distance_8 : ScrollBar; /** Distance minimale pour le groupe 8 */ @FXML var distance_min_8 : Label; /** Distance maximale pour le groupe 8 */ @FXML var distance_max_8 : Label; /** Affichage de la distance pour le groupe 8 */ @FXML var distance_display_8 : Label
+	
+	
+	
+	/* --- --- --- BOIDS INFOS PANE --- --- --- */
+	
+	/** Fenêtre de visualisation des infos relatives aux boids */
+	@FXML var boids_infos_pane : Pane
+	/** Indicateur du groupe du Boid */	@FXML var boid_group : Label; /** Indicateur de la vitesse actuelle du boid */ @FXML var boid_vitesse : Label; /** Indicateur de la nouvelle vitesse du boid */ @FXML var boid_new_vitesse : Label; /** Indicateur de la vitesse maximale du groupe du boid */ @FXML var boid_group_vitesse : Label; /** Indicateur de l'angle de vision du boid */	@FXML var boid_angle : Label; /** Indicateur de la distancce de vision du boid */ @FXML var boid_distance : Label; /** Indicateur de la masse du boid */ @FXML var boid_masse : Label; /** Indicateur de la position du boid */ @FXML var boid_position : Label
+	/** Bouton permettant de masquer la fenêtre de visualisation des informations du boid */
+	@FXML var hide_infos : Button
+
+	
+
+	/* --- --- --- GETTERS & SETTERS --- --- --- */
+	
+	/** Retourne le nombre de boids */
 	def getBoidsQuantity() : int {
 		Integer.parseInt(boids_quantity_input.text)
 	}
 	
+	/** Retourne la map sélectionnée */
 	def getMapSelection() : int {
 		return this.selectedMap
 	}
 	
+	/** Retourne le nombre de populations */
 	def getBoidsPopulation() : int {
 		Integer.parseInt(boids_population_input.text)
 	}
 	
+	/** Retourne la largeur de la map */
 	def getMapWidth() : int {
 		main_pane.width as int
 	}
 	
+	/** Retourne la hauteur de la map */
 	def getMapHeight() : int {
 		main_pane.height as int
 	}
 	
+	/** Retourne la liste des obstacles */
 	def getObstacles() : List<Obstacle> {
 		obstacles
 	}
 	
+	/** Retourne la liste des infos relatives aux boids */
 	def getBoidsSettings() : List<BoidGroupInfos> {
 		return this.boidsSettings
 	}
+	
+	
+	
+	/* --- --- --- GESTION DE LA SIMULATION --- --- --- */
  
+ 	/** 
+ 	 * Démarre la simulation et transmets les paramètres utilisateur au BootAgent
+ 	 */
 	@FXML protected def startSimu() : void {
-		if(boids_population_input.text != '' && outputQuality(boids_population_input.text)) { 
+		if(boids_population_input.text != '' && outputQuality(boids_population_input.text) && boids_quantity_input.text != '' && outputQuality(boids_quantity_input.text)) { 
 			for(var i : int = 1; i < this.boidsPopulation + 1; i++) {
 				if(i == 1) {
 					boidsSettings.add(new BoidGroupInfos(Integer.parseInt(mass_display_1.text), Integer.parseInt(speed_display_1.text), Integer.parseInt(angle_display_1.text), Integer.parseInt(distance_display_1.text)))
@@ -385,10 +293,11 @@ class BoidsFxViewerController extends FxViewerController  {
 		}
 	}
 	
+	/** 
+	 * Construit la map
+	 */
 	def buildMap(map : int) : List<Obstacle> {
-
 		pause_button.visible = true
-
 		if(map == 1) {
 			return new ArrayList()
 		}
@@ -415,7 +324,6 @@ class BoidsFxViewerController extends FxViewerController  {
 					]
 				}
 			};
-
 			if (Platform.isFxApplicationThread()) {
 				command.run();
 				this.generateObstacles()
@@ -448,7 +356,6 @@ class BoidsFxViewerController extends FxViewerController  {
 					]
 				}
 			};
-
 			if (Platform.isFxApplicationThread()) {
 				command.run();
 				this.generateObstacles()
@@ -461,6 +368,9 @@ class BoidsFxViewerController extends FxViewerController  {
 		}
 	}
 	
+	/** 
+	 * Génère les coordonnées relatives aux polygones
+	 */
 	def generateCoordinates(p : Polygon) : List<Coordinates> {
 		var abscissa : AtomicDouble = new AtomicDouble();
 		var coordinates : List<Coordinates> = new ArrayList()
@@ -474,6 +384,9 @@ class BoidsFxViewerController extends FxViewerController  {
 		return coordinates
 	}
 	
+	/** 
+	 * Génère les obstacles
+	 */
 	def generateObstacles() : void {
 		this.polygonsCoordinates.forEach [p : List<Coordinates>, currentItem : int |
 			var lines : List<LineTool> = new ArrayList()
@@ -489,9 +402,11 @@ class BoidsFxViewerController extends FxViewerController  {
 			lines.add(line)
 			this.obstacles.add(new Obstacle(lines, this.polygons.get(currentItem)))
 		]
-		
 	}
 	
+	/** 
+	 * Update l'affichage à chaque cycle des boids
+	 */
 	def updateGraphics(list: Collection<BoidBody>) : void {
 		var command = new Runnable() {
 			@Override
@@ -549,8 +464,7 @@ class BoidsFxViewerController extends FxViewerController  {
 				if (boids_infos_pane.visible) {
 					var boidBody : BoidBody = list.findFirst[item | item.ID == currentBoid]
 					updateInfos(boidBody)
-				}
-				
+				}	
 			}
 		}
 		
@@ -560,29 +474,124 @@ class BoidsFxViewerController extends FxViewerController  {
 			Platform.runLater(command);
 		}	
 	}
-	
-	@FXML protected def resetBoidsPopulation() : void {
-		boids_population_input.text = ''
+
+	/** 
+	 * Pause la simulation
+	 */
+	@FXML def pause() : void {
+		pause_button.visible = false
+		resume_button.visible = true
+		emitToAgents(new Pause)
+	}
+
+	/** 
+	 * Reprend la simulation
+	 */
+	@FXML def resume() : void {
+		pause_button.visible = true
+		resume_button.visible = false
+		emitToAgents(new Resume)
+	}
+
+	/** 
+	 * Active/Désactive l'affichage des champs de perception des boids
+	 */
+	@FXML protected def togglePerception() : void {
+		if (togglePerception) {
+			togglePerception = false
+			perception_indicator.fill = Color.TRANSPARENT
+			perceptions.forEach [ item : Arc |
+				item.fill = Color.TRANSPARENT
+			]
+		} else {
+			togglePerception = true
+			perception_indicator.fill = Color.rgb(0, 204, 99)
+			perceptions.forEach [ item : Arc |
+				if(nightMode) item.fill = Color.rgb(255, 245, 112, 0.2) else item.fill = Color.rgb(255, 245, 112, 0.8)
+			]
+		}
+	}
+
+	/**
+	 * Actualise les informations du boids suivi
+	 * @param boidBody - Informations du boids suivi
+	 */
+	def updateInfos(boidBody : BoidBody) : void {
+		boid_group.text = 'Groupe: ' + boidBody.groupe
+		boid_vitesse.text = 'Vitesse: (' + String.format("%.3f", boidBody.vitesse.x) + ', ' +
+			String.format("%.3f", boidBody.vitesse.y) + ')'
+		boid_group_vitesse.text = 'Vitesse max. groupe: ' + boidBody.groupeVitesseMax
+		boid_masse.text = 'Masse: ' + boidBody.masse
+		boid_angle.text = 'Angle: ' + boidBody.angleVisibilite
+		boid_distance.text = 'Distance percep.: ' + boidBody.distanceVisibilite
+		boid_new_vitesse.text = 'Nouvelle vitesse: (' + boidBody.newVitesse.x + ', ' + boidBody.newVitesse.y + ')'
+		boid_position.text = 'Position: (' + String.format("%.3f", boidBody.position.x) + ', ' +
+			String.format("%.3f", boidBody.position.y) + ')'
 	}
 	
-	@FXML protected def resetBoidsQuantity()  : void {
-		boids_quantity_input.text = ''
+	
+	
+	/* --- --- --- GESTION DU PARAMETRAGE GLOBAL --- --- --- */
+	
+	/**
+	 * Prise de focus par la main_pane
+	 */
+	@FXML protected def changeFocus() : void {
+		main_pane.requestFocus()
 	}
 	
-	@FXML protected def updateBoidsPopulation() : void {
-		if(boids_population_input.text != '') {
-			if (outputQuality(boids_population_input.text)) {
-				var currentValue : int = Integer.parseInt(boids_population_input.text)
-				if (currentValue >= 8) {
-					boids_population_input.text = '' + 8
-				} else if (currentValue <= 1) {
-					boids_population_input.text = '' + 1
+	/** 
+	 * Vérifie la validité de la saisie de l'utilisateur
+	 * @param ouptput - Saisie de l'utilisateur
+	 */
+	def outputQuality(output : String) : Boolean {
+		var outputQuality : Boolean = false
+		try {
+			Integer.parseInt(boids_population_input.text)
+			outputQuality = true
+		} catch (e : NumberFormatException) {
+			// System.out.println('Invalid input')
+		}
+		return outputQuality
+	}
+	
+	/** 
+	 * Reset la valeur du champ sélectionné
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def resetField(e : MouseEvent) : void {
+		(e.source as TextField).text = ''
+	}
+	
+	/**
+	 * Modifie la valeur du champ en appliquant les limites
+	 * @param e - KeyEvent
+	 */
+	@FXML protected def updateField(e : KeyEvent) : void {
+		if((e.source as TextField).text != '') {
+			if(outputQuality((e.source as TextField).text)) {
+				var currentValue : int = Integer.parseInt((e.source as TextField).text)
+				if((e.source as TextField).id == 'boids_population_input') {
+					if (currentValue >= 8) {
+						(e.source as TextField).text = '' + 8
+					} else if (currentValue <= 1) {
+						(e.source as TextField).text = '' + 1
+					}
+					showGroupConfiguration()
+				} else if((e.source as TextField).id == 'boids_quantity_input') {
+					if (currentValue >= 50) {
+						(e.source as TextField).text = '' + 50
+					} else if (currentValue <= 1) {
+						(e.source as TextField).text = '' + 1
+					}
 				}
-				showGroupConfiguration()
 			}
 		}
 	}
 	
+	/**
+	 * Incrémente manuellement le nombre de populations
+	 */
 	@FXML protected def incrementBoidsPopulation() : void {
 		if(boids_population_input.text != '' && outputQuality(boids_population_input.text)) {
 			var currentValue : int = Integer.parseInt(boids_population_input.text)
@@ -597,6 +606,9 @@ class BoidsFxViewerController extends FxViewerController  {
 		}
 	}
 	
+	/**
+	 * Décrémente manuellement le nombre de populations
+	 */
 	@FXML protected def decrementBoidsPopulation() : void {
 		if(boids_population_input.text != '' && outputQuality(boids_population_input.text)) {
 			var currentValue : int = Integer.parseInt(boids_population_input.text)
@@ -611,19 +623,9 @@ class BoidsFxViewerController extends FxViewerController  {
 		}
 	}
 
-	@FXML protected def updateBoidsQuantity() : void {
-		if (boids_quantity_input.text != '') {
-			if (outputQuality(boids_quantity_input.text)) {
-				var currentValue : int = Integer.parseInt(boids_quantity_input.text)
-				if (currentValue >= 50) {
-					boids_quantity_input.text = '' + 50
-				} else if (currentValue <= 1) {
-					boids_quantity_input.text = '' + 1
-				}
-			}
-		}
-	}
-
+	/** 
+	 * Incrémente manuellement le nombre de boids
+	 */
 	@FXML protected def incrementBoidsQuantity() : void {
 		if (boids_quantity_input.text != '' && outputQuality(boids_quantity_input.text)) {
 			var currentValue : int = Integer.parseInt(boids_quantity_input.text)
@@ -637,6 +639,9 @@ class BoidsFxViewerController extends FxViewerController  {
 		}
 	}
 
+	/**
+	 * Décrémente manuellement le nombre de boids
+	 */
 	@FXML protected def decrementBoidsQuantity() : void {
 		if (boids_quantity_input.text != '' && outputQuality(boids_quantity_input.text)) {
 			var currentValue : int = Integer.parseInt(boids_quantity_input.text)
@@ -649,6 +654,923 @@ class BoidsFxViewerController extends FxViewerController  {
 			boids_quantity_input.text = '' + 1
 		}
 	}
+	
+	
+	
+	/* --- --- --- GESTION DU GLOW EFFECT --- --- --- */
+
+	/**
+	 * Applique l'effet Glow sur les Labels
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def applyGlowEffectOnLabel(e : MouseEvent) {
+		if (nightMode)
+			(e.getSource() as Label).textFill = Color.rgb(235, 221, 26)
+		else
+			(e.getSource() as Label).textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		(e.getSource() as Label).effect = glowEffect
+	}
+
+	/**
+	 * Désapplique l'effet Glow sur les Labels
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def unapplyGlowEffectOnLabel(e : MouseEvent) {
+		if (nightMode)
+			(e.getSource() as Label).textFill = Color.rgb(191, 191, 191)
+		else
+			(e.getSource() as Label).textFill = Color.rgb(0, 0, 0)
+		(e.getSource() as Label).effect = null
+	}
+	
+	/** 
+	 * Applique l'effet Glow sur les ToggleButtons
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def applyGlowEffectOnToggleButton(e : MouseEvent) : void {
+		if (nightMode)
+			(e.source as ToggleButton).textFill = Color.rgb(235, 221, 26)
+		else
+			(e.source as ToggleButton).textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		(e.source as ToggleButton).effect = glowEffect
+	}
+	
+	/** 
+	 * Désapplique l'effet Glow sur les ToggleButtons
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def unapplyGlowEffectOnToggleButton(e : MouseEvent) {
+		if (nightMode)
+			(e.getSource() as ToggleButton).textFill = Color.rgb(191, 191, 191)
+		else
+			(e.getSource() as ToggleButton).textFill = Color.rgb(0, 0, 0)
+		(e.getSource() as ToggleButton).effect = null
+	}
+	
+	/** 
+	 * Applique l'effet Glow sur les Buttons
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def applyGlowEffectOnButton(e : MouseEvent) : void {
+		if (nightMode)
+			(e.source as Button).textFill = Color.rgb(235, 221, 26)
+		else
+			(e.source as Button).textFill = Color.rgb(0, 0, 0)
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		(e.source as Button).effect = glowEffect
+	}
+	
+	/** 
+	 * Désapplique l'effet Glow sur les Buttons
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def unapplyGlowEffectOnButton(e : MouseEvent) {
+		if (nightMode)
+			(e.getSource() as Button).textFill = Color.rgb(191, 191, 191)
+		else
+			(e.getSource() as Button).textFill = Color.rgb(0, 0, 0)
+		(e.getSource() as Button).effect = null
+	}
+	
+	/** 
+	 * Applique l'effet Glow sur le TextField du nombre de populations
+	 */
+	@FXML protected def boidsPopulationGlow() : void {
+		if (nightMode) {
+			boids_population_input.style = '-fx-text-fill: rgb(235, 221, 26); -fx-background-color: transparent'
+		} else {
+			boids_population_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
+		}
+		boids_population_line.strokeWidth = 3
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_population_input.effect = glowEffect
+	}
+	/** 
+	 * Désapplique l'effet Glow sur le TextField du nombre de populations
+	 */
+	@FXML protected def boidsPopulationReset() : void {
+		if (nightMode) {
+			boids_population_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
+		} else {
+			boids_population_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
+		}
+		boids_population_line.strokeWidth = 1
+		boids_population_input.effect = null
+	}
+	
+	/** 
+	 * Applique l'effet Glow sur l'incrémenteur du nombre de boids
+	 */
+	@FXML protected def incrementBoidsQuantityGlow() : void {
+		if (nightMode) {
+			boids_quantity_increment_circle.stroke = Color.rgb(235, 221, 26)
+			increment_boids_quantity.textFill = Color.rgb(235, 221, 26)
+		} else {
+			boids_quantity_increment_circle.stroke = Color.rgb(0, 0, 0)
+			increment_boids_quantity.textFill = Color.rgb(0, 0, 0)
+		}
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_quantity_increment_circle.effect = glowEffect
+	}
+	
+	/** 
+	 * Applique l'effet Glow sur le décrémenteur du nombre de boids
+	 */
+	@FXML protected def decrementBoidsQuantityGlow() : void {
+		if (nightMode) {
+			boids_quantity_decrement_circle.stroke = Color.rgb(235, 221, 26)
+			decrement_boids_quantity.textFill = Color.rgb(235, 221, 26)
+		} else {
+			boids_quantity_decrement_circle.stroke = Color.rgb(0, 0, 0)
+			decrement_boids_quantity.textFill = Color.rgb(0, 0, 0)
+		}
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_quantity_decrement_circle.effect = glowEffect
+	}
+
+	/**
+	 * Désapplique l'effet Glow sur le l'incrémenteur du nombre de boids
+	 */
+	@FXML protected def incrementBoidsQuantityReset() : void {
+		if (nightMode) {
+			boids_quantity_increment_circle.stroke = Color.rgb(191, 191, 191)
+			increment_boids_quantity.textFill = Color.rgb(191, 191, 191)
+		} else {
+			boids_quantity_increment_circle.stroke = Color.rgb(0, 0, 0, 0.3)
+			increment_boids_quantity.textFill = Color.rgb(0, 0, 0)
+		}
+		boids_quantity_increment_circle.effect = null
+		increment_boids_quantity.effect = null
+	}
+	/** 
+	 * Désapplique l'effet Glow sur le le décrémenteur du nombre de boids
+	 */
+	@FXML protected def decrementBoidsQuantityReset() : void {
+		if (nightMode) {
+			boids_quantity_decrement_circle.stroke = Color.rgb(191, 191, 191)
+			decrement_boids_quantity.textFill = Color.rgb(191, 191, 191)
+		} else {
+			boids_quantity_decrement_circle.stroke = Color.rgb(0, 0, 0, 0.3)
+			decrement_boids_quantity.textFill = Color.rgb(0, 0, 0)
+		}
+		boids_quantity_decrement_circle.effect = null
+		decrement_boids_quantity.effect = null
+	}
+	
+	/** 
+	 * Applique l'effet Glow sur le TextField du nombre de boids
+	 */
+	@FXML protected def boidsQuantityGlow() : void {
+		if (nightMode) {
+			boids_quantity_input.style = '-fx-text-fill: rgb(235, 221, 26); -fx-background-color: transparent'
+		} else {
+			boids_quantity_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
+		}
+		boids_quantity_line.strokeWidth = 3
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_quantity_input.effect = glowEffect
+	}
+	
+	/** 
+	 * Désapplique l'effet Glow sur le TextField du nombre de boids
+	 */
+	@FXML protected def boidsQuantityReset() : void {
+		if (nightMode) {
+			boids_quantity_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
+		} else {
+			boids_quantity_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
+		}
+		boids_quantity_line.strokeWidth = 1
+		boids_quantity_input.effect = null
+	}
+	
+	
+	
+	/* --- --- --- GESTION DE L'UI --- --- --- */
+	
+	/**
+	 * Active/Désactive l'UI de paramétrage global
+	 */
+	def toggleUIState() : void {
+		if(start_button.disable == true) start_button.disable = false else start_button.disable = true
+		if(boids_quantity_input.disable == true) boids_quantity_input.disable = false else boids_quantity_input.disable = true
+		if(boids_population_input.disable == true) boids_population_input.disable = false else boids_population_input.disable = true
+	}
+	
+	/**
+	 * Montre/Cache l'UI de paramétrage global
+	 */
+	def toggleMenuUIVisibility() : void {
+		if(UI_pane.visible) UI_pane.visible = false else UI_pane.visible = true
+	}
+	
+	/**
+	 * Montre/Cache l'UI de la simulation
+	 */
+	def toggleSimuUIVisibility() : void {
+		if(!toggle_perception.visible) toggle_perception.visible = true else toggle_perception.visible = false
+		if(!perception_indicator.visible) perception_indicator.visible = true else perception_indicator.visible = false
+	}
+	
+	/**
+	 * Cache l'UI de suivi d'un boid
+	 */
+	def hideInfosVisibility() : void {
+		this.resetTexts()
+		boids_infos_pane.visible = false
+	}
+
+	/**
+	 * Montre l'UI de suivi d'un boid
+	 */
+	def showInfosVisibility() : void {
+		boids_infos_pane.visible = true
+	}
+	
+	/**
+	 * Reset des textes de suivi d'un boid
+	 */
+	def resetTexts() : void {
+		boid_group.text = ''
+		boid_vitesse.text = ''
+		boid_group_vitesse.text = ''
+		boid_masse.text = ''
+		boid_angle.text = ''
+		boid_distance.text = ''
+		boid_new_vitesse.text = ''
+	}
+
+	/**
+	 * Montre/Cache l'UI des paramètres avancés
+	 */
+	@FXML protected def toggleAdvancedSettingsVisibility() : void {
+		if (advanced_settings_pane.visible) {
+			advanced_settings_pane.visible = false
+		} else {
+			advanced_settings_pane.visible = true
+		}
+		showGroupConfiguration()
+	}
+
+	/**
+	 * Active l'effet de Glow sur le titre de la pane actuellement utilisée
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def paneTitleGlow(e : MouseEvent) : void {
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		if (e.getSource().toString.substring(0, 1) == 'P') { // P pour Pane
+			var pane = (e.getSource() as Pane).getId()
+			if (pane == 'simulation_parameters_pane') {
+				settings_label.effect = glowEffect
+			}
+		} else {
+			var pane = (e.getSource() as ScrollPane).getId()
+			if (pane == 'advanced_settings_pane') {
+				advanced_settings_label.effect = glowEffect
+			} else if (pane == 'map_selection_pane') {
+				map_selection_label.effect = glowEffect
+			}
+		}
+	}
+
+	/** Désactive l'effet de Glow sur les Panes */
+	@FXML protected def paneTitleReset() : void {
+		map_selection_label.effect = null
+		settings_label.effect = null
+		advanced_settings_label.effect = null
+	}
+
+	/**
+	 * Active l'effet de Glow sur le titre de la sous Pane utilisée
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def subPaneTitleGlow(e : MouseEvent) : void {
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		if ((e.getSource() as Pane).getId() == 'pane_group_1')
+			group_label_1.effect = glowEffect
+		else if ((e.getSource() as Pane).getId() == 'pane_group_2')
+			group_label_2.effect = glowEffect
+		else if ((e.getSource() as Pane).getId() == 'pane_group_3')
+			group_label_3.effect = glowEffect
+		else if ((e.getSource() as Pane).getId() == 'pane_group_4')
+			group_label_4.effect = glowEffect
+		else if ((e.getSource() as Pane).getId() == 'pane_group_5')
+			group_label_5.effect = glowEffect
+		else if ((e.getSource() as Pane).getId() == 'pane_group_6')
+			group_label_6.effect = glowEffect
+		else if ((e.getSource() as Pane).getId() == 'pane_group_7')
+			group_label_7.effect = glowEffect
+		else if ((e.getSource() as Pane).getId() == 'pane_group_8')
+			group_label_8.effect = glowEffect
+	}
+
+	/**
+	 * Désactive l'effet de Glow sur les sous Panes
+	 */
+	@FXML protected def subPaneTitleReset() : void {
+		group_label_1.effect = null; group_label_2.effect = null; group_label_3.effect = null; group_label_4.effect = null; group_label_5.effect = null; group_label_6.effect = null; group_label_7.effect = null; group_label_8.effect = null
+	}
+
+	
+	
+	/* --- --- --- GESTION DU PARAMATETRAGE DE LA MAP --- --- --- */
+	
+	/**
+	 * Applique l'effet de Glow sur les previews des maps
+	 * @param e - MouseEvent
+	 */	
+	@FXML protected def previewMapGlow(e : MouseEvent) : void {
+		var targetMap : int = 0
+		if (e.getSource().toString.substring(0, 1) == 'I') { // I pour ImageView
+			targetMap = Integer.parseInt((e.getSource() as ImageView).getId().substring((e.getSource() as ImageView).getId().length() - 1))
+		} else {
+			targetMap = Integer.parseInt((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1))
+		}
+
+		var glowEffect = new Glow()
+		glowEffect.level = 1
+		
+		switch(targetMap) {
+			case 1: {
+				if (this.selectedMap != 1) {
+					if (nightMode) {
+						preview_map_1_border.stroke = Color.rgb(235, 221, 26, 0.6)
+						map_label_1.textFill = Color.rgb(235, 221, 26, 0.6)
+					} else {
+						preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.35)
+						map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)
+					}
+					preview_map_1_border.effect = glowEffect
+					map_label_1.effect = glowEffect
+				}
+			}
+			case 2: {
+				if (selectedMap != 2) {
+					if (nightMode) {
+						preview_map_2_border.stroke = Color.rgb(235, 221, 26, 0.6)
+						map_label_2.textFill = Color.rgb(235, 221, 26, 0.6)
+					} else {
+						preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
+						map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)
+					}
+					preview_map_2_border.effect = glowEffect
+					map_label_2.effect = glowEffect
+				}
+			}
+			case 3: {
+				if (selectedMap != 3) {
+					if (nightMode) {
+						preview_map_3_border.stroke = Color.rgb(235, 221, 26, 0.6)
+						map_label_3.textFill = Color.rgb(235, 221, 26, 0.6)
+					} else {
+						preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
+						map_label_3.textFill = Color.rgb(0, 0, 0, 0.6)
+					}
+					preview_map_3_border.effect = glowEffect
+					map_label_3.effect = glowEffect
+				}
+			}
+			case 4: {
+				if (selectedMap != 4) {
+					if (nightMode) {
+						preview_map_4_border.stroke = Color.rgb(235, 221, 26, 0.6)
+						map_label_4.textFill = Color.rgb(235, 221, 26, 0.6)
+					} else {
+						preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
+						map_label_4.textFill = Color.rgb(0, 0, 0, 0.6)
+					}
+					preview_map_4_border.effect = glowEffect
+					map_label_4.effect = glowEffect
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Désapplique l'effet de Glow sur les previews des maps
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def previewMapReset(e : MouseEvent) : void {
+		if(e !== null) {
+			var targetMap : int = 0
+			if (e.getSource().toString.substring(0, 1) == 'I') { // I pour ImageView
+				targetMap = Integer.parseInt((e.getSource() as ImageView).getId().substring((e.getSource() as ImageView).getId().length() - 1))
+			} else {
+				targetMap = Integer.parseInt((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1))
+			}
+			
+			switch(targetMap) {
+				case 1: {
+					if (selectedMap != 1) {
+						if (nightMode) {
+							preview_map_1_border.stroke = Color.rgb(191, 191, 191)
+							map_label_1.textFill = Color.rgb(191, 191, 191)
+						} else {
+							preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.6)
+							map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)
+						}
+						preview_map_1_border.effect = null
+						map_label_1.effect = null
+					}
+				}
+				case 2: {
+					if (selectedMap != 2) {
+						if (nightMode) {
+							preview_map_2_border.stroke = Color.rgb(191, 191, 191)
+							map_label_2.textFill = Color.rgb(191, 191, 191)
+						} else {
+							preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
+							map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)
+						}
+						preview_map_2_border.effect = null
+						map_label_2.effect = null
+					}
+				}
+				case 3: {
+					if (selectedMap != 3) {
+						if (nightMode) {
+							preview_map_3_border.stroke = Color.rgb(191, 191, 191)
+							map_label_3.textFill = Color.rgb(191, 191, 191)
+						} else {
+							preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
+							map_label_3.textFill = Color.rgb(0, 0, 0, 0.6)
+						}
+						preview_map_3_border.effect = null
+						map_label_3.effect = null
+					}
+				}
+				case 4: {
+					if (selectedMap != 4) {
+						if (nightMode) {
+							preview_map_4_border.stroke = Color.rgb(191, 191, 191)
+							map_label_4.textFill = Color.rgb(191, 191, 191)
+						} else {
+							preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
+							map_label_4.textFill = Color.rgb(0, 0, 0, 0.6)
+						}
+						preview_map_4_border.effect = null
+						map_label_4.effect = null
+					}
+				}
+			}	
+		} else {
+			if (nightMode) {
+				preview_map_1_border.stroke = Color.rgb(191, 191, 191)
+				map_label_1.textFill = Color.rgb(191, 191, 191)
+			} else {
+				preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)
+			}
+			preview_map_1_border.effect = null
+			map_label_1.effect = null	
+		
+			if (nightMode) {
+				preview_map_2_border.stroke = Color.rgb(191, 191, 191)
+				map_label_2.textFill = Color.rgb(191, 191, 191)
+			} else {
+				preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)
+			}
+			preview_map_2_border.effect = null
+			map_label_2.effect = null
+		
+			if (nightMode) {
+				preview_map_3_border.stroke = Color.rgb(191, 191, 191)
+				map_label_3.textFill = Color.rgb(191, 191, 191)
+			} else {
+				preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_3.textFill = Color.rgb(0, 0, 0, 0.6)
+			}
+			preview_map_3_border.effect = null
+			map_label_3.effect = null
+
+			if (nightMode) {
+				preview_map_4_border.stroke = Color.rgb(191, 191, 191)
+				map_label_4.textFill = Color.rgb(191, 191, 191)
+			} else {
+				preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_4.textFill = Color.rgb(0, 0, 0, 0.6)
+			}
+			preview_map_4_border.effect = null
+			map_label_4.effect = null
+		}
+	}
+	
+	/**
+	 * Sélectionne une map
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def selectMap(e : MouseEvent) : void {
+		if(e.getSource().toString.substring(0, 1) == 'I') { // I pour ImageView
+			this.selectedMap = Integer.parseInt((e.getSource() as ImageView).getId().substring((e.getSource() as ImageView).getId().length() - 1))
+		} else {
+			this.selectedMap = Integer.parseInt((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1))	
+		}
+		resetMaps()
+		switch(this.selectedMap) {
+			case 1: {
+				if (nightMode) {
+					preview_map_1_border.stroke = Color.rgb(235, 221, 26)
+					map_label_1.textFill = Color.rgb(235, 221, 26)
+				} else {
+					preview_map_1_border.stroke = Color.rgb(0, 0, 0)
+					map_label_1.textFill = Color.rgb(0, 0, 0)
+				}	
+
+				var glowEffect = new Glow()
+				glowEffect.level = 0.8
+				preview_map_1_border.effect = glowEffect
+				map_label_1.effect = glowEffect
+				tick_map_1.visible = true
+			}
+			case 2: {
+				if (nightMode) {
+					preview_map_2_border.stroke = Color.rgb(235, 221, 26)
+					map_label_2.textFill = Color.rgb(235, 221, 26)
+				} else {
+					preview_map_2_border.stroke = Color.rgb(0, 0, 0)
+					map_label_2.textFill = Color.rgb(0, 0, 0)
+				}
+
+				var glowEffect = new Glow()
+				glowEffect.level = 0.8
+				preview_map_2_border.effect = glowEffect
+				map_label_2.effect = glowEffect
+				tick_map_2.visible = true
+			}
+			case 3: {
+				if (nightMode) {
+					preview_map_3_border.stroke = Color.rgb(235, 221, 26)
+					map_label_3.textFill = Color.rgb(235, 221, 26)
+				} else {
+					preview_map_3_border.stroke = Color.rgb(0, 0, 0)
+					map_label_3.textFill = Color.rgb(0, 0, 0)
+				}
+
+				var glowEffect = new Glow()
+				glowEffect.level = 0.8
+				preview_map_3_border.effect = glowEffect
+				map_label_3.effect = glowEffect
+				tick_map_3.visible = true
+			}
+			/*case 4: {
+				if (nightMode) {
+					preview_map_4_border.stroke = Color.rgb(235, 221, 26)
+					map_label_4.textFill = Color.rgb(235, 221, 26)
+				} else {
+					preview_map_4_border.stroke = Color.rgb(0, 0, 0)
+					map_label_4.textFill = Color.rgb(0, 0, 0)
+				}
+
+				var glowEffect = new Glow()
+				glowEffect.level = 0.8
+				preview_map_4_border.effect = glowEffect
+				map_label_4.effect = glowEffect
+				tick_map_4.visible = true
+			}*/
+		}
+	}
+	
+	/**
+	 * Reset la sélection
+	 */
+	protected def resetMaps() : void {
+		previewMapReset(null)
+		
+		tick_map_1.visible = false
+		tick_map_2.visible = false
+		tick_map_3.visible = false
+		tick_map_4.visible = false
+	}
+	
+	
+	
+	/* --- --- --- GESTION DES PARAMETRES AVANCES --- --- --- */
+	
+	/**
+	 * Dévoile les panes correspondant au nombre de populations saisi
+	 */
+	@FXML protected def showGroupConfiguration() : void {
+		if (this.boidsPopulation <= 4) advanced_settings_anchor_pane.prefHeight = 330 else advanced_settings_anchor_pane.prefHeight = 600
+		if (this.boidsPopulation >= 1) pane_group_1.visible = true else	pane_group_1.visible = false
+		if (this.boidsPopulation >= 2) pane_group_2.visible = true else	pane_group_2.visible = false
+		if (this.boidsPopulation >= 3) pane_group_3.visible = true else	pane_group_3.visible = false
+		if (this.boidsPopulation >= 4) pane_group_4.visible = true else	pane_group_4.visible = false
+		if (this.boidsPopulation >= 5) pane_group_5.visible = true else	pane_group_5.visible = false
+		if (this.boidsPopulation >= 6) pane_group_6.visible = true else	pane_group_6.visible = false
+		if (this.boidsPopulation >= 7) pane_group_7.visible = true else	pane_group_7.visible = false
+		if (this.boidsPopulation >= 8) pane_group_8.visible = true else	pane_group_8.visible = false
+	}	
+	
+	/**
+	 * Reset tout le paramétrage utilisateur
+	 */
+	@FXML protected def resetGroupValues() : void {
+		mass_1.value = Configuration::DEFAULT_MASS
+		mass_display_1.setText(Configuration::DEFAULT_MASS.toString())
+		speed_1.value = Configuration::DEFAULT_SPEED
+		speed_display_1.setText(Configuration::DEFAULT_SPEED.toString())
+		angle_1.value = Configuration::DEFAULT_ANGLE
+		angle_display_1.setText(Configuration::DEFAULT_ANGLE.toString())
+		distance_1.value = Configuration::DEFAULT_DISTANCE
+		distance_display_1.setText(Configuration::DEFAULT_DISTANCE.toString())
+		mass_2.value = Configuration::DEFAULT_MASS
+		mass_display_2.setText(Configuration::DEFAULT_MASS.toString())
+		speed_2.value = Configuration::DEFAULT_SPEED
+		speed_display_2.setText(Configuration::DEFAULT_SPEED.toString())
+		angle_2.value = Configuration::DEFAULT_ANGLE
+		angle_display_2.setText(Configuration::DEFAULT_ANGLE.toString())
+		distance_2.value = Configuration::DEFAULT_DISTANCE
+		distance_display_2.setText(Configuration::DEFAULT_DISTANCE.toString())
+		mass_3.value = Configuration::DEFAULT_MASS
+		mass_display_3.setText(Configuration::DEFAULT_MASS.toString())
+		speed_3.value = Configuration::DEFAULT_SPEED
+		speed_display_3.setText(Configuration::DEFAULT_SPEED.toString())
+		angle_3.value = Configuration::DEFAULT_ANGLE
+		angle_display_3.setText(Configuration::DEFAULT_ANGLE.toString())
+		distance_3.value = Configuration::DEFAULT_DISTANCE
+		distance_display_3.setText(Configuration::DEFAULT_DISTANCE.toString())
+		mass_4.value = Configuration::DEFAULT_MASS
+		mass_display_4.setText(Configuration::DEFAULT_MASS.toString())
+		speed_4.value = Configuration::DEFAULT_SPEED
+		speed_display_4.setText(Configuration::DEFAULT_SPEED.toString())
+		angle_4.value = Configuration::DEFAULT_ANGLE
+		angle_display_4.setText(Configuration::DEFAULT_ANGLE.toString())
+		distance_4.value = Configuration::DEFAULT_DISTANCE
+		distance_display_4.setText(Configuration::DEFAULT_DISTANCE.toString())
+		mass_5.value = Configuration::DEFAULT_MASS
+		mass_display_5.setText(Configuration::DEFAULT_MASS.toString())
+		speed_5.value = Configuration::DEFAULT_SPEED
+		speed_display_5.setText(Configuration::DEFAULT_SPEED.toString())
+		angle_5.value = Configuration::DEFAULT_ANGLE
+		angle_display_5.setText(Configuration::DEFAULT_ANGLE.toString())
+		distance_5.value = Configuration::DEFAULT_DISTANCE
+		distance_display_5.setText(Configuration::DEFAULT_DISTANCE.toString())
+		mass_6.value = Configuration::DEFAULT_MASS
+		mass_display_6.setText(Configuration::DEFAULT_MASS.toString())
+		speed_6.value = Configuration::DEFAULT_SPEED
+		speed_display_6.setText(Configuration::DEFAULT_SPEED.toString())
+		angle_6.value = Configuration::DEFAULT_ANGLE
+		angle_display_6.setText(Configuration::DEFAULT_ANGLE.toString())
+		distance_6.value = Configuration::DEFAULT_DISTANCE
+		distance_display_6.setText(Configuration::DEFAULT_DISTANCE.toString())
+		mass_7.value = Configuration::DEFAULT_MASS
+		mass_display_7.setText(Configuration::DEFAULT_MASS.toString())
+		speed_7.value = Configuration::DEFAULT_SPEED
+		speed_display_7.setText(Configuration::DEFAULT_SPEED.toString())
+		angle_7.value = Configuration::DEFAULT_ANGLE
+		angle_display_7.setText(Configuration::DEFAULT_ANGLE.toString())
+		distance_7.value = Configuration::DEFAULT_DISTANCE
+		distance_display_7.setText(Configuration::DEFAULT_DISTANCE.toString())
+		mass_8.value = Configuration::DEFAULT_MASS
+		mass_display_8.setText(Configuration::DEFAULT_MASS.toString())
+		speed_8.value = Configuration::DEFAULT_SPEED
+		speed_display_8.setText(Configuration::DEFAULT_SPEED.toString())
+		angle_8.value = Configuration::DEFAULT_ANGLE
+		angle_display_8.setText(Configuration::DEFAULT_ANGLE.toString())
+		distance_8.value = Configuration::DEFAULT_DISTANCE
+		distance_display_8.setText(Configuration::DEFAULT_DISTANCE.toString())
+	}
+
+	/**
+	 * Listeners sur les masses
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def massListener(e : MouseEvent) : void {
+		(e.getSource() as ScrollBar).valueProperty().addListener [
+			if((e.getSource() as ScrollBar).getId() == 'mass_1')
+				mass_display_1.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'mass_2')
+				mass_display_2.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'mass_3')
+				mass_display_3.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'mass_4')
+				mass_display_4.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'mass_5')
+				mass_display_5.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'mass_6')
+				mass_display_6.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'mass_7')
+				mass_display_7.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'mass_8')
+				mass_display_8.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+		];
+	}
+	/** 
+	 * Listeners sur les vitesses
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def speedListener(e : MouseEvent) : void {
+		(e.getSource() as ScrollBar).valueProperty().addListener [
+			if ((e.getSource() as ScrollBar).getId() == 'speed_1')
+				speed_display_1.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'speed_2')
+				speed_display_2.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'speed_3')
+				speed_display_3.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'speed_4')
+				speed_display_4.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'speed_5')
+				speed_display_5.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'speed_6')
+				speed_display_6.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'speed_7')
+				speed_display_7.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'speed_8')
+				speed_display_8.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+		];
+	}
+	
+	/**
+	 * Listeners sur les angles
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def angleListener(e : MouseEvent) : void {
+		(e.getSource() as ScrollBar).valueProperty().addListener [
+			if ((e.getSource() as ScrollBar).getId() == 'angle_1')
+				angle_display_1.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'angle_2')
+				angle_display_2.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'angle_3')
+				angle_display_3.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'angle_4')
+				angle_display_4.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'angle_5')
+				angle_display_5.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'angle_6')
+				angle_display_6.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'angle_7')
+				angle_display_7.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'angle_8')
+				angle_display_8.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+		];
+	}
+	
+	/**
+	 * Listeners sur les distances
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def distanceListener(e : MouseEvent) : void {
+		(e.getSource() as ScrollBar).valueProperty().addListener [
+			if ((e.getSource() as ScrollBar).getId() == 'distance_1')
+				distance_display_1.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'distance_2')
+				distance_display_2.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'distance_3')
+				distance_display_3.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'distance_4')
+				distance_display_4.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'distance_5')
+				distance_display_5.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'distance_6')
+				distance_display_6.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'distance_7')
+				distance_display_7.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+			else if ((e.getSource() as ScrollBar).getId() == 'distance_8')
+				distance_display_8.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
+		];
+	}
+	
+	/**
+	 * Applique rapidement les valeurs maximales et minimales pour les masses
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def setFastMassValues(e : MouseEvent) : void {
+		if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '1') {
+			mass_1.value = Integer.parseInt((e.getSource() as Label).text)
+			mass_display_1.text = (e.getSource() as Label).text
+		} else if((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '2') {
+			mass_2.value = Integer.parseInt((e.getSource() as Label).text)
+			mass_display_2.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '3') {
+			mass_3.value = Integer.parseInt((e.getSource() as Label).text)
+			mass_display_3.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '4') {
+			mass_4.value = Integer.parseInt((e.getSource() as Label).text)
+			mass_display_4.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '5') {
+			mass_5.value = Integer.parseInt((e.getSource() as Label).text)
+			mass_display_5.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '6') {
+			mass_6.value = Integer.parseInt((e.getSource() as Label).text)
+			mass_display_6.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '7') {
+			mass_7.value = Integer.parseInt((e.getSource() as Label).text)
+			mass_display_7.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '8') {
+			mass_8.value = Integer.parseInt((e.getSource() as Label).text)
+			mass_display_8.text = (e.getSource() as Label).text
+		}
+	}
+	
+	/**
+	 * Applique rapidement les valeurs maximales et minimales pour les vitesses
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def setFastSpeedValues(e : MouseEvent) : void {
+		if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '1') {
+			speed_1.value = Integer.parseInt((e.getSource() as Label).text)
+			speed_display_1.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '2') {
+			speed_2.value = Integer.parseInt((e.getSource() as Label).text)
+			speed_display_2.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '3') {
+			speed_3.value = Integer.parseInt((e.getSource() as Label).text)
+			speed_display_3.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '4') {
+			speed_4.value = Integer.parseInt((e.getSource() as Label).text)
+			speed_display_4.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '5') {
+			speed_5.value = Integer.parseInt((e.getSource() as Label).text)
+			speed_display_5.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '6') {
+			speed_6.value = Integer.parseInt((e.getSource() as Label).text)
+			speed_display_6.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '7') {
+			speed_7.value = Integer.parseInt((e.getSource() as Label).text)
+			speed_display_7.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '8') {
+			speed_8.value = Integer.parseInt((e.getSource() as Label).text)
+			speed_display_8.text = (e.getSource() as Label).text
+		}
+	}
+
+	/**
+	 * Applique rapidement les valeurs maximales et minimales pour les angles
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def setFastAngleValues(e : MouseEvent) : void {
+		if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '1') {
+			angle_1.value = Integer.parseInt((e.getSource() as Label).text)
+			angle_display_1.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '2') {
+			angle_2.value = Integer.parseInt((e.getSource() as Label).text)
+			angle_display_2.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '3') {
+			angle_3.value = Integer.parseInt((e.getSource() as Label).text)
+			angle_display_3.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '4') {
+			angle_4.value = Integer.parseInt((e.getSource() as Label).text)
+			angle_display_4.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '5') {
+			angle_5.value = Integer.parseInt((e.getSource() as Label).text)
+			angle_display_5.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '6') {
+			angle_6.value = Integer.parseInt((e.getSource() as Label).text)
+			angle_display_6.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '7') {
+			angle_7.value = Integer.parseInt((e.getSource() as Label).text)
+			angle_display_7.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '8') {
+			angle_8.value = Integer.parseInt((e.getSource() as Label).text)
+			angle_display_8.text = (e.getSource() as Label).text
+		}
+	}
+	
+	/** 
+	 * Applique rapidement les valeurs maximales et minimales pour les distances
+	 * @param e - MouseEvent
+	 */
+	@FXML protected def setFastDistanceValues(e : MouseEvent) : void {
+		if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '1') {
+			distance_1.value = Integer.parseInt((e.getSource() as Label).text)
+			distance_display_1.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '2') {
+			distance_2.value = Integer.parseInt((e.getSource() as Label).text)
+			distance_display_2.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '3') {
+			distance_3.value = Integer.parseInt((e.getSource() as Label).text)
+			distance_display_3.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '4') {
+			distance_4.value = Integer.parseInt((e.getSource() as Label).text)
+			distance_display_4.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '5') {
+			distance_5.value = Integer.parseInt((e.getSource() as Label).text)
+			distance_display_5.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '6') {
+			distance_6.value = Integer.parseInt((e.getSource() as Label).text)
+			distance_display_6.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '7') {
+			distance_7.value = Integer.parseInt((e.getSource() as Label).text)
+			distance_display_7.text = (e.getSource() as Label).text
+		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '8') {
+			distance_8.value = Integer.parseInt((e.getSource() as Label).text)
+			distance_display_8.text = (e.getSource() as Label).text
+		}
+	}
+	
+	/* --- --- --- MODE JOUR NUIT --- --- --- */
 	
 	@FXML protected def toggleMode() : void {
 		if(nightMode) {
@@ -849,995 +1771,6 @@ class BoidsFxViewerController extends FxViewerController  {
 				map_label_4.textFill = Color.rgb(235, 221, 26)
 			}
 			
-		}
-	}
-	
-	@FXML protected def togglePerception() : void {
-		if(togglePerception) {
-			togglePerception = false
-			perception_indicator.fill = Color.TRANSPARENT
-			perceptions.forEach[item : Arc |
-				item.fill = Color.TRANSPARENT
-			]
-		} else {
-			togglePerception = true
-			perception_indicator.fill = Color.rgb(0, 204, 99)
-			perceptions.forEach [ item : Arc |
-				if(nightMode) item.fill = Color.rgb(255, 245, 112, 0.2) else item.fill = Color.rgb(255, 245, 112, 0.8)
-			]
-		}
-	}
-	
-	@FXML protected def toggleButtonGlow() : void {	
-		if(nightMode)
-			toggle_night_mode.textFill = Color.rgb(235, 221, 26)
-		else
-			toggle_night_mode.textFill = Color.rgb(0, 0, 0)
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		toggle_night_mode.effect = glowEffect
-	}
-	
-	@FXML protected def toggleButtonReset() : void {
-		if(launched) {
-			if (nightMode)
-				toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
-			else
-				toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
-		} else {
-			if (nightMode)
-				toggle_night_mode.textFill = Color.rgb(191, 191, 191)
-			else
-				toggle_night_mode.textFill = Color.rgb(0, 0, 0)
-		}
-		toggle_night_mode.effect = null
-	}
-
-	@FXML protected def startButtonGlow() : void {
-		if (nightMode)
-			start_button.textFill = Color.rgb(235, 221, 26)
-		else
-			start_button.textFill = Color.rgb(0, 0, 0)
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		start_button.effect = glowEffect
-	}
-
-	@FXML protected def startButtonReset() : void {
-		if (nightMode)
-			start_button.textFill = Color.rgb(191, 191, 191)
-		else
-			start_button.textFill = Color.rgb(0, 0, 0)
-		start_button.effect = null
-	}
-	
-	@FXML protected def perceptionButtonGlow() : void {
-		if (nightMode)
-			toggle_perception.textFill = Color.rgb(235, 221, 26)
-		else
-			toggle_perception.textFill = Color.rgb(0, 0, 0)
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		toggle_perception.effect = glowEffect
-	}
-	
-	@FXML protected def perceptionButtonReset() : void {
-		if (nightMode)
-			toggle_perception.textFill = Color.rgb(191, 191, 191, 0.3)
-		else
-			toggle_perception.textFill = Color.rgb(0, 0, 0, 0.3)
-		toggle_perception.effect = null
-	}
-	
-	@FXML protected def infosButtonGlow() : void {
-		if (nightMode)
-			hide_infos.textFill = Color.rgb(235, 221, 26)
-		else
-			hide_infos.textFill = Color.rgb(0, 0, 0)
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		hide_infos.effect = glowEffect
-	}
-	
-	@FXML protected def infosButtonReset() : void {
-		if (nightMode)
-			hide_infos.textFill = Color.rgb(191, 191, 191, 0.3)
-		else
-			hide_infos.textFill = Color.rgb(0, 0, 0, 0.3)
-		hide_infos.effect = null
-	}
-	
-	@FXML protected def incrementBoidsPopulationGlow() : void {
-		if (nightMode) {
-			boids_population_increment_circle.stroke = Color.rgb(235, 221, 26)
-			increment_boids_population.textFill = Color.rgb(235, 221, 26)
-		} else {
-			boids_population_increment_circle.stroke = Color.rgb(0, 0, 0)
-			increment_boids_population.textFill = Color.rgb(0, 0, 0)	
-		}
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		boids_population_increment_circle.effect = glowEffect
-	}
-	
-	@FXML protected def incrementBoidsPopulationReset() : void {
-		if (nightMode) {
-			boids_population_increment_circle.stroke = Color.rgb(191, 191, 191)
-			increment_boids_population.textFill = Color.rgb(191, 191, 191)
-		}
-		else {
-			boids_population_increment_circle.stroke = Color.rgb(0, 0, 0, 0.3)
-			increment_boids_population.textFill = Color.rgb(0, 0, 0)
-		}
-		boids_population_increment_circle.effect = null
-		increment_boids_population.effect = null
-	}
-	
-	@FXML protected def decrementBoidsPopulationGlow() : void {
-		if (nightMode) {
-			boids_population_decrement_circle.stroke = Color.rgb(235, 221, 26)
-			decrement_boids_population.textFill = Color.rgb(235, 221, 26)
-		} else {
-			boids_population_decrement_circle.stroke = Color.rgb(0, 0, 0)
-			decrement_boids_population.textFill = Color.rgb(0, 0, 0)
-		}
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		boids_population_decrement_circle.effect = glowEffect
-	}	
-	
-	@FXML protected def decrementBoidsPopulationReset() : void {
-		if (nightMode) {
-			boids_population_decrement_circle.stroke = Color.rgb(191, 191, 191)
-			decrement_boids_population.textFill = Color.rgb(191, 191, 191)
-		} else {
-			boids_population_decrement_circle.stroke = Color.rgb(0, 0, 0, 0.3)
-			increment_boids_population.textFill = Color.rgb(0, 0, 0)
-		}
-		boids_population_decrement_circle.effect = null
-		decrement_boids_population.effect = null
-	}
-	
-	@FXML protected def boidsPopulationGlow() : void {
-		if (nightMode) {
-			boids_population_input.style = '-fx-text-fill: rgb(235, 221, 26); -fx-background-color: transparent'
-		} else {
-			boids_population_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
-		}
-		boids_population_line.strokeWidth = 3
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		boids_population_input.effect = glowEffect
-	}
-	
-	@FXML protected def boidsPopulationReset() : void {
-		if (nightMode) {
-			boids_population_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
-		} else {
-			boids_population_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
-		}
-		boids_population_line.strokeWidth = 1
-		boids_population_input.effect = null
-	}
-	
-	@FXML protected def incrementBoidsQuantityGlow() : void {
-		if (nightMode) {
-			boids_quantity_increment_circle.stroke = Color.rgb(235, 221, 26)
-			increment_boids_quantity.textFill = Color.rgb(235, 221, 26)
-		} else {
-			boids_quantity_increment_circle.stroke = Color.rgb(0, 0, 0)
-			increment_boids_quantity.textFill = Color.rgb(0, 0, 0)
-		}
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		boids_quantity_increment_circle.effect = glowEffect
-	}
-	
-	@FXML protected def decrementBoidsQuantityGlow() : void {
-		if (nightMode) {
-			boids_quantity_decrement_circle.stroke = Color.rgb(235, 221, 26)
-			decrement_boids_quantity.textFill = Color.rgb(235, 221, 26)
-		} else {
-			boids_quantity_decrement_circle.stroke = Color.rgb(0, 0, 0)
-			decrement_boids_quantity.textFill = Color.rgb(0, 0, 0)
-		}
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		boids_quantity_decrement_circle.effect = glowEffect
-	}
-
-	@FXML protected def incrementBoidsQuantityReset() : void {
-		if (nightMode) {
-			boids_quantity_increment_circle.stroke = Color.rgb(191, 191, 191)
-			increment_boids_quantity.textFill = Color.rgb(191, 191, 191)
-		} else {
-			boids_quantity_increment_circle.stroke = Color.rgb(0, 0, 0, 0.3)
-			increment_boids_quantity.textFill = Color.rgb(0, 0, 0)
-		}
-		boids_quantity_increment_circle.effect = null
-		increment_boids_quantity.effect = null
-	}
-
-	@FXML protected def decrementBoidsQuantityReset() : void {
-		if (nightMode) {
-			boids_quantity_decrement_circle.stroke = Color.rgb(191, 191, 191)
-			decrement_boids_quantity.textFill = Color.rgb(191, 191, 191)
-		} else {
-			boids_quantity_decrement_circle.stroke = Color.rgb(0, 0, 0, 0.3)
-			decrement_boids_quantity.textFill = Color.rgb(0, 0, 0)
-		}
-		boids_quantity_decrement_circle.effect = null
-		decrement_boids_quantity.effect = null
-	}
-
-	@FXML protected def boidsQuantityGlow() : void {
-		if (nightMode) {
-			boids_quantity_input.style = '-fx-text-fill: rgb(235, 221, 26); -fx-background-color: transparent'
-		} else {
-			boids_quantity_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
-		}
-		boids_quantity_line.strokeWidth = 3
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		boids_quantity_input.effect = glowEffect
-	}
-
-	@FXML protected def boidsQuantityReset() : void {
-		if (nightMode) {
-			boids_quantity_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
-		} else {
-			boids_quantity_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
-		}
-		boids_quantity_line.strokeWidth = 1
-		boids_quantity_input.effect = null
-	}
-	
-	def toggleUIState() : void {
-		if(start_button.disable == true) start_button.disable = false else start_button.disable = true
-		if(boids_quantity_input.disable == true) boids_quantity_input.disable = false else boids_quantity_input.disable = true
-		if(boids_population_input.disable == true) boids_population_input.disable = false else boids_population_input.disable = true
-		// if(toggle_night_mode.disable == true)  toggle_night_mode.disable = false else toggle_night_mode.disable = true
-	}
-	
-	def toggleMenuUIVisibility() : void {
-		if(UI_pane.visible) UI_pane.visible = false else UI_pane.visible = true
-	}
-	
-	def toggleSimuUIVisibility() : void {
-		if(!toggle_perception.visible) toggle_perception.visible = true else toggle_perception.visible = false
-		if(!perception_indicator.visible) perception_indicator.visible = true else perception_indicator.visible = false
-	}
-	
-	@FXML def pause() : void {
-		pause_button.visible = false
-		resume_button.visible = true
-		emitToAgents(new Pause)
-	}
-	
-	@FXML def resume() : void {
-		pause_button.visible = true
-		resume_button.visible = false
-		emitToAgents(new Resume)
-	}
-	
-	def hideInfosVisibility() : void {
-		this.resetTexts()
-		boids_infos_pane.visible = false
-	}
-	
-	def resetTexts() : void {
-		boid_group.text = ''
-		boid_vitesse.text = ''
-		boid_group_vitesse.text = ''
-		boid_masse.text = ''
-		boid_angle.text = ''
-		boid_distance.text = ''
-		boid_new_vitesse.text = ''
-	}
-
-	def showInfosVisibility() : void {
-		boids_infos_pane.visible = true
-	}
-	
-	def outputQuality(output : String) : Boolean {
-		var outputQuality : Boolean = false
-		try {
-			Integer.parseInt(boids_population_input.text)
-			outputQuality = true
-		} catch (e : NumberFormatException) {
-			System.out.println('Invalid number of populations!')
-		}
-		return outputQuality
-	}
-	
-	def updateInfos(boidBody : BoidBody) : void {
-		boid_group.text = 'Groupe: ' + boidBody.groupe
-		boid_vitesse.text = 'Vitesse: (' + String.format("%.3f", boidBody.vitesse.x) + ', ' + String.format("%.3f", boidBody.vitesse.y) + ')'
-		boid_group_vitesse.text = 'Vitesse max. groupe: ' + boidBody.groupeVitesseMax
-		boid_masse.text = 'Masse: ' + boidBody.masse
-		boid_angle.text = 'Angle: ' + boidBody.angleVisibilite
-		boid_distance.text = 'Distance percep.: ' + boidBody.distanceVisibilite
-		boid_new_vitesse.text = 'Nouvelle vitesse: (' + boidBody.newVitesse.x + ', ' + boidBody.newVitesse.y + ')'
-		boid_position.text = 'Position: (' + String.format("%.3f", boidBody.position.x) + ', ' + String.format("%.3f", boidBody.position.y) + ')'
-	}
-
-	@FXML protected def changeFocus() : void {
-		main_pane.requestFocus()
-	}
-	
-	@FXML protected def previewMapGlow(e : MouseEvent) : void {
-		var targetMap : int = 0
-		if (e.getSource().toString.substring(0, 1) == 'I') { // I pour ImageView
-			targetMap = Integer.parseInt((e.getSource() as ImageView).getId().substring((e.getSource() as ImageView).getId().length() - 1))
-		} else {
-			targetMap = Integer.parseInt((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1))
-		}
-
-		var glowEffect = new Glow()
-		glowEffect.level = 1
-		
-		switch(targetMap) {
-			case 1: {
-				if (this.selectedMap != 1) {
-					if (nightMode) {
-						preview_map_1_border.stroke = Color.rgb(235, 221, 26, 0.6)
-						map_label_1.textFill = Color.rgb(235, 221, 26, 0.6)
-					} else {
-						preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.35)
-						map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)
-					}
-					preview_map_1_border.effect = glowEffect
-					map_label_1.effect = glowEffect
-				}
-			}
-			
-			case 2: {
-				if (selectedMap != 2) {
-					if (nightMode) {
-						preview_map_2_border.stroke = Color.rgb(235, 221, 26, 0.6)
-						map_label_2.textFill = Color.rgb(235, 221, 26, 0.6)
-					} else {
-						preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
-						map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)
-					}
-					preview_map_2_border.effect = glowEffect
-					map_label_2.effect = glowEffect
-				}
-			}
-			
-			case 3: {
-				if (selectedMap != 3) {
-					if (nightMode) {
-						preview_map_3_border.stroke = Color.rgb(235, 221, 26, 0.6)
-						map_label_3.textFill = Color.rgb(235, 221, 26, 0.6)
-					} else {
-						preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
-						map_label_3.textFill = Color.rgb(0, 0, 0, 0.6)
-					}
-					preview_map_3_border.effect = glowEffect
-					map_label_3.effect = glowEffect
-				}
-			}
-			
-			case 4: {
-				if (selectedMap != 4) {
-					if (nightMode) {
-						preview_map_4_border.stroke = Color.rgb(235, 221, 26, 0.6)
-						map_label_4.textFill = Color.rgb(235, 221, 26, 0.6)
-					} else {
-						preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
-						map_label_4.textFill = Color.rgb(0, 0, 0, 0.6)
-					}
-					preview_map_4_border.effect = glowEffect
-					map_label_4.effect = glowEffect
-				}
-			}
-		}
-	}
-	
-	@FXML protected def previewMapReset(e : MouseEvent) : void {
-		if(e !== null) {
-			var targetMap : int = 0
-			if (e.getSource().toString.substring(0, 1) == 'I') { // I pour ImageView
-				targetMap = Integer.parseInt((e.getSource() as ImageView).getId().substring((e.getSource() as ImageView).getId().length() - 1))
-			} else {
-				targetMap = Integer.parseInt((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1))
-			}
-			
-			switch(targetMap) {
-				case 1: {
-					if (selectedMap != 1) {
-						if (nightMode) {
-							preview_map_1_border.stroke = Color.rgb(191, 191, 191)
-							map_label_1.textFill = Color.rgb(191, 191, 191)
-						} else {
-							preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.6)
-							map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)
-						}
-						preview_map_1_border.effect = null
-						map_label_1.effect = null
-					}
-				}
-				case 2: {
-					if (selectedMap != 2) {
-						if (nightMode) {
-							preview_map_2_border.stroke = Color.rgb(191, 191, 191)
-							map_label_2.textFill = Color.rgb(191, 191, 191)
-						} else {
-							preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
-							map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)
-						}
-						preview_map_2_border.effect = null
-						map_label_2.effect = null
-					}
-				}
-				
-				case 3: {
-					if (selectedMap != 3) {
-						if (nightMode) {
-							preview_map_3_border.stroke = Color.rgb(191, 191, 191)
-							map_label_3.textFill = Color.rgb(191, 191, 191)
-						} else {
-							preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
-							map_label_3.textFill = Color.rgb(0, 0, 0, 0.6)
-						}
-						preview_map_3_border.effect = null
-						map_label_3.effect = null
-					}
-				}
-				
-				case 4: {
-					if (selectedMap != 4) {
-						if (nightMode) {
-							preview_map_4_border.stroke = Color.rgb(191, 191, 191)
-							map_label_4.textFill = Color.rgb(191, 191, 191)
-						} else {
-							preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
-							map_label_4.textFill = Color.rgb(0, 0, 0, 0.6)
-						}
-						preview_map_4_border.effect = null
-						map_label_4.effect = null
-					}
-				}
-			}	
-		} else {
-			if (nightMode) {
-				preview_map_1_border.stroke = Color.rgb(191, 191, 191)
-				map_label_1.textFill = Color.rgb(191, 191, 191)
-			} else {
-				preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.6)
-				map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)
-			}
-			preview_map_1_border.effect = null
-			map_label_1.effect = null	
-		
-			if (nightMode) {
-				preview_map_2_border.stroke = Color.rgb(191, 191, 191)
-				map_label_2.textFill = Color.rgb(191, 191, 191)
-			} else {
-				preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
-				map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)
-			}
-			preview_map_2_border.effect = null
-			map_label_2.effect = null
-		
-			if (nightMode) {
-				preview_map_3_border.stroke = Color.rgb(191, 191, 191)
-				map_label_3.textFill = Color.rgb(191, 191, 191)
-			} else {
-				preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
-				map_label_3.textFill = Color.rgb(0, 0, 0, 0.6)
-			}
-			preview_map_3_border.effect = null
-			map_label_3.effect = null
-
-			if (nightMode) {
-				preview_map_4_border.stroke = Color.rgb(191, 191, 191)
-				map_label_4.textFill = Color.rgb(191, 191, 191)
-			} else {
-				preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
-				map_label_4.textFill = Color.rgb(0, 0, 0, 0.6)
-			}
-			preview_map_4_border.effect = null
-			map_label_4.effect = null
-		}
-	}
-	
-	@FXML protected def selectMap(e : MouseEvent) : void {
-		if(e.getSource().toString.substring(0, 1) == 'I') { // I pour ImageView
-			this.selectedMap = Integer.parseInt((e.getSource() as ImageView).getId().substring((e.getSource() as ImageView).getId().length() - 1))
-		} else {
-			this.selectedMap = Integer.parseInt((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1))	
-		}
-		resetMaps()
-		switch(this.selectedMap) {
-			case 1: {
-				if (nightMode) {
-					preview_map_1_border.stroke = Color.rgb(235, 221, 26)
-					map_label_1.textFill = Color.rgb(235, 221, 26)
-				} else {
-					preview_map_1_border.stroke = Color.rgb(0, 0, 0)
-					map_label_1.textFill = Color.rgb(0, 0, 0)
-				}	
-
-				var glowEffect = new Glow()
-				glowEffect.level = 0.8
-				preview_map_1_border.effect = glowEffect
-				map_label_1.effect = glowEffect
-				tick_map_1.visible = true
-			}
-			case 2: {
-				if (nightMode) {
-					preview_map_2_border.stroke = Color.rgb(235, 221, 26)
-					map_label_2.textFill = Color.rgb(235, 221, 26)
-				} else {
-					preview_map_2_border.stroke = Color.rgb(0, 0, 0)
-					map_label_2.textFill = Color.rgb(0, 0, 0)
-				}
-
-				var glowEffect = new Glow()
-				glowEffect.level = 0.8
-				preview_map_2_border.effect = glowEffect
-				map_label_2.effect = glowEffect
-				tick_map_2.visible = true
-			}
-			case 3: {
-				if (nightMode) {
-					preview_map_3_border.stroke = Color.rgb(235, 221, 26)
-					map_label_3.textFill = Color.rgb(235, 221, 26)
-				} else {
-					preview_map_3_border.stroke = Color.rgb(0, 0, 0)
-					map_label_3.textFill = Color.rgb(0, 0, 0)
-				}
-
-				var glowEffect = new Glow()
-				glowEffect.level = 0.8
-				preview_map_3_border.effect = glowEffect
-				map_label_3.effect = glowEffect
-				tick_map_3.visible = true
-			}
-			
-			/*case 4: {
-				if (nightMode) {
-					preview_map_4_border.stroke = Color.rgb(235, 221, 26)
-					map_label_4.textFill = Color.rgb(235, 221, 26)
-				} else {
-					preview_map_4_border.stroke = Color.rgb(0, 0, 0)
-					map_label_4.textFill = Color.rgb(0, 0, 0)
-				}
-
-				var glowEffect = new Glow()
-				glowEffect.level = 0.8
-				preview_map_4_border.effect = glowEffect
-				map_label_4.effect = glowEffect
-				tick_map_4.visible = true
-			}*/
-		}
-	}
-	
-	protected def resetMaps() : void {
-		/*previewMap1Reset()
-		previewMap2Reset()
-		previewMap3Reset()*/
-		previewMapReset(null)
-		
-		tick_map_1.visible = false
-		tick_map_2.visible = false
-		tick_map_3.visible = false
-		tick_map_4.visible = false
-	}
-	
-	@FXML protected def applyGlowEffectOnLabel(e : MouseEvent) {
-		if (nightMode)
-			(e.getSource() as Label).textFill = Color.rgb(235, 221, 26)
-		else
-			(e.getSource() as Label).textFill = Color.rgb(0, 0, 0)
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		(e.getSource() as Label).effect = glowEffect
-	}
-	
-	@FXML protected def unapplyGlowEffectOnLabel(e : MouseEvent) {
-		if (nightMode)
-			(e.getSource() as Label).textFill = Color.rgb(191, 191, 191)
-		else
-			(e.getSource() as Label).textFill = Color.rgb(0, 0, 0)
-		(e.getSource() as Label).effect = null
-	}
-	
-	@FXML protected def paneTitleGlow(e : MouseEvent) : void {
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		if (e.getSource().toString.substring(0, 1) == 'P') { // P pour Pane
-			var pane = (e.getSource() as Pane).getId()
-			if(pane == 'simulation_parameters_pane') {
-				settings_label.effect = glowEffect
-			}
-		} else {
-			var pane = (e.getSource() as ScrollPane).getId()
-			if (pane == 'advanced_settings_pane') {
-				advanced_settings_label.effect = glowEffect
-			} else if(pane == 'map_selection_pane') {
-				map_selection_label.effect = glowEffect
-			}
-		}
-	}
-	
-	@FXML protected def toggleAdvancedSettingsVisibility() : void {
-		if (advanced_settings_pane.visible) {
-			advanced_settings_pane.visible = false
-		} else {
-			advanced_settings_pane.visible = true
-		}
-		showGroupConfiguration()
-	}
-	
-	@FXML protected def showGroupConfiguration() : void {
-		if(this.boidsPopulation <= 4) {
-			advanced_settings_anchor_pane.prefHeight = 330
-		} else {
-			advanced_settings_anchor_pane.prefHeight = 600
-		}
-		
-		if (this.boidsPopulation >= 1) {
-			pane_group_1.visible = true
-		} else {
-			pane_group_1.visible = false
-		}
-		if (this.boidsPopulation >= 2) {
-			pane_group_2.visible = true
-		} else {
-			pane_group_2.visible = false
-		}
-		if (this.boidsPopulation >= 3) {
-			pane_group_3.visible = true
-		} else {
-			pane_group_3.visible = false
-		}
-		if (this.boidsPopulation >= 4) {
-			pane_group_4.visible = true
-		} else {
-			pane_group_4.visible = false
-		}
-		if (this.boidsPopulation >= 5) {
-			pane_group_5.visible = true
-		} else {
-			pane_group_5.visible = false
-		}
-		if (this.boidsPopulation >= 6) {
-			pane_group_6.visible = true
-		} else {
-			pane_group_6.visible = false
-		}
-		if (this.boidsPopulation >= 7) {
-			pane_group_7.visible = true
-		} else {
-			pane_group_7.visible = false
-		}
-		if (this.boidsPopulation >= 8) {
-			pane_group_8.visible = true
-		} else {
-			pane_group_8.visible = false
-		}
-	}
-	
-	@FXML protected def paneTitleReset() : void {
-		map_selection_label.effect = null
-		settings_label.effect = null
-		advanced_settings_label.effect = null
-	}
-	
-	@FXML protected def subPaneTitleGlow(e : MouseEvent) : void {
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		if((e.getSource() as Pane).getId() == 'pane_group_1') {
-			group_label_1.effect = glowEffect
-		} else if ((e.getSource() as Pane).getId() == 'pane_group_2') {
-			group_label_2.effect = glowEffect
-		} else if ((e.getSource() as Pane).getId() == 'pane_group_3') {
-			group_label_3.effect = glowEffect
-		} else if ((e.getSource() as Pane).getId() == 'pane_group_4') {
-			group_label_4.effect = glowEffect
-		} else if ((e.getSource() as Pane).getId() == 'pane_group_5') {
-			group_label_5.effect = glowEffect
-		} else if ((e.getSource() as Pane).getId() == 'pane_group_6') {
-			group_label_6.effect = glowEffect
-		} else if ((e.getSource() as Pane).getId() == 'pane_group_7') {
-			group_label_7.effect = glowEffect
-		} else if ((e.getSource() as Pane).getId() == 'pane_group_8') {
-			group_label_8.effect = glowEffect
-		}
-	}
-
-	@FXML protected def subPaneTitleReset() : void {
-		group_label_1.effect = null
-		group_label_2.effect = null
-		group_label_3.effect = null
-		group_label_4.effect = null
-		group_label_5.effect = null
-		group_label_6.effect = null
-		group_label_7.effect = null
-		group_label_8.effect = null
-	}
-	
-	@FXML protected def resetGroupValues() : void {
-		mass_1.value = Configuration::DEFAULT_MASS
-		mass_display_1.setText(Configuration::DEFAULT_MASS.toString())
-		speed_1.value = Configuration::DEFAULT_SPEED
-		speed_display_1.setText(Configuration::DEFAULT_SPEED.toString())
-		angle_1.value = Configuration::DEFAULT_ANGLE
-		angle_display_1.setText(Configuration::DEFAULT_ANGLE.toString())
-		distance_1.value = Configuration::DEFAULT_DISTANCE
-		distance_display_1.setText(Configuration::DEFAULT_DISTANCE.toString())
-		mass_2.value = Configuration::DEFAULT_MASS
-		mass_display_2.setText(Configuration::DEFAULT_MASS.toString())
-		speed_2.value = Configuration::DEFAULT_SPEED
-		speed_display_2.setText(Configuration::DEFAULT_SPEED.toString())
-		angle_2.value = Configuration::DEFAULT_ANGLE
-		angle_display_2.setText(Configuration::DEFAULT_ANGLE.toString())
-		distance_2.value = Configuration::DEFAULT_DISTANCE
-		distance_display_2.setText(Configuration::DEFAULT_DISTANCE.toString())
-		mass_3.value = Configuration::DEFAULT_MASS
-		mass_display_3.setText(Configuration::DEFAULT_MASS.toString())
-		speed_3.value = Configuration::DEFAULT_SPEED
-		speed_display_3.setText(Configuration::DEFAULT_SPEED.toString())
-		angle_3.value = Configuration::DEFAULT_ANGLE
-		angle_display_3.setText(Configuration::DEFAULT_ANGLE.toString())
-		distance_3.value = Configuration::DEFAULT_DISTANCE
-		distance_display_3.setText(Configuration::DEFAULT_DISTANCE.toString())
-		mass_4.value = Configuration::DEFAULT_MASS
-		mass_display_4.setText(Configuration::DEFAULT_MASS.toString())
-		speed_4.value = Configuration::DEFAULT_SPEED
-		speed_display_4.setText(Configuration::DEFAULT_SPEED.toString())
-		angle_4.value = Configuration::DEFAULT_ANGLE
-		angle_display_4.setText(Configuration::DEFAULT_ANGLE.toString())
-		distance_4.value = Configuration::DEFAULT_DISTANCE
-		distance_display_4.setText(Configuration::DEFAULT_DISTANCE.toString())
-		mass_5.value = Configuration::DEFAULT_MASS
-		mass_display_5.setText(Configuration::DEFAULT_MASS.toString())
-		speed_5.value = Configuration::DEFAULT_SPEED
-		speed_display_5.setText(Configuration::DEFAULT_SPEED.toString())
-		angle_5.value = Configuration::DEFAULT_ANGLE
-		angle_display_5.setText(Configuration::DEFAULT_ANGLE.toString())
-		distance_5.value = Configuration::DEFAULT_DISTANCE
-		distance_display_5.setText(Configuration::DEFAULT_DISTANCE.toString())
-		mass_6.value = Configuration::DEFAULT_MASS
-		mass_display_6.setText(Configuration::DEFAULT_MASS.toString())
-		speed_6.value = Configuration::DEFAULT_SPEED
-		speed_display_6.setText(Configuration::DEFAULT_SPEED.toString())
-		angle_6.value = Configuration::DEFAULT_ANGLE
-		angle_display_6.setText(Configuration::DEFAULT_ANGLE.toString())
-		distance_6.value = Configuration::DEFAULT_DISTANCE
-		distance_display_6.setText(Configuration::DEFAULT_DISTANCE.toString())
-		mass_7.value = Configuration::DEFAULT_MASS
-		mass_display_7.setText(Configuration::DEFAULT_MASS.toString())
-		speed_7.value = Configuration::DEFAULT_SPEED
-		speed_display_7.setText(Configuration::DEFAULT_SPEED.toString())
-		angle_7.value = Configuration::DEFAULT_ANGLE
-		angle_display_7.setText(Configuration::DEFAULT_ANGLE.toString())
-		distance_7.value = Configuration::DEFAULT_DISTANCE
-		distance_display_7.setText(Configuration::DEFAULT_DISTANCE.toString())
-		mass_8.value = Configuration::DEFAULT_MASS
-		mass_display_8.setText(Configuration::DEFAULT_MASS.toString())
-		speed_8.value = Configuration::DEFAULT_SPEED
-		speed_display_8.setText(Configuration::DEFAULT_SPEED.toString())
-		angle_8.value = Configuration::DEFAULT_ANGLE
-		angle_display_8.setText(Configuration::DEFAULT_ANGLE.toString())
-		distance_8.value = Configuration::DEFAULT_DISTANCE
-		distance_display_8.setText(Configuration::DEFAULT_DISTANCE.toString())
-	}
-
-	@FXML protected def massListener(e : MouseEvent) : void {
-		(e.getSource() as ScrollBar).valueProperty().addListener [
-			if((e.getSource() as ScrollBar).getId() == 'mass_1')
-				mass_display_1.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'mass_2')
-				mass_display_2.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'mass_3')
-				mass_display_3.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'mass_4')
-				mass_display_4.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'mass_5')
-				mass_display_5.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'mass_6')
-				mass_display_6.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'mass_7')
-				mass_display_7.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'mass_8')
-				mass_display_8.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-		];
-	}
-
-	@FXML protected def speedListener(e : MouseEvent) : void {
-		(e.getSource() as ScrollBar).valueProperty().addListener [
-			if ((e.getSource() as ScrollBar).getId() == 'speed_1')
-				speed_display_1.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'speed_2')
-				speed_display_2.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'speed_3')
-				speed_display_3.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'speed_4')
-				speed_display_4.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'speed_5')
-				speed_display_5.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'speed_6')
-				speed_display_6.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'speed_7')
-				speed_display_7.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'speed_8')
-				speed_display_8.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-		];
-	}
-
-	@FXML protected def angleListener(e : MouseEvent) : void {
-		(e.getSource() as ScrollBar).valueProperty().addListener [
-			if ((e.getSource() as ScrollBar).getId() == 'angle_1')
-				angle_display_1.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'angle_2')
-				angle_display_2.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'angle_3')
-				angle_display_3.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'angle_4')
-				angle_display_4.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'angle_5')
-				angle_display_5.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'angle_6')
-				angle_display_6.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'angle_7')
-				angle_display_7.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'angle_8')
-				angle_display_8.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-		];
-	}
-
-	@FXML protected def distanceListener(e : MouseEvent) : void {
-		(e.getSource() as ScrollBar).valueProperty().addListener [
-			if ((e.getSource() as ScrollBar).getId() == 'distance_1')
-				distance_display_1.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'distance_2')
-				distance_display_2.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'distance_3')
-				distance_display_3.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'distance_4')
-				distance_display_4.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'distance_5')
-				distance_display_5.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'distance_6')
-				distance_display_6.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'distance_7')
-				distance_display_7.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-			else if ((e.getSource() as ScrollBar).getId() == 'distance_8')
-				distance_display_8.setText(String.format("%.0f", (e.getSource() as ScrollBar).getValue()))
-		];
-	}
-	
-	@FXML protected def subMinMaxValueGlow(e : MouseEvent) : void {
-		if (nightMode)
-			(e.getSource() as Label).textFill = Color.rgb(235, 221, 26)
-		else
-			(e.getSource() as Label).textFill = Color.rgb(0, 0, 0)
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		(e.getSource() as Label).effect = glowEffect
-	}
-
-	@FXML protected def subMinMaxValueReset(e : MouseEvent) : void {
-		if (nightMode)
-			(e.getSource() as Label).textFill = Color.rgb(191, 191, 191)
-		else
-			(e.getSource() as Label).textFill = Color.rgb(0, 0, 0)
-		(e.getSource() as Label).effect = null
-	}
-	
-	@FXML protected def setFastMassValues(e : MouseEvent) : void {
-		if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '1') {
-			mass_1.value = Integer.parseInt((e.getSource() as Label).text)
-			mass_display_1.text = (e.getSource() as Label).text
-		} else if((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '2') {
-			mass_2.value = Integer.parseInt((e.getSource() as Label).text)
-			mass_display_2.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '3') {
-			mass_3.value = Integer.parseInt((e.getSource() as Label).text)
-			mass_display_3.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '4') {
-			mass_4.value = Integer.parseInt((e.getSource() as Label).text)
-			mass_display_4.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '5') {
-			mass_5.value = Integer.parseInt((e.getSource() as Label).text)
-			mass_display_5.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '6') {
-			mass_6.value = Integer.parseInt((e.getSource() as Label).text)
-			mass_display_6.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '7') {
-			mass_7.value = Integer.parseInt((e.getSource() as Label).text)
-			mass_display_7.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '8') {
-			mass_8.value = Integer.parseInt((e.getSource() as Label).text)
-			mass_display_8.text = (e.getSource() as Label).text
-		}
-	}
-
-	@FXML protected def setFastSpeedValues(e : MouseEvent) : void {
-		if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '1') {
-			speed_1.value = Integer.parseInt((e.getSource() as Label).text)
-			speed_display_1.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '2') {
-			speed_2.value = Integer.parseInt((e.getSource() as Label).text)
-			speed_display_2.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '3') {
-			speed_3.value = Integer.parseInt((e.getSource() as Label).text)
-			speed_display_3.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '4') {
-			speed_4.value = Integer.parseInt((e.getSource() as Label).text)
-			speed_display_4.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '5') {
-			speed_5.value = Integer.parseInt((e.getSource() as Label).text)
-			speed_display_5.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '6') {
-			speed_6.value = Integer.parseInt((e.getSource() as Label).text)
-			speed_display_6.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '7') {
-			speed_7.value = Integer.parseInt((e.getSource() as Label).text)
-			speed_display_7.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '8') {
-			speed_8.value = Integer.parseInt((e.getSource() as Label).text)
-			speed_display_8.text = (e.getSource() as Label).text
-		}
-	}
-
-	@FXML protected def setFastAngleValues(e : MouseEvent) : void {
-		if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '1') {
-			angle_1.value = Integer.parseInt((e.getSource() as Label).text)
-			angle_display_1.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '2') {
-			angle_2.value = Integer.parseInt((e.getSource() as Label).text)
-			angle_display_2.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '3') {
-			angle_3.value = Integer.parseInt((e.getSource() as Label).text)
-			angle_display_3.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '4') {
-			angle_4.value = Integer.parseInt((e.getSource() as Label).text)
-			angle_display_4.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '5') {
-			angle_5.value = Integer.parseInt((e.getSource() as Label).text)
-			angle_display_5.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '6') {
-			angle_6.value = Integer.parseInt((e.getSource() as Label).text)
-			angle_display_6.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '7') {
-			angle_7.value = Integer.parseInt((e.getSource() as Label).text)
-			angle_display_7.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '8') {
-			angle_8.value = Integer.parseInt((e.getSource() as Label).text)
-			angle_display_8.text = (e.getSource() as Label).text
-		}
-	}
-
-	@FXML protected def setFastDistanceValues(e : MouseEvent) : void {
-		if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '1') {
-			distance_1.value = Integer.parseInt((e.getSource() as Label).text)
-			distance_display_1.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '2') {
-			distance_2.value = Integer.parseInt((e.getSource() as Label).text)
-			distance_display_2.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '3') {
-			distance_3.value = Integer.parseInt((e.getSource() as Label).text)
-			distance_display_3.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '4') {
-			distance_4.value = Integer.parseInt((e.getSource() as Label).text)
-			distance_display_4.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '5') {
-			distance_5.value = Integer.parseInt((e.getSource() as Label).text)
-			distance_display_5.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '6') {
-			distance_6.value = Integer.parseInt((e.getSource() as Label).text)
-			distance_display_6.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '7') {
-			distance_7.value = Integer.parseInt((e.getSource() as Label).text)
-			distance_display_7.text = (e.getSource() as Label).text
-		} else if ((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1) == '8') {
-			distance_8.value = Integer.parseInt((e.getSource() as Label).text)
-			distance_display_8.text = (e.getSource() as Label).text
 		}
 	}
 }

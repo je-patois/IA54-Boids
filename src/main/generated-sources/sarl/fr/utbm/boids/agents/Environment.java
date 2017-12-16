@@ -115,8 +115,6 @@ public class Environment extends Agent {
         _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.spawnInContext(Boid.class, _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext(), Integer.valueOf((i + 1)), Integer.valueOf(this.ctrl.getBoidsSettings().get(i).getSpeed()), Integer.valueOf(this.ctrl.getBoidsSettings().get(i).getMass()), Integer.valueOf(this.ctrl.getBoidsSettings().get(i).getAngle()), Integer.valueOf(this.ctrl.getBoidsSettings().get(i).getDistance()), this.envInfos);
       }
     }
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(this.boidsList);
   }
   
   @SyntheticMember
