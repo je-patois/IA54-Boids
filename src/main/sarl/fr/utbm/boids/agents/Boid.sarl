@@ -115,7 +115,7 @@ agent Boid {
 		}
 		
 		//forceTot.fois(100000)
-		info("force totale " + forceTot)
+		//info("force totale " + forceTot)
 
 		emit(new ResultatDeplacement(appliquerForce(forceTot), this.body.newVitesse))
 	 
