@@ -25,6 +25,7 @@ import fr.utbm.boids.events.Cycle
 import fr.utbm.boids.events.BoidInitialized
 import io.sarl.core.Logging
 import fr.utbm.boids.EnvInfos
+import java.util.ArrayList
 
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess, Behaviors
@@ -38,6 +39,7 @@ agent Environment {
 	var spawner : UUID
 	var inCycle : Boolean
 	var envInfos : EnvInfos
+	var FastBoids : ArrayList<UUID>
 	// var superBoid : boolean // TODO Un jour peut-être
 
 	on Initialize {
@@ -49,6 +51,7 @@ agent Environment {
 		this.spawner = occurrence.spawner
 		this.inCycle = false
 		this.envInfos = new EnvInfos(this.ctrl.mapWidth, this.ctrl.mapHeight)
+		this.FastBoids = new ArrayList<UUID>
 		info("The Environment is started.")
 	}
 	
@@ -117,7 +120,7 @@ agent Environment {
 		
 		synchronized (boidsUpdated) {
 			boidsUpdated = boidsUpdated + 1 
-	
+			FastBoids.add(occurrence.source.UUID)
 			if(this.boidsUpdated == this.ctrl.boidsQuantity * this.ctrl.boidsPopulation && this.firstTime == true) {
 				//info('boidsUpdated: ' + this.boidsUpdated + ', boidsTotal: ' + this.ctrl.boidsQuantity * this.ctrl.boidsPopulation)
 				wake(new BoidsSideReady)
@@ -126,11 +129,31 @@ agent Environment {
 		}
 	}
 	
-	on Cycle{
-		if(!inCycle) {
+	on Cycle {
+		
+		synchronized (boidsUpdated) {
+			synchronized (boidsGrid) {
+				synchronized (FastBoids){
+					ctrl.updateGraphics(this.boidsList.values)
+					this.boidsUpdated = 0
+					boidsAddresses.forEach [ id, address |
+						if(this.FastBoids.contains(id)){
+							innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
+							this.FastBoids.remove(id)
+						}
+					]
+					this.boidsGrid = new HashMap<Vector, UUID>
+				}
+			}
+		}
+		
+		/*if(!inCycle) {
 			synchronized (boidsUpdated){
 				//info ("demande de rafraichissement : " + this.boidsUpdated)
 				// if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
+				
+				
+				
 				if (this.boidsUpdated >= boidsList.size) {
 					inCycle = true
 	
@@ -150,7 +173,7 @@ agent Environment {
 					inCycle = false	
 				}	
 			}
-		}
+		}*/
 	}
 
 	def estDansLaCarte(v : Vector) : Vector {	//TODO rajouter tests murs ICI / Rename ?
