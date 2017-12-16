@@ -56,7 +56,7 @@ public class Environment extends Agent {
   
   private Map<UUID, Address> boidsAddresses;
   
-  private int boidsUpdated;
+  private Integer boidsUpdated;
   
   private BoidsFxViewerController ctrl = null;
   
@@ -76,7 +76,7 @@ public class Environment extends Agent {
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.setLoggingName(_plus);
     Object _get = occurrence.parameters[0];
     this.ctrl = ((BoidsFxViewerController) _get);
-    this.boidsUpdated = 0;
+    this.boidsUpdated = Integer.valueOf(0);
     HashMap<UUID, BoidBody> _hashMap = new HashMap<UUID, BoidBody>();
     this.boidsList = _hashMap;
     this.firstTime = true;
@@ -143,7 +143,7 @@ public class Environment extends Agent {
   @SyntheticMember
   private void $behaviorUnit$BoidsSideReady$3(final BoidsSideReady occurrence) {
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("All boids have been created: " + Integer.valueOf(this.boidsUpdated)));
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("All boids have been created: " + this.boidsUpdated));
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     BoidsReady _boidsReady = new BoidsReady();
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_boidsReady);
@@ -170,46 +170,39 @@ public class Environment extends Agent {
       ValidationDeplacement _validationDeplacement_1 = new ValidationDeplacement(occurrence.position);
       _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER_1.getInnerContext().getDefaultSpace().emit(this.getID(), _validationDeplacement_1, Scopes.addresses(occurrence.getSource()));
     }
-    int _boidsUpdated = this.boidsUpdated;
-    this.boidsUpdated = (_boidsUpdated + 1);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("maintenant updated = " + Integer.valueOf(this.boidsUpdated)));
-    if (((this.boidsUpdated == (this.ctrl.getBoidsQuantity() * this.ctrl.getBoidsPopulation())) && (this.firstTime == true))) {
-      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-      int _boidsQuantity = this.ctrl.getBoidsQuantity();
-      int _boidsPopulation = this.ctrl.getBoidsPopulation();
-      int _multiply = (_boidsQuantity * _boidsPopulation);
-      String _plus = ((("boidsUpdated: " + Integer.valueOf(this.boidsUpdated)) + ", boidsTotal: ") + Integer.valueOf(_multiply));
-      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(_plus);
-      Behaviors _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER = this.$castSkill(Behaviors.class, (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS == null || this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS = this.$getSkill(Behaviors.class)) : this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
-      BoidsSideReady _boidsSideReady = new BoidsSideReady();
-      _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER.wake(_boidsSideReady);
-      this.firstTime = false;
+    synchronized (this.boidsUpdated) {
+      this.boidsUpdated = Integer.valueOf(((this.boidsUpdated).intValue() + 1));
+      if ((((this.boidsUpdated).intValue() == (this.ctrl.getBoidsQuantity() * this.ctrl.getBoidsPopulation())) && (this.firstTime == true))) {
+        Behaviors _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER = this.$castSkill(Behaviors.class, (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS == null || this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS = this.$getSkill(Behaviors.class)) : this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
+        BoidsSideReady _boidsSideReady = new BoidsSideReady();
+        _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER.wake(_boidsSideReady);
+        this.firstTime = false;
+      }
     }
   }
   
   @SyntheticMember
   private void $behaviorUnit$Cycle$5(final Cycle occurrence) {
     if ((!(this.inCycle).booleanValue())) {
-      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("demande de rafraichissement : " + Integer.valueOf(this.boidsUpdated)));
-      int _size = this.boidsList.size();
-      boolean _greaterEqualsThan = (this.boidsUpdated >= _size);
-      if (_greaterEqualsThan) {
-        this.inCycle = Boolean.valueOf(true);
-        this.ctrl.updateGraphics(this.boidsList.values());
-        synchronized (this.boidsGrid) {
-          HashMap<Vector, UUID> _hashMap = new HashMap<Vector, UUID>();
-          this.boidsGrid = _hashMap;
+      synchronized (this.boidsUpdated) {
+        int _size = this.boidsList.size();
+        boolean _greaterEqualsThan = ((this.boidsUpdated).intValue() >= _size);
+        if (_greaterEqualsThan) {
+          this.inCycle = Boolean.valueOf(true);
+          this.ctrl.updateGraphics(this.boidsList.values());
+          synchronized (this.boidsGrid) {
+            HashMap<Vector, UUID> _hashMap = new HashMap<Vector, UUID>();
+            this.boidsGrid = _hashMap;
+          }
+          this.boidsUpdated = Integer.valueOf(0);
+          final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
+            InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+            DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
+            _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
+          };
+          this.boidsAddresses.forEach(_function);
+          this.inCycle = Boolean.valueOf(false);
         }
-        this.boidsUpdated = 0;
-        final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
-          InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-          DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
-          _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
-        };
-        this.boidsAddresses.forEach(_function);
-        this.inCycle = Boolean.valueOf(false);
       }
     }
   }

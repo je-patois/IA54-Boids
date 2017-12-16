@@ -69,10 +69,6 @@ public class Boid extends Agent {
     Object _get_4 = occurrence.parameters[4];
     BoidBody _boidBody = new BoidBody(_iD_1, (((Integer) _get)).intValue(), (((Integer) _get_1)).intValue(), (((Integer) _get_2)).intValue(), (((Integer) _get_3)).intValue(), (((Integer) _get_4)).intValue());
     this.body = _boidBody;
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info("MON BODY");
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_3.info(this.body);
     Object _get_5 = occurrence.parameters[5];
     this.envInfos = ((EnvInfos) _get_5);
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
@@ -110,8 +106,6 @@ public class Boid extends Agent {
         IterableExtensions.<Obstacle>forEach(occurrence.obstacles, _function);
       }
     } while((validPosition.get() == false));
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(((("X, Y \n" + x) + " ") + y));
     int _get = x.get();
     int _get_1 = y.get();
     Vector _vector = new Vector(_get, _get_1);
@@ -139,16 +133,6 @@ public class Boid extends Agent {
   private void $behaviorUnit$ValidationDeplacement$2(final ValidationDeplacement occurrence) {
     this.body.setPosition(occurrence.position);
     this.body.setVitesse(this.body.getNewVitesse());
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info("Validation de la position");
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    Vector _vitesse = this.body.getVitesse();
-    String _plus = ("vitesse boids :    " + _vitesse);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(_plus);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    Vector _position = this.body.getPosition();
-    String _plus_1 = ("position boids : " + _position);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info(_plus_1);
   }
   
   @SuppressWarnings("equals_with_null")
@@ -166,8 +150,6 @@ public class Boid extends Agent {
       forceTot.plus(this.repulsion(boids));
     }
     forceTot.fois(100000);
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("force totale " + forceTot));
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     Vector _appliquerForce = this.appliquerForce(forceTot);
     Vector _newVitesse = this.body.getNewVitesse();
@@ -185,42 +167,24 @@ public class Boid extends Agent {
     Vector _vector = new Vector(_position);
     tmp = _vector;
     tmp.moins(this.body.getPosition());
-    double _x = tmp.getX();
-    int _width = this.envInfos.getWidth();
-    int _divide = (_width / 2);
-    boolean _greaterThan = (_x > _divide);
-    if (_greaterThan) {
-      int _width_1 = this.envInfos.getWidth();
-      Vector _vector_1 = new Vector(_width_1, 0);
-      tmp.moins(_vector_1);
-    }
-    double _y = tmp.getY();
-    int _height = this.envInfos.getHeight();
-    int _divide_1 = (_height / 2);
-    boolean _greaterThan_1 = (_y > _divide_1);
-    if (_greaterThan_1) {
-      int _height_1 = this.envInfos.getHeight();
-      Vector _vector_2 = new Vector(0, _height_1);
-      tmp.moins(_vector_2);
-    }
     double _length = tmp.length();
     int _distanceVisibilite = this.body.getDistanceVisibilite();
-    boolean _greaterThan_2 = (_length > _distanceVisibilite);
-    if (_greaterThan_2) {
+    boolean _greaterThan = (_length > _distanceVisibilite);
+    if (_greaterThan) {
       return false;
     }
     Vector _vitesse = this.body.getVitesse();
-    Vector _vector_3 = new Vector(_vitesse);
-    tmp2 = _vector_3;
+    Vector _vector_1 = new Vector(_vitesse);
+    tmp2 = _vector_1;
     double _point = tmp2.point(tmp);
     double _length_1 = tmp2.length();
     double _length_2 = tmp.length();
     double _multiply = (_length_1 * _length_2);
-    double _divide_2 = (_point / _multiply);
-    double _abs = Math.abs(Math.toDegrees(Math.acos(_divide_2)));
+    double _divide = (_point / _multiply);
+    double _abs = Math.abs(Math.toDegrees(Math.acos(_divide)));
     int _angleVisibilite = this.body.getAngleVisibilite();
-    boolean _greaterThan_3 = (_abs > _angleVisibilite);
-    if (_greaterThan_3) {
+    boolean _greaterThan_1 = (_abs > _angleVisibilite);
+    if (_greaterThan_1) {
       return false;
     }
     return true;
@@ -244,100 +208,14 @@ public class Boid extends Agent {
     Set<Map.Entry<UUID, BoidBody>> _entrySet = boids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
       if (((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue())) && (!Objects.equal(elem.getKey(), this.getID())))) {
-        double _distance = this.distance(this.body.getPosition().getX(), elem.getValue().getPosition().getX());
-        double _x = elem.getValue().getPosition().getX();
         int _width = this.envInfos.getWidth();
-        double _minus = (_x - _width);
-        double _distance_1 = this.distance(this.body.getPosition().getX(), _minus);
-        boolean _lessThan = (_distance < _distance_1);
-        if (_lessThan) {
-          double _distance_2 = this.distance(this.body.getPosition().getX(), elem.getValue().getPosition().getX());
-          double _x_1 = elem.getValue().getPosition().getX();
-          int _width_1 = this.envInfos.getWidth();
-          double _plus = (_x_1 + _width_1);
-          double _distance_3 = this.distance(this.body.getPosition().getX(), _plus);
-          boolean _lessThan_1 = (_distance_2 < _distance_3);
-          if (_lessThan_1) {
-            xelem = elem.getValue().getPosition().getX();
-          } else {
-            double _x_2 = elem.getValue().getPosition().getX();
-            int _width_2 = this.envInfos.getWidth();
-            double _plus_1 = (_x_2 + _width_2);
-            xelem = _plus_1;
-          }
-        } else {
-          double _x_3 = elem.getValue().getPosition().getX();
-          int _width_3 = this.envInfos.getWidth();
-          double _minus_1 = (_x_3 - _width_3);
-          double _distance_4 = this.distance(this.body.getPosition().getX(), _minus_1);
-          double _x_4 = elem.getValue().getPosition().getX();
-          int _width_4 = this.envInfos.getWidth();
-          double _plus_2 = (_x_4 + _width_4);
-          double _distance_5 = this.distance(this.body.getPosition().getX(), _plus_2);
-          boolean _lessThan_2 = (_distance_4 < _distance_5);
-          if (_lessThan_2) {
-            double _x_5 = elem.getValue().getPosition().getX();
-            int _width_5 = this.envInfos.getWidth();
-            double _minus_2 = (_x_5 - _width_5);
-            xelem = _minus_2;
-          } else {
-            double _x_6 = elem.getValue().getPosition().getX();
-            int _width_6 = this.envInfos.getWidth();
-            double _plus_3 = (_x_6 + _width_6);
-            xelem = _plus_3;
-          }
-        }
-        double _distance_6 = this.distance(this.body.getPosition().getY(), elem.getValue().getPosition().getY());
-        double _y = elem.getValue().getPosition().getY();
+        double _modulo = (xelem % _width);
         int _height = this.envInfos.getHeight();
-        double _minus_3 = (_y - _height);
-        double _distance_7 = this.distance(this.body.getPosition().getY(), _minus_3);
-        boolean _lessThan_3 = (_distance_6 < _distance_7);
-        if (_lessThan_3) {
-          double _distance_8 = this.distance(this.body.getPosition().getY(), elem.getValue().getPosition().getY());
-          double _y_1 = elem.getValue().getPosition().getY();
-          int _height_1 = this.envInfos.getHeight();
-          double _plus_4 = (_y_1 + _height_1);
-          double _distance_9 = this.distance(this.body.getPosition().getY(), _plus_4);
-          boolean _lessThan_4 = (_distance_8 < _distance_9);
-          if (_lessThan_4) {
-            yelem = elem.getValue().getPosition().getY();
-          } else {
-            double _y_2 = elem.getValue().getPosition().getY();
-            int _height_2 = this.envInfos.getHeight();
-            double _plus_5 = (_y_2 + _height_2);
-            yelem = _plus_5;
-          }
-        } else {
-          double _y_3 = elem.getValue().getPosition().getY();
-          int _height_3 = this.envInfos.getHeight();
-          double _minus_4 = (_y_3 - _height_3);
-          double _distance_10 = this.distance(this.body.getPosition().getY(), _minus_4);
-          double _y_4 = elem.getValue().getPosition().getY();
-          int _height_4 = this.envInfos.getHeight();
-          double _plus_6 = (_y_4 + _height_4);
-          double _distance_11 = this.distance(this.body.getPosition().getY(), _plus_6);
-          boolean _lessThan_5 = (_distance_10 < _distance_11);
-          if (_lessThan_5) {
-            double _y_5 = elem.getValue().getPosition().getY();
-            int _height_5 = this.envInfos.getHeight();
-            double _minus_5 = (_y_5 - _height_5);
-            yelem = _minus_5;
-          } else {
-            double _y_6 = elem.getValue().getPosition().getY();
-            int _height_6 = this.envInfos.getHeight();
-            double _plus_7 = (_y_6 + _height_6);
-            yelem = _plus_7;
-          }
-        }
-        int _width_7 = this.envInfos.getWidth();
-        double _modulo = (xelem % _width_7);
-        int _height_7 = this.envInfos.getHeight();
-        double _modulo_1 = (yelem % _height_7);
+        double _modulo_1 = (yelem % _height);
         Vector _vector_2 = new Vector(_modulo, _modulo_1);
         tmpelem = _vector_2;
         tmp.setXY(this.body.getPosition());
-        tmp.moins(tmpelem);
+        tmp.moins(elem.getValue().getPosition());
         len = tmp.length();
         tmp.fois((1 / (len * len)));
         force.plus(tmp);
@@ -419,8 +297,6 @@ public class Boid extends Agent {
     Vector acceleration = null;
     Vector _vector = new Vector(force);
     acceleration = _vector;
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("acceleration : " + acceleration));
     Vector _vitesse = this.body.getVitesse();
     Vector _vector_1 = new Vector(_vitesse);
     this.body.setNewVitesse(_vector_1);
@@ -436,8 +312,6 @@ public class Boid extends Agent {
     Vector _vector_2 = new Vector(_position);
     newPosition = _vector_2;
     newPosition.plus(this.body.getNewVitesse());
-    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
-    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info(newPosition);
     return newPosition;
   }
   

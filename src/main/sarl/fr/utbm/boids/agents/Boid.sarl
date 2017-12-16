@@ -37,8 +37,6 @@ agent Boid {
 		info("A Boid agent was started.")
 		parentAgent = occurrence.spawner
 		this.body = new BoidBody(this.ID, occurrence.parameters.get(0) as Integer, occurrence.parameters.get(1) as Integer, occurrence.parameters.get(2) as Integer, occurrence.parameters.get(3) as Integer, occurrence.parameters.get(4) as Integer)
-		info('MON BODY')
-		info(this.body)
 		this.envInfos = occurrence.parameters.get(5) as EnvInfos
 		emit(new BoidInitialized(this.body, 'Boid'))
 	}
@@ -62,7 +60,6 @@ agent Boid {
 			]
 		} while(validPosition.get() == false)
 		
-		info("X, Y \n" + x + " " + y)
 		maPosition = new Vector(x.get(), y.get())
 		
 		//définition d'une vitesse aléatoire 
@@ -83,9 +80,6 @@ agent Boid {
 	on ValidationDeplacement {
 		this.body.position = occurrence.position
 		this.body.vitesse = this.body.newVitesse
-		info("Validation de la position")
-		info("vitesse boids :    " + this.body.vitesse)
-		info("position boids : " + this.body.position)
 	}
 	
 	@SuppressWarnings("equals_with_null")
@@ -116,7 +110,6 @@ agent Boid {
 		}
 		
 		forceTot.fois(100000)
-		info("force totale " + forceTot)
 
 		emit(new ResultatDeplacement(appliquerForce(forceTot), this.body.newVitesse))
 	 
@@ -135,14 +128,13 @@ agent Boid {
 	 	tmp = new Vector(b.position)
 	 	tmp.moins(this.body.position)
 	 	
-		//TODO insérer avec des paramètres la demi largeur et demi hauteur
-		if (tmp.x > envInfos.width/2 ){
+		/*if (tmp.x > envInfos.width/2 ){
 	 		tmp.moins(new Vector(envInfos.width,0))
 	 	}
 	 	
 	 	if (tmp.y > envInfos.height/2) {
 	 		tmp.moins(new Vector(0,envInfos.height))
-	 	}
+	 	}*/
 	 	
 	 	
 	 	// Si le boids est trop loin, on ne le voit pas 
@@ -165,7 +157,6 @@ agent Boid {
 	 * Création des fonctions comportementales du Boids
 	 */
 	 
-	//TODO test si non utilisation du test du groupe à une influence
 	@SuppressWarnings("equals_with_null")
 	def separation(boids : Map<UUID, BoidBody>) : Vector {
 
@@ -182,10 +173,7 @@ agent Boid {
 		for (elem : boids.entrySet) {
 			if (elem.key != null && elem.value.groupe == this.body.groupe && visible(elem.value) && elem.key != this.ID) {
 				
-				//hauteur et largeur de la map mis en dur
-				//TODO amener largeur et hauteur dynamiquement
-				
-				if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - envInfos.width)){
+				/*if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - envInfos.width)){
 					if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x + envInfos.width)){
 						xelem = elem.value.position.x
 					} else {
@@ -211,12 +199,13 @@ agent Boid {
 					} else {
 						yelem = elem.value.position.y + envInfos.height
 					}
-				 }
+				 }*/
 					 
 				
 				tmpelem = new Vector(xelem%envInfos.width, yelem%envInfos.height)
 				tmp.setXY(this.body.position)
-				tmp.moins(tmpelem)
+				//tmp.moins(tmpelem)
+				tmp.moins(elem.value.position)
 				len = tmp.length()
 				tmp.fois(1 / (len * len))
 				force.plus(tmp)
@@ -313,7 +302,6 @@ agent Boid {
 		
 		acceleration = new Vector(force)
 		//acceleration.fois(1/this.body.masse)
-		info("acceleration : " + acceleration)
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)
@@ -327,7 +315,6 @@ agent Boid {
 		//maj position
 		newPosition = new Vector(this.body.position)
 		newPosition.plus(this.body.newVitesse)
-		info(newPosition)
 		return newPosition
 	}
 	
