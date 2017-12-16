@@ -64,14 +64,9 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var boids_population_label : Label
 
 	// Input
-	@FXML var boids_quantity_input : ScrollBar
+	@FXML var boids_quantity_input : TextField
 	@FXML var boids_population_input : TextField
 
-	// Valeurs
-	@FXML var boids_quantity_display : Label
-	
-	@FXML var boids_quantity_min : Label
-	@FXML var boids_quantity_max : Label
 	
 	@FXML var pause_button : Rectangle
 	@FXML var resume_button : Polygon
@@ -94,15 +89,23 @@ class BoidsFxViewerController extends FxViewerController  {
 	
 	@FXML var preview_map_1 : ImageView
 	@FXML var preview_map_2 : ImageView
+	@FXML var preview_map_3 : ImageView
+	@FXML var preview_map_4 : ImageView
 	@FXML var preview_map_1_border : Rectangle
 	@FXML var preview_map_2_border : Rectangle
+	@FXML var preview_map_3_border : Rectangle
+	@FXML var preview_map_4_border : Rectangle
 	@FXML var map_label_1 : Label
 	@FXML var map_label_2 : Label
+	@FXML var map_label_3 : Label
+	@FXML var map_label_4 : Label
 	
 	@FXML var simulation_parameters_pane : Pane
-	@FXML var map_selection_pane : Pane
+	@FXML var map_selection_pane : ScrollPane
 	@FXML var tick_map_1 : ImageView
 	@FXML var tick_map_2 : ImageView
+	@FXML var tick_map_3 : ImageView
+	@FXML var tick_map_4 : ImageView
 	
 	@FXML var pane_group_1 : Pane
 	@FXML var pane_group_2 : Pane
@@ -294,6 +297,12 @@ class BoidsFxViewerController extends FxViewerController  {
 	@FXML var see_advanced_settings_label : Label
 	@FXML var reset_group_values : Label
 	
+	@FXML var boids_quantity_increment_circle : Circle
+	@FXML var boids_quantity_decrement_circle : Circle
+	@FXML var increment_boids_quantity : Label
+	@FXML var decrement_boids_quantity : Label
+	@FXML var boids_quantity_line : Line
+	
 	var selectedMap : int = 1
 	var boidsSettings : List<BoidGroupInfos> = new ArrayList()
 
@@ -306,7 +315,7 @@ class BoidsFxViewerController extends FxViewerController  {
 	var perceptions : List<Arc> = new ArrayList()
 
 	def getBoidsQuantity() : int {
-		boids_quantity_input.value as int
+		Integer.parseInt(boids_quantity_input.text)
 	}
 	
 	def getMapSelection() : int {
@@ -314,7 +323,6 @@ class BoidsFxViewerController extends FxViewerController  {
 	}
 	
 	def getBoidsPopulation() : int {
-		//boids_population_input.value as int
 		Integer.parseInt(boids_population_input.text)
 	}
 	
@@ -405,27 +413,49 @@ class BoidsFxViewerController extends FxViewerController  {
 					polygons.forEach [ p : Polygon |
 						obstacle_group.getChildren().add(0, p)
 					]
-					/*System.out.println('LE TEST')
-					var testcircle = new Circle(395, 310, 1)
-					//System.out.println(polygons.get(0).contains(new Point2D(testcircle.centerX, testcircle.centerY)))
-					 * obstacle_group.getChildren().add(0, testcircle)
-					 */
-					 // TODO ici'a fai
-					/*var boidElement : Polygon = new Polygon(200, 200 - 7.5, 200 + 5, 200 + 7.5, 200 - 5, 200 + 7.5)
-					boidElement.rotate = Math.toDegrees(Math.atan(1/8))
-					obstacle_group.getChildren().add(0, boidElement)*/
 				}
-		};
+			};
 
 			if (Platform.isFxApplicationThread()) {
 				command.run();
 				this.generateObstacles()
-				// this.obstacles.forEach[o : Obstacle|System.out.println(o.toString())]
 				return this.obstacles
 			} else {
 				Platform.runLater(command);
 				this.generateObstacles()
-				// this.obstacles.forEach[o : Obstacle|System.out.println(o.toString())]
+				return this.obstacles
+			}
+		} else if (map == 3) {
+			this.polygons = new ArrayList()
+			this.polygonsCoordinates = new ArrayList()
+			this.obstacles = new ArrayList()
+			this.polygons.add(new Polygon(315.0, 720.0, 315.0, 250.0, 325.0, 250.0, 325.0, 720.0))
+			this.polygons.add(new Polygon(635.0, 0.0, 635.0, 470.0, 645.0, 470.0, 645.0, 0.0))
+			this.polygons.add(new Polygon(955.0, 720.0, 955.0, 250.0, 965.0, 250.0, 965.0, 720.0))
+
+			this.polygons.forEach [ p : Polygon |
+				this.polygonsCoordinates.add(this.generateCoordinates(p))
+				p.setFill(Color.GRAY)
+				p.setStroke(Color.TRANSPARENT)
+				p.setStrokeWidth(20)
+			]
+
+			var command = new Runnable() {
+				@Override
+				def run() {
+					polygons.forEach [ p : Polygon |
+						obstacle_group.getChildren().add(0, p)
+					]
+				}
+			};
+
+			if (Platform.isFxApplicationThread()) {
+				command.run();
+				this.generateObstacles()
+				return this.obstacles
+			} else {
+				Platform.runLater(command);
+				this.generateObstacles()
 				return this.obstacles
 			}
 		}
@@ -530,15 +560,13 @@ class BoidsFxViewerController extends FxViewerController  {
 			Platform.runLater(command);
 		}	
 	}
-
-	@FXML protected def actionBoidsQuantityDisplay() : void {
-		boids_quantity_input.valueProperty().addListener [
-			boids_quantity_display.setText(String.format("%.0f", boids_quantity_input.getValue()));
-		];
-	}
 	
 	@FXML protected def resetBoidsPopulation() : void {
 		boids_population_input.text = ''
+	}
+	
+	@FXML protected def resetBoidsQuantity()  : void {
+		boids_quantity_input.text = ''
 	}
 	
 	@FXML protected def updateBoidsPopulation() : void {
@@ -582,6 +610,45 @@ class BoidsFxViewerController extends FxViewerController  {
 			boids_population_input.text = '' + 1
 		}
 	}
+
+	@FXML protected def updateBoidsQuantity() : void {
+		if (boids_quantity_input.text != '') {
+			if (outputQuality(boids_quantity_input.text)) {
+				var currentValue : int = Integer.parseInt(boids_quantity_input.text)
+				if (currentValue >= 50) {
+					boids_quantity_input.text = '' + 50
+				} else if (currentValue <= 1) {
+					boids_quantity_input.text = '' + 1
+				}
+			}
+		}
+	}
+
+	@FXML protected def incrementBoidsQuantity() : void {
+		if (boids_quantity_input.text != '' && outputQuality(boids_quantity_input.text)) {
+			var currentValue : int = Integer.parseInt(boids_quantity_input.text)
+			if (currentValue >= 50) {
+				boids_quantity_input.text = '' + 50
+			} else {
+				boids_quantity_input.text = '' + (currentValue + 1)
+			}
+		} else {
+			boids_quantity_input.text = '' + 1
+		}
+	}
+
+	@FXML protected def decrementBoidsQuantity() : void {
+		if (boids_quantity_input.text != '' && outputQuality(boids_quantity_input.text)) {
+			var currentValue : int = Integer.parseInt(boids_quantity_input.text)
+			if (currentValue <= 1) {
+				boids_quantity_input.text = '' + 1
+			} else {
+				boids_quantity_input.text = '' + (currentValue - 1)
+			}
+		} else {
+			boids_quantity_input.text = '' + 1
+		}
+	}
 	
 	@FXML protected def toggleMode() : void {
 		if(nightMode) {
@@ -591,22 +658,17 @@ class BoidsFxViewerController extends FxViewerController  {
 			perception_indicator.stroke = Color.rgb(0, 0, 0, 0.3)
 			var normalTextColor : Color = Color.BLACK
 			main_pane.background = new Background(new BackgroundFill(Color.rgb(244, 244, 244), CornerRadii.EMPTY, Insets.EMPTY))
-			boids_quantity_label.textFill = normalTextColor; boids_quantity_display.textFill = normalTextColor; boids_quantity_min.textFill = normalTextColor; boids_quantity_max.textFill = normalTextColor
+			boids_quantity_label.textFill = normalTextColor; decrement_boids_quantity.textFill = normalTextColor; increment_boids_quantity.textFill = normalTextColor; boids_quantity_decrement_circle.stroke = normalTextColor; boids_quantity_increment_circle.stroke = normalTextColor; boids_quantity_line.stroke = normalTextColor; boids_quantity_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
 			boids_population_label.textFill = normalTextColor; decrement_boids_population.textFill = normalTextColor; increment_boids_population.textFill = normalTextColor; boids_population_decrement_circle.stroke = normalTextColor; boids_population_increment_circle.stroke = normalTextColor; boids_population_line.stroke = normalTextColor; boids_population_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
 			
-			boid_group.textFill = Color.rgb(0, 0, 0, 0.7)
-			boid_vitesse.textFill = Color.rgb(0, 0, 0, 0.7)
-			boid_group_vitesse.textFill = Color.rgb(0, 0, 0, 0.7)
-			boid_masse.textFill = Color.rgb(0, 0, 0, 0.7)
-			boid_angle.textFill = Color.rgb(0, 0, 0, 0.7)
-			boid_distance.textFill = Color.rgb(0, 0, 0, 0.7)
-			boid_new_vitesse.textFill = Color.rgb(0, 0, 0, 0.7)
-			boid_position.textFill = Color.rgb(0, 0, 0, 0.7)
+			boid_group.textFill = Color.rgb(0, 0, 0, 0.7); boid_vitesse.textFill = Color.rgb(0, 0, 0, 0.7);	boid_group_vitesse.textFill = Color.rgb(0, 0, 0, 0.7); boid_masse.textFill = Color.rgb(0, 0, 0, 0.7); boid_angle.textFill = Color.rgb(0, 0, 0, 0.7); boid_distance.textFill = Color.rgb(0, 0, 0, 0.7); boid_new_vitesse.textFill = Color.rgb(0, 0, 0, 0.7); boid_position.textFill = Color.rgb(0, 0, 0, 0.7);
+			
 			toggle_night_mode.textFill = Color.rgb(0, 0, 0, 0.3)
 			toggle_perception.textFill = Color.rgb(0, 0, 0, 0.3)
 			hide_infos.textFill = Color.rgb(0, 0, 0, 0.3)
 			start_button.textFill = normalTextColor
 			see_advanced_settings_label.textFill = normalTextColor
+			reset_group_values.textFill = normalTextColor
 			
 			group_label_1.textFill = normalTextColor
 			mass_label_1.textFill = normalTextColor; mass_min_1.textFill = normalTextColor;	mass_max_1.textFill = normalTextColor; mass_display_1.textFill = normalTextColor
@@ -672,6 +734,22 @@ class BoidsFxViewerController extends FxViewerController  {
 				map_label_2.textFill = Color.rgb(0, 0, 0)
 			}
 			
+			if(this.selectedMap != 3) {
+				preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_3.textFill = normalTextColor
+			} else if (this.selectedMap == 3) {
+				preview_map_3_border.stroke = Color.rgb(0, 0, 0)
+				map_label_3.textFill = Color.rgb(0, 0, 0)
+			}
+
+			if (this.selectedMap != 4) {
+				preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_4.textFill = normalTextColor
+			} else if (this.selectedMap == 3) {
+				preview_map_4_border.stroke = Color.rgb(0, 0, 0)
+				map_label_4.textFill = Color.rgb(0, 0, 0)
+			}
+			
 		} else {
 			nightMode = true
 			night_mode_indicator.fill = Color.rgb(0, 204, 99)
@@ -679,22 +757,17 @@ class BoidsFxViewerController extends FxViewerController  {
 			perception_indicator.stroke = Color.rgb(184, 193, 207, 0.3)
 			var nightTextColor : Color = Color.rgb(191, 191, 191)
 			main_pane.background = new Background(new BackgroundFill(Color.rgb(34, 34, 34), CornerRadii.EMPTY, Insets.EMPTY))
-			boids_quantity_label.textFill = nightTextColor;	boids_quantity_display.textFill = nightTextColor; boids_quantity_min.textFill = nightTextColor;	boids_quantity_max.textFill = nightTextColor
+			boids_quantity_label.textFill = nightTextColor;	decrement_boids_quantity.textFill = nightTextColor;	increment_boids_quantity.textFill = nightTextColor;	boids_quantity_decrement_circle.stroke = nightTextColor; boids_quantity_increment_circle.stroke = nightTextColor; boids_quantity_line.stroke = nightTextColor; boids_quantity_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
 			boids_population_label.textFill = nightTextColor; decrement_boids_population.textFill = nightTextColor; increment_boids_population.textFill = nightTextColor; boids_population_decrement_circle.stroke = nightTextColor; boids_population_increment_circle.stroke = nightTextColor;	boids_population_line.stroke = nightTextColor;	boids_population_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
 			
-			boid_group.textFill = Color.rgb(191, 191, 191, 0.7)
-			boid_vitesse.textFill = Color.rgb(191, 191, 191, 0.7)
-			boid_group_vitesse.textFill = Color.rgb(191, 191, 191, 0.7)
-			boid_masse.textFill = Color.rgb(191, 191, 191, 0.7)
-			boid_angle.textFill = Color.rgb(191, 191, 191, 0.7)
-			boid_distance.textFill = Color.rgb(191, 191, 191, 0.7)
-			boid_new_vitesse.textFill = Color.rgb(191, 191, 191, 0.7)
-			boid_position.textFill = Color.rgb(191, 191, 191, 0.7)
+			boid_group.textFill = Color.rgb(191, 191, 191, 0.7); boid_vitesse.textFill = Color.rgb(191, 191, 191, 0.7);	boid_group_vitesse.textFill = Color.rgb(191, 191, 191, 0.7); boid_masse.textFill = Color.rgb(191, 191, 191, 0.7); boid_angle.textFill = Color.rgb(191, 191, 191, 0.7); boid_distance.textFill = Color.rgb(191, 191, 191, 0.7); boid_new_vitesse.textFill = Color.rgb(191, 191, 191, 0.7); boid_position.textFill = Color.rgb(191, 191, 191, 0.7);
+			
 			toggle_night_mode.textFill = Color.rgb(191, 191, 191, 0.3)
 			toggle_perception.textFill = Color.rgb(191, 191, 191, 0.3)
 			hide_infos.textFill = Color.rgb(191, 191, 191, 0.3)
 			start_button.textFill = nightTextColor
 			see_advanced_settings_label.textFill = nightTextColor
+			reset_group_values.textFill = nightTextColor
 
 			group_label_1.textFill = nightTextColor
 			mass_label_1.textFill = nightTextColor; mass_min_1.textFill = nightTextColor; mass_max_1.textFill = nightTextColor; mass_display_1.textFill = nightTextColor
@@ -751,12 +824,29 @@ class BoidsFxViewerController extends FxViewerController  {
 				preview_map_1_border.stroke = Color.rgb(235, 221, 26)
 				map_label_1.textFill = Color.rgb(235, 221, 26)
 			}
+			
 			if (this.selectedMap != 2) {
 				preview_map_2_border.stroke = nightTextColor
 				map_label_2.textFill = nightTextColor
 			} else if (this.selectedMap == 2) {
 				preview_map_2_border.stroke = Color.rgb(235, 221, 26)
 				map_label_2.textFill = Color.rgb(235, 221, 26)
+			}
+
+			if (this.selectedMap != 3) {
+				preview_map_3_border.stroke = nightTextColor
+				map_label_3.textFill = nightTextColor
+			} else if (this.selectedMap == 3) {
+				preview_map_3_border.stroke = Color.rgb(235, 221, 26)
+				map_label_3.textFill = Color.rgb(235, 221, 26)
+			}
+
+			if (this.selectedMap != 4) {
+				preview_map_4_border.stroke = nightTextColor
+				map_label_4.textFill = nightTextColor
+			} else if (this.selectedMap == 3) {
+				preview_map_4_border.stroke = Color.rgb(235, 221, 26)
+				map_label_4.textFill = Color.rgb(235, 221, 26)
 			}
 			
 		}
@@ -930,6 +1020,78 @@ class BoidsFxViewerController extends FxViewerController  {
 		boids_population_input.effect = null
 	}
 	
+	@FXML protected def incrementBoidsQuantityGlow() : void {
+		if (nightMode) {
+			boids_quantity_increment_circle.stroke = Color.rgb(235, 221, 26)
+			increment_boids_quantity.textFill = Color.rgb(235, 221, 26)
+		} else {
+			boids_quantity_increment_circle.stroke = Color.rgb(0, 0, 0)
+			increment_boids_quantity.textFill = Color.rgb(0, 0, 0)
+		}
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_quantity_increment_circle.effect = glowEffect
+	}
+	
+	@FXML protected def decrementBoidsQuantityGlow() : void {
+		if (nightMode) {
+			boids_quantity_decrement_circle.stroke = Color.rgb(235, 221, 26)
+			decrement_boids_quantity.textFill = Color.rgb(235, 221, 26)
+		} else {
+			boids_quantity_decrement_circle.stroke = Color.rgb(0, 0, 0)
+			decrement_boids_quantity.textFill = Color.rgb(0, 0, 0)
+		}
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_quantity_decrement_circle.effect = glowEffect
+	}
+
+	@FXML protected def incrementBoidsQuantityReset() : void {
+		if (nightMode) {
+			boids_quantity_increment_circle.stroke = Color.rgb(191, 191, 191)
+			increment_boids_quantity.textFill = Color.rgb(191, 191, 191)
+		} else {
+			boids_quantity_increment_circle.stroke = Color.rgb(0, 0, 0, 0.3)
+			increment_boids_quantity.textFill = Color.rgb(0, 0, 0)
+		}
+		boids_quantity_increment_circle.effect = null
+		increment_boids_quantity.effect = null
+	}
+
+	@FXML protected def decrementBoidsQuantityReset() : void {
+		if (nightMode) {
+			boids_quantity_decrement_circle.stroke = Color.rgb(191, 191, 191)
+			decrement_boids_quantity.textFill = Color.rgb(191, 191, 191)
+		} else {
+			boids_quantity_decrement_circle.stroke = Color.rgb(0, 0, 0, 0.3)
+			decrement_boids_quantity.textFill = Color.rgb(0, 0, 0)
+		}
+		boids_quantity_decrement_circle.effect = null
+		decrement_boids_quantity.effect = null
+	}
+
+	@FXML protected def boidsQuantityGlow() : void {
+		if (nightMode) {
+			boids_quantity_input.style = '-fx-text-fill: rgb(235, 221, 26); -fx-background-color: transparent'
+		} else {
+			boids_quantity_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
+		}
+		boids_quantity_line.strokeWidth = 3
+		var glowEffect = new Glow()
+		glowEffect.level = 0.8
+		boids_quantity_input.effect = glowEffect
+	}
+
+	@FXML protected def boidsQuantityReset() : void {
+		if (nightMode) {
+			boids_quantity_input.style = '-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent'
+		} else {
+			boids_quantity_input.style = '-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent'
+		}
+		boids_quantity_line.strokeWidth = 1
+		boids_quantity_input.effect = null
+	}
+	
 	def toggleUIState() : void {
 		if(start_button.disable == true) start_button.disable = false else start_button.disable = true
 		if(boids_quantity_input.disable == true) boids_quantity_input.disable = false else boids_quantity_input.disable = true
@@ -1003,117 +1165,181 @@ class BoidsFxViewerController extends FxViewerController  {
 		main_pane.requestFocus()
 	}
 	
-	/* BOIDS QUANTITY GLOWING EFFECT */
-	
-	@FXML protected def boidsQuantityMinGlow() : void {
-		if (nightMode)
-			boids_quantity_min.textFill = Color.rgb(235, 221, 26)
-		else
-			boids_quantity_min.textFill = Color.rgb(0, 0, 0)
+	@FXML protected def previewMapGlow(e : MouseEvent) : void {
+		var targetMap : int = 0
+		if (e.getSource().toString.substring(0, 1) == 'I') { // I pour ImageView
+			targetMap = Integer.parseInt((e.getSource() as ImageView).getId().substring((e.getSource() as ImageView).getId().length() - 1))
+		} else {
+			targetMap = Integer.parseInt((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1))
+		}
+
 		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		boids_quantity_min.effect = glowEffect
-	}
-	
-	@FXML protected def boidsQuantityMaxGlow() : void {
-		if (nightMode)
-			boids_quantity_max.textFill = Color.rgb(235, 221, 26)
-		else
-			boids_quantity_max.textFill = Color.rgb(0, 0, 0)
-		var glowEffect = new Glow()
-		glowEffect.level = 0.8
-		boids_quantity_max.effect = glowEffect
-	}
-	
-	@FXML protected def boidsQuantityMinReset() : void {
-		if (nightMode)
-			boids_quantity_min.textFill = Color.rgb(191, 191, 191)
-		else
-			boids_quantity_min.textFill = Color.rgb(0, 0, 0)
-		boids_quantity_min.effect = null
-	}
-	
-	@FXML protected def boidsQuantityMaxReset() : void {
-		if (nightMode)
-			boids_quantity_max.textFill = Color.rgb(191, 191, 191)
-		else
-			boids_quantity_max.textFill = Color.rgb(0, 0, 0)
-		boids_quantity_max.effect = null
-	}
-	
-	/* MAX/MIN values fast setters */
-	
-	@FXML protected def boidsQuantitySetToMin() : void {
-		boids_quantity_input.value = Integer.parseInt(boids_quantity_min.text)
-		boids_quantity_display.text = boids_quantity_min.text
-	}
-	
-	@FXML protected def boidsQuantitySetToMax() : void {
-		boids_quantity_input.value = Integer.parseInt(boids_quantity_max.text)
-		boids_quantity_display.text = boids_quantity_max.text
-	}
-	
-	@FXML protected def previewMap1Glow() : void {
-		if(selectedMap != 1) {
-			if (nightMode) {
-				preview_map_1_border.stroke = Color.rgb(235, 221, 26, 0.6)
-				map_label_1.textFill = Color.rgb(235, 221, 26, 0.6)	
+		glowEffect.level = 1
+		
+		switch(targetMap) {
+			case 1: {
+				if (this.selectedMap != 1) {
+					if (nightMode) {
+						preview_map_1_border.stroke = Color.rgb(235, 221, 26, 0.6)
+						map_label_1.textFill = Color.rgb(235, 221, 26, 0.6)
+					} else {
+						preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.35)
+						map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)
+					}
+					preview_map_1_border.effect = glowEffect
+					map_label_1.effect = glowEffect
+				}
 			}
-			else {
-				preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.35)
-				map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)	
+			
+			case 2: {
+				if (selectedMap != 2) {
+					if (nightMode) {
+						preview_map_2_border.stroke = Color.rgb(235, 221, 26, 0.6)
+						map_label_2.textFill = Color.rgb(235, 221, 26, 0.6)
+					} else {
+						preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
+						map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)
+					}
+					preview_map_2_border.effect = glowEffect
+					map_label_2.effect = glowEffect
+				}
 			}
-			var glowEffect = new Glow()
-			glowEffect.level = 1
-			preview_map_1_border.effect = glowEffect
-			map_label_1.effect = glowEffect
+			
+			case 3: {
+				if (selectedMap != 3) {
+					if (nightMode) {
+						preview_map_3_border.stroke = Color.rgb(235, 221, 26, 0.6)
+						map_label_3.textFill = Color.rgb(235, 221, 26, 0.6)
+					} else {
+						preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
+						map_label_3.textFill = Color.rgb(0, 0, 0, 0.6)
+					}
+					preview_map_3_border.effect = glowEffect
+					map_label_3.effect = glowEffect
+				}
+			}
+			
+			case 4: {
+				if (selectedMap != 4) {
+					if (nightMode) {
+						preview_map_4_border.stroke = Color.rgb(235, 221, 26, 0.6)
+						map_label_4.textFill = Color.rgb(235, 221, 26, 0.6)
+					} else {
+						preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
+						map_label_4.textFill = Color.rgb(0, 0, 0, 0.6)
+					}
+					preview_map_4_border.effect = glowEffect
+					map_label_4.effect = glowEffect
+				}
+			}
 		}
 	}
-
-	@FXML protected def previewMap1Reset() : void {
-		if(selectedMap != 1) {
+	
+	@FXML protected def previewMapReset(e : MouseEvent) : void {
+		if(e !== null) {
+			var targetMap : int = 0
+			if (e.getSource().toString.substring(0, 1) == 'I') { // I pour ImageView
+				targetMap = Integer.parseInt((e.getSource() as ImageView).getId().substring((e.getSource() as ImageView).getId().length() - 1))
+			} else {
+				targetMap = Integer.parseInt((e.getSource() as Label).getId().substring((e.getSource() as Label).getId().length() - 1))
+			}
+			
+			switch(targetMap) {
+				case 1: {
+					if (selectedMap != 1) {
+						if (nightMode) {
+							preview_map_1_border.stroke = Color.rgb(191, 191, 191)
+							map_label_1.textFill = Color.rgb(191, 191, 191)
+						} else {
+							preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.6)
+							map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)
+						}
+						preview_map_1_border.effect = null
+						map_label_1.effect = null
+					}
+				}
+				case 2: {
+					if (selectedMap != 2) {
+						if (nightMode) {
+							preview_map_2_border.stroke = Color.rgb(191, 191, 191)
+							map_label_2.textFill = Color.rgb(191, 191, 191)
+						} else {
+							preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
+							map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)
+						}
+						preview_map_2_border.effect = null
+						map_label_2.effect = null
+					}
+				}
+				
+				case 3: {
+					if (selectedMap != 3) {
+						if (nightMode) {
+							preview_map_3_border.stroke = Color.rgb(191, 191, 191)
+							map_label_3.textFill = Color.rgb(191, 191, 191)
+						} else {
+							preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
+							map_label_3.textFill = Color.rgb(0, 0, 0, 0.6)
+						}
+						preview_map_3_border.effect = null
+						map_label_3.effect = null
+					}
+				}
+				
+				case 4: {
+					if (selectedMap != 4) {
+						if (nightMode) {
+							preview_map_4_border.stroke = Color.rgb(191, 191, 191)
+							map_label_4.textFill = Color.rgb(191, 191, 191)
+						} else {
+							preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
+							map_label_4.textFill = Color.rgb(0, 0, 0, 0.6)
+						}
+						preview_map_4_border.effect = null
+						map_label_4.effect = null
+					}
+				}
+			}	
+		} else {
 			if (nightMode) {
 				preview_map_1_border.stroke = Color.rgb(191, 191, 191)
-				map_label_1.textFill = Color.rgb(191, 191, 191)	
-			}
-			else {
+				map_label_1.textFill = Color.rgb(191, 191, 191)
+			} else {
 				preview_map_1_border.stroke = Color.rgb(0, 0, 0, 0.6)
-				map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)	
+				map_label_1.textFill = Color.rgb(0, 0, 0, 0.6)
 			}
 			preview_map_1_border.effect = null
 			map_label_1.effect = null	
-		}
-	}
-
-	@FXML protected def previewMap2Glow() : void {
-		if(selectedMap != 2) {
-			if (nightMode) {
-				preview_map_2_border.stroke = Color.rgb(235, 221, 26, 0.6)
-				map_label_2.textFill = Color.rgb(235, 221, 26, 0.6)
-			}
-			else {
-				preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
-				map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)		
-			}	
-			var glowEffect = new Glow()
-			glowEffect.level = 1
-			preview_map_2_border.effect = glowEffect
-			map_label_2.effect = glowEffect	
-		}
-	}
-
-	@FXML protected def previewMap2Reset() : void {
-		if(selectedMap != 2) {
+		
 			if (nightMode) {
 				preview_map_2_border.stroke = Color.rgb(191, 191, 191)
-				map_label_2.textFill = Color.rgb(191, 191, 191)	
-			}
-			else {
+				map_label_2.textFill = Color.rgb(191, 191, 191)
+			} else {
 				preview_map_2_border.stroke = Color.rgb(0, 0, 0, 0.6)
-				map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)	
+				map_label_2.textFill = Color.rgb(0, 0, 0, 0.6)
 			}
 			preview_map_2_border.effect = null
-			map_label_2.effect = null	
+			map_label_2.effect = null
+		
+			if (nightMode) {
+				preview_map_3_border.stroke = Color.rgb(191, 191, 191)
+				map_label_3.textFill = Color.rgb(191, 191, 191)
+			} else {
+				preview_map_3_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_3.textFill = Color.rgb(0, 0, 0, 0.6)
+			}
+			preview_map_3_border.effect = null
+			map_label_3.effect = null
+
+			if (nightMode) {
+				preview_map_4_border.stroke = Color.rgb(191, 191, 191)
+				map_label_4.textFill = Color.rgb(191, 191, 191)
+			} else {
+				preview_map_4_border.stroke = Color.rgb(0, 0, 0, 0.6)
+				map_label_4.textFill = Color.rgb(0, 0, 0, 0.6)
+			}
+			preview_map_4_border.effect = null
+			map_label_4.effect = null
 		}
 	}
 	
@@ -1155,15 +1381,50 @@ class BoidsFxViewerController extends FxViewerController  {
 				map_label_2.effect = glowEffect
 				tick_map_2.visible = true
 			}
+			case 3: {
+				if (nightMode) {
+					preview_map_3_border.stroke = Color.rgb(235, 221, 26)
+					map_label_3.textFill = Color.rgb(235, 221, 26)
+				} else {
+					preview_map_3_border.stroke = Color.rgb(0, 0, 0)
+					map_label_3.textFill = Color.rgb(0, 0, 0)
+				}
+
+				var glowEffect = new Glow()
+				glowEffect.level = 0.8
+				preview_map_3_border.effect = glowEffect
+				map_label_3.effect = glowEffect
+				tick_map_3.visible = true
+			}
+			
+			/*case 4: {
+				if (nightMode) {
+					preview_map_4_border.stroke = Color.rgb(235, 221, 26)
+					map_label_4.textFill = Color.rgb(235, 221, 26)
+				} else {
+					preview_map_4_border.stroke = Color.rgb(0, 0, 0)
+					map_label_4.textFill = Color.rgb(0, 0, 0)
+				}
+
+				var glowEffect = new Glow()
+				glowEffect.level = 0.8
+				preview_map_4_border.effect = glowEffect
+				map_label_4.effect = glowEffect
+				tick_map_4.visible = true
+			}*/
 		}
 	}
 	
 	protected def resetMaps() : void {
-		previewMap1Reset()
+		/*previewMap1Reset()
 		previewMap2Reset()
+		previewMap3Reset()*/
+		previewMapReset(null)
 		
 		tick_map_1.visible = false
 		tick_map_2.visible = false
+		tick_map_3.visible = false
+		tick_map_4.visible = false
 	}
 	
 	@FXML protected def applyGlowEffectOnLabel(e : MouseEvent) {
@@ -1189,15 +1450,15 @@ class BoidsFxViewerController extends FxViewerController  {
 		glowEffect.level = 0.8
 		if (e.getSource().toString.substring(0, 1) == 'P') { // P pour Pane
 			var pane = (e.getSource() as Pane).getId()
-			if(pane == 'map_selection_pane') {
-				map_selection_label.effect = glowEffect
-			} else if(pane == 'simulation_parameters_pane') {
+			if(pane == 'simulation_parameters_pane') {
 				settings_label.effect = glowEffect
 			}
 		} else {
 			var pane = (e.getSource() as ScrollPane).getId()
 			if (pane == 'advanced_settings_pane') {
 				advanced_settings_label.effect = glowEffect
+			} else if(pane == 'map_selection_pane') {
+				map_selection_label.effect = glowEffect
 			}
 		}
 	}

@@ -100,19 +100,10 @@ public class BoidsFxViewerController extends FxViewerController {
   private Label boids_population_label;
   
   @FXML
-  private ScrollBar boids_quantity_input;
+  private TextField boids_quantity_input;
   
   @FXML
   private TextField boids_population_input;
-  
-  @FXML
-  private Label boids_quantity_display;
-  
-  @FXML
-  private Label boids_quantity_min;
-  
-  @FXML
-  private Label boids_quantity_max;
   
   @FXML
   private Rectangle pause_button;
@@ -172,10 +163,22 @@ public class BoidsFxViewerController extends FxViewerController {
   private ImageView preview_map_2;
   
   @FXML
+  private ImageView preview_map_3;
+  
+  @FXML
+  private ImageView preview_map_4;
+  
+  @FXML
   private Rectangle preview_map_1_border;
   
   @FXML
   private Rectangle preview_map_2_border;
+  
+  @FXML
+  private Rectangle preview_map_3_border;
+  
+  @FXML
+  private Rectangle preview_map_4_border;
   
   @FXML
   private Label map_label_1;
@@ -184,16 +187,28 @@ public class BoidsFxViewerController extends FxViewerController {
   private Label map_label_2;
   
   @FXML
+  private Label map_label_3;
+  
+  @FXML
+  private Label map_label_4;
+  
+  @FXML
   private Pane simulation_parameters_pane;
   
   @FXML
-  private Pane map_selection_pane;
+  private ScrollPane map_selection_pane;
   
   @FXML
   private ImageView tick_map_1;
   
   @FXML
   private ImageView tick_map_2;
+  
+  @FXML
+  private ImageView tick_map_3;
+  
+  @FXML
+  private ImageView tick_map_4;
   
   @FXML
   private Pane pane_group_1;
@@ -744,6 +759,21 @@ public class BoidsFxViewerController extends FxViewerController {
   @FXML
   private Label reset_group_values;
   
+  @FXML
+  private Circle boids_quantity_increment_circle;
+  
+  @FXML
+  private Circle boids_quantity_decrement_circle;
+  
+  @FXML
+  private Label increment_boids_quantity;
+  
+  @FXML
+  private Label decrement_boids_quantity;
+  
+  @FXML
+  private Line boids_quantity_line;
+  
   private int selectedMap = 1;
   
   private List<BoidGroupInfos> boidsSettings = new ArrayList<BoidGroupInfos>();
@@ -764,8 +794,7 @@ public class BoidsFxViewerController extends FxViewerController {
   
   @Pure
   public int getBoidsQuantity() {
-    double _value = this.boids_quantity_input.getValue();
-    return ((int) _value);
+    return Integer.parseInt(this.boids_quantity_input.getText());
   }
   
   @Pure
@@ -909,6 +938,10 @@ public class BoidsFxViewerController extends FxViewerController {
       public abstract void run();
     }
     
+    abstract class __BoidsFxViewerController_1 implements Runnable {
+      public abstract void run();
+    }
+    
     this.pause_button.setVisible(true);
     if ((map == 1)) {
       return new ArrayList<Obstacle>();
@@ -952,6 +985,47 @@ public class BoidsFxViewerController extends FxViewerController {
           Platform.runLater(command);
           this.generateObstacles();
           return this.obstacles;
+        }
+      } else {
+        if ((map == 3)) {
+          ArrayList<Polygon> _arrayList_3 = new ArrayList<Polygon>();
+          this.polygons = _arrayList_3;
+          ArrayList<List<Coordinates>> _arrayList_4 = new ArrayList<List<Coordinates>>();
+          this.polygonsCoordinates = _arrayList_4;
+          ArrayList<Obstacle> _arrayList_5 = new ArrayList<Obstacle>();
+          this.obstacles = _arrayList_5;
+          Polygon _polygon_3 = new Polygon(315.0, 720.0, 315.0, 250.0, 325.0, 250.0, 325.0, 720.0);
+          this.polygons.add(_polygon_3);
+          Polygon _polygon_4 = new Polygon(635.0, 0.0, 635.0, 470.0, 645.0, 470.0, 645.0, 0.0);
+          this.polygons.add(_polygon_4);
+          Polygon _polygon_5 = new Polygon(955.0, 720.0, 955.0, 250.0, 965.0, 250.0, 965.0, 720.0);
+          this.polygons.add(_polygon_5);
+          final Consumer<Polygon> _function_1 = (Polygon p) -> {
+            this.polygonsCoordinates.add(this.generateCoordinates(p));
+            p.setFill(Color.GRAY);
+            p.setStroke(Color.TRANSPARENT);
+            p.setStrokeWidth(20);
+          };
+          this.polygons.forEach(_function_1);
+          __BoidsFxViewerController_1 command_1 = new __BoidsFxViewerController_1() {
+            @Override
+            public void run() {
+              final Consumer<Polygon> _function = (Polygon p) -> {
+                BoidsFxViewerController.this.obstacle_group.getChildren().add(0, p);
+              };
+              BoidsFxViewerController.this.polygons.forEach(_function);
+            }
+          };
+          boolean _isFxApplicationThread_1 = Platform.isFxApplicationThread();
+          if (_isFxApplicationThread_1) {
+            command_1.run();
+            this.generateObstacles();
+            return this.obstacles;
+          } else {
+            Platform.runLater(command_1);
+            this.generateObstacles();
+            return this.obstacles;
+          }
         }
       }
     }
@@ -1002,14 +1076,14 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   public void updateGraphics(final Collection<BoidBody> list) {
-    abstract class __BoidsFxViewerController_1 implements Runnable {
+    abstract class __BoidsFxViewerController_2 implements Runnable {
       public abstract void run();
     }
     
-    __BoidsFxViewerController_1 command = new __BoidsFxViewerController_1() {
+    __BoidsFxViewerController_2 command = new __BoidsFxViewerController_2() {
       @Override
       public void run() {
-        abstract class ____BoidsFxViewerController_1_0_1 implements EventHandler<MouseEvent> {
+        abstract class ____BoidsFxViewerController_2_0_1 implements EventHandler<MouseEvent> {
           public abstract void handle(final MouseEvent event);
         }
         
@@ -1059,14 +1133,14 @@ public class BoidsFxViewerController extends FxViewerController {
             }
             boidElement.setRotate(angleRotation);
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));
-            ____BoidsFxViewerController_1_0_1 _____BoidsFxViewerController_1_0_1 = new ____BoidsFxViewerController_1_0_1() {
+            ____BoidsFxViewerController_2_0_1 _____BoidsFxViewerController_2_0_1 = new ____BoidsFxViewerController_2_0_1() {
               public void handle(final MouseEvent event) {
                 BoidsFxViewerController.this.currentBoid = boid.getID();
                 BoidsFxViewerController.this.updateInfos(boid);
                 BoidsFxViewerController.this.showInfosVisibility();
               }
             };
-            boidElement.setOnMousePressed(_____BoidsFxViewerController_1_0_1);
+            boidElement.setOnMousePressed(_____BoidsFxViewerController_2_0_1);
             if ((BoidsFxViewerController.this.togglePerception).booleanValue()) {
               Arc perceptionArc = new Arc();
               perceptionArc.setCenterX(boid.getPosition().getX());
@@ -1118,16 +1192,13 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @FXML
-  protected void actionBoidsQuantityDisplay() {
-    final InvalidationListener _function = (Observable it) -> {
-      this.boids_quantity_display.setText(String.format("%.0f", Double.valueOf(this.boids_quantity_input.getValue())));
-    };
-    this.boids_quantity_input.valueProperty().addListener(_function);
+  protected void resetBoidsPopulation() {
+    this.boids_population_input.setText("");
   }
   
   @FXML
-  protected void resetBoidsPopulation() {
-    this.boids_population_input.setText("");
+  protected void resetBoidsQuantity() {
+    this.boids_quantity_input.setText("");
   }
   
   @FXML
@@ -1181,6 +1252,53 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   @FXML
+  protected void updateBoidsQuantity() {
+    String _text = this.boids_quantity_input.getText();
+    boolean _notEquals = (!Objects.equal(_text, ""));
+    if (_notEquals) {
+      Boolean _outputQuality = this.outputQuality(this.boids_quantity_input.getText());
+      if ((_outputQuality).booleanValue()) {
+        int currentValue = Integer.parseInt(this.boids_quantity_input.getText());
+        if ((currentValue >= 50)) {
+          this.boids_quantity_input.setText(("" + Integer.valueOf(50)));
+        } else {
+          if ((currentValue <= 1)) {
+            this.boids_quantity_input.setText(("" + Integer.valueOf(1)));
+          }
+        }
+      }
+    }
+  }
+  
+  @FXML
+  protected void incrementBoidsQuantity() {
+    if (((!Objects.equal(this.boids_quantity_input.getText(), "")) && (this.outputQuality(this.boids_quantity_input.getText())).booleanValue())) {
+      int currentValue = Integer.parseInt(this.boids_quantity_input.getText());
+      if ((currentValue >= 50)) {
+        this.boids_quantity_input.setText(("" + Integer.valueOf(50)));
+      } else {
+        this.boids_quantity_input.setText(("" + Integer.valueOf((currentValue + 1))));
+      }
+    } else {
+      this.boids_quantity_input.setText(("" + Integer.valueOf(1)));
+    }
+  }
+  
+  @FXML
+  protected void decrementBoidsQuantity() {
+    if (((!Objects.equal(this.boids_quantity_input.getText(), "")) && (this.outputQuality(this.boids_quantity_input.getText())).booleanValue())) {
+      int currentValue = Integer.parseInt(this.boids_quantity_input.getText());
+      if ((currentValue <= 1)) {
+        this.boids_quantity_input.setText(("" + Integer.valueOf(1)));
+      } else {
+        this.boids_quantity_input.setText(("" + Integer.valueOf((currentValue - 1))));
+      }
+    } else {
+      this.boids_quantity_input.setText(("" + Integer.valueOf(1)));
+    }
+  }
+  
+  @FXML
   protected void toggleMode() {
     if ((this.nightMode).booleanValue()) {
       this.nightMode = Boolean.valueOf(false);
@@ -1193,9 +1311,12 @@ public class BoidsFxViewerController extends FxViewerController {
       Background _background = new Background(_backgroundFill);
       this.main_pane.setBackground(_background);
       this.boids_quantity_label.setTextFill(normalTextColor);
-      this.boids_quantity_display.setTextFill(normalTextColor);
-      this.boids_quantity_min.setTextFill(normalTextColor);
-      this.boids_quantity_max.setTextFill(normalTextColor);
+      this.decrement_boids_quantity.setTextFill(normalTextColor);
+      this.increment_boids_quantity.setTextFill(normalTextColor);
+      this.boids_quantity_decrement_circle.setStroke(normalTextColor);
+      this.boids_quantity_increment_circle.setStroke(normalTextColor);
+      this.boids_quantity_line.setStroke(normalTextColor);
+      this.boids_quantity_input.setStyle("-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent");
       this.boids_population_label.setTextFill(normalTextColor);
       this.decrement_boids_population.setTextFill(normalTextColor);
       this.increment_boids_population.setTextFill(normalTextColor);
@@ -1370,6 +1491,24 @@ public class BoidsFxViewerController extends FxViewerController {
           this.map_label_2.setTextFill(Color.rgb(0, 0, 0));
         }
       }
+      if ((this.selectedMap != 3)) {
+        this.preview_map_3_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+        this.map_label_3.setTextFill(normalTextColor);
+      } else {
+        if ((this.selectedMap == 3)) {
+          this.preview_map_3_border.setStroke(Color.rgb(0, 0, 0));
+          this.map_label_3.setTextFill(Color.rgb(0, 0, 0));
+        }
+      }
+      if ((this.selectedMap != 4)) {
+        this.preview_map_4_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+        this.map_label_4.setTextFill(normalTextColor);
+      } else {
+        if ((this.selectedMap == 3)) {
+          this.preview_map_4_border.setStroke(Color.rgb(0, 0, 0));
+          this.map_label_4.setTextFill(Color.rgb(0, 0, 0));
+        }
+      }
     } else {
       this.nightMode = Boolean.valueOf(true);
       this.night_mode_indicator.setFill(Color.rgb(0, 204, 99));
@@ -1381,9 +1520,12 @@ public class BoidsFxViewerController extends FxViewerController {
       Background _background_1 = new Background(_backgroundFill_1);
       this.main_pane.setBackground(_background_1);
       this.boids_quantity_label.setTextFill(nightTextColor);
-      this.boids_quantity_display.setTextFill(nightTextColor);
-      this.boids_quantity_min.setTextFill(nightTextColor);
-      this.boids_quantity_max.setTextFill(nightTextColor);
+      this.decrement_boids_quantity.setTextFill(nightTextColor);
+      this.increment_boids_quantity.setTextFill(nightTextColor);
+      this.boids_quantity_decrement_circle.setStroke(nightTextColor);
+      this.boids_quantity_increment_circle.setStroke(nightTextColor);
+      this.boids_quantity_line.setStroke(nightTextColor);
+      this.boids_quantity_input.setStyle("-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent");
       this.boids_population_label.setTextFill(nightTextColor);
       this.decrement_boids_population.setTextFill(nightTextColor);
       this.increment_boids_population.setTextFill(nightTextColor);
@@ -1556,6 +1698,24 @@ public class BoidsFxViewerController extends FxViewerController {
         if ((this.selectedMap == 2)) {
           this.preview_map_2_border.setStroke(Color.rgb(235, 221, 26));
           this.map_label_2.setTextFill(Color.rgb(235, 221, 26));
+        }
+      }
+      if ((this.selectedMap != 3)) {
+        this.preview_map_3_border.setStroke(nightTextColor);
+        this.map_label_3.setTextFill(nightTextColor);
+      } else {
+        if ((this.selectedMap == 3)) {
+          this.preview_map_3_border.setStroke(Color.rgb(235, 221, 26));
+          this.map_label_3.setTextFill(Color.rgb(235, 221, 26));
+        }
+      }
+      if ((this.selectedMap != 4)) {
+        this.preview_map_4_border.setStroke(nightTextColor);
+        this.map_label_4.setTextFill(nightTextColor);
+      } else {
+        if ((this.selectedMap == 3)) {
+          this.preview_map_4_border.setStroke(Color.rgb(235, 221, 26));
+          this.map_label_4.setTextFill(Color.rgb(235, 221, 26));
         }
       }
     }
@@ -1758,6 +1918,84 @@ public class BoidsFxViewerController extends FxViewerController {
     this.boids_population_input.setEffect(null);
   }
   
+  @FXML
+  protected void incrementBoidsQuantityGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_increment_circle.setStroke(Color.rgb(235, 221, 26));
+      this.increment_boids_quantity.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_quantity_increment_circle.setStroke(Color.rgb(0, 0, 0));
+      this.increment_boids_quantity.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_quantity_increment_circle.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void decrementBoidsQuantityGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_decrement_circle.setStroke(Color.rgb(235, 221, 26));
+      this.decrement_boids_quantity.setTextFill(Color.rgb(235, 221, 26));
+    } else {
+      this.boids_quantity_decrement_circle.setStroke(Color.rgb(0, 0, 0));
+      this.decrement_boids_quantity.setTextFill(Color.rgb(0, 0, 0));
+    }
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_quantity_decrement_circle.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void incrementBoidsQuantityReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_increment_circle.setStroke(Color.rgb(191, 191, 191));
+      this.increment_boids_quantity.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_quantity_increment_circle.setStroke(Color.rgb(0, 0, 0, 0.3));
+      this.increment_boids_quantity.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_quantity_increment_circle.setEffect(null);
+    this.increment_boids_quantity.setEffect(null);
+  }
+  
+  @FXML
+  protected void decrementBoidsQuantityReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_decrement_circle.setStroke(Color.rgb(191, 191, 191));
+      this.decrement_boids_quantity.setTextFill(Color.rgb(191, 191, 191));
+    } else {
+      this.boids_quantity_decrement_circle.setStroke(Color.rgb(0, 0, 0, 0.3));
+      this.decrement_boids_quantity.setTextFill(Color.rgb(0, 0, 0));
+    }
+    this.boids_quantity_decrement_circle.setEffect(null);
+    this.decrement_boids_quantity.setEffect(null);
+  }
+  
+  @FXML
+  protected void boidsQuantityGlow() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_input.setStyle("-fx-text-fill: rgb(235, 221, 26); -fx-background-color: transparent");
+    } else {
+      this.boids_quantity_input.setStyle("-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent");
+    }
+    this.boids_quantity_line.setStrokeWidth(3);
+    Glow glowEffect = new Glow();
+    glowEffect.setLevel(0.8);
+    this.boids_quantity_input.setEffect(glowEffect);
+  }
+  
+  @FXML
+  protected void boidsQuantityReset() {
+    if ((this.nightMode).booleanValue()) {
+      this.boids_quantity_input.setStyle("-fx-text-fill: rgb(191, 191, 191); -fx-background-color: transparent");
+    } else {
+      this.boids_quantity_input.setStyle("-fx-text-fill: rgb(0, 0, 0); -fx-background-color: transparent");
+    }
+    this.boids_quantity_line.setStrokeWidth(1);
+    this.boids_quantity_input.setEffect(null);
+  }
+  
   public void toggleUIState() {
     boolean _isDisable = this.start_button.isDisable();
     boolean _equals = (_isDisable == true);
@@ -1903,88 +2141,156 @@ public class BoidsFxViewerController extends FxViewerController {
     this.main_pane.requestFocus();
   }
   
-  /**
-   * BOIDS QUANTITY GLOWING EFFECT
-   */
   @FXML
-  protected void boidsQuantityMinGlow() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_quantity_min.setTextFill(Color.rgb(235, 221, 26));
+  protected void previewMapGlow(final MouseEvent e) {
+    int targetMap = 0;
+    String _substring = e.getSource().toString().substring(0, 1);
+    boolean _equals = Objects.equal(_substring, "I");
+    if (_equals) {
+      Object _source = e.getSource();
+      Object _source_1 = e.getSource();
+      int _length = ((ImageView) _source_1).getId().length();
+      int _minus = (_length - 1);
+      targetMap = Integer.parseInt(((ImageView) _source).getId().substring(_minus));
     } else {
-      this.boids_quantity_min.setTextFill(Color.rgb(0, 0, 0));
+      Object _source_2 = e.getSource();
+      Object _source_3 = e.getSource();
+      int _length_1 = ((Label) _source_3).getId().length();
+      int _minus_1 = (_length_1 - 1);
+      targetMap = Integer.parseInt(((Label) _source_2).getId().substring(_minus_1));
     }
     Glow glowEffect = new Glow();
-    glowEffect.setLevel(0.8);
-    this.boids_quantity_min.setEffect(glowEffect);
-  }
-  
-  @FXML
-  protected void boidsQuantityMaxGlow() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_quantity_max.setTextFill(Color.rgb(235, 221, 26));
-    } else {
-      this.boids_quantity_max.setTextFill(Color.rgb(0, 0, 0));
+    glowEffect.setLevel(1);
+    switch (targetMap) {
+      case 1:
+        if ((this.selectedMap != 1)) {
+          if ((this.nightMode).booleanValue()) {
+            this.preview_map_1_border.setStroke(Color.rgb(235, 221, 26, 0.6));
+            this.map_label_1.setTextFill(Color.rgb(235, 221, 26, 0.6));
+          } else {
+            this.preview_map_1_border.setStroke(Color.rgb(0, 0, 0, 0.35));
+            this.map_label_1.setTextFill(Color.rgb(0, 0, 0, 0.6));
+          }
+          this.preview_map_1_border.setEffect(glowEffect);
+          this.map_label_1.setEffect(glowEffect);
+        }
+        break;
+      case 2:
+        if ((this.selectedMap != 2)) {
+          if ((this.nightMode).booleanValue()) {
+            this.preview_map_2_border.setStroke(Color.rgb(235, 221, 26, 0.6));
+            this.map_label_2.setTextFill(Color.rgb(235, 221, 26, 0.6));
+          } else {
+            this.preview_map_2_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+            this.map_label_2.setTextFill(Color.rgb(0, 0, 0, 0.6));
+          }
+          this.preview_map_2_border.setEffect(glowEffect);
+          this.map_label_2.setEffect(glowEffect);
+        }
+        break;
+      case 3:
+        if ((this.selectedMap != 3)) {
+          if ((this.nightMode).booleanValue()) {
+            this.preview_map_3_border.setStroke(Color.rgb(235, 221, 26, 0.6));
+            this.map_label_3.setTextFill(Color.rgb(235, 221, 26, 0.6));
+          } else {
+            this.preview_map_3_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+            this.map_label_3.setTextFill(Color.rgb(0, 0, 0, 0.6));
+          }
+          this.preview_map_3_border.setEffect(glowEffect);
+          this.map_label_3.setEffect(glowEffect);
+        }
+        break;
+      case 4:
+        if ((this.selectedMap != 4)) {
+          if ((this.nightMode).booleanValue()) {
+            this.preview_map_4_border.setStroke(Color.rgb(235, 221, 26, 0.6));
+            this.map_label_4.setTextFill(Color.rgb(235, 221, 26, 0.6));
+          } else {
+            this.preview_map_4_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+            this.map_label_4.setTextFill(Color.rgb(0, 0, 0, 0.6));
+          }
+          this.preview_map_4_border.setEffect(glowEffect);
+          this.map_label_4.setEffect(glowEffect);
+        }
+        break;
     }
-    Glow glowEffect = new Glow();
-    glowEffect.setLevel(0.8);
-    this.boids_quantity_max.setEffect(glowEffect);
   }
   
   @FXML
-  protected void boidsQuantityMinReset() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_quantity_min.setTextFill(Color.rgb(191, 191, 191));
-    } else {
-      this.boids_quantity_min.setTextFill(Color.rgb(0, 0, 0));
-    }
-    this.boids_quantity_min.setEffect(null);
-  }
-  
-  @FXML
-  protected void boidsQuantityMaxReset() {
-    if ((this.nightMode).booleanValue()) {
-      this.boids_quantity_max.setTextFill(Color.rgb(191, 191, 191));
-    } else {
-      this.boids_quantity_max.setTextFill(Color.rgb(0, 0, 0));
-    }
-    this.boids_quantity_max.setEffect(null);
-  }
-  
-  /**
-   * MAX/MIN values fast setters
-   */
-  @FXML
-  protected void boidsQuantitySetToMin() {
-    this.boids_quantity_input.setValue(Integer.parseInt(this.boids_quantity_min.getText()));
-    this.boids_quantity_display.setText(this.boids_quantity_min.getText());
-  }
-  
-  @FXML
-  protected void boidsQuantitySetToMax() {
-    this.boids_quantity_input.setValue(Integer.parseInt(this.boids_quantity_max.getText()));
-    this.boids_quantity_display.setText(this.boids_quantity_max.getText());
-  }
-  
-  @FXML
-  protected void previewMap1Glow() {
-    if ((this.selectedMap != 1)) {
-      if ((this.nightMode).booleanValue()) {
-        this.preview_map_1_border.setStroke(Color.rgb(235, 221, 26, 0.6));
-        this.map_label_1.setTextFill(Color.rgb(235, 221, 26, 0.6));
+  protected void previewMapReset(final MouseEvent e) {
+    if ((e != null)) {
+      int targetMap = 0;
+      String _substring = e.getSource().toString().substring(0, 1);
+      boolean _equals = Objects.equal(_substring, "I");
+      if (_equals) {
+        Object _source = e.getSource();
+        Object _source_1 = e.getSource();
+        int _length = ((ImageView) _source_1).getId().length();
+        int _minus = (_length - 1);
+        targetMap = Integer.parseInt(((ImageView) _source).getId().substring(_minus));
       } else {
-        this.preview_map_1_border.setStroke(Color.rgb(0, 0, 0, 0.35));
-        this.map_label_1.setTextFill(Color.rgb(0, 0, 0, 0.6));
+        Object _source_2 = e.getSource();
+        Object _source_3 = e.getSource();
+        int _length_1 = ((Label) _source_3).getId().length();
+        int _minus_1 = (_length_1 - 1);
+        targetMap = Integer.parseInt(((Label) _source_2).getId().substring(_minus_1));
       }
-      Glow glowEffect = new Glow();
-      glowEffect.setLevel(1);
-      this.preview_map_1_border.setEffect(glowEffect);
-      this.map_label_1.setEffect(glowEffect);
-    }
-  }
-  
-  @FXML
-  protected void previewMap1Reset() {
-    if ((this.selectedMap != 1)) {
+      switch (targetMap) {
+        case 1:
+          if ((this.selectedMap != 1)) {
+            if ((this.nightMode).booleanValue()) {
+              this.preview_map_1_border.setStroke(Color.rgb(191, 191, 191));
+              this.map_label_1.setTextFill(Color.rgb(191, 191, 191));
+            } else {
+              this.preview_map_1_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+              this.map_label_1.setTextFill(Color.rgb(0, 0, 0, 0.6));
+            }
+            this.preview_map_1_border.setEffect(null);
+            this.map_label_1.setEffect(null);
+          }
+          break;
+        case 2:
+          if ((this.selectedMap != 2)) {
+            if ((this.nightMode).booleanValue()) {
+              this.preview_map_2_border.setStroke(Color.rgb(191, 191, 191));
+              this.map_label_2.setTextFill(Color.rgb(191, 191, 191));
+            } else {
+              this.preview_map_2_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+              this.map_label_2.setTextFill(Color.rgb(0, 0, 0, 0.6));
+            }
+            this.preview_map_2_border.setEffect(null);
+            this.map_label_2.setEffect(null);
+          }
+          break;
+        case 3:
+          if ((this.selectedMap != 3)) {
+            if ((this.nightMode).booleanValue()) {
+              this.preview_map_3_border.setStroke(Color.rgb(191, 191, 191));
+              this.map_label_3.setTextFill(Color.rgb(191, 191, 191));
+            } else {
+              this.preview_map_3_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+              this.map_label_3.setTextFill(Color.rgb(0, 0, 0, 0.6));
+            }
+            this.preview_map_3_border.setEffect(null);
+            this.map_label_3.setEffect(null);
+          }
+          break;
+        case 4:
+          if ((this.selectedMap != 4)) {
+            if ((this.nightMode).booleanValue()) {
+              this.preview_map_4_border.setStroke(Color.rgb(191, 191, 191));
+              this.map_label_4.setTextFill(Color.rgb(191, 191, 191));
+            } else {
+              this.preview_map_4_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+              this.map_label_4.setTextFill(Color.rgb(0, 0, 0, 0.6));
+            }
+            this.preview_map_4_border.setEffect(null);
+            this.map_label_4.setEffect(null);
+          }
+          break;
+      }
+    } else {
       if ((this.nightMode).booleanValue()) {
         this.preview_map_1_border.setStroke(Color.rgb(191, 191, 191));
         this.map_label_1.setTextFill(Color.rgb(191, 191, 191));
@@ -1994,29 +2300,6 @@ public class BoidsFxViewerController extends FxViewerController {
       }
       this.preview_map_1_border.setEffect(null);
       this.map_label_1.setEffect(null);
-    }
-  }
-  
-  @FXML
-  protected void previewMap2Glow() {
-    if ((this.selectedMap != 2)) {
-      if ((this.nightMode).booleanValue()) {
-        this.preview_map_2_border.setStroke(Color.rgb(235, 221, 26, 0.6));
-        this.map_label_2.setTextFill(Color.rgb(235, 221, 26, 0.6));
-      } else {
-        this.preview_map_2_border.setStroke(Color.rgb(0, 0, 0, 0.6));
-        this.map_label_2.setTextFill(Color.rgb(0, 0, 0, 0.6));
-      }
-      Glow glowEffect = new Glow();
-      glowEffect.setLevel(1);
-      this.preview_map_2_border.setEffect(glowEffect);
-      this.map_label_2.setEffect(glowEffect);
-    }
-  }
-  
-  @FXML
-  protected void previewMap2Reset() {
-    if ((this.selectedMap != 2)) {
       if ((this.nightMode).booleanValue()) {
         this.preview_map_2_border.setStroke(Color.rgb(191, 191, 191));
         this.map_label_2.setTextFill(Color.rgb(191, 191, 191));
@@ -2026,6 +2309,24 @@ public class BoidsFxViewerController extends FxViewerController {
       }
       this.preview_map_2_border.setEffect(null);
       this.map_label_2.setEffect(null);
+      if ((this.nightMode).booleanValue()) {
+        this.preview_map_3_border.setStroke(Color.rgb(191, 191, 191));
+        this.map_label_3.setTextFill(Color.rgb(191, 191, 191));
+      } else {
+        this.preview_map_3_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+        this.map_label_3.setTextFill(Color.rgb(0, 0, 0, 0.6));
+      }
+      this.preview_map_3_border.setEffect(null);
+      this.map_label_3.setEffect(null);
+      if ((this.nightMode).booleanValue()) {
+        this.preview_map_4_border.setStroke(Color.rgb(191, 191, 191));
+        this.map_label_4.setTextFill(Color.rgb(191, 191, 191));
+      } else {
+        this.preview_map_4_border.setStroke(Color.rgb(0, 0, 0, 0.6));
+        this.map_label_4.setTextFill(Color.rgb(0, 0, 0, 0.6));
+      }
+      this.preview_map_4_border.setEffect(null);
+      this.map_label_4.setEffect(null);
     }
   }
   
@@ -2077,14 +2378,29 @@ public class BoidsFxViewerController extends FxViewerController {
         this.map_label_2.setEffect(glowEffect_1);
         this.tick_map_2.setVisible(true);
         break;
+      case 3:
+        if ((this.nightMode).booleanValue()) {
+          this.preview_map_3_border.setStroke(Color.rgb(235, 221, 26));
+          this.map_label_3.setTextFill(Color.rgb(235, 221, 26));
+        } else {
+          this.preview_map_3_border.setStroke(Color.rgb(0, 0, 0));
+          this.map_label_3.setTextFill(Color.rgb(0, 0, 0));
+        }
+        Glow glowEffect_2 = new Glow();
+        glowEffect_2.setLevel(0.8);
+        this.preview_map_3_border.setEffect(glowEffect_2);
+        this.map_label_3.setEffect(glowEffect_2);
+        this.tick_map_3.setVisible(true);
+        break;
     }
   }
   
   protected void resetMaps() {
-    this.previewMap1Reset();
-    this.previewMap2Reset();
+    this.previewMapReset(null);
     this.tick_map_1.setVisible(false);
     this.tick_map_2.setVisible(false);
+    this.tick_map_3.setVisible(false);
+    this.tick_map_4.setVisible(false);
   }
   
   @FXML
@@ -2124,21 +2440,21 @@ public class BoidsFxViewerController extends FxViewerController {
     if (_equals) {
       Object _source = e.getSource();
       String pane = ((Pane) _source).getId();
-      boolean _equals_1 = Objects.equal(pane, "map_selection_pane");
+      boolean _equals_1 = Objects.equal(pane, "simulation_parameters_pane");
       if (_equals_1) {
-        this.map_selection_label.setEffect(glowEffect);
-      } else {
-        boolean _equals_2 = Objects.equal(pane, "simulation_parameters_pane");
-        if (_equals_2) {
-          this.settings_label.setEffect(glowEffect);
-        }
+        this.settings_label.setEffect(glowEffect);
       }
     } else {
       Object _source_1 = e.getSource();
       String pane_1 = ((ScrollPane) _source_1).getId();
-      boolean _equals_3 = Objects.equal(pane_1, "advanced_settings_pane");
-      if (_equals_3) {
+      boolean _equals_2 = Objects.equal(pane_1, "advanced_settings_pane");
+      if (_equals_2) {
         this.advanced_settings_label.setEffect(glowEffect);
+      } else {
+        boolean _equals_3 = Objects.equal(pane_1, "map_selection_pane");
+        if (_equals_3) {
+          this.map_selection_label.setEffect(glowEffect);
+        }
       }
     }
   }
