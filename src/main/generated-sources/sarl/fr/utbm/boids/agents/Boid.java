@@ -157,7 +157,6 @@ public class Boid extends Agent {
       forceTot.plus(this.alignement(boids));
       forceTot.plus(this.repulsion(boids));
     }
-    forceTot.fois(100000);
     Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
     _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("force totale " + forceTot));
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
@@ -309,6 +308,7 @@ public class Boid extends Agent {
         len = tmp.length();
         tmp.fois((1 / (len * len)));
         force.plus(tmp);
+        force.fois(35);
       }
     }
     return force;
@@ -331,6 +331,7 @@ public class Boid extends Agent {
       force.fois((1 / nbTot));
       force.moins(this.body.getPosition());
     }
+    force.fois(0.60);
     return force;
   }
   
@@ -377,6 +378,7 @@ public class Boid extends Agent {
         len = tmp.length();
         tmp.fois((1 / (len * len)));
         force.plus(tmp);
+        force.fois(100);
       }
     }
     return force;

@@ -112,7 +112,7 @@ agent Boid {
 			// TODO appliquer force obstacle
 		}
 		
-		forceTot.fois(100000)
+		//forceTot.fois(100000)
 		info("force totale " + forceTot)
 
 		emit(new ResultatDeplacement(appliquerForce(forceTot), this.body.newVitesse))
@@ -217,6 +217,7 @@ agent Boid {
 				len = tmp.length()
 				tmp.fois(1 / (len * len))
 				force.plus(tmp)
+				force.fois(35)
 			}
 		}
 	
@@ -243,7 +244,7 @@ agent Boid {
 			force.fois(1/nbTot)
 			force.moins(this.body.position)
 		}
-		
+		force.fois(0.60)
 		return force
 	}
 	
@@ -293,6 +294,7 @@ agent Boid {
 				len = tmp.length
 				tmp.fois(1 / (len * len))
 				force.plus(tmp)
+				force.fois(100)
 			}
 		}
 		
