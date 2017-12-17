@@ -1738,15 +1738,17 @@ public class BoidsFxViewerController extends FxViewerController {
     
     this.pause_button.setVisible(true);
     if ((map == 1)) {
+      ArrayList<Polygon> _arrayList = new ArrayList<Polygon>();
+      this.polygons = _arrayList;
       return new ArrayList<Obstacle>();
     } else {
       if ((map == 2)) {
-        ArrayList<Polygon> _arrayList = new ArrayList<Polygon>();
-        this.polygons = _arrayList;
-        ArrayList<List<Coordinates>> _arrayList_1 = new ArrayList<List<Coordinates>>();
-        this.polygonsCoordinates = _arrayList_1;
-        ArrayList<Obstacle> _arrayList_2 = new ArrayList<Obstacle>();
-        this.obstacles = _arrayList_2;
+        ArrayList<Polygon> _arrayList_1 = new ArrayList<Polygon>();
+        this.polygons = _arrayList_1;
+        ArrayList<List<Coordinates>> _arrayList_2 = new ArrayList<List<Coordinates>>();
+        this.polygonsCoordinates = _arrayList_2;
+        ArrayList<Obstacle> _arrayList_3 = new ArrayList<Obstacle>();
+        this.obstacles = _arrayList_3;
         Polygon _polygon = new Polygon(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0, 225.0);
         this.polygons.add(_polygon);
         Polygon _polygon_1 = new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0, 
@@ -1782,12 +1784,12 @@ public class BoidsFxViewerController extends FxViewerController {
         }
       } else {
         if ((map == 3)) {
-          ArrayList<Polygon> _arrayList_3 = new ArrayList<Polygon>();
-          this.polygons = _arrayList_3;
-          ArrayList<List<Coordinates>> _arrayList_4 = new ArrayList<List<Coordinates>>();
-          this.polygonsCoordinates = _arrayList_4;
-          ArrayList<Obstacle> _arrayList_5 = new ArrayList<Obstacle>();
-          this.obstacles = _arrayList_5;
+          ArrayList<Polygon> _arrayList_4 = new ArrayList<Polygon>();
+          this.polygons = _arrayList_4;
+          ArrayList<List<Coordinates>> _arrayList_5 = new ArrayList<List<Coordinates>>();
+          this.polygonsCoordinates = _arrayList_5;
+          ArrayList<Obstacle> _arrayList_6 = new ArrayList<Obstacle>();
+          this.obstacles = _arrayList_6;
           Polygon _polygon_3 = new Polygon(315.0, 720.0, 315.0, 250.0, 325.0, 250.0, 325.0, 720.0);
           this.polygons.add(_polygon_3);
           Polygon _polygon_4 = new Polygon(635.0, 0.0, 635.0, 470.0, 645.0, 470.0, 645.0, 0.0);

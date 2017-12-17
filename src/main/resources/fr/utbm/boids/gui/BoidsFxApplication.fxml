@@ -28,7 +28,7 @@
                               <ScrollBar fx:id="mass_1" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
                               <ScrollBar fx:id="speed_1" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
                               <ScrollBar fx:id="angle_1" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
-                              <ScrollBar fx:id="distance_1" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <ScrollBar fx:id="distance_1" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="100.0" />
                               <Label fx:id="mass_label_1" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
                               <Label fx:id="speed_label_1" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
                               <Label fx:id="angle_label_1" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
@@ -93,7 +93,7 @@
                                     <Font size="12.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="distance_display_1" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                              <Label fx:id="distance_display_1" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="241.0" text="100" textFill="#bfbfbf">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
@@ -105,7 +105,7 @@
                               <ScrollBar fx:id="mass_2" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
                               <ScrollBar fx:id="speed_2" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
                               <ScrollBar fx:id="angle_2" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
-                              <ScrollBar fx:id="distance_2" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <ScrollBar fx:id="distance_2" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="100.0" />
                               <Label fx:id="mass_label_2" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
                               <Label fx:id="speed_label_2" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
                               <Label fx:id="angle_label_2" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
@@ -155,7 +155,7 @@
                                     <Font size="8.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="distance_display_2" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                              <Label fx:id="distance_display_2" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="241.0" text="100" textFill="#bfbfbf">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
@@ -182,7 +182,7 @@
                               <ScrollBar fx:id="mass_3" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
                               <ScrollBar fx:id="speed_3" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
                               <ScrollBar fx:id="angle_3" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
-                              <ScrollBar fx:id="distance_3" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <ScrollBar fx:id="distance_3" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="100.0" />
                               <Label fx:id="mass_label_3" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
                               <Label fx:id="speed_label_3" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
                               <Label fx:id="angle_label_3" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
@@ -232,7 +232,7 @@
                                     <Font size="8.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="distance_display_3" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                              <Label fx:id="distance_display_3" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="241.0" text="100" textFill="#bfbfbf">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
@@ -259,7 +259,7 @@
                               <ScrollBar fx:id="mass_4" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
                               <ScrollBar fx:id="speed_4" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
                               <ScrollBar fx:id="angle_4" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
-                              <ScrollBar fx:id="distance_4" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <ScrollBar fx:id="distance_4" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="100.0" />
                               <Label fx:id="mass_label_4" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
                               <Label fx:id="speed_label_4" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
                               <Label fx:id="angle_label_4" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
@@ -309,7 +309,7 @@
                                     <Font size="8.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="distance_display_4" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                              <Label fx:id="distance_display_4" alignment="CENTER_RIGHT" layoutX="102.0" layoutY="241.0" text="100" textFill="#bfbfbf">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
@@ -336,7 +336,7 @@
                               <ScrollBar fx:id="mass_5" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
                               <ScrollBar fx:id="speed_5" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
                               <ScrollBar fx:id="angle_5" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
-                              <ScrollBar fx:id="distance_5" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <ScrollBar fx:id="distance_5" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="100.0" />
                               <Label fx:id="mass_label_5" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
                               <Label fx:id="speed_label_5" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
                               <Label fx:id="angle_label_5" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
@@ -386,7 +386,7 @@
                                     <Font size="8.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="distance_display_5" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                              <Label fx:id="distance_display_5" alignment="CENTER_RIGHT" layoutX="97.0" layoutY="241.0" text="100" textFill="#bfbfbf">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
@@ -413,7 +413,7 @@
                               <ScrollBar fx:id="mass_6" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
                               <ScrollBar fx:id="speed_6" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
                               <ScrollBar fx:id="angle_6" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
-                              <ScrollBar fx:id="distance_6" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <ScrollBar fx:id="distance_6" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="100.0" />
                               <Label fx:id="mass_label_6" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
                               <Label fx:id="speed_label_6" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
                               <Label fx:id="angle_label_6" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
@@ -478,7 +478,7 @@
                                     <Font size="12.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="distance_display_6" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                              <Label fx:id="distance_display_6" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="241.0" text="100" textFill="#bfbfbf">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
@@ -490,7 +490,7 @@
                               <ScrollBar fx:id="mass_7" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
                               <ScrollBar fx:id="speed_7" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
                               <ScrollBar fx:id="angle_7" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
-                              <ScrollBar fx:id="distance_7" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <ScrollBar fx:id="distance_7" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="100.0" />
                               <Label fx:id="mass_label_7" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
                               <Label fx:id="speed_label_7" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
                               <Label fx:id="angle_label_7" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
@@ -540,7 +540,7 @@
                                     <Font size="8.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="distance_display_7" alignment="CENTER_RIGHT" layoutX="99.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                              <Label fx:id="distance_display_7" alignment="CENTER_RIGHT" layoutX="99.0" layoutY="241.0" text="100" textFill="#bfbfbf">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
@@ -567,7 +567,7 @@
                               <ScrollBar fx:id="mass_8" layoutX="23.0" layoutY="64.0" max="10.0" min="1.0" onMouseEntered="#massListener" prefHeight="18.0" prefWidth="150.0" value="2.0" />
                               <ScrollBar fx:id="speed_8" layoutX="23.0" layoutY="119.0" max="40.0" min="1.0" onMouseEntered="#speedListener" prefHeight="18.0" prefWidth="150.0" value="10.0" />
                               <ScrollBar fx:id="angle_8" layoutX="23.0" layoutY="173.0" max="180.0" onMouseEntered="#angleListener" prefHeight="18.0" prefWidth="150.0" value="30.0" />
-                              <ScrollBar fx:id="distance_8" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="20.0" />
+                              <ScrollBar fx:id="distance_8" layoutX="23.0" layoutY="223.0" max="400.0" min="20.0" onMouseEntered="#distanceListener" prefHeight="18.0" prefWidth="150.0" value="100.0" />
                               <Label fx:id="mass_label_8" alignment="CENTER" layoutY="43.0" prefHeight="21.0" prefWidth="202.0" text="%Mass" textFill="#bfbfbf" />
                               <Label fx:id="speed_label_8" alignment="CENTER" layoutX="-2.0" layoutY="98.0" prefHeight="21.0" prefWidth="201.0" text="%Speed" textFill="#bfbfbf" />
                               <Label fx:id="angle_label_8" alignment="CENTER" layoutX="2.0" layoutY="152.0" prefHeight="21.0" prefWidth="197.0" text="%Angle" textFill="#bfbfbf" />
@@ -617,7 +617,7 @@
                                     <Font size="8.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="distance_display_8" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="241.0" text="20" textFill="#bfbfbf">
+                              <Label fx:id="distance_display_8" alignment="CENTER_RIGHT" layoutX="98.0" layoutY="241.0" text="100" textFill="#bfbfbf">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
@@ -728,7 +728,7 @@
                   </Label>
                   <Circle fx:id="boids_population_decrement_circle" fill="#1f93ff00" layoutX="52.0" layoutY="121.0" onMouseEntered="#decrementBoidsPopulationGlow" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
                   <Circle fx:id="boids_population_increment_circle" fill="#1f93ff00" layoutX="232.0" layoutY="121.0" onMouseEntered="#incrementBoidsPopulationGlow" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
-                  <TextField fx:id="boids_population_input" alignment="CENTER" layoutX="69.0" layoutY="105.0" onKeyReleased="#updateField" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" onMousePressed="#resetField" prefHeight="31.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-text-fill: rgb(191, 191, 191);" text="1" />
+                  <TextField fx:id="boids_population_input" alignment="CENTER" layoutX="69.0" layoutY="105.0" onKeyReleased="#updateField" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" onMousePressed="#resetField" prefHeight="31.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-text-fill: rgb(191, 191, 191);" text="5" />
                   <Label fx:id="decrement_boids_population" layoutX="49.0" layoutY="110.0" onMouseEntered="#decrementBoidsPopulationGlow" onMouseExited="#decrementBoidsPopulationReset" onMousePressed="#decrementBoidsPopulation" text="-" textFill="#bfbfbf" />
                   <Label fx:id="increment_boids_population" layoutX="227.0" layoutY="110.0" onMouseEntered="#incrementBoidsPopulationGlow" onMouseExited="#incrementBoidsPopulationReset" onMousePressed="#incrementBoidsPopulation" text="+" textFill="#bfbfbf" />
             			   
@@ -747,16 +747,13 @@
                   <Line fx:id="boids_quantity_line" endX="50.0" layoutX="171.0" layoutY="216.0" onMouseEntered="#boidsPopulationGlow" onMouseExited="#boidsPopulationReset" startX="-100.0" stroke="#bfbfbf" />
                   <Label fx:id="increment_boids_quantity" layoutX="230.0" layoutY="194.0" onMouseEntered="#incrementBoidsQuantityGlow" onMouseExited="#incrementBoidsQuantityReset" onMousePressed="#incrementBoidsQuantity" text="+" textFill="#bfbfbf" />
                   <Label fx:id="decrement_boids_quantity" layoutX="52.0" layoutY="194.0" onMouseEntered="#decrementBoidsQuantityGlow" onMouseExited="#decrementBoidsQuantityReset" onMousePressed="#decrementBoidsQuantity" text="-" textFill="#bfbfbf" />
-                  <TextField fx:id="boids_quantity_input" alignment="CENTER" layoutX="72.0" layoutY="189.0" onKeyReleased="#updateField" onMouseEntered="#boidsQuantityGlow" onMouseExited="#boidsQuantityReset" onMousePressed="#resetField" prefHeight="31.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-text-fill: rgb(191, 191, 191);" text="1" />
+                  <TextField fx:id="boids_quantity_input" alignment="CENTER" layoutX="72.0" layoutY="189.0" onKeyReleased="#updateField" onMouseEntered="#boidsQuantityGlow" onMouseExited="#boidsQuantityReset" onMousePressed="#resetField" prefHeight="31.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-text-fill: rgb(191, 191, 191);" text="4" />
                   <Circle fx:id="boids_quantity_increment_circle" fill="#1f93ff00" layoutX="235.0" layoutY="205.0" onMouseEntered="#incrementBoidsQuantityGlow" onMouseExited="#incrementBoidsQuantityReset" onMousePressed="#incrementBoidsQuantity" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
                   <Circle fx:id="boids_quantity_decrement_circle" fill="#1f93ff00" layoutX="55.0" layoutY="205.0" onMouseEntered="#decrementBoidsQuantityGlow" onMouseExited="#decrementBoidsQuantityReset" onMousePressed="#decrementBoidsQuantity" radius="11.0" stroke="#bfbfbf" strokeType="INSIDE" />
                </children>
             </Pane>
          </children>
       </Pane>
-      <Group fx:id="perception_group" />
-      <Group fx:id="boids_group" />
-      <Group fx:id="obstacle_group" />
       <ToggleButton fx:id="toggle_night_mode" layoutX="1155.0" layoutY="675.0" mnemonicParsing="false" onAction="#toggleMode" onMouseEntered="#applyGlowEffectOnToggleButton" onMouseExited="#unapplyGlowEffectOnToggleButton" prefHeight="31.0" prefWidth="111.0" style="-fx-background-color: transparent;" text="%NightModeLabel" textFill="#bababa" />
       <Circle fx:id="night_mode_indicator" fill="#00cc63" layoutX="1159.0" layoutY="691.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" />
       <Circle fx:id="perception_indicator" fill="#00cc63" layoutX="1159.0" layoutY="666.0" radius="4.0" stroke="#0000004d" strokeLineCap="ROUND" strokeType="INSIDE" visible="false" />
@@ -785,5 +782,8 @@
             <Button fx:id="hide_infos" layoutX="176.0" layoutY="108.0" mnemonicParsing="false" onAction="#hideInfosVisibility" onMouseEntered="#applyGlowEffectOnButton" onMouseExited="#unapplyGlowEffectOnButton" prefHeight="31.0" prefWidth="69.0" style="-fx-background-color: transparent;" text="%Hide" textFill="#bdbdbd4d" />
          </children>
       </Pane>
+      <Group fx:id="perception_group" />
+      <Group fx:id="boids_group" />
+      <Group fx:id="obstacle_group" />
    </children>
 </Pane>

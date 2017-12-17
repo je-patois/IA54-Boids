@@ -315,6 +315,7 @@ class BoidsFxViewerController extends FxViewerController {
 		pause_button.visible = true
 		
 		if(map == 1) {
+			this.polygons = new ArrayList()
 			return new ArrayList()
 		}
 		else if (map == 2) {
