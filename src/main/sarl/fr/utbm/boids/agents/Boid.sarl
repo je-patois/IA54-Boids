@@ -307,9 +307,13 @@ agent Boid {
 
 		var newPosition : Vector		
 		var acceleration : Vector
+
+		if (force.length > 1.7) {
+			force.normaliser()
+			force.fois(1.7)
+		}
 		
 		acceleration = new Vector(force)
-		//acceleration.fois(1/this.body.masse)
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)
@@ -319,6 +323,9 @@ agent Boid {
 			this.body.newVitesse.normaliser()
 			this.body.newVitesse.fois(this.body.groupeVitesseMax)
 		}
+		info(this.body.getMasse())
+		//this.body.newVitesse.fois(1 / this.body.getMasse())
+		info(this.body.newVitesse)
 		
 		//maj position
 		newPosition = new Vector(this.body.position)
