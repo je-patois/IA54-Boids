@@ -178,3 +178,15 @@ event Resume
 event BtnLaunch
 
 event BtnShutdown
+
+event PositionModification {
+	var boid : UUID
+	var x : double
+	var y : double
+	
+	new(boid : UUID, x : double, y : double) {
+		this.boid = boid
+		this.x = x
+		this.y = y
+	}
+}

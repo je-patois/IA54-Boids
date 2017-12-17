@@ -26,6 +26,7 @@ import fr.utbm.boids.events.BoidInitialized
 import io.sarl.core.Logging
 import fr.utbm.boids.EnvInfos
 import java.util.ArrayList
+import fr.utbm.boids.events.PositionModification
 
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess, Behaviors
@@ -40,6 +41,7 @@ agent Environment {
 	var inCycle : Boolean
 	var envInfos : EnvInfos
 	var FastBoids : ArrayList<UUID>
+	var restart : Boolean = false
 	// var superBoid : boolean // TODO Un jour peut-être
 
 	on Initialize {
@@ -84,6 +86,14 @@ agent Environment {
 		info("All boids have been created: " + boidsUpdated)
 		emit(new BoidsReady)
 	}
+	
+	on PositionModification [!isFromMe] {
+		restart = true
+		var address = boidsAddresses.get(occurrence.boid)
+		this.boidsList.get(occurrence.boid).position.x = occurrence.x
+		this.boidsList.get(occurrence.boid).position.y = occurrence.y
+		innerContext.defaultSpace.emit(ID, new PositionModification(occurrence.boid, occurrence.x, occurrence.y), Scopes.addresses(address))
+	}
 
 	//TODO Si à l'initialisation deux boids spawn au même endroit, il faut relancer un spawn
 	on ResultatDeplacement {
@@ -99,7 +109,6 @@ agent Environment {
 				this.boidsGrid.put(occurrence.position, occurrence.source.UUID)
 				accept = true
 			}
-		
 		}
 		
 		// pour interdire à un boids d'aller dans un obstacle
@@ -168,10 +177,17 @@ agent Environment {
 					//On se prépare pour la prochaine itération
 					this.boidsUpdated = 0
 					boidsAddresses.forEach[id, address|
+								innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
+						]
+						inCycle = false	
+					}	
+				}
+			} else {
+					restart = false
+					boidsUpdated = 0
+					boidsAddresses.forEach [ id, address |
 						innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
 					]
-					inCycle = false	
-				}	
 			}
 		}*/
 	}

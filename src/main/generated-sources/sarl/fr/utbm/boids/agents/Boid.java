@@ -7,6 +7,7 @@ import fr.utbm.boids.Vector;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.BoidInitialized;
 import fr.utbm.boids.events.DemandeDeplacement;
+import fr.utbm.boids.events.PositionModification;
 import fr.utbm.boids.events.ResultatDeplacement;
 import fr.utbm.boids.events.StartPosition;
 import fr.utbm.boids.events.ValidationDeplacement;
@@ -212,7 +213,7 @@ public class Boid extends Agent {
     tmp = _vector_1;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = boids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if (((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue())) && (!Objects.equal(elem.getKey(), this.getID())))) {
+      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
         int _width = this.envInfos.getWidth();
         double _modulo = (xelem % _width);
         int _height = this.envInfos.getHeight();
@@ -238,7 +239,7 @@ public class Boid extends Agent {
     force = _vector;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = boids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if (((((!Objects.equal(elem.getKey(), null)) && (!Objects.equal(elem.getKey(), this.getID()))) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue()))) {
+      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
         nbTot++;
         force.plus(elem.getValue().getPosition());
       }
@@ -262,7 +263,7 @@ public class Boid extends Agent {
     tmp = _vector_1;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = boids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if (((((!Objects.equal(elem.getKey(), null)) && (!Objects.equal(elem.getKey(), this.getID()))) && (elem.getValue().getGroupe() == this.body.getGroupe())) && this.visible(elem.getValue()))) {
+      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
         nbTot++;
         tmp.setXY(elem.getValue().getPosition());
         double _length = tmp.length();
@@ -288,7 +289,7 @@ public class Boid extends Agent {
     tmp = _vector_1;
     Set<Map.Entry<UUID, BoidBody>> _entrySet = boids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if ((((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() != this.body.getGroupe())) && this.visible(elem.getValue()))) {
+      if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() != this.body.getGroupe()))) {
         tmp.setXY(this.body.getPosition());
         tmp.moins(elem.getValue().getPosition());
         len = tmp.length();
@@ -344,19 +345,29 @@ public class Boid extends Agent {
   @SyntheticMember
   @Pure
   private boolean $behaviorUnitGuard$EndSimulation$4(final EndSimulation it, final EndSimulation occurrence) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nType mismatch: cannot convert from boolean to boolean");
+    boolean _isFrom = it.isFrom(this.parentAgent);
+    return _isFrom;
   }
   
   protected Map<UUID, BoidBody> perception(final Map<UUID, BoidBody> boids) {
     this.seenBoids.clear();
     Set<Map.Entry<UUID, BoidBody>> _entrySet = boids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if (((elem.getKey() != null) && this.visible(elem.getValue()))) {
+      if ((((elem.getKey() != null) && this.visible(elem.getValue())) && (!Objects.equal(elem.getKey(), this.getID())))) {
         this.seenBoids.put(elem.getKey(), elem.getValue());
       }
     }
     return this.seenBoids;
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$PositionModification$5(final PositionModification occurrence) {
+    Vector _position = this.body.getPosition();
+    _position.setX(occurrence.x);
+    Vector _position_1 = this.body.getPosition();
+    int _height = this.envInfos.getHeight();
+    double _minus = (_height - occurrence.y);
+    _position_1.setY(_minus);
   }
   
   @Extension
@@ -449,21 +460,39 @@ public class Boid extends Agent {
     }
   }
   
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$PositionModification(final PositionModification occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$PositionModification$5(occurrence));
+  }
+  
   @Override
   @Pure
   @SyntheticMember
   public boolean equals(final Object obj) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean."
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Boid other = (Boid) obj;
+    if (!java.util.Objects.equals(this.parentAgent, other.parentAgent)) {
+      return false;
+    }
+    return super.equals(obj);
   }
   
   @Override
   @Pure
   @SyntheticMember
   public int hashCode() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe return type is incompatible with equals(Object). Current method has the return type: void. The super method has the return type: boolean.");
+    int result = super.hashCode();
+    final int prime = 31;
+    result = prime * result + java.util.Objects.hashCode(this.parentAgent);
+    return result;
   }
   
   @SyntheticMember

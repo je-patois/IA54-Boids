@@ -6,6 +6,7 @@ import fr.utbm.boids.agents.TimeManager;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.BoidsReady;
 import fr.utbm.boids.events.ConfigureSimulation;
+import fr.utbm.boids.events.PositionModification;
 import fr.utbm.boids.events.StartingSimulation;
 import fr.utbm.boids.events.TimeManagingStart;
 import fr.utbm.boids.gui.BoidsFxViewerController;
@@ -115,14 +116,29 @@ public class BootAgent extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$3(final EndSimulation occurrence) {
+  private void $behaviorUnit$PositionModification$3(final PositionModification occurrence) {
+    InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+    PositionModification _positionModification = new PositionModification(occurrence.boid, occurrence.x, occurrence.y);
+    _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _positionModification, null);
+  }
+  
+  @SyntheticMember
+  @Pure
+  private boolean $behaviorUnitGuard$PositionModification$3(final PositionModification it, final PositionModification occurrence) {
+    boolean _isFromMe = this.isFromMe(it);
+    boolean _not = (!_isFromMe);
+    return _not;
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$EndSimulation$4(final EndSimulation occurrence) {
     Lifecycle _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER = this.$castSkill(Lifecycle.class, (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = this.$getSkill(Lifecycle.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
     _$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER.killMe();
   }
   
   @SyntheticMember
   @Pure
-  private boolean $behaviorUnitGuard$EndSimulation$3(final EndSimulation it, final EndSimulation occurrence) {
+  private boolean $behaviorUnitGuard$EndSimulation$4(final EndSimulation it, final EndSimulation occurrence) {
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
     boolean _hasMemberAgent = _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.hasMemberAgent();
     boolean _not = (!_hasMemberAgent);
@@ -130,7 +146,7 @@ public class BootAgent extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$4(final EndSimulation occurrence) {
+  private void $behaviorUnit$EndSimulation$5(final EndSimulation occurrence) {
     this.exited = true;
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
     EndSimulation _endSimulation = new EndSimulation();
@@ -139,7 +155,7 @@ public class BootAgent extends Agent {
   
   @SyntheticMember
   @Pure
-  private boolean $behaviorUnitGuard$EndSimulation$4(final EndSimulation it, final EndSimulation occurrence) {
+  private boolean $behaviorUnitGuard$EndSimulation$5(final EndSimulation it, final EndSimulation occurrence) {
     return (this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS).hasMemberAgent() && (!this.exited));
   }
   
@@ -219,21 +235,16 @@ public class BootAgent extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsReady$2(occurrence));
   }
   
-  /**
-   * on Resume {
-   * innerContext.defaultSpace.emit(ID, new Resume)
-   * }
-   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    if ($behaviorUnitGuard$EndSimulation$3(occurrence, occurrence)) {
-      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$3(occurrence));
-    }
     if ($behaviorUnitGuard$EndSimulation$4(occurrence, occurrence)) {
       ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$4(occurrence));
+    }
+    if ($behaviorUnitGuard$EndSimulation$5(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$5(occurrence));
     }
   }
   
@@ -243,6 +254,16 @@ public class BootAgent extends Agent {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ConfigureSimulation$1(occurrence));
+  }
+  
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$PositionModification(final PositionModification occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    if ($behaviorUnitGuard$PositionModification$3(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$PositionModification$3(occurrence));
+    }
   }
   
   @Override

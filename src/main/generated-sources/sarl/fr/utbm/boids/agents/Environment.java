@@ -11,6 +11,7 @@ import fr.utbm.boids.events.BoidsReady;
 import fr.utbm.boids.events.BoidsSideReady;
 import fr.utbm.boids.events.Cycle;
 import fr.utbm.boids.events.DemandeDeplacement;
+import fr.utbm.boids.events.PositionModification;
 import fr.utbm.boids.events.ResultatDeplacement;
 import fr.utbm.boids.events.StartPosition;
 import fr.utbm.boids.events.StartingSimulation;
@@ -67,6 +68,8 @@ public class Environment extends Agent {
   private Boolean inCycle;
   
   private EnvInfos envInfos;
+  
+  private Boolean restart = Boolean.valueOf(false);
   
   @SyntheticMember
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
@@ -148,7 +151,28 @@ public class Environment extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$ResultatDeplacement$4(final ResultatDeplacement occurrence) {
+  private void $behaviorUnit$PositionModification$4(final PositionModification occurrence) {
+    this.restart = Boolean.valueOf(true);
+    Address address = this.boidsAddresses.get(occurrence.boid);
+    Vector _position = this.boidsList.get(occurrence.boid).getPosition();
+    _position.setX(occurrence.x);
+    Vector _position_1 = this.boidsList.get(occurrence.boid).getPosition();
+    _position_1.setY(occurrence.y);
+    InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+    PositionModification _positionModification = new PositionModification(occurrence.boid, occurrence.x, occurrence.y);
+    _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _positionModification, Scopes.addresses(address));
+  }
+  
+  @SyntheticMember
+  @Pure
+  private boolean $behaviorUnitGuard$PositionModification$4(final PositionModification it, final PositionModification occurrence) {
+    boolean _isFromMe = this.isFromMe(it);
+    boolean _not = (!_isFromMe);
+    return _not;
+  }
+  
+  @SyntheticMember
+  private void $behaviorUnit$ResultatDeplacement$5(final ResultatDeplacement occurrence) {
     boolean accept = false;
     occurrence.position = this.estDansLaCarte(occurrence.position);
     synchronized (this.boidsGrid) {
@@ -180,27 +204,38 @@ public class Environment extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$Cycle$5(final Cycle occurrence) {
+  private void $behaviorUnit$Cycle$6(final Cycle occurrence) {
     if ((!(this.inCycle).booleanValue())) {
-      synchronized (this.boidsUpdated) {
-        int _size = this.boidsList.size();
-        boolean _greaterEqualsThan = ((this.boidsUpdated).intValue() >= _size);
-        if (_greaterEqualsThan) {
-          this.inCycle = Boolean.valueOf(true);
-          this.ctrl.updateGraphics(this.boidsList.values());
-          synchronized (this.boidsGrid) {
-            HashMap<Vector, UUID> _hashMap = new HashMap<Vector, UUID>();
-            this.boidsGrid = _hashMap;
+      if ((!(this.restart).booleanValue())) {
+        synchronized (this.boidsUpdated) {
+          int _size = this.boidsList.size();
+          boolean _equals = ((this.boidsUpdated).intValue() == _size);
+          if (_equals) {
+            this.inCycle = Boolean.valueOf(true);
+            this.ctrl.updateGraphics(this.boidsList.values());
+            synchronized (this.boidsGrid) {
+              HashMap<Vector, UUID> _hashMap = new HashMap<Vector, UUID>();
+              this.boidsGrid = _hashMap;
+            }
+            this.boidsUpdated = Integer.valueOf(0);
+            final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
+              InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+              DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
+              _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
+            };
+            this.boidsAddresses.forEach(_function);
+            this.inCycle = Boolean.valueOf(false);
           }
-          this.boidsUpdated = Integer.valueOf(0);
-          final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
-            InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-            DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
-            _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
-          };
-          this.boidsAddresses.forEach(_function);
-          this.inCycle = Boolean.valueOf(false);
         }
+      } else {
+        this.restart = Boolean.valueOf(false);
+        this.boidsUpdated = Integer.valueOf(0);
+        final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
+          InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+          DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
+          _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
+        };
+        this.boidsAddresses.forEach(_function);
       }
     }
   }
@@ -234,7 +269,7 @@ public class Environment extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$6(final EndSimulation occurrence) {
+  private void $behaviorUnit$EndSimulation$7(final EndSimulation occurrence) {
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     EndSimulation _endSimulation = new EndSimulation();
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_endSimulation);
@@ -244,7 +279,7 @@ public class Environment extends Agent {
   
   @SyntheticMember
   @Pure
-  private boolean $behaviorUnitGuard$EndSimulation$6(final EndSimulation it, final EndSimulation occurrence) {
+  private boolean $behaviorUnitGuard$EndSimulation$7(final EndSimulation it, final EndSimulation occurrence) {
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
     boolean _hasMemberAgent = _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.hasMemberAgent();
     boolean _not = (!_hasMemberAgent);
@@ -252,7 +287,7 @@ public class Environment extends Agent {
   }
   
   @SyntheticMember
-  private void $behaviorUnit$EndSimulation$7(final EndSimulation occurrence) {
+  private void $behaviorUnit$EndSimulation$8(final EndSimulation occurrence) {
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
     EndSimulation _endSimulation = new EndSimulation();
     _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _endSimulation, null);
@@ -260,7 +295,7 @@ public class Environment extends Agent {
   
   @SyntheticMember
   @Pure
-  private boolean $behaviorUnitGuard$EndSimulation$7(final EndSimulation it, final EndSimulation occurrence) {
+  private boolean $behaviorUnitGuard$EndSimulation$8(final EndSimulation it, final EndSimulation occurrence) {
     InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
     boolean _hasMemberAgent = _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.hasMemberAgent();
     return _hasMemberAgent;
@@ -380,11 +415,21 @@ public class Environment extends Agent {
   private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    if ($behaviorUnitGuard$EndSimulation$6(occurrence, occurrence)) {
-      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$6(occurrence));
-    }
     if ($behaviorUnitGuard$EndSimulation$7(occurrence, occurrence)) {
       ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$7(occurrence));
+    }
+    if ($behaviorUnitGuard$EndSimulation$8(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$8(occurrence));
+    }
+  }
+  
+  @SyntheticMember
+  @PerceptGuardEvaluator
+  private void $guardEvaluator$PositionModification(final PositionModification occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
+    assert occurrence != null;
+    assert ___SARLlocal_runnableCollection != null;
+    if ($behaviorUnitGuard$PositionModification$4(occurrence, occurrence)) {
+      ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$PositionModification$4(occurrence));
     }
   }
   
@@ -393,7 +438,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$ResultatDeplacement(final ResultatDeplacement occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ResultatDeplacement$4(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ResultatDeplacement$5(occurrence));
   }
   
   @SyntheticMember
@@ -401,7 +446,7 @@ public class Environment extends Agent {
   private void $guardEvaluator$Cycle(final Cycle occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
     assert occurrence != null;
     assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Cycle$5(occurrence));
+    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Cycle$6(occurrence));
   }
   
   @Override
@@ -424,6 +469,8 @@ public class Environment extends Agent {
     }
     if (other.inCycle != this.inCycle)
       return false;
+    if (other.restart != this.restart)
+      return false;
     return super.equals(obj);
   }
   
@@ -437,6 +484,7 @@ public class Environment extends Agent {
     result = prime * result + (this.firstTime ? 1231 : 1237);
     result = prime * result + java.util.Objects.hashCode(this.spawner);
     result = prime * result + (this.inCycle ? 1231 : 1237);
+    result = prime * result + (this.restart ? 1231 : 1237);
     return result;
   }
   
