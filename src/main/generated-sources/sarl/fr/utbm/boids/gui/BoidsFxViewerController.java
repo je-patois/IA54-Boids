@@ -122,14 +122,29 @@ public class BoidsFxViewerController extends FxViewerController {
    */
   private Polygon currentPolygon = null;
   
+  /**
+   * Abscisse du polygone drag
+   */
   private double orgSceneX;
   
+  /**
+   * Ordonnée du polygone drag
+   */
   private double orgSceneY;
   
+  /**
+   * Valeur en Y de la translation du polygone drag
+   */
   private double orgTranslateX;
   
+  /**
+   * Valeur en Y de la translation du polygone drag
+   */
   private double orgTranslateY;
   
+  /**
+   * Sauvegarde de la position initiale du polygone drag
+   */
   private List<Double> savedPosition = new ArrayList<Double>();
   
   /**

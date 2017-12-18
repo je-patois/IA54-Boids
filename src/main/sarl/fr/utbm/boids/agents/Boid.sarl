@@ -30,7 +30,8 @@ agent Boid {
 	var body : BoidBody
 	var parentAgent : UUID
 	var envInfos : EnvInfos
-	var seenBoids : Map<UUID, BoidBody>
+	var visibleBoids : Map<UUID, BoidBody>
+	var closeBoids : Map<UUID, BoidBody>
 	
 	/*
 	 * gestion des évènements
@@ -42,7 +43,8 @@ agent Boid {
 		parentAgent = occurrence.spawner
 		this.body = new BoidBody(this.ID, occurrence.parameters.get(0) as Integer, occurrence.parameters.get(1) as Integer, occurrence.parameters.get(2) as Integer, occurrence.parameters.get(3) as Integer, occurrence.parameters.get(4) as Integer)
 		this.envInfos = occurrence.parameters.get(5) as EnvInfos
-		this.seenBoids = new HashMap<UUID, BoidBody>
+		this.visibleBoids = new HashMap<UUID, BoidBody>
+		this.closeBoids = new HashMap<UUID, BoidBody>
 		emit(new BoidInitialized(this.body, 'Boid'))
 	}
 	
@@ -95,30 +97,25 @@ agent Boid {
 
 		forceTot = new Vector(0, 0)
 		
-		seenBoids = perception(boids)
+		visibleBoids = perception(boids, 'visible')
+		closeBoids = perception(boids, 'close')
 		 
 		if (boids != null) {
 			
 			//on applique la séparation 
-			forceTot.plus(separation(seenBoids))
-			info("avant " + forceTot)
+			forceTot.plus(separation(visibleBoids))
+			
 			//on applique la cohésion
-			forceTot.plus(cohesion(seenBoids))
-
+			forceTot.plus(cohesion(visibleBoids))				
+			
 			//on applique l'alignement
-			forceTot.plus(alignement(seenBoids))
+			forceTot.plus(alignement(visibleBoids))
 
-			
 			//on applique la répulsion
-			forceTot.plus(repulsion(seenBoids))
+			forceTot.plus(repulsion(closeBoids))
 			
-			forceTot.normaliser
-
-			//on applique la force résultant de la détection des obstacles
-		 	/*forceObstacles(occurrence.obstacles, forceTot)*/
-		 	
-		 	
-		 	info(forceTot)
+			// on applique la force résultant de la détection des obstacles
+			forceTot.plus(forceObstacles(occurrence.obstacles, forceTot))
 		 
 			// TODO appliquer force obstacle
 		}
@@ -166,18 +163,18 @@ agent Boid {
 	 	
 	 	return true
 	 }
-	 
-	
-	def proche (b : BoidBody) : boolean{
+
+	def proche(b : BoidBody) : boolean {
 		var tmp : Vector
-		
+
 		tmp = new Vector(b.position)
 		tmp.moins(this.body.position)
-		if(tmp.length() > this.body.distanceVisibilite){
+		if (tmp.length() > this.body.distanceVisibilite) {
 			return false
 		}
 		return true
 	}
+	 
 	
 	/* 
 	 * Création des fonctions comportementales du Boids
@@ -197,7 +194,7 @@ agent Boid {
 		tmp = new Vector(0, 0)
 		 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe && visible(elem.value)) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe) {
 				
 				/*if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - envInfos.width)){
 					if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x + envInfos.width)){
@@ -238,7 +235,7 @@ agent Boid {
 				//force.fois(35)
 			}
 		}
-		info("force : " + force)
+	
 		return force
 
 	}
@@ -252,7 +249,7 @@ agent Boid {
 		force = new Vector(0,0)
 		 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe && proche(elem.value)) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe) {
 				nbTot++
 				force.plus(elem.value.position)
 			}
@@ -279,7 +276,7 @@ agent Boid {
 		tmp = new Vector(0,0)
 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe && proche(elem.value)) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe) {
 				nbTot++
 				tmp.setXY(elem.value.position)
 				tmp.fois(1 / tmp.length)
@@ -306,7 +303,7 @@ agent Boid {
 		tmp = new Vector(0,0)
 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe != this.body.groupe && proche(elem.value)) {
+			if (elem.key != null && elem.value.groupe != this.body.groupe) {
 				tmp.setXY(this.body.position)
 				tmp.moins(elem.value.position)
 				len = tmp.length
@@ -318,28 +315,45 @@ agent Boid {
 		
 		return force
 	}
-	/*
+	
 	def forceObstacles(listeObstacles : List<Obstacle>, force : Vector) : Vector{
 		
-		var direction = new Vector(0,0)
+		/*var direction = new Vector(0,0)
 		var direction2 = new Vector(0,0)
 		var tmp = new Vector(0,0)
+		var collision : Vector = new Vector(this.body.vitesse)*/
 		
-		if (listeObstacles != null) {
+		if (listeObstacles !== null) {
 			listeObstacles.forEach [ o : Obstacle, index : int |
-				if (obstacleVisible(o)) {
+				/*if (obstacleVisible(o)) {
 					direction.plus(o.getCenter())
-					direction2.plus(this.body.position.x, this.body.position.y)
+					direction2.plus(new Vector(this.body.position.x, this.body.position.y))
 					direction.moins(direction2)
 					tmp.plus(direction)
 					tmp.normaliser
 					force.moins(tmp)
-				}
+				}*/
+				 
+				// Si le boid vient de droite, répulsion vers la droite, si il vient de la gauche, répulsion vers la gauche, si il vient du haut, répulsion vers le haut, si il vient du bas, répulsion vers le bas.
+				// --> Diviser la bouding box(carré) en 4 parties haut bas gauche droite pour discerner ces cas
+				// Appliquer une force dans pour faire partir le boids dans la direction inverse
+				/*if(this.body.position.y <= o.polygon.boundsInLocal.maxY - 50) {
+					if (o.polygon.boundsInLocal.contains(this.body.position.x, this.body.position.y)) {
+						force.plus(o.center)
+						force.normaliser()
+					} 
+				} else if(this.body.position.y >= o.polygon.boundsInLocal.minY + 50) {
+					if (o.polygon.boundsInLocal.contains(this.body.position.x, this.body.position.y)) {
+						force.moins(o.center)
+						force.normaliser()
+					}
+				}*/
+				
 			]
 		}
 		return force
-	}*/
-	/* 
+	}
+	
 	def obstacleVisible (obstacle : Obstacle) : boolean {
 		var tmp : Vector
 		tmp = obstacle.getCenter()
@@ -350,7 +364,7 @@ agent Boid {
 			return false
 		}
 	}
-	 */
+	
 	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
 	def appliquerForce(force : Vector) : Vector {
 
@@ -365,6 +379,7 @@ agent Boid {
 		}
 		
 		acceleration = new Vector(force)
+		//acceleration.fois(1/this.body.masse)
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)
@@ -374,9 +389,6 @@ agent Boid {
 			this.body.newVitesse.normaliser()
 			this.body.newVitesse.fois(this.body.groupeVitesseMax)
 		}
-		//info(this.body.getMasse())
-		//this.body.newVitesse.fois(1 / this.body.getMasse())
-		//info(this.body.newVitesse)
 		
 		//maj position
 		newPosition = new Vector(this.body.position)
@@ -392,15 +404,26 @@ agent Boid {
 		emit(new EndSimulation) [it.UUID == this.parentAgent]
 		killMe
 	}
-	
-	def perception(boids : Map<UUID, BoidBody>) : Map<UUID, BoidBody> {
-		seenBoids.clear()
-		for (elem : boids.entrySet) {
-			if (elem.key !== null && proche(elem.value) && elem.key != this.ID) {
-				seenBoids.put(elem.key, elem.value)
+		
+	def perception(boids : Map<UUID, BoidBody>, mode : String) : Map<UUID, BoidBody> {
+		if (mode === 'visible') {
+			visibleBoids.clear()
+			for (elem : boids.entrySet) {
+				if (elem.key !== null && visible(elem.value) && elem.key != this.ID) {
+					visibleBoids.put(elem.key, elem.value)
+				}
 			}
+			return visibleBoids
+		} else if (mode === 'close') {
+			closeBoids.clear()
+			for (elem : boids.entrySet) {
+				if (elem.key !== null && proche(elem.value) && elem.key != this.ID) {
+					closeBoids.put(elem.key, elem.value)
+				}
+			}
+			return closeBoids
 		}
-		return seenBoids
+		
 	}
 	
 	on PositionModification {

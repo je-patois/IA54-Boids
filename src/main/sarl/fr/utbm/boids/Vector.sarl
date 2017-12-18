@@ -1,7 +1,5 @@
 package fr.utbm.boids
 
-import fr.utbm.boids.util.Coordinates
-
 /* Du mal à réutiliser une classe Vector java, malgré l'import il veut pas reconnaitre le type de la variable, je passe par cette classe en attendant  */
 class Vector {
 	var x : double
@@ -21,13 +19,8 @@ class Vector {
 		this.x = 0
 		this.y = 0
 	}
-	
-	new (coordinates : Coordinates){
-		this.x = coordinates.x
-		this.y = coordinates.y
-	}
-	
-	def clear() : void{
+
+	def clear() : void {
 		this.x = 0
 		this.y = 0
 	}
@@ -66,16 +59,6 @@ class Vector {
 	def plus(vec : Vector) {
 		this.x = this.x + vec.x
 		this.y = this.y + vec.y
-	}
-
-	def plus(coordinates : Coordinates) {
-		this.x = this.x + coordinates.x
-		this.y = this.y + coordinates.y
-	}
-	
-	def plus(a : double, b : double){
-		this.x = this.x + a
-		this.y = this.y + b
 	}
 
 	def fois(a : double) {

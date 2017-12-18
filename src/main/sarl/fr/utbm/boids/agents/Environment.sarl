@@ -25,7 +25,6 @@ import fr.utbm.boids.events.Cycle
 import fr.utbm.boids.events.BoidInitialized
 import io.sarl.core.Logging
 import fr.utbm.boids.EnvInfos
-import java.util.ArrayList
 import fr.utbm.boids.events.PositionModification
 
 agent Environment {
@@ -40,7 +39,6 @@ agent Environment {
 	var spawner : UUID
 	var inCycle : Boolean
 	var envInfos : EnvInfos
-	var FastBoids : ArrayList<UUID>
 	var restart : Boolean = false
 	// var superBoid : boolean // TODO Un jour peut-être
 
@@ -53,7 +51,6 @@ agent Environment {
 		this.spawner = occurrence.spawner
 		this.inCycle = false
 		this.envInfos = new EnvInfos(this.ctrl.mapWidth, this.ctrl.mapHeight)
-		this.FastBoids = new ArrayList<UUID>
 		info("The Environment is started.")
 	}
 	
@@ -102,14 +99,11 @@ agent Environment {
 		
 		occurrence.position = estDansLaCarte(occurrence.position)
 		
-		synchronized (boidsGrid){
+		synchronized (boidsGrid) {
 		
 			// on regarde si la position est libre 
-			var positionEntier : Vector
-			positionEntier = new Vector(Math.floor(occurrence.position.x), Math.floor(occurrence.position.y))
-			if (!this.boidsGrid.containsKey(positionEntier)) {
-				this.boidsGrid.put(positionEntier, occurrence.source.UUID)
-				//info(positionEntier)
+			if (!this.boidsGrid.containsKey(occurrence.position)) {
+				this.boidsGrid.put(occurrence.position, occurrence.source.UUID)
 				accept = true
 			}
 		}
@@ -131,8 +125,7 @@ agent Environment {
 		}
 		
 		synchronized (boidsUpdated) {
-			boidsUpdated = boidsUpdated + 1 
-			FastBoids.add(occurrence.source.UUID)
+			boidsUpdated = boidsUpdated + 1
 			if(this.boidsUpdated == this.ctrl.boidsQuantity * this.ctrl.boidsPopulation && this.firstTime == true) {
 				//info('boidsUpdated: ' + this.boidsUpdated + ', boidsTotal: ' + this.ctrl.boidsQuantity * this.ctrl.boidsPopulation)
 				wake(new BoidsSideReady)
@@ -141,46 +134,25 @@ agent Environment {
 		}
 	}
 	
-	on Cycle {
+	on Cycle{
+		if(!inCycle) {
+			if(!restart) {
+				synchronized (boidsUpdated){
+					//info ("demande de rafraichissement : " + this.boidsUpdated)
+					 if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
+						inCycle = true
+						// envoi des nouveaux corps des boids
+						ctrl.updateGraphics(this.boidsList.values)
 		
-		synchronized (boidsUpdated) {
-			synchronized (boidsGrid) {
-				synchronized (FastBoids){
-					ctrl.updateGraphics(this.boidsList.values)
-					this.boidsUpdated = 0
-					boidsAddresses.forEach [ id, address |
-						if(this.FastBoids.contains(id)){
-							innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList, this.ctrl.obstacles), Scopes.addresses(address))
-							this.FastBoids.remove(id)
+						// remise à zéro de la liste des changements
+						synchronized (boidsGrid){
+							this.boidsGrid = new HashMap<Vector, UUID>
 						}
-					]
-					this.boidsGrid = new HashMap<Vector, UUID>
-				}
-			}
-		}
-		
-		/*if(!inCycle) {
-			synchronized (boidsUpdated){
-				//info ("demande de rafraichissement : " + this.boidsUpdated)
-				// if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
-				
-				
-				
-				if (this.boidsUpdated >= boidsList.size) {
-					inCycle = true
-	
-					// envoi des nouveaux corps des boids
-					ctrl.updateGraphics(this.boidsList.values)
-	
-					// remise à zéro de la liste des changements
-					synchronized (boidsGrid){
-						this.boidsGrid = new HashMap<Vector, UUID>
-					}
-					
-					//On se prépare pour la prochaine itération
-					this.boidsUpdated = 0
-					boidsAddresses.forEach[id, address|
-								innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
+						
+						//On se prépare pour la prochaine itération
+						this.boidsUpdated = 0
+						boidsAddresses.forEach[id, address|
+								innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList, this.ctrl.obstacles), Scopes.addresses(address))
 						]
 						inCycle = false	
 					}	
@@ -189,10 +161,10 @@ agent Environment {
 					restart = false
 					boidsUpdated = 0
 					boidsAddresses.forEach [ id, address |
-						innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
+						innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList, this.ctrl.obstacles), Scopes.addresses(address))
 					]
 			}
-		}*/
+		}
 	}
 
 	def estDansLaCarte(v : Vector) : Vector {	//TODO rajouter tests murs ICI / Rename ?

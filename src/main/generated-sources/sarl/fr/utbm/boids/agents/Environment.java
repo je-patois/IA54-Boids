@@ -220,7 +220,8 @@ public class Environment extends Agent {
             this.boidsUpdated = Integer.valueOf(0);
             final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
               InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-              DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
+              List<Obstacle> _obstacles = this.ctrl.getObstacles();
+              DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList, _obstacles);
               _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
             };
             this.boidsAddresses.forEach(_function);
@@ -232,7 +233,8 @@ public class Environment extends Agent {
         this.boidsUpdated = Integer.valueOf(0);
         final BiConsumer<UUID, Address> _function = (UUID id, Address address) -> {
           InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-          DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList);
+          List<Obstacle> _obstacles = this.ctrl.getObstacles();
+          DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList, _obstacles);
           _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(id, _demandeDeplacement, Scopes.addresses(address));
         };
         this.boidsAddresses.forEach(_function);

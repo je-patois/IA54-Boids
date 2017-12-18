@@ -4,6 +4,7 @@ import fr.utbm.boids.util.LineTool
 import java.util.List
 import javafx.scene.shape.Polygon
 import fr.utbm.boids.Vector
+import java.util.ArrayList
 
 // import fr.utbm.boids.util.EnvironmentInfos
 
@@ -50,22 +51,69 @@ class Obstacle {
 		this.polygon = polygon
 	}
 	
+	def nbPoints : int {
+		return this.polygon.points.size
+	}
+	
 	def toString() : String {
 		return 'Obstacle: LineTool: ' + this.lines.toString()		
 	}
 	
 	def getCenter() : Vector{
-		var center = new Vector(0, 0)
+		/*var center = new Vector(0, 0)
 		var tmp = new Vector(0,0)
 		var nbLines : int
 		
 		this.lines.forEach[a : LineTool |
-			tmp.clear
-			tmp.plus(a.a)
+			tmp.clear()	
+			tmp.plus(new Vector(a.a.x, a.a.y))
 			center.plus(tmp)
 		]
 		nbLines = this.lines.length
-		center.fois(1/nbLines)
-		return center
+		center.fois(1/nbLines)*/
+		
+		var centerX : double = 0
+		var centerY : double = 0
+		
+		for (var i = 0; i < this.nbPoints() - 1; i = i + 2) {
+	        centerX += polygon.points.get(i)
+	       	centerY += polygon.points.get(i + 1)
+		}
+
+	    centerX = centerX/this.nbPoints();
+	    centerY = centerY/this.nbPoints();
+			
+		return new Vector(centerX, centerY)
+	}
+
+	def polygonArea(facteur : double) : Polygon {
+	    var nbPoints = this.nbPoints()
+	    var centreX : double
+	    var centreY : double
+	    var nouveauxX : List<Double> = new ArrayList()
+	    var nouveauxY : List<Double> = new ArrayList()
+	
+	    for(var i = 0; i < nbPoints - 1; i=i+2){
+	        centreX += polygon.points.get(i)
+	        centreY += polygon.points.get(i + 1)
+		}
+		
+	    centreX /= this.nbPoints()
+	    centreY /= this.nbPoints()
+	
+	    for (var i = 0; i < nbPoints - 1; i = i + 2) {
+	        nouveauxX.add(polygon.points.get(i) - centreX * facteur)
+	        nouveauxY.add(polygon.points.get(i + 1) - centreY * facteur)
+	    }
+	
+		var fullList : List<Double> = new ArrayList()
+		nouveauxX.forEach[point : Double |
+			fullList.add(point)
+		]
+		
+		nouveauxY.forEach[point : Double |
+			fullList.add(point)
+		]
+	    return new Polygon(fullList)
 	}
 }

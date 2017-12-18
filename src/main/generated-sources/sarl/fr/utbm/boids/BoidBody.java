@@ -127,6 +127,7 @@ public class BoidBody extends EnvObjet {
   }
   
   @SuppressWarnings("equals_with_null")
+  @Pure
   public String toString() {
     String retour = null;
     retour = super.toString();

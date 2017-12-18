@@ -31,6 +31,11 @@ public class Vector {
     this.y = 0;
   }
   
+  public void clear() {
+    this.x = 0;
+    this.y = 0;
+  }
+  
   public void setX(final double x) {
     this.x = x;
   }

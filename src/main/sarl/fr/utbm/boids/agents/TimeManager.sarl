@@ -12,7 +12,6 @@ import fr.utbm.boids.events.Cycle
 import fr.utbm.boids.events.Pause
 import fr.utbm.boids.Configuration
 import fr.utbm.boids.events.Resume
-import fr.utbm.boids.gui.BoidsFxViewerController
 import io.sarl.core.Behaviors
 import io.sarl.util.OpenEventSpace
 

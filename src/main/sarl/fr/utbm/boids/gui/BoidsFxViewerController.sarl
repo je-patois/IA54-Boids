@@ -76,10 +76,15 @@ class BoidsFxViewerController extends FxViewerController {
 	var currentBoid : UUID
 	/** Polygone actuellement suivi */
 	var currentPolygon : Polygon = null
+	/** Abscisse du polygone drag */
 	var orgSceneX : double
+	/** Ordonnée du polygone drag */
 	var orgSceneY : double
+	/** Valeur en Y de la translation du polygone drag */
 	var orgTranslateX : double
+	/** Valeur en Y de la translation du polygone drag */
 	var orgTranslateY : double
+	/** Sauvegarde de la position initiale du polygone drag */
 	var savedPosition : List<Double> = new ArrayList()
 	/** Liste des arcs de perception */
 	var perceptions : Map<BoidBody, Arc> = new HashMap<BoidBody, Arc>
@@ -339,15 +344,20 @@ class BoidsFxViewerController extends FxViewerController {
 					polygons.forEach [ p : Polygon |
 						obstacle_group.getChildren().add(0, p)
 					]
+					// Test fonction agrandissement polygones
+					/*generateObstacles()
+					var myObstacle = obstacles.get(0).polygonArea(2)
+					obstacle_group.getChildren().add(0, myObstacle)*/
 				}
 			};
 			if (Platform.isFxApplicationThread()) {
 				command.run();
-				this.generateObstacles()
+				this.generateObstacles()				
 				return this.obstacles
+				
 			} else {
 				Platform.runLater(command);
-				this.generateObstacles()
+				this.generateObstacles()				
 				return this.obstacles
 			}
 		} else if (map == 3) {

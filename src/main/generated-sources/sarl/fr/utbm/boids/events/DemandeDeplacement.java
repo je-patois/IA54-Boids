@@ -1,10 +1,12 @@
 package fr.utbm.boids.events;
 
 import fr.utbm.boids.BoidBody;
+import fr.utbm.boids.environment.Obstacle;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import io.sarl.lang.core.Event;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.eclipse.xtext.xbase.lib.Pure;
@@ -19,8 +21,11 @@ import org.eclipse.xtext.xbase.lib.Pure;
 public class DemandeDeplacement extends Event {
   public Map<UUID, BoidBody> boids;
   
-  public DemandeDeplacement(final Map<UUID, BoidBody> boids) {
+  public List<Obstacle> obstacles;
+  
+  public DemandeDeplacement(final Map<UUID, BoidBody> boids, final List<Obstacle> obstacles) {
     this.boids = boids;
+    this.obstacles = obstacles;
   }
   
   @Override
@@ -46,9 +51,10 @@ public class DemandeDeplacement extends Event {
   protected String attributesToString() {
     StringBuilder result = new StringBuilder(super.attributesToString());
     result.append("boids  = ").append(this.boids);
+    result.append("obstacles  = ").append(this.obstacles);
     return result.toString();
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = -1889683984L;
+  private final static long serialVersionUID = -2273899086L;
 }

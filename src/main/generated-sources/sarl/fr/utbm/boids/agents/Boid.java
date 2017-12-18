@@ -30,6 +30,7 @@ import io.sarl.lang.core.Skill;
 import io.sarl.lang.util.ClearableReference;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -54,7 +55,9 @@ public class Boid extends Agent {
   
   private EnvInfos envInfos;
   
-  private Map<UUID, BoidBody> seenBoids;
+  private Map<UUID, BoidBody> visibleBoids;
+  
+  private Map<UUID, BoidBody> closeBoids;
   
   @SyntheticMember
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
@@ -76,7 +79,9 @@ public class Boid extends Agent {
     Object _get_5 = occurrence.parameters[5];
     this.envInfos = ((EnvInfos) _get_5);
     HashMap<UUID, BoidBody> _hashMap = new HashMap<UUID, BoidBody>();
-    this.seenBoids = _hashMap;
+    this.visibleBoids = _hashMap;
+    HashMap<UUID, BoidBody> _hashMap_1 = new HashMap<UUID, BoidBody>();
+    this.closeBoids = _hashMap_1;
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     BoidInitialized _boidInitialized = new BoidInitialized(this.body, "Boid");
     _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.emit(_boidInitialized);
@@ -148,13 +153,15 @@ public class Boid extends Agent {
     Vector forceTot = null;
     Vector _vector = new Vector(0, 0);
     forceTot = _vector;
-    this.seenBoids = this.perception(boids);
+    this.visibleBoids = this.perception(boids, "visible");
+    this.closeBoids = this.perception(boids, "close");
     boolean _notEquals = (!Objects.equal(boids, null));
     if (_notEquals) {
-      forceTot.plus(this.separation(this.seenBoids));
-      forceTot.plus(this.cohesion(this.seenBoids));
-      forceTot.plus(this.alignement(this.seenBoids));
-      forceTot.plus(this.repulsion(this.seenBoids));
+      forceTot.plus(this.separation(this.visibleBoids));
+      forceTot.plus(this.cohesion(this.visibleBoids));
+      forceTot.plus(this.alignement(this.visibleBoids));
+      forceTot.plus(this.repulsion(this.closeBoids));
+      forceTot.plus(this.forceObstacles(occurrence.obstacles, forceTot));
     }
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     Vector _appliquerForce = this.appliquerForce(forceTot);
@@ -196,6 +203,21 @@ public class Boid extends Agent {
     return true;
   }
   
+  protected boolean proche(final BoidBody b) {
+    Vector tmp = null;
+    Vector _position = b.getPosition();
+    Vector _vector = new Vector(_position);
+    tmp = _vector;
+    tmp.moins(this.body.getPosition());
+    double _length = tmp.length();
+    int _distanceVisibilite = this.body.getDistanceVisibilite();
+    boolean _greaterThan = (_length > _distanceVisibilite);
+    if (_greaterThan) {
+      return false;
+    }
+    return true;
+  }
+  
   /**
    * Création des fonctions comportementales du Boids
    */
@@ -225,7 +247,6 @@ public class Boid extends Agent {
         len = tmp.length();
         tmp.fois((1 / (len * len)));
         force.plus(tmp);
-        force.fois(35);
       }
     }
     return force;
@@ -248,7 +269,7 @@ public class Boid extends Agent {
       force.fois((1 / nbTot));
       force.moins(this.body.getPosition());
     }
-    force.fois(0.60);
+    force.fois(0.45);
     return force;
   }
   
@@ -275,6 +296,7 @@ public class Boid extends Agent {
     if ((nbTot > 0)) {
       force.fois((1 / nbTot));
     }
+    force.fois(50);
     return force;
   }
   
@@ -301,19 +323,50 @@ public class Boid extends Agent {
     return force;
   }
   
+  @Pure
+  protected Vector forceObstacles(final List<Obstacle> listeObstacles, final Vector force) {
+    if ((listeObstacles != null)) {
+      final Procedure2<Obstacle, Integer> _function = (Obstacle o, Integer index) -> {
+      };
+      IterableExtensions.<Obstacle>forEach(listeObstacles, _function);
+    }
+    return force;
+  }
+  
+  protected boolean obstacleVisible(final Obstacle obstacle) {
+    Vector tmp = null;
+    tmp = obstacle.getCenter();
+    tmp.moins(this.body.getPosition());
+    double _length = tmp.length();
+    int _distanceVisibilite = this.body.getDistanceVisibilite();
+    int _multiply = (_distanceVisibilite * 2);
+    boolean _lessThan = (_length < _multiply);
+    if (_lessThan) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
   protected Vector appliquerForce(final Vector force) {
     Vector newPosition = null;
     Vector acceleration = null;
+    double _length = force.length();
+    boolean _greaterThan = (_length > 1.7);
+    if (_greaterThan) {
+      force.normaliser();
+      force.fois(1.7);
+    }
     Vector _vector = new Vector(force);
     acceleration = _vector;
     Vector _vitesse = this.body.getVitesse();
     Vector _vector_1 = new Vector(_vitesse);
     this.body.setNewVitesse(_vector_1);
     this.body.getNewVitesse().plus(acceleration);
-    double _length = this.body.getNewVitesse().length();
+    double _length_1 = this.body.getNewVitesse().length();
     int _groupeVitesseMax = this.body.getGroupeVitesseMax();
-    boolean _greaterThan = (_length > _groupeVitesseMax);
-    if (_greaterThan) {
+    boolean _greaterThan_1 = (_length_1 > _groupeVitesseMax);
+    if (_greaterThan_1) {
       this.body.getNewVitesse().normaliser();
       this.body.getNewVitesse().fois(this.body.getGroupeVitesseMax());
     }
@@ -349,15 +402,29 @@ public class Boid extends Agent {
     return _isFrom;
   }
   
-  protected Map<UUID, BoidBody> perception(final Map<UUID, BoidBody> boids) {
-    this.seenBoids.clear();
-    Set<Map.Entry<UUID, BoidBody>> _entrySet = boids.entrySet();
-    for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
-      if ((((elem.getKey() != null) && this.visible(elem.getValue())) && (!Objects.equal(elem.getKey(), this.getID())))) {
-        this.seenBoids.put(elem.getKey(), elem.getValue());
+  protected Map<UUID, BoidBody> perception(final Map<UUID, BoidBody> boids, final String mode) {
+    if ((mode == "visible")) {
+      this.visibleBoids.clear();
+      Set<Map.Entry<UUID, BoidBody>> _entrySet = boids.entrySet();
+      for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
+        if ((((elem.getKey() != null) && this.visible(elem.getValue())) && (!Objects.equal(elem.getKey(), this.getID())))) {
+          this.visibleBoids.put(elem.getKey(), elem.getValue());
+        }
+      }
+      return this.visibleBoids;
+    } else {
+      if ((mode == "close")) {
+        this.closeBoids.clear();
+        Set<Map.Entry<UUID, BoidBody>> _entrySet_1 = boids.entrySet();
+        for (final Map.Entry<UUID, BoidBody> elem_1 : _entrySet_1) {
+          if ((((elem_1.getKey() != null) && this.proche(elem_1.getValue())) && (!Objects.equal(elem_1.getKey(), this.getID())))) {
+            this.closeBoids.put(elem_1.getKey(), elem_1.getValue());
+          }
+        }
+        return this.closeBoids;
       }
     }
-    return this.seenBoids;
+    return null;
   }
   
   @SyntheticMember
