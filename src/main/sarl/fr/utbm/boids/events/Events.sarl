@@ -54,9 +54,11 @@ event MakeTheFiestaBegin
 event DemandeDeplacement {
 
 	var boids : Map<UUID, BoidBody>
+	var obstacles : List<Obstacle>
 
-	new (boids : Map<UUID, BoidBody>) {
+	new (boids : Map<UUID, BoidBody>, obstacles : List<Obstacle>) {
 		this.boids = boids
+		this.obstacles = obstacles
 	}
 }
 

@@ -105,8 +105,11 @@ agent Environment {
 		synchronized (boidsGrid){
 		
 			// on regarde si la position est libre 
-			if (!this.boidsGrid.containsKey(occurrence.position)) {
-				this.boidsGrid.put(occurrence.position, occurrence.source.UUID)
+			var positionEntier : Vector
+			positionEntier = new Vector(Math.floor(occurrence.position.x), Math.floor(occurrence.position.y))
+			if (!this.boidsGrid.containsKey(positionEntier)) {
+				this.boidsGrid.put(positionEntier, occurrence.source.UUID)
+				//info(positionEntier)
 				accept = true
 			}
 		}
@@ -147,7 +150,7 @@ agent Environment {
 					this.boidsUpdated = 0
 					boidsAddresses.forEach [ id, address |
 						if(this.FastBoids.contains(id)){
-							innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList), Scopes.addresses(address))
+							innerContext.defaultSpace.emit(id, new DemandeDeplacement(this.boidsList, this.ctrl.obstacles), Scopes.addresses(address))
 							this.FastBoids.remove(id)
 						}
 					]

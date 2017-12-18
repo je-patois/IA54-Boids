@@ -3,6 +3,7 @@ package fr.utbm.boids.environment
 import fr.utbm.boids.util.LineTool
 import java.util.List
 import javafx.scene.shape.Polygon
+import fr.utbm.boids.Vector
 
 // import fr.utbm.boids.util.EnvironmentInfos
 
@@ -51,5 +52,20 @@ class Obstacle {
 	
 	def toString() : String {
 		return 'Obstacle: LineTool: ' + this.lines.toString()		
+	}
+	
+	def getCenter() : Vector{
+		var center = new Vector(0, 0)
+		var tmp = new Vector(0,0)
+		var nbLines : int
+		
+		this.lines.forEach[a : LineTool |
+			tmp.clear
+			tmp.plus(a.a)
+			center.plus(tmp)
+		]
+		nbLines = this.lines.length
+		center.fois(1/nbLines)
+		return center
 	}
 }

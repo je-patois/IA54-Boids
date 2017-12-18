@@ -22,6 +22,7 @@ import fr.utbm.boids.events.BoidInitialized
 import fr.utbm.boids.EnvInfos
 import java.util.HashMap
 import fr.utbm.boids.events.PositionModification
+import java.util.List
 
 agent Boid {
 	uses Logging, DefaultContextInteractions, Lifecycle
@@ -100,17 +101,24 @@ agent Boid {
 			
 			//on applique la séparation 
 			forceTot.plus(separation(seenBoids))
-			
+			info("avant " + forceTot)
 			//on applique la cohésion
-			forceTot.plus(cohesion(seenBoids))				
-			
+			forceTot.plus(cohesion(seenBoids))
+
 			//on applique l'alignement
 			forceTot.plus(alignement(seenBoids))
 
+			
 			//on applique la répulsion
 			forceTot.plus(repulsion(seenBoids))
 			
+			forceTot.normaliser
+
 			//on applique la force résultant de la détection des obstacles
+		 	/*forceObstacles(occurrence.obstacles, forceTot)*/
+		 	
+		 	
+		 	info(forceTot)
 		 
 			// TODO appliquer force obstacle
 		}
@@ -160,6 +168,17 @@ agent Boid {
 	 }
 	 
 	
+	def proche (b : BoidBody) : boolean{
+		var tmp : Vector
+		
+		tmp = new Vector(b.position)
+		tmp.moins(this.body.position)
+		if(tmp.length() > this.body.distanceVisibilite){
+			return false
+		}
+		return true
+	}
+	
 	/* 
 	 * Création des fonctions comportementales du Boids
 	 */
@@ -178,7 +197,7 @@ agent Boid {
 		tmp = new Vector(0, 0)
 		 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe && visible(elem.value)) {
 				
 				/*if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - envInfos.width)){
 					if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x + envInfos.width)){
@@ -216,10 +235,10 @@ agent Boid {
 				len = tmp.length()
 				tmp.fois(1 / (len * len))
 				force.plus(tmp)
-				force.fois(35)
+				//force.fois(35)
 			}
 		}
-	
+		info("force : " + force)
 		return force
 
 	}
@@ -233,7 +252,7 @@ agent Boid {
 		force = new Vector(0,0)
 		 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe && proche(elem.value)) {
 				nbTot++
 				force.plus(elem.value.position)
 			}
@@ -243,7 +262,7 @@ agent Boid {
 			force.fois(1/nbTot)
 			force.moins(this.body.position)
 		}
-		force.fois(0.60)
+		force.fois(0.45)
 		return force
 	}
 	
@@ -260,7 +279,7 @@ agent Boid {
 		tmp = new Vector(0,0)
 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe) {
+			if (elem.key != null && elem.value.groupe == this.body.groupe && proche(elem.value)) {
 				nbTot++
 				tmp.setXY(elem.value.position)
 				tmp.fois(1 / tmp.length)
@@ -271,7 +290,7 @@ agent Boid {
 		if (nbTot > 0) {
 			force.fois(1/nbTot)	
 		}
-		
+		force.fois(50)
 		return force
 		
 	}
@@ -287,7 +306,7 @@ agent Boid {
 		tmp = new Vector(0,0)
 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe != this.body.groupe) {
+			if (elem.key != null && elem.value.groupe != this.body.groupe && proche(elem.value)) {
 				tmp.setXY(this.body.position)
 				tmp.moins(elem.value.position)
 				len = tmp.length
@@ -299,8 +318,39 @@ agent Boid {
 		
 		return force
 	}
-	
-	
+	/*
+	def forceObstacles(listeObstacles : List<Obstacle>, force : Vector) : Vector{
+		
+		var direction = new Vector(0,0)
+		var direction2 = new Vector(0,0)
+		var tmp = new Vector(0,0)
+		
+		if (listeObstacles != null) {
+			listeObstacles.forEach [ o : Obstacle, index : int |
+				if (obstacleVisible(o)) {
+					direction.plus(o.getCenter())
+					direction2.plus(this.body.position.x, this.body.position.y)
+					direction.moins(direction2)
+					tmp.plus(direction)
+					tmp.normaliser
+					force.moins(tmp)
+				}
+			]
+		}
+		return force
+	}*/
+	/* 
+	def obstacleVisible (obstacle : Obstacle) : boolean {
+		var tmp : Vector
+		tmp = obstacle.getCenter()
+		tmp.moins(this.body.position)
+		if(tmp.length < this.body.distanceVisibilite*2){
+			return true
+		} else {
+			return false
+		}
+	}
+	 */
 	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
 	def appliquerForce(force : Vector) : Vector {
 
@@ -324,9 +374,9 @@ agent Boid {
 			this.body.newVitesse.normaliser()
 			this.body.newVitesse.fois(this.body.groupeVitesseMax)
 		}
-		info(this.body.getMasse())
+		//info(this.body.getMasse())
 		//this.body.newVitesse.fois(1 / this.body.getMasse())
-		info(this.body.newVitesse)
+		//info(this.body.newVitesse)
 		
 		//maj position
 		newPosition = new Vector(this.body.position)
@@ -346,7 +396,7 @@ agent Boid {
 	def perception(boids : Map<UUID, BoidBody>) : Map<UUID, BoidBody> {
 		seenBoids.clear()
 		for (elem : boids.entrySet) {
-			if (elem.key !== null && visible(elem.value) && elem.key != this.ID) {
+			if (elem.key !== null && proche(elem.value) && elem.key != this.ID) {
 				seenBoids.put(elem.key, elem.value)
 			}
 		}
