@@ -96,9 +96,10 @@ agent Boid {
 		var forceTot : Vector
 
 		forceTot = new Vector(0, 0)
-		
-		visibleBoids = perception(boids, 'visible')
+
 		closeBoids = perception(boids, 'close')
+		visibleBoids = perception(closeBoids, 'visible')
+		
 		 
 		if (boids != null) {
 			
@@ -140,28 +141,14 @@ agent Boid {
 	 	tmp = new Vector(b.position)
 	 	tmp.moins(this.body.position)
 	 	
-		/*if (tmp.x > envInfos.width/2 ){
-	 		tmp.moins(new Vector(envInfos.width,0))
-	 	}
-	 	
-	 	if (tmp.y > envInfos.height/2) {
-	 		tmp.moins(new Vector(0,envInfos.height))
-	 	}*/
-	 	
-	 	
-	 	// Si le boids est trop loin, on ne le voit pas 
-	 	if (tmp.length() > this.body.distanceVisibilite){
-	 		return false
-	 	}
-	 	
 	 	tmp2 = new Vector(this.body.vitesse)
 	 	
 	 	// on test si le boids est hors de l'angle de vision : cos(ABC) = vec(AB).vec(AC)/(AB*AC)
 	 	if (Math.abs(Math.toDegrees(Math.acos((tmp2.point(tmp)/(tmp2.length * tmp.length))))) > this.body.angleVisibilite) {
 	 		return false
+	 	}else{
+	 		return true
 	 	}
-	 	
-	 	return true
 	 }
 
 	def proche(b : BoidBody) : boolean {
