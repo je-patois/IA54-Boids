@@ -82,6 +82,8 @@ class Obstacle {
 
 	    centerX = centerX/this.nbPoints();
 	    centerY = centerY/this.nbPoints();
+	    centerX = centerX / (this.nbPoints()/2);
+	    centerY = centerY/ (this.nbPoints()/2);
 			
 		return new Vector(centerX, centerY)
 	}
