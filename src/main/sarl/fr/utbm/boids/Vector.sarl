@@ -1,9 +1,18 @@
 package fr.utbm.boids
 
+import fr.utbm.boids.util.Coordinates
+
 /* Du mal à réutiliser une classe Vector java, malgré l'import il veut pas reconnaitre le type de la variable, je passe par cette classe en attendant  */
 class Vector {
 	var x : double
 	var y : double
+	var z : double
+
+	new (x : double, y : double, z : double) {
+		this.x = x
+		this.y = y
+		this.z = z
+	}
 	
 	new (x : double, y : double){
 		this.x = x
@@ -13,6 +22,11 @@ class Vector {
 	new (v : Vector){
 		this.x = v.getX
 		this.y = v.getY
+	}
+	
+	new (c : Coordinates){
+		this.x = c.x
+		this.y = c.y
 	}
 	
 	new (){
@@ -31,6 +45,10 @@ class Vector {
 	
 	def setY (y : double) : void{
 		this.y = y
+	}
+	
+	def setZ (z : double) : void{
+		this.z = z
 	}
 	
 	def setXY(x : double, y :double) : void{
@@ -69,11 +87,14 @@ class Vector {
 	def length () : double {
 		return Math.sqrt (x*x + y*y)
 	}
-	
-	def normaliser() : Vector {
-		this.x = this.x / this.length
-		this.y = this.y / this.length
-		return this
+
+	def normaliser() {
+		var longueur = this.length
+		if (longueur > 0) {
+			this.x = this.x / longueur
+			this.y = this.y / longueur
+			this.z = this.z / longueur
+		}
 	}
 	
 	def point (vec : Vector) : double{
@@ -83,6 +104,14 @@ class Vector {
 	def toString() : String{
 		return "x : " + this.x + " ,y : " + this.y + "   "
 	}
-	
+
+	def produitVectoriel(vec : Vector) : Vector {
+		var produit : Vector
+		produit = new Vector(0, 0)
+		produit.setX(this.y * vec.z - this.z * vec.y)
+		produit.setY(this.z * vec.x - this.x * vec.z)
+		produit.setZ(this.x * vec.y - this.y * vec.x)
+		return produit
+	}
 	
 }
