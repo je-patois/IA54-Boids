@@ -25,6 +25,7 @@ class LineTool {
 	}
 
 	def getB() : Coordinates {
+		return this.b
 	}
 
 	def setB(b : Coordinates) : void {
