@@ -43,6 +43,6 @@ class LineTool {
 		if(Double.isInfinite(this.coef))
 			this.coef = 0
 			
-		this.ordered = this.a.y - this.coef * this.a.x
+		this.ordered = this.a.y +  this.coef * this.a.x
 	}
 }
