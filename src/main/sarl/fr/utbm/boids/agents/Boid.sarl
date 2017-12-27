@@ -320,7 +320,9 @@ agent Boid {
 		return force
 	}
 	
-	def forceObstacles(listeObstacles : List<Obstacle>, force : Vector) : Vector{
+	def forceObstacles(listeObstacles : List<Obstacle>) : Vector{
+		
+		var forceObstacles : Vector = new Vector(0, 0)
 		
 		/*var direction = new Vector(0,0)
 		var direction2 = new Vector(0,0)
@@ -329,8 +331,102 @@ agent Boid {
 		
 		if (listeObstacles !== null) {
 			listeObstacles.forEach [ o : Obstacle, index : int |
-				/*if (obstacleVisible(o)) {
-					direction.plus(o.getCenter())
+				//if(obstacleProche(o))
+				//if(index == 0){
+				if (obstacleVisible(o)) {
+					var direction : Vector
+					// V1
+					/*direction = new Vector(o.getCenter())
+					direction.moins(this.body.position)
+					direction.normaliser
+					forceObstacles.plus(direction)
+					*/
+					// V2
+/*					var pointLePlusProche : Vector = new Vector(1000, 1000)
+					for(line :  o.lines){
+						var pointATester : Vector
+						pointATester = new Vector(line.getA())
+						pointATester.moins(this.body.position)
+						if(pointATester.length < pointLePlusProche.length){
+							pointLePlusProche = pointATester
+						}
+					}
+					direction = new Vector(pointLePlusProche)
+					direction.normaliser
+					forceObstacles.moins(direction)
+*/
+					// V3
+					var pointLePlusProche : Vector = new Vector(1000, 1000)
+					var pointLePlusProcheDeuxieme : Vector = new Vector(1000, 1000)
+					var pointLePlusProcheTroisieme : Vector = new Vector(1000, 1000)
+					var indexLine : int = 0
+					for (line : o.lines) {
+						indexLine = index + 1
+						var pointATester : Vector
+						pointATester = new Vector(line.getB())
+						pointATester.moins(this.body.position)
+						if (pointATester.length < pointLePlusProche.length) {
+							pointLePlusProche = pointATester
+					 		pointLePlusProcheDeuxieme = new Vector(line.getA())
+					 		pointLePlusProcheTroisieme = new Vector(o.lines.get((indexLine + 1)%o.lines.size).getB())
+						}
+					}
+					var forcetmp : Vector
+					forcetmp = new Vector(pointLePlusProche)
+					forcetmp.moins(this.body.position)
+					forcetmp.normaliser
+					// tester si normalisation avant/après change
+					forceObstacles.moins(forcetmp)
+
+					forcetmp = new Vector(pointLePlusProcheDeuxieme)
+					forcetmp.moins(this.body.position)
+					forcetmp.normaliser
+					forceObstacles.moins(forcetmp)
+
+					forcetmp = new Vector(pointLePlusProcheTroisieme)
+					forcetmp.moins(this.body.position)
+					forcetmp.normaliser
+					forceObstacles.moins(forcetmp)
+					
+					// V4
+					/*var pointLePlusProche : Vector = new Vector(1000, 1000)
+					var pointLePlusProcheDeuxieme : Vector = new Vector(1000, 1000)
+					var pointLePlusProcheTroisieme : Vector = new Vector(1000, 1000)
+					var indexLine : int = 0
+					var pointATester : Vector = new Vector(0,0)
+					for (line : o.lines) {
+						indexLine = index + 1
+						pointATester = new Vector(line.getB())
+						pointATester.moins(this.body.position)
+						if (pointATester.length < pointLePlusProche.length) {
+							pointLePlusProche = pointATester
+							pointLePlusProcheDeuxieme = new Vector(line.getA())
+							pointLePlusProcheTroisieme = new Vector(o.lines.get((indexLine + 1)%o.lines.size).getB())
+						}
+					} 
+					var ligne : Vector
+					ligne = new Vector(pointLePlusProcheDeuxieme)
+					ligne.moins(pointLePlusProcheTroisieme)
+					var forceNormale : Vector
+					var vecteurUnitaireZ = new Vector(0.0f,0.0f,1)
+					forceNormale = ligne.produitVectoriel(vecteurUnitaireZ)
+					//forceNormale.normaliser
+					forceObstacles.plus(forceNormale)
+					info(forceNormale)*/
+					
+					//V5
+					/*tourner sur soi meme jusqu'a avoir un champ de vision degagé
+					 * + réduire champ de vision petit a petit */
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+					/*direction.plus(o.getCenter())
 					direction2.plus(new Vector(this.body.position.x, this.body.position.y))
 					direction.moins(direction2)
 					tmp.plus(direction)
@@ -355,18 +451,168 @@ agent Boid {
 				
 			]
 		}
-		return force
+		forceObstacles.fois(100)
+		return forceObstacles
 	}
 	
-	def obstacleVisible (obstacle : Obstacle) : boolean {
-		var tmp : Vector
-		tmp = obstacle.getCenter()
-		tmp.moins(this.body.position)
-		if(tmp.length < this.body.distanceVisibilite*2){
+	def obstacleVisible(obstacle : Obstacle) : boolean {
+		var obstacleTrouve : boolean = false
+		
+		for(line : obstacle.lines){
+		
+		//obstacle.lines.forEach[line : LineTool , index : int |
+			
+			//info("obstacle : " + obstacle)
+			//info("ligne : " + index)
+			//calcul delta = r² * dr² - D²
+			var delta : double = 0
+			//calcul r
+			var r : double = 0
+			//info("visibilité : " + this.body.distanceVisibilite)
+			r = this.body.distanceVisibilite
+			//info("r2 : " + r2)
+			//calcul dr
+			var dr : double = 0
+			var dx : double = 0
+			var dy : double = 0
+			var tmp1 : double = 0
+			var tmp2 : double = 0
+			//info(line.getA().getX())
+			tmp1 = line.getB().getX()
+			tmp1 = tmp1 - this.body.position.x
+			//info("tmp1 : " + tmp1)
+			tmp2 = line.getA().getX()
+			tmp2 = tmp2 - this.body.position.x
+			//info("tmp2 : " + tmp2)
+			dx = tmp1 - tmp2
+			//info(dx)
+			tmp1 = line.getB().getY()
+			tmp1 = tmp1 - this.body.position.y
+			tmp2 = line.getA().getY()
+			tmp2 = tmp2 - this.body.position.y
+			dy = tmp1 - tmp2
+			dr = Math.sqrt(dx * dx + dy * dy)
+			
+			//calcul D
+			var D : double = 0
+			D = (line.getA().getX() - this.body.position.x) * (line.getB().getY() - this.body.position.y) -
+				(line.getB().getX() - this.body.position.x) * (line.getA().getY()- this.body.position.y)
+			delta = Math.pow(r,2) * Math.pow(dr,2) - Math.pow(D,2)
+			//info(delta)
+			if(delta > 0){
+				// calcul des coordonnées des deux points
+				var pointIntersectionAX : double
+				var pointIntersectionAY : double
+				var pointIntersectionBX : double
+				var pointIntersectionBY : double
+				
+				// (D * dy +- sgn(dy) * dx * sqrt(r² * dr² - D²)) / dr²
+				// A
+				if(dy < 0){
+					pointIntersectionAX = D * dy - dx * Math.sqrt(delta)
+				} else {
+					pointIntersectionAX = D * dy + dx * Math.sqrt(delta)
+				}
+				pointIntersectionAX = pointIntersectionAX / Math.pow(dr,2)
+
+				// B
+				if (dy < 0) {
+					pointIntersectionBX = D * dy + dx * Math.sqrt(delta)
+				} else {
+					pointIntersectionBX = D * dy - dx * Math.sqrt(delta)
+				}
+				pointIntersectionBX = pointIntersectionBX / Math.pow(dr, 2)
+				
+				// (-D * dx +- |dy| * sqrt(r² * dr² - D²)) / dr²
+				// A
+				pointIntersectionAY = -D * dx + Math.abs(dy) * Math.sqrt(delta)
+				pointIntersectionAY = pointIntersectionAY / Math.pow(dr, 2)
+
+				// B
+				pointIntersectionBY = -D * dx - Math.abs(dy) * Math.sqrt(delta)
+				pointIntersectionBY = pointIntersectionBY / Math.pow(dr, 2)
+				
+				//info("A : " + pointIntersectionAX + ", " + pointIntersectionAY)
+				//info("B : " + pointIntersectionBX + ", " + pointIntersectionBY)
+				var pointA : Vector
+				var pointB : Vector
+				pointA = new Vector(pointIntersectionAX + this.body.position.x, pointIntersectionAY + this.body.position.y)
+				pointB = new Vector(pointIntersectionBX + this.body.position.x, pointIntersectionBY + this.body.position.y)
+				
+				
+				
+				//vérifier si un des points est sur le segment
+				if (pointA.getX() < line.getA().getX() && pointA.getX() > line.getB().getX() ||
+					pointA.getX() > line.getA().getX() && pointA.getX() < line.getB().getX()) {
+					//info("OBSTACLE : " + pointB)
+					var AB : Vector
+					var BC : Vector
+					AB = new Vector(this.body.vitesse)
+					pointA.moins(this.body.position)
+					BC = new Vector(pointA)
+					if (Math.abs(Math.toDegrees(Math.acos(AB.point(BC) / (AB.length * BC.length)))) <
+						this.body.angleVisibilite) {
+						obstacleTrouve = true
+					}
+				}
+				if (pointB.getX() < line.getA().getX() && pointB.getX() > line.getB().getX() ||
+					pointB.getX() > line.getA().getX() && pointB.getX() < line.getB().getX()) {
+					// info("OBSTACLE : " + pointB)
+					var AB : Vector
+					var BC : Vector
+					AB = new Vector(this.body.vitesse)
+					pointB.moins(this.body.position)
+					BC = new Vector(pointB)
+					if (Math.abs(Math.toDegrees(Math.acos(AB.point(BC) / (AB.length * BC.length)))) <
+						this.body.angleVisibilite) {
+						obstacleTrouve = true
+					}
+				}
+			}
+		}//]
+		if(obstacleTrouve == true){
 			return true
 		} else {
 			return false
 		}
+		/*
+		info(obstacle.lines.length)
+		var tmp : Vector
+		tmp = obstacle.getCenter()
+		//info(tmp)
+		tmp.moins(this.body.position)
+		//info(tmp)
+		if(tmp.length < this.body.distanceVisibilite){
+			return true
+		} else {
+			return false
+		 * }
+		 */
+		/* 
+		var absolu : double
+		
+		if (Math.abs(Math.toDegrees(Math.acos((tmp2.point(tmp) / (tmp2.length * tmp.length))))) >
+			this.body.angleVisibilite) {
+			return false
+	 	}
+		*/
+		
+		
+		
+	}
+	
+	def obstacleProche (obstacle : Obstacle){
+		var proche = false
+		var test : Vector
+		for(var i : int = 0;i < obstacle.nbPoints();i++){
+			info(obstacle.polygon.points.get(i))
+			test = new Vector(obstacle.polygon.points.get(i*2) - this.body.position.x,
+				obstacle.polygon.points.get(i*2 + 1) - this.body.position.y)
+			if(test.length < this.body.distanceVisibilite * 2){
+				proche = true
+			}
+		}
+		return proche
 	}
 	
 	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
