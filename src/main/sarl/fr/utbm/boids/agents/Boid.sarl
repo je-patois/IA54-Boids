@@ -6,7 +6,6 @@ import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.DemandeDeplacement
 import fr.utbm.boids.events.StartPosition
 import fr.utbm.boids.events.ResultatDeplacement
-import fr.utbm.boids.Vector
 import java.util.Random
 import fr.utbm.boids.events.ValidationDeplacement
 import fr.utbm.boids.BoidBody
@@ -23,9 +22,14 @@ import fr.utbm.boids.EnvInfos
 import java.util.HashMap
 import fr.utbm.boids.events.PositionModification
 import java.util.List
+import fr.utbm.boids.util.LineTool
+import fr.utbm.boids.util.Coordinates
+import fr.utbm.boids.Vector
 
 agent Boid {
 	uses Logging, DefaultContextInteractions, Lifecycle
+
+	/* 3aboqphié/3πR² = 3qbc */
 
 	var body : BoidBody
 	var parentAgent : UUID
@@ -106,16 +110,16 @@ agent Boid {
 			forceTot.plus(separation(visibleBoids))
 			
 			//on applique la cohésion
-			forceTot.plus(cohesion(visibleBoids))				
+			forceTot.plus(cohesion(closeBoids))				
 			
 			//on applique l'alignement
-			forceTot.plus(alignement(visibleBoids))
+			forceTot.plus(alignement(closeBoids))
 
 			//on applique la répulsion
 			forceTot.plus(repulsion(closeBoids))
 			
 			// on applique la force résultant de la détection des obstacles
-			forceTot.plus(forceObstacles(occurrence.obstacles, forceTot))
+			forceTot.plus(forceObstacles(occurrence.obstacles))
 		 
 			// TODO appliquer force obstacle
 		}
