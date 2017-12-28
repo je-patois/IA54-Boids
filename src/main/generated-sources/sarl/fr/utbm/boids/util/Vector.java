@@ -1,13 +1,10 @@
-package fr.utbm.boids;
+package fr.utbm.boids.util;
 
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
 import org.eclipse.xtext.xbase.lib.Pure;
 
-/**
- * Du mal à réutiliser une classe Vector java, malgré l'import il veut pas reconnaitre le type de la variable, je passe par cette classe en attendant
- */
 @SarlSpecification("0.6")
 @SarlElementType(9)
 @SuppressWarnings("all")
@@ -16,19 +13,30 @@ public class Vector {
   
   private double y;
   
+  private double z;
+  
   public Vector(final double x, final double y) {
     this.x = x;
     this.y = y;
+    this.z = 0;
+  }
+  
+  public Vector(final double x, final double y, final double z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
   }
   
   public Vector(final Vector v) {
     this.x = v.getX();
     this.y = v.getY();
+    this.z = v.getZ();
   }
   
   public Vector() {
     this.x = 0;
     this.y = 0;
+    this.z = 0;
   }
   
   public void clear() {
@@ -42,6 +50,10 @@ public class Vector {
   
   public void setY(final double y) {
     this.y = y;
+  }
+  
+  public void setZ(final double z) {
+    this.z = z;
   }
   
   public void setXY(final double x, final double y) {
@@ -64,11 +76,17 @@ public class Vector {
     return this.y;
   }
   
+  @Pure
+  public double getZ() {
+    return this.z;
+  }
+  
   public double moins(final Vector vec) {
     double _xblockexpression = (double) 0;
     {
       this.x = (this.x - vec.x);
-      _xblockexpression = this.y = (this.y - vec.y);
+      this.y = (this.y - vec.y);
+      _xblockexpression = this.z = (this.z - vec.z);
     }
     return _xblockexpression;
   }
@@ -77,7 +95,8 @@ public class Vector {
     double _xblockexpression = (double) 0;
     {
       this.x = (this.x + vec.x);
-      _xblockexpression = this.y = (this.y + vec.y);
+      this.y = (this.y + vec.y);
+      _xblockexpression = this.z = (this.z + vec.z);
     }
     return _xblockexpression;
   }
@@ -86,34 +105,54 @@ public class Vector {
     double _xblockexpression = (double) 0;
     {
       this.x = (this.x * a);
-      _xblockexpression = this.y = (this.y * a);
+      this.y = (this.y * a);
+      _xblockexpression = this.z = (this.z * a);
     }
     return _xblockexpression;
   }
   
   @Pure
   public double length() {
-    return Math.sqrt(((this.x * this.x) + (this.y * this.y)));
+    return Math.sqrt((((this.x * this.x) + (this.y * this.y)) + (this.z * this.z)));
   }
   
-  public Vector normaliser() {
-    double _length = this.length();
-    double _divide = (this.x / _length);
-    this.x = _divide;
-    double _length_1 = this.length();
-    double _divide_1 = (this.y / _length_1);
-    this.y = _divide_1;
-    return this;
+  public double normaliser() {
+    double _xblockexpression = (double) 0;
+    {
+      double longueur = this.length();
+      double _xifexpression = (double) 0;
+      if ((longueur > 0)) {
+        double _xblockexpression_1 = (double) 0;
+        {
+          this.x = (this.x / longueur);
+          this.y = (this.y / longueur);
+          _xblockexpression_1 = this.z = (this.z / longueur);
+        }
+        _xifexpression = _xblockexpression_1;
+      }
+      _xblockexpression = _xifexpression;
+    }
+    return _xblockexpression;
   }
   
   @Pure
   public double point(final Vector vec) {
-    return ((this.x * vec.x) + (this.y * vec.y));
+    return (((this.x * vec.x) + (this.y * vec.y)) + (this.z * vec.z));
+  }
+  
+  public Vector produitVectoriel(final Vector vec) {
+    Vector produit = null;
+    Vector _vector = new Vector(0, 0);
+    produit = _vector;
+    produit.setX(((this.y * vec.z) - (this.z * vec.y)));
+    produit.setY(((this.z * vec.x) - (this.x * vec.z)));
+    produit.setZ(((this.x * vec.y) - (this.y * vec.x)));
+    return produit;
   }
   
   @Pure
   public String toString() {
-    return (((("x : " + Double.valueOf(this.x)) + " ,y : ") + Double.valueOf(this.y)) + "   ");
+    return (((((("x : " + Double.valueOf(this.x)) + " ,y : ") + Double.valueOf(this.y)) + " ,z : ") + Double.valueOf(this.z)) + "   ");
   }
   
   @Override
@@ -131,6 +170,8 @@ public class Vector {
       return false;
     if (Double.doubleToLongBits(other.y) != Double.doubleToLongBits(this.y))
       return false;
+    if (Double.doubleToLongBits(other.z) != Double.doubleToLongBits(this.z))
+      return false;
     return super.equals(obj);
   }
   
@@ -142,6 +183,7 @@ public class Vector {
     final int prime = 31;
     result = prime * result + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
     result = prime * result + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+    result = prime * result + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z) >>> 32));
     return result;
   }
 }

@@ -3,15 +3,17 @@ package fr.utbm.boids.agents;
 import com.google.common.base.Objects;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.EnvInfos;
-import fr.utbm.boids.Vector;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.BoidInitialized;
 import fr.utbm.boids.events.DemandeDeplacement;
-import fr.utbm.boids.events.PositionModification;
 import fr.utbm.boids.events.ResultatDeplacement;
 import fr.utbm.boids.events.StartPosition;
 import fr.utbm.boids.events.ValidationDeplacement;
 import fr.utbm.boids.gui.fx.EndSimulation;
+import fr.utbm.boids.util.Coordinates;
+import fr.utbm.boids.util.Edge;
+import fr.utbm.boids.util.Sphere;
+import fr.utbm.boids.util.Vector;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Initialize;
 import io.sarl.core.Lifecycle;
@@ -153,15 +155,11 @@ public class Boid extends Agent {
     Vector forceTot = null;
     Vector _vector = new Vector(0, 0);
     forceTot = _vector;
-    this.visibleBoids = this.perception(boids, "visible");
     this.closeBoids = this.perception(boids, "close");
+    this.visibleBoids = this.perception(this.closeBoids, "visible");
     boolean _notEquals = (!Objects.equal(boids, null));
     if (_notEquals) {
-      forceTot.plus(this.separation(this.visibleBoids));
-      forceTot.plus(this.cohesion(this.visibleBoids));
-      forceTot.plus(this.alignement(this.visibleBoids));
-      forceTot.plus(this.repulsion(this.closeBoids));
-      forceTot.plus(this.forceObstacles(occurrence.obstacles, forceTot));
+      forceTot.plus(this.forceObstacles(occurrence.obstacles));
     }
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$castSkill(DefaultContextInteractions.class, (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS == null || this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = this.$getSkill(DefaultContextInteractions.class)) : this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
     Vector _appliquerForce = this.appliquerForce(forceTot);
@@ -180,27 +178,22 @@ public class Boid extends Agent {
     Vector _vector = new Vector(_position);
     tmp = _vector;
     tmp.moins(this.body.getPosition());
-    double _length = tmp.length();
-    int _distanceVisibilite = this.body.getDistanceVisibilite();
-    boolean _greaterThan = (_length > _distanceVisibilite);
-    if (_greaterThan) {
-      return false;
-    }
     Vector _vitesse = this.body.getVitesse();
     Vector _vector_1 = new Vector(_vitesse);
     tmp2 = _vector_1;
     double _point = tmp2.point(tmp);
-    double _length_1 = tmp2.length();
-    double _length_2 = tmp.length();
-    double _multiply = (_length_1 * _length_2);
+    double _length = tmp2.length();
+    double _length_1 = tmp.length();
+    double _multiply = (_length * _length_1);
     double _divide = (_point / _multiply);
-    double _abs = Math.abs(Math.toDegrees(Math.acos(_divide)));
+    double _degrees = Math.toDegrees(Math.acos(_divide));
     int _angleVisibilite = this.body.getAngleVisibilite();
-    boolean _greaterThan_1 = (_abs > _angleVisibilite);
-    if (_greaterThan_1) {
+    boolean _greaterThan = (_degrees > _angleVisibilite);
+    if (_greaterThan) {
       return false;
+    } else {
+      return true;
     }
-    return true;
   }
   
   protected boolean proche(final BoidBody b) {
@@ -323,28 +316,175 @@ public class Boid extends Agent {
     return force;
   }
   
-  @Pure
-  protected Vector forceObstacles(final List<Obstacle> listeObstacles, final Vector force) {
+  @SuppressWarnings("equals_with_null")
+  protected Vector forceObstacles(final List<Obstacle> listeObstacles) {
+    Vector force = null;
+    Vector _vector = new Vector(0, 0);
+    force = _vector;
+    Vector _position = this.body.getPosition();
+    Vector _vector_1 = new Vector(_position);
+    double _doubleValue = Integer.valueOf(this.body.getDistanceVisibilite()).doubleValue();
+    Sphere sphereBoid = new Sphere(_vector_1, _doubleValue);
     if ((listeObstacles != null)) {
-      final Procedure2<Obstacle, Integer> _function = (Obstacle o, Integer index) -> {
-      };
-      IterableExtensions.<Obstacle>forEach(listeObstacles, _function);
+      for (final Obstacle o : listeObstacles) {
+        {
+          Vector forceAdd = null;
+          double distanceMin = 0;
+          distanceMin = 10000;
+          Edge edgeRetenue = null;
+          edgeRetenue = null;
+          List<Edge> _edges = o.getEdges();
+          for (final Edge e : _edges) {
+            boolean _intersectRaySphere = this.intersectRaySphere(e, sphereBoid);
+            if (_intersectRaySphere) {
+              double _calculateDistancePointRay = this.calculateDistancePointRay(e, this.body.getPosition());
+              boolean _lessThan = (_calculateDistancePointRay < distanceMin);
+              if (_lessThan) {
+                edgeRetenue = e;
+                distanceMin = this.calculateDistancePointRay(e, this.body.getPosition());
+              }
+            }
+          }
+          boolean _notEquals = (!Objects.equal(edgeRetenue, null));
+          if (_notEquals) {
+            Vector _normal = edgeRetenue.getNormal();
+            Vector _vector_2 = new Vector(_normal);
+            forceAdd = _vector_2;
+            Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+            Coordinates _pointDepart = edgeRetenue.getPointDepart();
+            String _plus = ("position de l\'edge : " + _pointDepart);
+            _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(_plus);
+            forceAdd.fois((100 / distanceMin));
+            force.plus(forceAdd);
+          }
+        }
+      }
     }
     return force;
   }
   
-  protected boolean obstacleVisible(final Obstacle obstacle) {
-    Vector tmp = null;
-    tmp = obstacle.getCenter();
-    tmp.moins(this.body.getPosition());
-    double _length = tmp.length();
-    int _distanceVisibilite = this.body.getDistanceVisibilite();
-    int _multiply = (_distanceVisibilite * 2);
-    boolean _lessThan = (_length < _multiply);
-    if (_lessThan) {
+  @Pure
+  protected double calculateDistancePointRay(final Edge edge, final Vector point) {
+    double distance = 0;
+    double _x = point.getX();
+    double _x_1 = edge.getPointDepart().getX();
+    double _minus = (_x - _x_1);
+    double _y = point.getY();
+    double _y_1 = edge.getPointDepart().getY();
+    double _minus_1 = (_y - _y_1);
+    Vector vecteurBA = new Vector(_minus, _minus_1);
+    distance = vecteurBA.produitVectoriel(edge.getDirection()).length();
+    double _length = edge.getDirection().length();
+    double _divide = (distance / _length);
+    distance = _divide;
+    return distance;
+  }
+  
+  protected boolean intersectRaySphere(final Edge edge, final Sphere s) {
+    Vector m = null;
+    Vector directionNormalise = null;
+    double _x = edge.getPointDepart().getX();
+    double _y = edge.getPointDepart().getY();
+    Vector _vector = new Vector(_x, _y);
+    m = _vector;
+    m.moins(s.getCenter());
+    Vector _direction = edge.getDirection();
+    Vector _vector_1 = new Vector(_direction);
+    directionNormalise = _vector_1;
+    directionNormalise.normaliser();
+    double _point = m.point(m);
+    double _radius = s.getRadius();
+    double _radius_1 = s.getRadius();
+    double _multiply = (_radius * _radius_1);
+    double c = (_point - _multiply);
+    if ((c <= 0.0f)) {
       return true;
-    } else {
+    }
+    double b = m.point(directionNormalise);
+    if ((b > 0.0f)) {
       return false;
+    }
+    double discr = ((b * b) - c);
+    if ((discr < 0.0f)) {
+      return false;
+    }
+    m.moins(edge.getDirection());
+    double _abs = Math.abs(m.length());
+    double _radius_2 = s.getRadius();
+    boolean _greaterThan = (_abs > _radius_2);
+    if (_greaterThan) {
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * même fonciton que juste au dessus mais renvoi utilise en plus l'angle de vision (ne fonctionne pas et n'est as utilisée)
+   */
+  protected boolean intersectRaySpherePoint(final Edge edge, final Sphere s) {
+    Vector m = null;
+    Vector directionNormalise = null;
+    double _x = edge.getPointDepart().getX();
+    double _y = edge.getPointDepart().getY();
+    Vector _vector = new Vector(_x, _y);
+    m = _vector;
+    m.moins(s.getCenter());
+    Vector _direction = edge.getDirection();
+    Vector _vector_1 = new Vector(_direction);
+    directionNormalise = _vector_1;
+    directionNormalise.normaliser();
+    double b = m.point(directionNormalise);
+    double _point = m.point(m);
+    double _radius = s.getRadius();
+    double _radius_1 = s.getRadius();
+    double _multiply = (_radius * _radius_1);
+    double c = (_point - _multiply);
+    if (((c > 0.0f) && (b > 0.0f))) {
+      return false;
+    }
+    double discr = ((b * b) - c);
+    if ((discr < 0.0f)) {
+      return false;
+    }
+    m.moins(edge.getDirection());
+    double _abs = Math.abs(m.length());
+    double _radius_2 = s.getRadius();
+    boolean _greaterThan = (_abs > _radius_2);
+    if (_greaterThan) {
+      return false;
+    }
+    double _sqrt = Math.sqrt(discr);
+    double t = ((-b) - _sqrt);
+    Vector pointIntersection = new Vector();
+    double _x_1 = edge.getPointDepart().getX();
+    double _x_2 = directionNormalise.getX();
+    double _multiply_1 = (t * _x_2);
+    double _plus = (_x_1 + _multiply_1);
+    pointIntersection.setX(_plus);
+    double _y_1 = edge.getPointDepart().getY();
+    double _y_2 = directionNormalise.getY();
+    double _multiply_2 = (t * _y_2);
+    double _plus_1 = (_y_1 + _multiply_2);
+    pointIntersection.setY(_plus_1);
+    Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+    _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER.info(("point d\'intersection : " + pointIntersection));
+    pointIntersection.moins(this.body.getPosition());
+    double _point_1 = this.body.getVitesse().point(pointIntersection);
+    double _length = this.body.getVitesse().length();
+    double _length_1 = pointIntersection.length();
+    double _multiply_3 = (_length * _length_1);
+    double _divide = (_point_1 / _multiply_3);
+    double _degrees = Math.toDegrees(Math.acos(_divide));
+    int _angleVisibilite = this.body.getAngleVisibilite();
+    boolean _greaterThan_1 = (_degrees > _angleVisibilite);
+    if (_greaterThan_1) {
+      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_1.info("false");
+      return false;
+    } else {
+      Logging _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2 = this.$castSkill(Logging.class, (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = this.$getSkill(Logging.class)) : this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+      _$CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER_2.info("true");
+      return true;
     }
   }
   
@@ -425,16 +565,6 @@ public class Boid extends Agent {
       }
     }
     return null;
-  }
-  
-  @SyntheticMember
-  private void $behaviorUnit$PositionModification$5(final PositionModification occurrence) {
-    Vector _position = this.body.getPosition();
-    _position.setX(occurrence.x);
-    Vector _position_1 = this.body.getPosition();
-    int _height = this.envInfos.getHeight();
-    double _minus = (_height - occurrence.y);
-    _position_1.setY(_minus);
   }
   
   @Extension
@@ -525,14 +655,6 @@ public class Boid extends Agent {
     if ($behaviorUnitGuard$EndSimulation$4(occurrence, occurrence)) {
       ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$EndSimulation$4(occurrence));
     }
-  }
-  
-  @SyntheticMember
-  @PerceptGuardEvaluator
-  private void $guardEvaluator$PositionModification(final PositionModification occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
-    assert occurrence != null;
-    assert ___SARLlocal_runnableCollection != null;
-    ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$PositionModification$5(occurrence));
   }
   
   @Override

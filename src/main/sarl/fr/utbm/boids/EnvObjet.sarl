@@ -1,5 +1,7 @@
 package fr.utbm.boids
 
+import fr.utbm.boids.util.Vector
+
 class EnvObjet {
 	
 	var position : Vector

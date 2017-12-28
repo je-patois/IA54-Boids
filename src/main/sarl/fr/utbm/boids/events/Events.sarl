@@ -2,7 +2,7 @@ package fr.utbm.boids.events
 
 import java.util.Collection
 import fr.utbm.boids.agents.Boid
-import fr.utbm.boids.Vector
+import fr.utbm.boids.util.Vector
 import java.util.UUID
 import fr.utbm.boids.BoidBody
 import java.util.Map

@@ -6,7 +6,7 @@ import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.StartingSimulation
 import java.util.UUID
-import fr.utbm.boids.Vector
+import fr.utbm.boids.util.Vector
 import fr.utbm.boids.events.StartPosition
 import fr.utbm.boids.events.ResultatDeplacement
 import io.sarl.util.Scopes
@@ -89,7 +89,7 @@ agent Environment {
 		var address = boidsAddresses.get(occurrence.boid)
 		this.boidsList.get(occurrence.boid).position.x = occurrence.x
 		this.boidsList.get(occurrence.boid).position.y = occurrence.y
-		innerContext.defaultSpace.emit(ID, new PositionModification(occurrence.boid, occurrence.x, occurrence.y), Scopes.addresses(address))
+		//innerContext.defaultSpace.emit(ID, new PositionModification(occurrence.boid, occurrence.x, occurrence.y), Scopes.addresses(address))
 	}
 
 	//TODO Si à l'initialisation deux boids spawn au même endroit, il faut relancer un spawn

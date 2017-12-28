@@ -3,7 +3,6 @@ package fr.utbm.boids.agents;
 import com.google.common.base.Objects;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.EnvInfos;
-import fr.utbm.boids.Vector;
 import fr.utbm.boids.agents.Boid;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.BoidInitialized;
@@ -18,6 +17,7 @@ import fr.utbm.boids.events.StartingSimulation;
 import fr.utbm.boids.events.ValidationDeplacement;
 import fr.utbm.boids.gui.BoidsFxViewerController;
 import fr.utbm.boids.gui.fx.EndSimulation;
+import fr.utbm.boids.util.Vector;
 import io.sarl.core.Behaviors;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Initialize;
@@ -158,9 +158,6 @@ public class Environment extends Agent {
     _position.setX(occurrence.x);
     Vector _position_1 = this.boidsList.get(occurrence.boid).getPosition();
     _position_1.setY(occurrence.y);
-    InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-    PositionModification _positionModification = new PositionModification(occurrence.boid, occurrence.x, occurrence.y);
-    _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _positionModification, Scopes.addresses(address));
   }
   
   @SyntheticMember

@@ -3,8 +3,10 @@ package fr.utbm.boids.environment
 import fr.utbm.boids.util.LineTool
 import java.util.List
 import javafx.scene.shape.Polygon
-import fr.utbm.boids.Vector
+import fr.utbm.boids.util.Vector
 import java.util.ArrayList
+import fr.utbm.boids.util.Edge
+import fr.utbm.boids.util.Coordinates
 
 // import fr.utbm.boids.util.EnvironmentInfos
 
@@ -12,6 +14,7 @@ class Obstacle {
 	
 	var lines : List<LineTool>
 	var shape : Polygon
+	var edges : List<Edge>
 	
 	new() {
 		
@@ -20,11 +23,35 @@ class Obstacle {
 	new(obstacle : Obstacle) {
 		this.lines = obstacle.lines
 		this.shape = obstacle.shape
+		this.edges = new ArrayList<Edge>()
+		
+		var i = 0 
+		
+		for (e : obstacle.edges){
+			edges.add(i,e)
+			i++
+		}
+
 	}
 	
 	new(lines : List<LineTool>, shape : Polygon) {
 		this.lines = lines
 		this.shape = shape
+
+		// définition et création des edges composants le polygone
+		edges = new ArrayList<Edge>
+
+		var nombrePoints = this.nbPoints()
+
+		for (var i = 0; i < nombrePoints; i = i + 2) {
+			edges.add(i/2,
+				new Edge(
+					new Coordinates(this.shape.points.get(i % nombrePoints),
+						this.shape.points.get((i + 1) % nombrePoints)),
+					new Coordinates(this.shape.points.get((i + 2) % nombrePoints),
+						this.shape.points.get((i + 3) % nombrePoints))))
+		}
+		
 	}
 	
 	/*def getInfos() : EnvironmentInfos {
@@ -47,8 +74,16 @@ class Obstacle {
 		return this.shape
 	}
 	
+	def getEdges() : List<Edge> {
+		return this.edges
+	}
+	
 	def setPolygon(polygon : Polygon) : void {
 		this.polygon = polygon
+	}
+	
+	def setEdges(edges : List<Edge>){
+		this.edges = edges
 	}
 	
 	def nbPoints : int {
@@ -75,13 +110,13 @@ class Obstacle {
 		var centerX : double = 0
 		var centerY : double = 0
 		
-		for (var i = 0; i < this.nbPoints() - 1; i = i + 2) {
+		for (var i = 0; i < this.nbPoints()- 1 ; i = i + 2) {
 	        centerX += polygon.points.get(i)
 	       	centerY += polygon.points.get(i + 1)
 		}
 
-	    centerX = centerX/this.nbPoints();
-	    centerY = centerY/this.nbPoints();
+	    centerX = centerX/(this.nbPoints()/2);
+	    centerY = centerY/(this.nbPoints()/2);
 			
 		return new Vector(centerX, centerY)
 	}
@@ -115,5 +150,91 @@ class Obstacle {
 			fullList.add(point)
 		]
 	    return new Polygon(fullList)
+	}
+	
+	def getWidth () : int {
+		
+		var nbPoints = this.nbPoints()
+		var i : int 
+		i = 2 
+		
+		var maxX = polygon.points.get(0)
+		var minX = polygon.points.get(0)
+		
+
+		while (i < nbPoints){
+			if (maxX < polygon.points.get(i)){
+				maxX = polygon.points.get(i)
+			}
+			if (minX > polygon.points.get(i)) {
+				minX = polygon.points.get(i)
+			}
+			 i += 2 
+		}
+
+		return (maxX - minX).intValue
+	}
+	
+	def getMinX() : int {
+		var nbPoints = this.nbPoints()
+		var i : int
+		i = 2
+
+		var minX = polygon.points.get(0)
+		
+		while (i < nbPoints) {
+			if (minX > polygon.points.get(i)) {
+				minX = polygon.points.get(i)
+			}
+			i += 2
+		}
+		
+		return minX.intValue
+	}
+
+	def getMinY() : int {
+		var nbPoints = this.nbPoints()
+		var i : int
+		i = 3
+
+		var minY = polygon.points.get(1)
+
+		while (i < nbPoints) {
+			if (minY > polygon.points.get(i)) {
+				minY = polygon.points.get(i)
+			}
+			i += 2
+		}
+
+		return minY.intValue
+	}
+
+	def getHeight() : int {
+
+		var nbPoints = this.nbPoints()
+		var i : int
+		i = 3
+
+		var maxY = polygon.points.get(1)
+		var minY = polygon.points.get(1)
+
+		while (i < nbPoints) {
+			if (maxY < polygon.points.get(i)) {
+				maxY = polygon.points.get(i)
+			}
+			if (minY > polygon.points.get(i)) {
+				minY = polygon.points.get(i)
+			}
+			i += 2
+		}
+
+		return (maxY - minY).intValue
+	}
+	
+	def getCentreCarre : Vector {
+		var centreCarre : Vector
+		centreCarre = new Vector(this.minX, this.minY)
+		centreCarre.plus(new Vector(this.width / 2, this.height / 2))
+		return centreCarre
 	}
 }

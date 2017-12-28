@@ -6,7 +6,7 @@ import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.DemandeDeplacement
 import fr.utbm.boids.events.StartPosition
 import fr.utbm.boids.events.ResultatDeplacement
-import fr.utbm.boids.Vector
+import fr.utbm.boids.util.Vector
 import java.util.Random
 import fr.utbm.boids.events.ValidationDeplacement
 import fr.utbm.boids.BoidBody
@@ -21,8 +21,9 @@ import java.util.Map
 import fr.utbm.boids.events.BoidInitialized
 import fr.utbm.boids.EnvInfos
 import java.util.HashMap
-import fr.utbm.boids.events.PositionModification
 import java.util.List
+import fr.utbm.boids.util.Sphere
+import fr.utbm.boids.util.Edge
 
 agent Boid {
 	uses Logging, DefaultContextInteractions, Lifecycle
@@ -104,19 +105,19 @@ agent Boid {
 		if (boids != null) {
 			
 			//on applique la séparation 
-			forceTot.plus(separation(visibleBoids))
+			//forceTot.plus(separation(visibleBoids))
 			
 			//on applique la cohésion
-			forceTot.plus(cohesion(visibleBoids))				
+			//forceTot.plus(cohesion(visibleBoids))				
 			
 			//on applique l'alignement
-			forceTot.plus(alignement(visibleBoids))
+			//forceTot.plus(alignement(visibleBoids))
 
 			//on applique la répulsion
-			forceTot.plus(repulsion(closeBoids))
+			//forceTot.plus(repulsion(closeBoids))
 			
 			// on applique la force résultant de la détection des obstacles
-			forceTot.plus(forceObstacles(occurrence.obstacles, forceTot))
+			forceTot.plus(forceObstacles(occurrence.obstacles))
 		 
 			// TODO appliquer force obstacle
 		}
@@ -144,7 +145,7 @@ agent Boid {
 	 	tmp2 = new Vector(this.body.vitesse)
 	 	
 	 	// on test si le boids est hors de l'angle de vision : cos(ABC) = vec(AB).vec(AC)/(AB*AC)
-	 	if (Math.abs(Math.toDegrees(Math.acos((tmp2.point(tmp)/(tmp2.length * tmp.length))))) > this.body.angleVisibilite) {
+	 	if (Math.toDegrees(Math.acos((tmp2.point(tmp)/(tmp2.length * tmp.length)))) > this.body.angleVisibilite) {
 	 		return false
 	 	}else{
 	 		return true
@@ -302,57 +303,156 @@ agent Boid {
 		
 		return force
 	}
-	
-	def forceObstacles(listeObstacles : List<Obstacle>, force : Vector) : Vector{
+
+	@SuppressWarnings("equals_with_null")
+	def forceObstacles(listeObstacles : List<Obstacle>) : Vector{
 		
-		/*var direction = new Vector(0,0)
-		var direction2 = new Vector(0,0)
-		var tmp = new Vector(0,0)
-		var collision : Vector = new Vector(this.body.vitesse)*/
+		var force : Vector
+		force = new Vector(0,0)
+		
+		//info ("position supposée de la sphère : " + this.body.position)
+		var sphereBoid = new Sphere(new Vector(this.body.position), this.body.distanceVisibilite.doubleValue)
 		
 		if (listeObstacles !== null) {
-			listeObstacles.forEach [ o : Obstacle, index : int |
-				/*if (obstacleVisible(o)) {
-					direction.plus(o.getCenter())
-					direction2.plus(new Vector(this.body.position.x, this.body.position.y))
-					direction.moins(direction2)
-					tmp.plus(direction)
-					tmp.normaliser
-					force.moins(tmp)
-				}*/
-				 
-				// Si le boid vient de droite, répulsion vers la droite, si il vient de la gauche, répulsion vers la gauche, si il vient du haut, répulsion vers le haut, si il vient du bas, répulsion vers le bas.
-				// --> Diviser la bouding box(carré) en 4 parties haut bas gauche droite pour discerner ces cas
-				// Appliquer une force dans pour faire partir le boids dans la direction inverse
-				/*if(this.body.position.y <= o.polygon.boundsInLocal.maxY - 50) {
-					if (o.polygon.boundsInLocal.contains(this.body.position.x, this.body.position.y)) {
-						force.plus(o.center)
-						force.normaliser()
-					} 
-				} else if(this.body.position.y >= o.polygon.boundsInLocal.minY + 50) {
-					if (o.polygon.boundsInLocal.contains(this.body.position.x, this.body.position.y)) {
-						force.moins(o.center)
-						force.normaliser()
-					}
-				}*/
+			for (o : listeObstacles) {
+				var forceAdd : Vector
+				var distanceMin : double
+				distanceMin = 10000
+				var edgeRetenue : Edge 
+				edgeRetenue = null
 				
-			]
+				for (e : o.edges) {
+					if (intersectRaySphere(e,sphereBoid)){
+						
+						// Si on interphère on calcul la distance entre la droite et le point et on garde le plus proche
+							if (calculateDistancePointRay(e,this.body.position) < distanceMin){
+								edgeRetenue = e
+								distanceMin = calculateDistancePointRay(e, this.body.position)
+							}
+					}
+				}
+				
+				if (edgeRetenue != null) {
+					forceAdd = new Vector(edgeRetenue.normal)
+					info ("position de l'edge : " + edgeRetenue.pointDepart )
+					forceAdd.fois(100/distanceMin)
+					force.plus(forceAdd)
+				}
+				 
+			}
+			
 		}
+		
 		return force
+		
+		
 	}
 	
-	def obstacleVisible (obstacle : Obstacle) : boolean {
-		var tmp : Vector
-		tmp = obstacle.getCenter()
-		tmp.moins(this.body.position)
-		if(tmp.length < this.body.distanceVisibilite*2){
+	// d'après wikipédia : distance d'un point à une droite / Dans l'espace
+	def calculateDistancePointRay (edge : Edge, point : Vector) : double {
+		var distance : double 
+		// B point sur la droite : edge.pointDepart  A point considéré : point 
+		var vecteurBA = new Vector (point.x - edge.pointDepart.x, point.y - edge.pointDepart.y)
+		distance = vecteurBA.produitVectoriel(edge.direction).length
+		distance = distance / (edge.direction.length)
+		return distance
+	}
+	
+	
+	// voir pdf real time collission detection de Christer Ericson
+	def intersectRaySphere (edge : Edge, s : Sphere ) : boolean {
+		var m : Vector 
+		var directionNormalise : Vector
+		
+		m = new Vector (edge.pointDepart.x, edge.pointDepart.y)
+		m.moins(s.center)
+		
+		directionNormalise = new Vector(edge.direction)
+		directionNormalise.normaliser
+
+		var c = m.point(m) - s.radius * s.radius
+		if (c<=0.0f){
 			return true
-		} else {
+		}
+		
+		var b = m.point(directionNormalise)
+		
+		if (b>0.0f){
 			return false
 		}
+		
+		var discr = b*b - c
+		
+		if (discr < 0.0f){
+			return false
+		}
+		
+		//ajout maison pour véifier qu'on est dans la distance de perception (ça à l'air de pas être trop mal)
+		m.moins(edge.direction)
+		
+		if (Math.abs(m.length) > s.radius ){
+			return false
+		}
+		
+		return true
 	}
-	
+
+	/* même fonciton que juste au dessus mais renvoi utilise en plus l'angle de vision (ne fonctionne pas et n'est as utilisée) */
+	def intersectRaySpherePoint(edge : Edge, s : Sphere) : boolean {
+		var m : Vector
+		var directionNormalise : Vector
+
+		m = new Vector(edge.pointDepart.x, edge.pointDepart.y)
+		//info(" m : " + m)
+		// info ("center : " + s.center)
+		m.moins(s.center)
+
+		directionNormalise = new Vector(edge.direction)
+		directionNormalise.normaliser
+
+		var b = m.point(directionNormalise)
+		var c = m.point(m) - s.radius * s.radius
+		if (c > 0.0f && b> 0.0f) {
+			return false
+		}
+
+		var discr = b * b - c
+
+		if (discr < 0.0f) {
+			return false
+		}
+
+		// ajout maison (ça à l'air de pas être trop mal)
+		m.moins(edge.direction)
+
+		if (Math.abs(m.length) > s.radius) {
+			return false
+		}
+		
+		var t = -b - Math.sqrt(discr)
+		var pointIntersection = new Vector
+		
+		pointIntersection.x = edge.pointDepart.x + t * directionNormalise.x
+		pointIntersection.y = edge.pointDepart.y + t * directionNormalise.y
+
+		info("point d'intersection : " + pointIntersection)
+		
+		pointIntersection.moins(this.body.position)
+
+		// on test si le boids est hors de l'angle de vision : cos(ABC) = vec(AB).vec(AC)/(AB*AC)
+		
+		if (Math.toDegrees(Math.acos((this.body.vitesse.point(pointIntersection) / (this.body.vitesse.length * pointIntersection.length)))) > this.body.angleVisibilite) {
+			info("false")
+			return false
+		} else {
+			info("true")
+			return true
+		}
+		
+	}
+
 	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
+	//TODO bug si accélération = - vitesse        il faut comprendre pourquoi
 	def appliquerForce(force : Vector) : Vector {
 
 		// f = ma => a =f/m
@@ -411,11 +511,6 @@ agent Boid {
 			return closeBoids
 		}
 		
-	}
-	
-	on PositionModification {
-		this.body.position.x = occurrence.x
-		this.body.position.y = envInfos.height - occurrence.y
 	}
 	
 }

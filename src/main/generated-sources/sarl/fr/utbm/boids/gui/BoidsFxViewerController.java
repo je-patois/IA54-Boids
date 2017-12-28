@@ -4,7 +4,6 @@ import com.google.common.base.Objects;
 import com.google.common.util.concurrent.AtomicDouble;
 import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Configuration;
-import fr.utbm.boids.Vector;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.events.Pause;
@@ -14,6 +13,7 @@ import fr.utbm.boids.gui.fx.FxViewerController;
 import fr.utbm.boids.util.BoidGroupInfos;
 import fr.utbm.boids.util.Coordinates;
 import fr.utbm.boids.util.LineTool;
+import fr.utbm.boids.util.Vector;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
@@ -1767,7 +1767,7 @@ public class BoidsFxViewerController extends FxViewerController {
         Polygon _polygon = new Polygon(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0, 225.0);
         this.polygons.add(_polygon);
         Polygon _polygon_1 = new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0, 
-          665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0, 605.0, 80.0);
+          665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0);
         this.polygons.add(_polygon_1);
         Polygon _polygon_2 = new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0);
         this.polygons.add(_polygon_2);
@@ -1921,42 +1921,37 @@ public class BoidsFxViewerController extends FxViewerController {
         for (final BoidBody boid : list) {
           {
             double _x = boid.getPosition().getX();
-            int _mapHeight = BoidsFxViewerController.this.getMapHeight();
             double _y = boid.getPosition().getY();
-            double _minus = (_mapHeight - _y);
-            double _minus_1 = (_minus - 7.5);
+            double _minus = (_y - 7.5);
             double _x_1 = boid.getPosition().getX();
             double _plus = (_x_1 + 5);
-            int _mapHeight_1 = BoidsFxViewerController.this.getMapHeight();
             double _y_1 = boid.getPosition().getY();
-            double _minus_2 = (_mapHeight_1 - _y_1);
-            double _plus_1 = (_minus_2 + 7.5);
+            double _plus_1 = (_y_1 + 7.5);
             double _x_2 = boid.getPosition().getX();
-            double _minus_3 = (_x_2 - 5);
-            int _mapHeight_2 = BoidsFxViewerController.this.getMapHeight();
+            double _minus_1 = (_x_2 - 5);
             double _y_2 = boid.getPosition().getY();
-            double _minus_4 = (_mapHeight_2 - _y_2);
-            double _plus_2 = (_minus_4 + 7.5);
-            Polygon boidElement = new Polygon(_x, _minus_1, _plus, _plus_1, _minus_3, _plus_2);
+            double _plus_2 = (_y_2 + 7.5);
+            Polygon boidElement = new Polygon(_x, _minus, _plus, _plus_1, _minus_1, _plus_2);
             double _x_3 = boid.getVitesse().getX();
             double _y_3 = boid.getVitesse().getY();
-            double _divide = (_x_3 / _y_3);
+            double _minus_2 = (-_y_3);
+            double _divide = (_x_3 / _minus_2);
             double angleRotation = Math.toDegrees(Math.atan(_divide));
             if ((angleRotation < 0)) {
               double _angleRotation = angleRotation;
               angleRotation = (_angleRotation + 180);
             }
             double _x_4 = boid.getVitesse().getX();
-            boolean _lessThan = (_x_4 < 0);
-            if (_lessThan) {
+            boolean _lessEqualsThan = (_x_4 <= 0);
+            if (_lessEqualsThan) {
               double _y_4 = boid.getVitesse().getY();
-              boolean _lessThan_1 = (_y_4 < 0);
-              if (_lessThan_1) {
+              boolean _lessEqualsThan_1 = (_y_4 <= 0);
+              if (_lessEqualsThan_1) {
                 double _angleRotation_1 = angleRotation;
-                angleRotation = (_angleRotation_1 - 180);
+                angleRotation = (_angleRotation_1 + 180);
               } else {
                 double _angleRotation_2 = angleRotation;
-                angleRotation = (_angleRotation_2 + 180);
+                angleRotation = (_angleRotation_2 - 180);
               }
             }
             boidElement.setRotate(angleRotation);
@@ -2127,10 +2122,7 @@ public class BoidsFxViewerController extends FxViewerController {
         Arc perceptionArc = new Arc();
         perceptionArc.setCenterX(x);
         if ((!(erase).booleanValue())) {
-          int _mapHeight = this.getMapHeight();
-          double _y = boid.getPosition().getY();
-          double _minus = (_mapHeight - _y);
-          perceptionArc.setCenterY(_minus);
+          perceptionArc.setCenterY(boid.getPosition().getY());
         } else {
           perceptionArc.setCenterY((y - 3));
         }
@@ -2139,8 +2131,8 @@ public class BoidsFxViewerController extends FxViewerController {
         int _distanceVisibilite_1 = boid.getDistanceVisibilite();
         perceptionArc.setRadiusY(((double) _distanceVisibilite_1));
         int _angleVisibilite = boid.getAngleVisibilite();
-        double _minus_1 = ((90 - angleRotation) - _angleVisibilite);
-        perceptionArc.setStartAngle(_minus_1);
+        double _minus = ((90 - angleRotation) - _angleVisibilite);
+        perceptionArc.setStartAngle(_minus);
         int _angleVisibilite_1 = boid.getAngleVisibilite();
         int _multiply = (_angleVisibilite_1 * 2);
         perceptionArc.setLength(_multiply);
@@ -2256,10 +2248,7 @@ public class BoidsFxViewerController extends FxViewerController {
     String _format_2 = String.format("%.3f", Double.valueOf(boidBody.getPosition().getX()));
     String _plus_13 = ("Position: (" + _format_2);
     String _plus_14 = (_plus_13 + ", ");
-    int _mapHeight = this.getMapHeight();
-    double _y_1 = boidBody.getPosition().getY();
-    double _minus = (_mapHeight - _y_1);
-    String _format_3 = String.format("%.3f", Double.valueOf(_minus));
+    String _format_3 = String.format("%.3f", Double.valueOf(boidBody.getPosition().getY()));
     String _plus_15 = (_plus_14 + _format_3);
     String _plus_16 = (_plus_15 + ")");
     this.boid_position.setText(_plus_16);

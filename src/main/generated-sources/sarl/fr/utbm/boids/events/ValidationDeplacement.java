@@ -1,6 +1,6 @@
 package fr.utbm.boids.events;
 
-import fr.utbm.boids.Vector;
+import fr.utbm.boids.util.Vector;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
@@ -47,5 +47,5 @@ public class ValidationDeplacement extends Event {
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = -107835186L;
+  private final static long serialVersionUID = 1016822030L;
 }

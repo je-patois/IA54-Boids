@@ -1,6 +1,7 @@
 package fr.utbm.boids
 
 import java.util.UUID
+import fr.utbm.boids.util.Vector
 
 class BoidBody extends EnvObjet{
 

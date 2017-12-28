@@ -1,7 +1,7 @@
 package fr.utbm.boids;
 
 import com.google.common.base.Objects;
-import fr.utbm.boids.Vector;
+import fr.utbm.boids.util.Vector;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;

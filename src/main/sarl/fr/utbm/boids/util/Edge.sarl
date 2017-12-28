@@ -1,0 +1,51 @@
+
+package fr.utbm.boids.util
+
+class Edge {
+	
+	var pointDepart : Coordinates 
+	var direction : Vector
+	var normal : Vector
+	
+	new (depart : Coordinates, arrivee : Coordinates){
+		this.pointDepart = depart
+		this.direction = new Vector (arrivee.x - depart.x, arrivee.y - depart.y)
+		var vecteurUnitaireZ = new Vector(0,0,1)
+		this.normal = this.direction.produitVectoriel(vecteurUnitaireZ)
+		this.normal.normaliser
+	}
+	
+	/* 
+	 * GETTER
+	 */
+	 
+	 def getPointDepart () : Coordinates {
+	 	return this.pointDepart
+	 }
+	 
+	 def getDirection () : Vector {
+	 	return this.direction
+	 }
+	 
+	 def getNormal () : Vector {
+	 	return this.normal
+	 }
+	 
+	 
+	 /*
+	  * SETTER
+	  */
+	  
+	  def setPointDepart(c : Coordinates){
+	  	this.pointDepart = c
+	  }
+	  
+	  def setDirection (v : Vector){
+	  	this.direction = v
+	  }
+	  
+	  def setNormal (v : Vector){
+	  	this.normal = v
+	  }
+	
+}
