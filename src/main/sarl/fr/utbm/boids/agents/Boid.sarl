@@ -366,13 +366,14 @@ agent Boid {
 		var newPosition : Vector		
 		var acceleration : Vector
 
-		if (force.length > 1.7) {
+		// TODO trouver un compromis pour borner mais pas trop bas pour pouvoir utiliser la masse et avoir une force correcte quand même
+		/*if (force.length > 1.7) {
 			force.normaliser()
 			force.fois(1.7)
-		}
-		
+		}*/
+
 		acceleration = new Vector(force)
-		//acceleration.fois(1/this.body.masse)
+		acceleration.fois(1/ this.body.masse.doubleValue)
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)
