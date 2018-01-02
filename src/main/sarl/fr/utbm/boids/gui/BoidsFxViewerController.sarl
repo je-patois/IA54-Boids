@@ -365,7 +365,7 @@ class BoidsFxViewerController extends FxViewerController {
 			this.polygonsCoordinates = new ArrayList()
 			this.obstacles = new ArrayList()
 			this.polygons.add(new Polygon(315.0, 720.0, 315.0, 250.0, 325.0, 250.0, 325.0, 720.0))
-			this.polygons.add(new Polygon(635.0, 0.0, 635.0, 470.0, 645.0, 470.0, 645.0, 0.0))
+			this.polygons.add(new Polygon(635.0, 470.0, 635.0, 0.0, 645.0, 0.0, 645.0, 470.0))
 			this.polygons.add(new Polygon(955.0, 720.0, 955.0, 250.0, 965.0, 250.0, 965.0, 720.0))
 
 			this.polygons.forEach [ p : Polygon |
