@@ -97,6 +97,9 @@ agent Boid {
 
 		forceTot = new Vector(0, 0)
 
+		closeBoids.clear()
+		visibleBoids.clear()
+		
 		closeBoids = perception(boids, 'close')
 		visibleBoids = perception(closeBoids, 'visible')
 		
@@ -104,7 +107,7 @@ agent Boid {
 		if (boids != null) {
 			
 			//on applique la séparation 
-			forceTot.plus(separation(visibleBoids))
+			forceTot.plus(separation(closeBoids))
 			
 			//on applique la cohésion
 			forceTot.plus(cohesion(visibleBoids))				
@@ -113,7 +116,7 @@ agent Boid {
 			forceTot.plus(alignement(visibleBoids))
 
 			//on applique la répulsion
-			forceTot.plus(repulsion(closeBoids))
+			forceTot.plus(repulsion(visibleBoids))
 			
 			// on applique la force résultant de la détection des obstacles
 			forceTot.plus(forceObstacles(occurrence.obstacles))
@@ -214,7 +217,8 @@ agent Boid {
 			force.fois(1/nbTot)
 			force.moins(this.body.position)
 		}
-		force.fois(0.45)
+		//force.fois(0.45)
+		force.fois(25)
 		return force
 	}
 	
@@ -300,7 +304,7 @@ agent Boid {
 				
 				if (edgeRetenue != null) {
 					forceAdd = new Vector(edgeRetenue.normal)
-					forceAdd.fois(100/distanceMin)
+					forceAdd.fois(1000/distanceMin)
 					force.plus(forceAdd)
 				}
 				 
@@ -367,10 +371,10 @@ agent Boid {
 		var acceleration : Vector
 
 		// TODO trouver un compromis pour borner mais pas trop bas pour pouvoir utiliser la masse et avoir une force correcte quand même
-		/*if (force.length > 1.7) {
+		if (force.length > 10) {
 			force.normaliser()
-			force.fois(1.7)
-		}*/
+			force.fois(10)
+		}
 
 		acceleration = new Vector(force)
 		acceleration.fois(1/ this.body.masse.doubleValue)
@@ -397,7 +401,6 @@ agent Boid {
 		
 	def perception(boids : Map<UUID, BoidBody>, mode : String) : Map<UUID, BoidBody> {
 		if (mode === 'visible') {
-			visibleBoids.clear()
 			for (elem : boids.entrySet) {
 				if (elem.key !== null && visible(elem.value) && elem.key != this.ID) {
 					visibleBoids.put(elem.key, elem.value)
@@ -405,7 +408,6 @@ agent Boid {
 			}
 			return visibleBoids
 		} else if (mode === 'close') {
-			closeBoids.clear()
 			for (elem : boids.entrySet) {
 				if (elem.key !== null && proche(elem.value) && elem.key != this.ID) {
 					closeBoids.put(elem.key, elem.value)
