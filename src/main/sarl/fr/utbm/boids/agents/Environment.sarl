@@ -40,7 +40,6 @@ agent Environment {
 	var inCycle : Boolean
 	var envInfos : EnvInfos
 	var restart : Boolean = false
-	// var superBoid : boolean // TODO Un jour peut-être
 
 	on Initialize {
 		loggingName = "Environment-" + this.ID
@@ -68,7 +67,6 @@ agent Environment {
 				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsSettings.get(i).speed, ctrl.boidsSettings.get(i).mass, ctrl.boidsSettings.get(i).angle, ctrl.boidsSettings.get(i).distance, envInfos)
 			}
 		}
-		//info(this.boidsList)
 	}
 
 	on BoidInitialized [occurrence.isInInnerDefaultSpace] {
@@ -86,13 +84,10 @@ agent Environment {
 	
 	on PositionModification [!isFromMe] {
 		restart = true
-		var address = boidsAddresses.get(occurrence.boid)
 		this.boidsList.get(occurrence.boid).position.x = occurrence.x
 		this.boidsList.get(occurrence.boid).position.y = occurrence.y
-		//innerContext.defaultSpace.emit(ID, new PositionModification(occurrence.boid, occurrence.x, occurrence.y), Scopes.addresses(address))
 	}
 
-	//TODO Si à l'initialisation deux boids spawn au même endroit, il faut relancer un spawn
 	on ResultatDeplacement {
 		
 		var accept = false
@@ -108,26 +103,22 @@ agent Environment {
 			}
 		}
 		
-		// pour interdire à un boids d'aller dans un obstacle
-		/*this.obstacles.forEach[o : Obstacle, index : int |
-			if(o.polygon.contains(new Point2D(occurrence.position.x, occurrence.position.y))) {
-				// setter accept à false. Au début on le mettrait à true et on le passerait à false seulement si quelque chose empêche le déplacement
-			}
-		]*/
 			
 		if (accept) {
 			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))	
 		} else {
-			//TODO resolution des problèmes de collision interBoids
-
-			//TODO supprimer acceptation collisions
-			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
+			if (this.firstTime == true) {
+				innerContext.defaultSpace.emit(ID, new StartPosition(this.ctrl.obstacles), Scopes.addresses(occurrence.source))
+			}else{
+				innerContext.defaultSpace.emit(ID, new DemandeDeplacement(this.boidsList, this.ctrl.obstacles),Scopes.addresses(occurrence.source))
+			}
 		}
 		
 		synchronized (boidsUpdated) {
-			boidsUpdated = boidsUpdated + 1
+			if (accept){
+				boidsUpdated = boidsUpdated + 1
+			}
 			if(this.boidsUpdated == this.ctrl.boidsQuantity * this.ctrl.boidsPopulation && this.firstTime == true) {
-				//info('boidsUpdated: ' + this.boidsUpdated + ', boidsTotal: ' + this.ctrl.boidsQuantity * this.ctrl.boidsPopulation)
 				wake(new BoidsSideReady)
 				this.firstTime = false
 			}
@@ -138,7 +129,6 @@ agent Environment {
 		if(!inCycle) {
 			if(!restart) {
 				synchronized (boidsUpdated){
-					//info ("demande de rafraichissement : " + this.boidsUpdated)
 					 if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
 						inCycle = true
 						// envoi des nouveaux corps des boids
@@ -167,18 +157,18 @@ agent Environment {
 		}
 	}
 
-	def estDansLaCarte(v : Vector) : Vector {	//TODO rajouter tests murs ICI / Rename ?
+	def estDansLaCarte(v : Vector) : Vector {
 		var positionX = v.getX()
 		var positionY = v.getY()
 		
 		if(positionX > this.ctrl.mapWidth)
-			positionX = 1 // peut-être que 0 marche aussi
+			positionX = 1 
 		if(positionX < 0)
-			positionX = this.ctrl.mapWidth - 1 // peut-être que largeur marche aussi
+			positionX = this.ctrl.mapWidth - 1 
 		if(positionY > this.ctrl.mapHeight)
-			positionY = 1 // peut-être que 0 marche aussi
+			positionY = 1 
 		if(positionY < 0)
-			positionY = this.ctrl.mapHeight - 1 // peut-être que hauteur marche aussi
+			positionY = this.ctrl.mapHeight - 1 
 		
 		var newPosition = new Vector(positionX, positionY)
 		return newPosition
@@ -189,7 +179,6 @@ agent Environment {
 		killMe
 	}
 	
-	// on EndSimulation [hasMemberAgent && occurrence.source.UUID === this.spawner && !isFromMe] {
 	on EndSimulation [hasMemberAgent] {
 		innerContext.defaultSpace.emit(ID, new EndSimulation)
 	}
