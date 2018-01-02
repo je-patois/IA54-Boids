@@ -8,8 +8,6 @@ import java.util.ArrayList
 import fr.utbm.boids.util.Edge
 import fr.utbm.boids.util.Coordinates
 
-// import fr.utbm.boids.util.EnvironmentInfos
-
 class Obstacle {
 	
 	var lines : List<LineTool>
@@ -54,14 +52,6 @@ class Obstacle {
 		
 	}
 	
-	/*def getInfos() : EnvironmentInfos {
-		return this.infos
-	}
-	
-	def setInfos(infos : EnvironmentInfos) : void {
-		this.infos = infos
-	}*/
-	
 	def getLines() : List<LineTool> {
 		return this.lines
 	}
@@ -95,18 +85,6 @@ class Obstacle {
 	}
 	
 	def getCenter() : Vector{
-		/*var center = new Vector(0, 0)
-		var tmp = new Vector(0,0)
-		var nbLines : int
-		
-		this.lines.forEach[a : LineTool |
-			tmp.clear()	
-			tmp.plus(new Vector(a.a.x, a.a.y))
-			center.plus(tmp)
-		]
-		nbLines = this.lines.length
-		center.fois(1/nbLines)*/
-		
 		var centerX : double = 0
 		var centerY : double = 0
 		
@@ -150,91 +128,5 @@ class Obstacle {
 			fullList.add(point)
 		]
 	    return new Polygon(fullList)
-	}
-	
-	def getWidth () : int {
-		
-		var nbPoints = this.nbPoints()
-		var i : int 
-		i = 2 
-		
-		var maxX = polygon.points.get(0)
-		var minX = polygon.points.get(0)
-		
-
-		while (i < nbPoints){
-			if (maxX < polygon.points.get(i)){
-				maxX = polygon.points.get(i)
-			}
-			if (minX > polygon.points.get(i)) {
-				minX = polygon.points.get(i)
-			}
-			 i += 2 
-		}
-
-		return (maxX - minX).intValue
-	}
-	
-	def getMinX() : int {
-		var nbPoints = this.nbPoints()
-		var i : int
-		i = 2
-
-		var minX = polygon.points.get(0)
-		
-		while (i < nbPoints) {
-			if (minX > polygon.points.get(i)) {
-				minX = polygon.points.get(i)
-			}
-			i += 2
-		}
-		
-		return minX.intValue
-	}
-
-	def getMinY() : int {
-		var nbPoints = this.nbPoints()
-		var i : int
-		i = 3
-
-		var minY = polygon.points.get(1)
-
-		while (i < nbPoints) {
-			if (minY > polygon.points.get(i)) {
-				minY = polygon.points.get(i)
-			}
-			i += 2
-		}
-
-		return minY.intValue
-	}
-
-	def getHeight() : int {
-
-		var nbPoints = this.nbPoints()
-		var i : int
-		i = 3
-
-		var maxY = polygon.points.get(1)
-		var minY = polygon.points.get(1)
-
-		while (i < nbPoints) {
-			if (maxY < polygon.points.get(i)) {
-				maxY = polygon.points.get(i)
-			}
-			if (minY > polygon.points.get(i)) {
-				minY = polygon.points.get(i)
-			}
-			i += 2
-		}
-
-		return (maxY - minY).intValue
-	}
-	
-	def getCentreCarre : Vector {
-		var centreCarre : Vector
-		centreCarre = new Vector(this.minX, this.minY)
-		centreCarre.plus(new Vector(this.width / 2, this.height / 2))
-		return centreCarre
 	}
 }
