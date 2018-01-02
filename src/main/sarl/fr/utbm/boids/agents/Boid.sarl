@@ -40,7 +40,6 @@ agent Boid {
 	 
 	on Initialize {
 		loggingName = "Boid-" + this.ID
-		info("A Boid agent was started.")
 		parentAgent = occurrence.spawner
 		this.body = new BoidBody(this.ID, occurrence.parameters.get(0) as Integer, occurrence.parameters.get(1) as Integer, occurrence.parameters.get(2) as Integer, occurrence.parameters.get(3) as Integer, occurrence.parameters.get(4) as Integer)
 		this.envInfos = occurrence.parameters.get(5) as EnvInfos
@@ -105,25 +104,23 @@ agent Boid {
 		if (boids != null) {
 			
 			//on applique la séparation 
-			//forceTot.plus(separation(visibleBoids))
+			forceTot.plus(separation(visibleBoids))
 			
 			//on applique la cohésion
-			//forceTot.plus(cohesion(visibleBoids))				
+			forceTot.plus(cohesion(visibleBoids))				
 			
 			//on applique l'alignement
-			//forceTot.plus(alignement(visibleBoids))
+			forceTot.plus(alignement(visibleBoids))
 
 			//on applique la répulsion
-			//forceTot.plus(repulsion(closeBoids))
+			forceTot.plus(repulsion(closeBoids))
 			
 			// on applique la force résultant de la détection des obstacles
 			forceTot.plus(forceObstacles(occurrence.obstacles))
-		 
-			// TODO appliquer force obstacle
+		
 		}
 		
-		//forceTot.fois(100000)
-		//info("force totale " + forceTot)
+		forceTot.fois(100000)
 
 		emit(new ResultatDeplacement(appliquerForce(forceTot), this.body.newVitesse))
 	 
@@ -182,37 +179,7 @@ agent Boid {
 		tmp = new Vector(0, 0)
 		 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe) {
-				
-				/*if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - envInfos.width)){
-					if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x + envInfos.width)){
-						xelem = elem.value.position.x
-					} else {
-						xelem = elem.value.position.x + envInfos.width
-					}
-				} else {
-					if(distance(this.body.position.x, elem.value.position.x - envInfos.width) < distance(this.body.position.x, elem.value.position.x + envInfos.width)){
-						xelem = elem.value.position.x - envInfos.width
-					} else {
-						xelem = elem.value.position.x + envInfos.width
-					}
-				}
-				
-				if (distance(this.body.position.y, elem.value.position.y) < distance(this.body.position.y, elem.value.position.y - envInfos.height)) {
-					if (distance(this.body.position.y, elem.value.position.y) < distance(this.body.position.y, elem.value.position.y + envInfos.height)) {
-						yelem = elem.value.position.y
-					} else {
-						yelem = elem.value.position.y + envInfos.height
-					}
-				} else {
-					if (distance(this.body.position.y, elem.value.position.y - envInfos.height) < distance(this.body.position.y, elem.value.position.y + envInfos.height)) {
-						yelem = elem.value.position.y - envInfos.height
-					} else {
-						yelem = elem.value.position.y + envInfos.height
-					}
-				 }*/
-					 
-				
+			if (elem.key != null && elem.value.groupe == this.body.groupe) {			 		
 				tmpelem = new Vector(xelem%envInfos.width, yelem%envInfos.height)
 				tmp.setXY(this.body.position)
 				//tmp.moins(tmpelem)
@@ -310,7 +277,6 @@ agent Boid {
 		var force : Vector
 		force = new Vector(0,0)
 		
-		//info ("position supposée de la sphère : " + this.body.position)
 		var sphereBoid = new Sphere(new Vector(this.body.position), this.body.distanceVisibilite.doubleValue)
 		
 		if (listeObstacles !== null) {
@@ -334,7 +300,6 @@ agent Boid {
 				
 				if (edgeRetenue != null) {
 					forceAdd = new Vector(edgeRetenue.normal)
-					info ("position de l'edge : " + edgeRetenue.pointDepart )
 					forceAdd.fois(100/distanceMin)
 					force.plus(forceAdd)
 				}
@@ -358,53 +323,14 @@ agent Boid {
 		return distance
 	}
 	
-	
+
 	// voir pdf real time collission detection de Christer Ericson
-	def intersectRaySphere (edge : Edge, s : Sphere ) : boolean {
-		var m : Vector 
-		var directionNormalise : Vector
-		
-		m = new Vector (edge.pointDepart.x, edge.pointDepart.y)
-		m.moins(s.center)
-		
-		directionNormalise = new Vector(edge.direction)
-		directionNormalise.normaliser
-
-		var c = m.point(m) - s.radius * s.radius
-		if (c<=0.0f){
-			return true
-		}
-		
-		var b = m.point(directionNormalise)
-		
-		if (b>0.0f){
-			return false
-		}
-		
-		var discr = b*b - c
-		
-		if (discr < 0.0f){
-			return false
-		}
-		
-		//ajout maison pour véifier qu'on est dans la distance de perception (ça à l'air de pas être trop mal)
-		m.moins(edge.direction)
-		
-		if (Math.abs(m.length) > s.radius ){
-			return false
-		}
-		
-		return true
-	}
-
-	/* même fonciton que juste au dessus mais renvoi utilise en plus l'angle de vision (ne fonctionne pas et n'est as utilisée) */
-	def intersectRaySpherePoint(edge : Edge, s : Sphere) : boolean {
+	def intersectRaySphere(edge : Edge, s : Sphere) : boolean {
 		var m : Vector
 		var directionNormalise : Vector
 
 		m = new Vector(edge.pointDepart.x, edge.pointDepart.y)
-		//info(" m : " + m)
-		// info ("center : " + s.center)
+
 		m.moins(s.center)
 
 		directionNormalise = new Vector(edge.direction)
@@ -421,34 +347,14 @@ agent Boid {
 		if (discr < 0.0f) {
 			return false
 		}
-
-		// ajout maison (ça à l'air de pas être trop mal)
-		m.moins(edge.direction)
-
-		if (Math.abs(m.length) > s.radius) {
-			return false
-		}
 		
 		var t = -b - Math.sqrt(discr)
-		var pointIntersection = new Vector
-		
-		pointIntersection.x = edge.pointDepart.x + t * directionNormalise.x
-		pointIntersection.y = edge.pointDepart.y + t * directionNormalise.y
 
-		info("point d'intersection : " + pointIntersection)
-		
-		pointIntersection.moins(this.body.position)
-
-		// on test si le boids est hors de l'angle de vision : cos(ABC) = vec(AB).vec(AC)/(AB*AC)
-		
-		if (Math.toDegrees(Math.acos((this.body.vitesse.point(pointIntersection) / (this.body.vitesse.length * pointIntersection.length)))) > this.body.angleVisibilite) {
-			info("false")
+		if (Math.abs(t) > edge.direction.length) {
 			return false
-		} else {
-			info("true")
-			return true
 		}
-		
+
+		return true	
 	}
 
 	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
@@ -481,10 +387,6 @@ agent Boid {
 		newPosition = new Vector(this.body.position)
 		newPosition.plus(this.body.newVitesse)
 		return newPosition
-	}
-	
-	def distance(XA : double, XB : double){
-		return Math.abs(XA - XB)
 	}
 	
 	on EndSimulation [isFrom(this.parentAgent)] {
