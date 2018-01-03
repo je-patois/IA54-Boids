@@ -144,6 +144,11 @@ agent Boid {
 	 	
 	 	tmp2 = new Vector(this.body.vitesse)
 	 	
+	 	// Si l'un des deux vecteurs est nul, on aura une erreur sur le test suivant par défaut, on renvoi false
+	 	if (tmp2.length == 0 || tmp.length == 0){
+	 		return false
+	 	}
+	 	
 	 	// on test si le boids est hors de l'angle de vision : cos(ABC) = vec(AB).vec(AC)/(AB*AC)
 	 	if (Math.toDegrees(Math.acos((tmp2.point(tmp)/(tmp2.length * tmp.length)))) > this.body.angleVisibilite) {
 	 		return false
@@ -362,7 +367,6 @@ agent Boid {
 	}
 
 	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
-	//TODO bug si accélération = - vitesse        il faut comprendre pourquoi
 	def appliquerForce(force : Vector) : Vector {
 
 		// f = ma => a =f/m
