@@ -332,7 +332,6 @@ class BoidsFxViewerController extends FxViewerController {
 					665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0/* , 605.0, 80.0*/))
 			this.polygons.add(new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0))
 			this.polygons.forEach[p : Polygon |
-				this.polygonsCoordinates.add(this.generateCoordinates(p))
 				p.setFill(Color.GRAY)
 				p.setStroke(Color.TRANSPARENT)
 				p.setStrokeWidth(20)
@@ -369,7 +368,6 @@ class BoidsFxViewerController extends FxViewerController {
 			this.polygons.add(new Polygon(955.0, 720.0, 955.0, 250.0, 965.0, 250.0, 965.0, 720.0))
 
 			this.polygons.forEach [ p : Polygon |
-				this.polygonsCoordinates.add(this.generateCoordinates(p))
 				p.setFill(Color.GRAY)
 				p.setStroke(Color.TRANSPARENT)
 				p.setStrokeWidth(20)
@@ -394,40 +392,14 @@ class BoidsFxViewerController extends FxViewerController {
 			}
 		}
 	}
-	/** 
-	 * Génère les coordonnées relatives aux polygones
-	 */
-	def generateCoordinates(p : Polygon) : List<Coordinates> {
-		var abscissa : AtomicDouble = new AtomicDouble();
-		var coordinates : List<Coordinates> = new ArrayList()
-		p.getPoints.forEach [ ordered : Double, index : int |
-			if (index % 2 == 0) {
-				abscissa.set(ordered)
-			} else {
-				coordinates.add(new Coordinates(abscissa.get(), ordered.doubleValue()))
-			}
-		]
-		return coordinates
-	}
 	
 	/** 
 	 * Génère les obstacles
 	 */
 	def generateObstacles() : void {
-		this.polygonsCoordinates.forEach [p : List<Coordinates>, currentItem : int |
-			var lines : List<LineTool> = new ArrayList()
-			p.forEach[c : Coordinates, index : int |
-				if(index != 0) {
-					var line : LineTool = new LineTool(p.get(index - 1), c)
-					line.computeLineEquation()
-					lines.add(line)
-				}
-			]
-			var line : LineTool = new LineTool(p.last, p.get(0))
-			line.computeLineEquation()
-			lines.add(line)
-			this.obstacles.add(new Obstacle(lines, this.polygons.get(currentItem)))
-		]
+		 for (p : polygons) {
+			this.obstacles.add(new Obstacle(p))
+		 }
 	}
 	
 	/** 

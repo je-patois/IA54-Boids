@@ -10,7 +10,6 @@ import fr.utbm.boids.util.Coordinates
 
 class Obstacle {
 	
-	var lines : List<LineTool>
 	var shape : Polygon
 	var edges : List<Edge>
 	
@@ -19,7 +18,6 @@ class Obstacle {
 	}	
 	
 	new(obstacle : Obstacle) {
-		this.lines = obstacle.lines
 		this.shape = obstacle.shape
 		this.edges = new ArrayList<Edge>()
 		
@@ -32,8 +30,7 @@ class Obstacle {
 
 	}
 	
-	new(lines : List<LineTool>, shape : Polygon) {
-		this.lines = lines
+	new (shape : Polygon){
 		this.shape = shape
 
 		// définition et création des edges composants le polygone
@@ -42,22 +39,13 @@ class Obstacle {
 		var nombrePoints = this.nbPoints()
 
 		for (var i = 0; i < nombrePoints; i = i + 2) {
-			edges.add(i/2,
+			edges.add(i / 2,
 				new Edge(
 					new Coordinates(this.shape.points.get(i % nombrePoints),
 						this.shape.points.get((i + 1) % nombrePoints)),
 					new Coordinates(this.shape.points.get((i + 2) % nombrePoints),
 						this.shape.points.get((i + 3) % nombrePoints))))
 		}
-		
-	}
-	
-	def getLines() : List<LineTool> {
-		return this.lines
-	}
-	
-	def setLines(lines : List<LineTool>) : void {
-		this.lines = lines
 	}
 	
 	def getPolygon() : Polygon {
@@ -78,10 +66,6 @@ class Obstacle {
 	
 	def nbPoints : int {
 		return this.polygon.points.size
-	}
-	
-	def toString() : String {
-		return 'Obstacle: LineTool: ' + this.lines.toString()		
 	}
 	
 	def getCenter() : Vector{
