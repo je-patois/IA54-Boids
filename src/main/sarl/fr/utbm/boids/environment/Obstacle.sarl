@@ -1,6 +1,5 @@
 package fr.utbm.boids.environment
 
-import fr.utbm.boids.util.LineTool
 import java.util.List
 import javafx.scene.shape.Polygon
 import fr.utbm.boids.util.Vector
@@ -10,13 +9,16 @@ import fr.utbm.boids.util.Coordinates
 
 class Obstacle {
 	
+	/** Le polygone correpsondant à l'obstacle. */
 	var shape : Polygon
+	/** La liste des arêtes composant le polygone. */
 	var edges : List<Edge>
 	
-	new() {
-		
-	}	
 	
+	/** 
+	 * Création d'un nouvel obstacle
+	 * @param obstacle L'obstacle à copier pour la création de cette classe.
+	 */
 	new(obstacle : Obstacle) {
 		this.shape = obstacle.shape
 		this.edges = new ArrayList<Edge>()
@@ -30,6 +32,11 @@ class Obstacle {
 
 	}
 	
+	
+	/** 
+	 * Création d'un nouvel obstacle
+	 * @param shape Le polygone de référence pour la création de mon obstacle.
+	 */
 	new (shape : Polygon){
 		this.shape = shape
 
@@ -48,26 +55,51 @@ class Obstacle {
 		}
 	}
 	
+	
+	/**
+	 * @return Le polygone de notre obstacle.
+	 */
 	def getPolygon() : Polygon {
 		return this.shape
 	}
 	
+	/**
+	 * @return La liste des arêtes qui composent notre polygone.
+	 */
 	def getEdges() : List<Edge> {
 		return this.edges
 	}
 	
+	/**
+	 * Permet de setter une valeur à la variable polygon
+	 * @param Le polygone à enregistrer.
+	 */
 	def setPolygon(polygon : Polygon) : void {
 		this.polygon = polygon
 	}
 	
+	/**
+	 * Permet de setter une valleur à la variable edges
+	 * @param La liste des arêtes à enregistrer.
+	 */
 	def setEdges(edges : List<Edge>){
 		this.edges = edges
 	}
 	
+	
+	/**
+	 * Permet de calculer le nombre de points qui composent un polygone
+	 * @return Le nombre de sommet du polygone.
+	 */
 	def nbPoints : int {
 		return this.polygon.points.size
 	}
 	
+	
+	/**
+	 * Permet de calculer le centre d'un polygone
+	 * @return La position du centre du polygone.
+	 */
 	def getCenter() : Vector{
 		var centerX : double = 0
 		var centerY : double = 0
@@ -83,6 +115,10 @@ class Obstacle {
 		return new Vector(centerX, centerY)
 	}
 
+
+	/**
+	 * TODO mettre javadoc par le créateur de la fonction + vérifier son utilisation par le créateur.
+	 */
 	def polygonArea(facteur : double) : Polygon {
 	    var nbPoints = this.nbPoints()
 	    var centreX : double
