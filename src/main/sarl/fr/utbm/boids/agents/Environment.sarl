@@ -30,17 +30,31 @@ import fr.utbm.boids.events.PositionModification
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess, Behaviors
 	
-	var boidsList : Map<UUID,BoidBody>	//liste complète des corps de boids
+	/** Liste des ID des agents boids en correspondance avec leurs corps. */
+	var boidsList : Map<UUID,BoidBody>	
+	/** Liste des positions occupées par les boids avec leur ID. */
 	var boidsGrid : Map<Vector, UUID>
+	/** TODO mettre javadoc*/
 	var boidsAddresses : Map<UUID, Address>
+	/** Compte le nombre de boids mis à jour. */
 	var boidsUpdated : Integer
+	/** Lien vers le controller graphique. */
 	var ctrl : BoidsFxViewerController = null
+	/** Boolean permettant de savoir si on est dans l'initialisation de la position du boids. */
 	var firstTime : boolean
+	/** ID du parent */
 	var spawner : UUID
+	/** Boolean permettant de savoir si l'on est dans un cycle de mise à jour. */
 	var inCycle : Boolean
+	/** Corp de l'environnement */
 	var envInfos : EnvInfos
+	/** Boolean permettant de savoir si l'on sort d'une pause. */
 	var restart : Boolean = false
 
+	
+	/** 
+	 * Création de l'agent Environment.
+	 */
 	on Initialize {
 		loggingName = "Environment-" + this.ID
 		this.ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
@@ -53,6 +67,10 @@ agent Environment {
 		info("The Environment is started.")
 	}
 	
+	
+	/**
+	 * Evénement permettant le démarrage de la simulation.
+	 */
 	on StartingSimulation {
 
 		this.boidsGrid = new HashMap<Vector, UUID>
@@ -69,6 +87,10 @@ agent Environment {
 		}
 	}
 
+
+	/**
+	 * Evénement notifiant qu'un boids à été initialisé.
+	 */
 	on BoidInitialized [occurrence.isInInnerDefaultSpace] {
 		if (occurrence.type == "Boid") {
 			boidsAddresses.put(occurrence.source.UUID, occurrence.source)
@@ -77,17 +99,29 @@ agent Environment {
 		}
 	}
 
+	
+	/**
+	 * Evénement notifiant que tous les boids ont été initialisé.
+	 */
 	on BoidsSideReady {
 		info("All boids have been created: " + boidsUpdated)
 		emit(new BoidsReady)
 	}
 	
+	
+	/**
+	 * Evénement norifiant qu'un boids a été déplacé et que ces positions doivent être modifiées.
+	 */
 	on PositionModification [!isFromMe] {
 		restart = true
 		this.boidsList.get(occurrence.boid).position.x = occurrence.x
 		this.boidsList.get(occurrence.boid).position.y = occurrence.y
 	}
 
+
+	/** 
+	 * Evénement récupérant la nouvelle proposition de position d'un boids.
+	 */
 	on ResultatDeplacement {
 		
 		var accept = false
@@ -125,6 +159,10 @@ agent Environment {
 		}
 	}
 	
+	
+	/**
+	 * Evénement récupérant le top du TimeManager.
+	 */
 	on Cycle{
 		if(!inCycle) {
 			if(!restart) {
@@ -157,6 +195,12 @@ agent Environment {
 		}
 	}
 
+
+	/**
+	 * Fonction permettant de vérifier qu'une position est dans la map et la cas échéant la transformer pour qu'elle le soit.
+	 * @param v La position à vérifier.
+	 * @return La position vérifiée et/ou corrigée.
+	 */
 	def estDansLaCarte(v : Vector) : Vector {
 		var positionX = v.getX()
 		var positionY = v.getY()
@@ -174,11 +218,17 @@ agent Environment {
 		return newPosition
 	}
 
+	/**
+	 * Evénement déclanchant la mort de mon agent.
+	 */
 	on EndSimulation [!hasMemberAgent] {
 		emit(new EndSimulation)
 		killMe
 	}
 	
+	/**
+	 * Evénement lançant la mort de mes fils.
+	 */
 	on EndSimulation [hasMemberAgent] {
 		innerContext.defaultSpace.emit(ID, new EndSimulation)
 	}
