@@ -60,7 +60,7 @@ agent BootAgent {
 	
 	on BoidsReady {
 		info('Boids are ready !')
-		var evt = new TimeManagingStart(Configuration::FREQUENCY) // TODO Fréquence en dur dans le fichier de configuration. Je pense qu'on peut laisser comme ça ? Donner la possibilité à l'utilisateur de la modifier peut entraîner des effets indésirables
+		var evt = new TimeManagingStart(Configuration::FREQUENCY) 
 		evt.source = new Address(innerContext.defaultSpace.spaceID, ID);
 		innerContext.defaultSpace.emit(ID, evt)
 	}
