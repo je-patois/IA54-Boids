@@ -1,6 +1,6 @@
 package fr.utbm.boids.gui.fx
 
-event EndSimulation // TODO Test si on peut l'enlever
+event EndSimulation 
 
 event AppStart {
 	val fxController : FxViewerController
