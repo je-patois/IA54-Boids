@@ -11,10 +11,13 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(9)
 @SuppressWarnings("all")
 public class EnvObjet {
+  /**
+   * Position de l'objet dans la map
+   */
   private Vector position;
   
   /**
-   * GETTER
+   * @ return Le vecteur position de l'ojet
    */
   @Pure
   public Vector getPosition() {
@@ -22,12 +25,17 @@ public class EnvObjet {
   }
   
   /**
-   * SETTER
+   * Permet de setter la position de l'ojet
+   * @param p - Le vecteur position de l'objet
    */
   public void setPosition(final Vector p) {
     this.position = p;
   }
   
+  /**
+   * Permet de transformer un EnvObjet en une chaîne de caractères
+   * @return La chaîne de caractère correspondant à un EnvObjet
+   */
   @SuppressWarnings("equals_with_null")
   @Pure
   public String toString() {
