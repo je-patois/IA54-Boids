@@ -10,34 +10,53 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(9)
 @SuppressWarnings("all")
 public class Sphere {
+  /**
+   * Centre de la sphere
+   */
   private Vector center;
   
+  /**
+   * Rayon de la sphere
+   */
   private double radius;
   
+  /**
+   * Création d'une instance de la classe Sphere.
+   * @param c - Le centre de la sphere.
+   * @param r - La rayon de la sphere.
+   */
   public Sphere(final Vector c, final double r) {
     this.center = c;
     this.radius = r;
   }
   
   /**
-   * SETTER
+   * Permet de setter le centre de la sphere.
+   * @param c - Le centre la sphere à modifier.
    */
   public void setCenter(final Vector c) {
     this.center = c;
   }
   
+  /**
+   * Permet de setter le rayon de la sphere
+   * @param r - La rayon de la sphere à modifier
+   */
   public void setRadius(final double r) {
     this.radius = r;
   }
   
   /**
-   * GETTER
+   * @return Le centre de la sphere
    */
   @Pure
   public Vector getCenter() {
     return this.center;
   }
   
+  /**
+   * @return Le rayon de la sphere.
+   */
   @Pure
   public double getRadius() {
     return this.radius;

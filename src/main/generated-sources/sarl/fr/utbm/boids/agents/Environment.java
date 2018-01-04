@@ -1,9 +1,9 @@
 package fr.utbm.boids.agents;
 
 import com.google.common.base.Objects;
-import fr.utbm.boids.BoidBody;
-import fr.utbm.boids.EnvInfos;
 import fr.utbm.boids.agents.Boid;
+import fr.utbm.boids.body.BoidBody;
+import fr.utbm.boids.body.EnvInfos;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.BoidInitialized;
 import fr.utbm.boids.events.BoidsReady;
@@ -51,24 +51,54 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(17)
 @SuppressWarnings("all")
 public class Environment extends Agent {
+  /**
+   * Liste des ID des agents boids en correspondance avec leurs corps.
+   */
   private Map<UUID, BoidBody> boidsList;
   
+  /**
+   * Liste des positions occupées par les boids avec leur ID.
+   */
   private Map<Vector, UUID> boidsGrid;
   
+  /**
+   * TODO mettre javadoc
+   */
   private Map<UUID, Address> boidsAddresses;
   
+  /**
+   * Compte le nombre de boids mis à jour.
+   */
   private Integer boidsUpdated;
   
+  /**
+   * Lien vers le controller graphique.
+   */
   private BoidsFxViewerController ctrl = null;
   
+  /**
+   * Boolean permettant de savoir si on est dans l'initialisation de la position du boids.
+   */
   private boolean firstTime;
   
+  /**
+   * ID du parent
+   */
   private UUID spawner;
   
+  /**
+   * Boolean permettant de savoir si l'on est dans un cycle de mise à jour.
+   */
   private Boolean inCycle;
   
+  /**
+   * Corp de l'environnement
+   */
   private EnvInfos envInfos;
   
+  /**
+   * Boolean permettant de savoir si l'on sort d'une pause.
+   */
   private Boolean restart = Boolean.valueOf(false);
   
   @SyntheticMember
@@ -153,7 +183,6 @@ public class Environment extends Agent {
   @SyntheticMember
   private void $behaviorUnit$PositionModification$4(final PositionModification occurrence) {
     this.restart = Boolean.valueOf(true);
-    Address address = this.boidsAddresses.get(occurrence.boid);
     Vector _position = this.boidsList.get(occurrence.boid).getPosition();
     _position.setX(occurrence.x);
     Vector _position_1 = this.boidsList.get(occurrence.boid).getPosition();
@@ -185,12 +214,22 @@ public class Environment extends Agent {
       ValidationDeplacement _validationDeplacement = new ValidationDeplacement(occurrence.position);
       _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER.getInnerContext().getDefaultSpace().emit(this.getID(), _validationDeplacement, Scopes.addresses(occurrence.getSource()));
     } else {
-      InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER_1 = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
-      ValidationDeplacement _validationDeplacement_1 = new ValidationDeplacement(occurrence.position);
-      _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER_1.getInnerContext().getDefaultSpace().emit(this.getID(), _validationDeplacement_1, Scopes.addresses(occurrence.getSource()));
+      if ((this.firstTime == true)) {
+        InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER_1 = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+        List<Obstacle> _obstacles = this.ctrl.getObstacles();
+        StartPosition _startPosition = new StartPosition(_obstacles);
+        _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER_1.getInnerContext().getDefaultSpace().emit(this.getID(), _startPosition, Scopes.addresses(occurrence.getSource()));
+      } else {
+        InnerContextAccess _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER_2 = this.$castSkill(InnerContextAccess.class, (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS = this.$getSkill(InnerContextAccess.class)) : this.$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS);
+        List<Obstacle> _obstacles_1 = this.ctrl.getObstacles();
+        DemandeDeplacement _demandeDeplacement = new DemandeDeplacement(this.boidsList, _obstacles_1);
+        _$CAPACITY_USE$IO_SARL_CORE_INNERCONTEXTACCESS$CALLER_2.getInnerContext().getDefaultSpace().emit(this.getID(), _demandeDeplacement, Scopes.addresses(occurrence.getSource()));
+      }
     }
     synchronized (this.boidsUpdated) {
-      this.boidsUpdated = Integer.valueOf(((this.boidsUpdated).intValue() + 1));
+      if (accept) {
+        this.boidsUpdated = Integer.valueOf(((this.boidsUpdated).intValue() + 1));
+      }
       if ((((this.boidsUpdated).intValue() == (this.ctrl.getBoidsQuantity() * this.ctrl.getBoidsPopulation())) && (this.firstTime == true))) {
         Behaviors _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER = this.$castSkill(Behaviors.class, (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS == null || this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS.get() == null) ? (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS = this.$getSkill(Behaviors.class)) : this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
         BoidsSideReady _boidsSideReady = new BoidsSideReady();
@@ -239,6 +278,11 @@ public class Environment extends Agent {
     }
   }
   
+  /**
+   * Fonction permettant de vérifier qu'une position est dans la map et la cas échéant la transformer pour qu'elle le soit.
+   * @param v La position à vérifier.
+   * @return La position vérifiée et/ou corrigée.
+   */
   @Pure
   protected Vector estDansLaCarte(final Vector v) {
     double positionX = v.getX();
@@ -375,6 +419,9 @@ public class Environment extends Agent {
     return $castSkill(Behaviors.class, this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
   }
   
+  /**
+   * Création de l'agent Environment.
+   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$Initialize(final Initialize occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -383,6 +430,9 @@ public class Environment extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$Initialize$0(occurrence));
   }
   
+  /**
+   * Evénement notifiant qu'un boids à été initialisé.
+   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$BoidInitialized(final BoidInitialized occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -393,6 +443,9 @@ public class Environment extends Agent {
     }
   }
   
+  /**
+   * Evénement notifiant que tous les boids ont été initialisé.
+   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$BoidsSideReady(final BoidsSideReady occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -401,6 +454,9 @@ public class Environment extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$BoidsSideReady$3(occurrence));
   }
   
+  /**
+   * Evénement permettant le démarrage de la simulation.
+   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$StartingSimulation(final StartingSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -409,6 +465,9 @@ public class Environment extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$StartingSimulation$1(occurrence));
   }
   
+  /**
+   * Evénement déclanchant la mort de mon agent.
+   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$EndSimulation(final EndSimulation occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -422,6 +481,9 @@ public class Environment extends Agent {
     }
   }
   
+  /**
+   * Evénement norifiant qu'un boids a été déplacé et que ces positions doivent être modifiées.
+   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$PositionModification(final PositionModification occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -432,6 +494,9 @@ public class Environment extends Agent {
     }
   }
   
+  /**
+   * Evénement récupérant la nouvelle proposition de position d'un boids.
+   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$ResultatDeplacement(final ResultatDeplacement occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {
@@ -440,6 +505,9 @@ public class Environment extends Agent {
     ___SARLlocal_runnableCollection.add(() -> $behaviorUnit$ResultatDeplacement$5(occurrence));
   }
   
+  /**
+   * Evénement récupérant le top du TimeManager.
+   */
   @SyntheticMember
   @PerceptGuardEvaluator
   private void $guardEvaluator$Cycle(final Cycle occurrence, final Collection<Runnable> ___SARLlocal_runnableCollection) {

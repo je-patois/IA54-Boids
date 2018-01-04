@@ -13,7 +13,7 @@ import io.sarl.util.Scopes
 import fr.utbm.boids.events.ValidationDeplacement
 import java.util.Map
 import java.util.HashMap
-import fr.utbm.boids.BoidBody
+import fr.utbm.boids.body.BoidBody
 import io.sarl.lang.core.Address
 import fr.utbm.boids.events.DemandeDeplacement
 import fr.utbm.boids.gui.fx.EndSimulation
@@ -24,7 +24,7 @@ import fr.utbm.boids.gui.BoidsFxViewerController
 import fr.utbm.boids.events.Cycle
 import fr.utbm.boids.events.BoidInitialized
 import io.sarl.core.Logging
-import fr.utbm.boids.EnvInfos
+import fr.utbm.boids.body.EnvInfos
 import fr.utbm.boids.events.PositionModification
 
 agent Environment {

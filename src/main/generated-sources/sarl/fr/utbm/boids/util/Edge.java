@@ -11,12 +11,26 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(9)
 @SuppressWarnings("all")
 public class Edge {
+  /**
+   * Origine de l'arête
+   */
   private Coordinates pointDepart;
   
+  /**
+   * Vecteur de direction de l'arête
+   */
   private Vector direction;
   
+  /**
+   * Vecteur normal à l'arêtes
+   */
   private Vector normal;
   
+  /**
+   * Création de la classe Edge
+   * @param depart - Coordonnées du point de départ de l'arête.
+   * @param arrivee - Coordonnées du point d'arrivée de l'arête.
+   */
   public Edge(final Coordinates depart, final Coordinates arrivee) {
     this.pointDepart = depart;
     double _x = arrivee.getX();
@@ -33,36 +47,56 @@ public class Edge {
   }
   
   /**
-   * GETTER
+   * @return Les coordonées du point de départ
    */
   @Pure
   public Coordinates getPointDepart() {
     return this.pointDepart;
   }
   
+  /**
+   * @return Le vecteur de direction.
+   */
   @Pure
   public Vector getDirection() {
     return this.direction;
   }
   
+  /**
+   * @return Le vecteur normal à l'arête. (vecteur normalisé)
+   */
   @Pure
   public Vector getNormal() {
     return this.normal;
   }
   
   /**
-   * SETTER
+   * Permet de setter le point de départ.
+   * @param c - Les coordonées du point de départ de l'arête.
    */
   public void setPointDepart(final Coordinates c) {
     this.pointDepart = c;
   }
   
+  /**
+   * Permet de setter la direction.
+   * @param v - Le vecteur de direction de l'arête.
+   */
   public void setDirection(final Vector v) {
     this.direction = v;
   }
   
-  public void setNormal(final Vector v) {
-    this.normal = v;
+  /**
+   * Permet de setter le vecteur normal.
+   * @param v - Le  vecteur normal à l'arrête
+   */
+  public double setNormal(final Vector v) {
+    double _xblockexpression = (double) 0;
+    {
+      this.normal = v;
+      _xblockexpression = this.normal.normaliser();
+    }
+    return _xblockexpression;
   }
   
   @Override

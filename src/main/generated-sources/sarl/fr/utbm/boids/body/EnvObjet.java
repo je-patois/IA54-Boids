@@ -1,4 +1,4 @@
-package fr.utbm.boids;
+package fr.utbm.boids.body;
 
 import com.google.common.base.Objects;
 import fr.utbm.boids.util.Vector;

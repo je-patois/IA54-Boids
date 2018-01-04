@@ -9,6 +9,7 @@ import org.eclipse.xtext.xbase.lib.Pure;
 
 /**
  * Valide le déplacement d'un boid
+ * @param position - La position du boids après acceptation par l'environment
  */
 @SarlSpecification("0.6")
 @SarlElementType(14)

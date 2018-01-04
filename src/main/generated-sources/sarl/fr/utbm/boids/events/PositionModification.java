@@ -8,6 +8,12 @@ import java.util.Objects;
 import java.util.UUID;
 import org.eclipse.xtext.xbase.lib.Pure;
 
+/**
+ * Signalement de la modification de la position d'un boids par drag & drop
+ * @param boid - L'UUID du boids déplacé
+ * @param x - La nouvelle abscisse du boids
+ * @param y - a nouvelle ordonnée du boids
+ */
 @SarlSpecification("0.6")
 @SarlElementType(14)
 @SuppressWarnings("all")

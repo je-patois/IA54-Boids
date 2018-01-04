@@ -15,7 +15,7 @@ import com.google.common.util.concurrent.AtomicDouble
 import java.util.ArrayList
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
-import fr.utbm.boids.BoidBody
+import fr.utbm.boids.body.BoidBody
 import java.util.Collection
 import javafx.scene.shape.Circle
 import javafx.scene.paint.Color

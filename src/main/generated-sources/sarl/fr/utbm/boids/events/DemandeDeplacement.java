@@ -1,6 +1,6 @@
 package fr.utbm.boids.events;
 
-import fr.utbm.boids.BoidBody;
+import fr.utbm.boids.body.BoidBody;
 import fr.utbm.boids.environment.Obstacle;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
@@ -56,5 +56,5 @@ public class DemandeDeplacement extends Event {
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = -2273899086L;
+  private final static long serialVersionUID = -4853014934L;
 }

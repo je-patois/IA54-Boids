@@ -9,7 +9,7 @@ import fr.utbm.boids.events.ResultatDeplacement
 import fr.utbm.boids.util.Vector
 import java.util.Random
 import fr.utbm.boids.events.ValidationDeplacement
-import fr.utbm.boids.BoidBody
+import fr.utbm.boids.body.BoidBody
 import fr.utbm.boids.environment.Obstacle
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -19,7 +19,7 @@ import java.util.UUID
 import fr.utbm.boids.gui.fx.EndSimulation
 import java.util.Map
 import fr.utbm.boids.events.BoidInitialized
-import fr.utbm.boids.EnvInfos
+import fr.utbm.boids.body.EnvInfos
 import java.util.HashMap
 import java.util.List
 import fr.utbm.boids.util.Sphere

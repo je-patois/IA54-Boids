@@ -1,9 +1,8 @@
 package fr.utbm.boids.gui;
 
 import com.google.common.base.Objects;
-import com.google.common.util.concurrent.AtomicDouble;
-import fr.utbm.boids.BoidBody;
 import fr.utbm.boids.Configuration;
+import fr.utbm.boids.body.BoidBody;
 import fr.utbm.boids.environment.Obstacle;
 import fr.utbm.boids.events.ConfigureSimulation;
 import fr.utbm.boids.events.Pause;
@@ -12,7 +11,6 @@ import fr.utbm.boids.events.Resume;
 import fr.utbm.boids.gui.fx.FxViewerController;
 import fr.utbm.boids.util.BoidGroupInfos;
 import fr.utbm.boids.util.Coordinates;
-import fr.utbm.boids.util.LineTool;
 import fr.utbm.boids.util.Vector;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
@@ -60,7 +58,6 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 @SarlSpecification("0.6")
@@ -1772,7 +1769,6 @@ public class BoidsFxViewerController extends FxViewerController {
         Polygon _polygon_2 = new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0);
         this.polygons.add(_polygon_2);
         final Consumer<Polygon> _function = (Polygon p) -> {
-          this.polygonsCoordinates.add(this.generateCoordinates(p));
           p.setFill(Color.GRAY);
           p.setStroke(Color.TRANSPARENT);
           p.setStrokeWidth(20);
@@ -1807,12 +1803,11 @@ public class BoidsFxViewerController extends FxViewerController {
           this.obstacles = _arrayList_6;
           Polygon _polygon_3 = new Polygon(315.0, 720.0, 315.0, 250.0, 325.0, 250.0, 325.0, 720.0);
           this.polygons.add(_polygon_3);
-          Polygon _polygon_4 = new Polygon(635.0, 0.0, 635.0, 470.0, 645.0, 470.0, 645.0, 0.0);
+          Polygon _polygon_4 = new Polygon(635.0, 470.0, 635.0, 0.0, 645.0, 0.0, 645.0, 470.0);
           this.polygons.add(_polygon_4);
           Polygon _polygon_5 = new Polygon(955.0, 720.0, 955.0, 250.0, 965.0, 250.0, 965.0, 720.0);
           this.polygons.add(_polygon_5);
           final Consumer<Polygon> _function_1 = (Polygon p) -> {
-            this.polygonsCoordinates.add(this.generateCoordinates(p));
             p.setFill(Color.GRAY);
             p.setStroke(Color.TRANSPARENT);
             p.setStrokeWidth(20);
@@ -1844,52 +1839,13 @@ public class BoidsFxViewerController extends FxViewerController {
   }
   
   /**
-   * Génère les coordonnées relatives aux polygones
-   */
-  @Pure
-  public List<Coordinates> generateCoordinates(final Polygon p) {
-    AtomicDouble abscissa = new AtomicDouble();
-    List<Coordinates> coordinates = new ArrayList<Coordinates>();
-    final Procedure2<Double, Integer> _function = (Double ordered, Integer index) -> {
-      if (((index % 2) == 0)) {
-        abscissa.set((ordered).doubleValue());
-      } else {
-        double _get = abscissa.get();
-        double _doubleValue = ordered.doubleValue();
-        Coordinates _coordinates = new Coordinates(_get, _doubleValue);
-        coordinates.add(_coordinates);
-      }
-    };
-    IterableExtensions.<Double>forEach(p.getPoints(), _function);
-    return coordinates;
-  }
-  
-  /**
    * Génère les obstacles
    */
-  @Pure
   public void generateObstacles() {
-    final Procedure2<List<Coordinates>, Integer> _function = (List<Coordinates> p, Integer currentItem) -> {
-      List<LineTool> lines = new ArrayList<LineTool>();
-      final Procedure2<Coordinates, Integer> _function_1 = (Coordinates c, Integer index) -> {
-        if ((index != 0)) {
-          Coordinates _get = p.get((index - 1));
-          LineTool line = new LineTool(_get, c);
-          line.computeLineEquation();
-          lines.add(line);
-        }
-      };
-      IterableExtensions.<Coordinates>forEach(p, _function_1);
-      Coordinates _last = IterableExtensions.<Coordinates>last(p);
-      Coordinates _get = p.get(0);
-      LineTool line = new LineTool(_last, _get);
-      line.computeLineEquation();
-      lines.add(line);
-      Polygon _get_1 = this.polygons.get(currentItem);
-      Obstacle _obstacle = new Obstacle(lines, _get_1);
+    for (final Polygon p : this.polygons) {
+      Obstacle _obstacle = new Obstacle(p);
       this.obstacles.add(_obstacle);
-    };
-    IterableExtensions.<List<Coordinates>>forEach(this.polygonsCoordinates, _function);
+    }
   }
   
   /**
@@ -1932,27 +1888,34 @@ public class BoidsFxViewerController extends FxViewerController {
             double _y_2 = boid.getPosition().getY();
             double _plus_2 = (_y_2 + 7.5);
             Polygon boidElement = new Polygon(_x, _minus, _plus, _plus_1, _minus_1, _plus_2);
-            double _x_3 = boid.getVitesse().getX();
+            double angleRotation = 0;
             double _y_3 = boid.getVitesse().getY();
-            double _minus_2 = (-_y_3);
-            double _divide = (_x_3 / _minus_2);
-            double angleRotation = Math.toDegrees(Math.atan(_divide));
-            if ((angleRotation < 0)) {
-              double _angleRotation = angleRotation;
-              angleRotation = (_angleRotation + 180);
-            }
-            double _x_4 = boid.getVitesse().getX();
-            boolean _lessEqualsThan = (_x_4 <= 0);
-            if (_lessEqualsThan) {
+            boolean _notEquals = (_y_3 != 0);
+            if (_notEquals) {
+              double _x_3 = boid.getVitesse().getX();
               double _y_4 = boid.getVitesse().getY();
-              boolean _lessEqualsThan_1 = (_y_4 <= 0);
-              if (_lessEqualsThan_1) {
-                double _angleRotation_1 = angleRotation;
-                angleRotation = (_angleRotation_1 + 180);
-              } else {
-                double _angleRotation_2 = angleRotation;
-                angleRotation = (_angleRotation_2 - 180);
+              double _minus_2 = (-_y_4);
+              double _divide = (_x_3 / _minus_2);
+              angleRotation = Math.toDegrees(Math.atan(_divide));
+              if ((angleRotation < 0)) {
+                double _angleRotation = angleRotation;
+                angleRotation = (_angleRotation + 180);
               }
+              double _x_4 = boid.getVitesse().getX();
+              boolean _lessEqualsThan = (_x_4 <= 0);
+              if (_lessEqualsThan) {
+                double _y_5 = boid.getVitesse().getY();
+                boolean _lessThan = (_y_5 < 0);
+                if (_lessThan) {
+                  double _angleRotation_1 = angleRotation;
+                  angleRotation = (_angleRotation_1 + 180);
+                } else {
+                  double _angleRotation_2 = angleRotation;
+                  angleRotation = (_angleRotation_2 - 180);
+                }
+              }
+            } else {
+              angleRotation = 0;
             }
             boidElement.setRotate(angleRotation);
             boidElement.setFill(Configuration.COLOR_FAMILY.get(Integer.valueOf(boid.getGroupe())));

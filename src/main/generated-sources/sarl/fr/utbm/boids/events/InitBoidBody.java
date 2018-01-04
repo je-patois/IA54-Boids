@@ -1,6 +1,6 @@
 package fr.utbm.boids.events;
 
-import fr.utbm.boids.BoidBody;
+import fr.utbm.boids.body.BoidBody;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
@@ -48,5 +48,5 @@ public class InitBoidBody extends Event {
   }
   
   @SyntheticMember
-  private final static long serialVersionUID = -1612128729L;
+  private final static long serialVersionUID = -427163033L;
 }
