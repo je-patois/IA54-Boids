@@ -459,7 +459,6 @@ agent Boid {
 		var newPosition : Vector		
 		var acceleration : Vector
 
-		// TODO trouver un compromis pour borner mais pas trop bas pour pouvoir utiliser la masse et avoir une force correcte quand même
 		if (force.length > 10) {
 			force.normaliser()
 			force.fois(10)
