@@ -31,19 +31,14 @@ agent BootAgent {
 		loggingName = "BootAgent-" + this.ID
 		ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
 		ctrl.UISpace.register(asEventListener)
-		info("Starting simulation")
 		spawnInContext(typeof(Environment), innerContext, ctrl) 
 		spawnInContext(typeof(TimeManager), innerContext, ctrl.UISpace)
 	}
 	
 	on ConfigureSimulation {
-		info("Configuration of the environment...") 
 		this.boidsQuantity = occurrence.boidsQuantity
 		this.map = occurrence.mapSelection
 		this.boidsPopulation = occurrence.boidsPopulation
-		info('Map: ' + this.map)
-		info('Boids quantity: ' + this.boidsQuantity)
-		info('Boids population: ' + this.boidsPopulation)
 		this.generateMap()
 	}
 	
@@ -52,14 +47,12 @@ agent BootAgent {
 	 * @return {void}
 	 */
 	def generateMap() : void {
-		info('Generating map...')
 		var obstacles : List<Obstacle> = new ArrayList()
 		obstacles = ctrl.buildMap(this.map)
 		innerContext.defaultSpace.emit(ID, new StartingSimulation())
 	}
 	
 	on BoidsReady {
-		info('Boids are ready !')
 		var evt = new TimeManagingStart(Configuration::FREQUENCY) 
 		evt.source = new Address(innerContext.defaultSpace.spaceID, ID);
 		innerContext.defaultSpace.emit(ID, evt)

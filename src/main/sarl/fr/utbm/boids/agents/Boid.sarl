@@ -161,7 +161,7 @@ agent Boid {
 	
 	
 	/*
-	 * Fonction du boids
+	 * Fonctions du boids
 	 */
 	 
 	 
@@ -460,7 +460,7 @@ agent Boid {
 	 */
 	def appliquerForce(force : Vector) : Vector {
 
-		// f = ma => a =f/m
+		// f = ma => a = f/m
 
 		var newPosition : Vector		
 		var acceleration : Vector

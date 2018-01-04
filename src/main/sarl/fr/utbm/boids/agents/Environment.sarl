@@ -64,7 +64,6 @@ agent Environment {
 		this.spawner = occurrence.spawner
 		this.inCycle = false
 		this.envInfos = new EnvInfos(this.ctrl.mapWidth, this.ctrl.mapHeight)
-		info("The Environment is started.")
 	}
 	
 	
@@ -77,9 +76,6 @@ agent Environment {
 		this.boidsList = new HashMap<UUID, BoidBody>
 		this.boidsAddresses = new HashMap<UUID, Address>
 		
-		info ("ready to start ")
-		info('Boids quantity: ' + this.ctrl.boidsQuantity)
-		info('Population size: ' + this.ctrl.boidsPopulation)
 		for (var i = 0; i < this.ctrl.boidsPopulation; i++) {
 			for (var j = 0 ; j < this.ctrl.boidsQuantity; j++){
 				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsSettings.get(i).speed, ctrl.boidsSettings.get(i).mass, ctrl.boidsSettings.get(i).angle, ctrl.boidsSettings.get(i).distance, envInfos)
@@ -104,7 +100,6 @@ agent Environment {
 	 * Evénement notifiant que tous les boids ont été initialisé.
 	 */
 	on BoidsSideReady {
-		info("All boids have been created: " + boidsUpdated)
 		emit(new BoidsReady)
 	}
 	

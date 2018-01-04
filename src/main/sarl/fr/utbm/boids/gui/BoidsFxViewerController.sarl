@@ -11,7 +11,6 @@ import javafx.scene.layout.Pane
 import javafx.application.Platform
 import javafx.scene.shape.Polygon
 import fr.utbm.boids.util.Coordinates
-import com.google.common.util.concurrent.AtomicDouble
 import java.util.ArrayList
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
@@ -41,10 +40,6 @@ import javafx.scene.control.ScrollPane
 import fr.utbm.boids.util.BoidGroupInfos
 import javafx.scene.layout.AnchorPane
 import javafx.scene.input.KeyEvent
-import javafx.scene.input.DragEvent
-import javafx.scene.input.Dragboard
-import javafx.scene.input.TransferMode
-import javafx.scene.input.ClipboardContent
 import fr.utbm.boids.events.PositionModification
 import java.util.Map
 import java.util.HashMap
@@ -328,7 +323,7 @@ class BoidsFxViewerController extends FxViewerController {
 			this.obstacles = new ArrayList()
 			this.polygons.add(new Polygon(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0, 225.0))
 			this.polygons.add(new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0,
-					665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0/* , 605.0, 80.0*/))
+					665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0))
 			this.polygons.add(new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0))
 			this.polygons.forEach[p : Polygon |
 				p.setFill(Color.GRAY)
@@ -342,10 +337,6 @@ class BoidsFxViewerController extends FxViewerController {
 					polygons.forEach [ p : Polygon |
 						obstacle_group.getChildren().add(0, p)
 					]
-					// Test fonction agrandissement polygones
-					/*generateObstacles()
-					var myObstacle = obstacles.get(0).polygonArea(2)
-					obstacle_group.getChildren().add(0, myObstacle)*/
 				}
 			};
 			if (Platform.isFxApplicationThread()) {
@@ -412,7 +403,7 @@ class BoidsFxViewerController extends FxViewerController {
 				boids_group.getChildren().clear()
 				perceptions.clear()
 				for (boid : list){
-					var boidElement : Polygon = new Polygon(boid.position.x, /*getMapHeight - */boid.position.y - 7.5, boid.position.x + 5,/*  getMapHeight - */boid.position.y + 7.5, boid.position.x - 5,/*  getMapHeight -  */ boid.position.y + 7.5)
+					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y - 7.5, boid.position.x + 5,boid.position.y + 7.5, boid.position.x - 5, boid.position.y + 7.5)
 					var angleRotation : double
 					if (boid.vitesse.y != 0 ){
 						angleRotation = Math.toDegrees(Math.atan(boid.vitesse.x / (-boid.vitesse.y)))
@@ -506,7 +497,6 @@ class BoidsFxViewerController extends FxViewerController {
 						if(nightMode) boidElement.stroke = Color.rgb(255, 255, 255, 0.5) else boidElement.stroke = Color.rgb(0, 0, 0, 0.5)
 					}
 					
-					//perceptionManagement(boid, angleRotation, boidElement, boid.position.x, boid.position.y, false)
 				}
 
 				if (boids_infos_pane.visible) {
@@ -527,7 +517,7 @@ class BoidsFxViewerController extends FxViewerController {
 		if (togglePerception) {
 			var perceptionArc = new Arc()
 			perceptionArc.setCenterX(x);
-			if(!erase) perceptionArc.setCenterY(/*getMapHeight -*/ boid.position.y) else perceptionArc.setCenterY(y - 3) // Sans le -3 c'est décalé, et je vois vraiment pas pourquoi
+			if(!erase) perceptionArc.setCenterY(boid.position.y) else perceptionArc.setCenterY(y - 3) // Sans le -3 c'est décalé, et je vois vraiment pas pourquoi
 			perceptionArc.setRadiusX(boid.distanceVisibilite as double);
 			perceptionArc.setRadiusY(boid.distanceVisibilite as double);
 			perceptionArc.setStartAngle(90 - angleRotation - boid.angleVisibilite)
