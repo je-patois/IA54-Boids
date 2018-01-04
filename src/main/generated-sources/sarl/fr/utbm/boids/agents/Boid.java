@@ -256,9 +256,6 @@ public class Boid extends Agent {
     Vector force = null;
     Vector tmp = null;
     double len = 0;
-    double xelem = 0;
-    double yelem = 0;
-    Vector tmpelem = null;
     Vector _vector = new Vector(0, 0);
     force = _vector;
     Vector _vector_1 = new Vector(0, 0);
@@ -266,17 +263,12 @@ public class Boid extends Agent {
     Set<Map.Entry<UUID, BoidBody>> _entrySet = boids.entrySet();
     for (final Map.Entry<UUID, BoidBody> elem : _entrySet) {
       if (((!Objects.equal(elem.getKey(), null)) && (elem.getValue().getGroupe() == this.body.getGroupe()))) {
-        int _width = this.envInfos.getWidth();
-        double _modulo = (xelem % _width);
-        int _height = this.envInfos.getHeight();
-        double _modulo_1 = (yelem % _height);
-        Vector _vector_2 = new Vector(_modulo, _modulo_1);
-        tmpelem = _vector_2;
         tmp.setXY(this.body.getPosition());
         tmp.moins(elem.getValue().getPosition());
         len = tmp.length();
         tmp.fois((1 / (len * len)));
         force.plus(tmp);
+        force.fois(35);
       }
     }
     return force;
@@ -409,7 +401,7 @@ public class Boid extends Agent {
             Vector _normal = edgeRetenue.getNormal();
             Vector _vector_2 = new Vector(_normal);
             forceAdd = _vector_2;
-            forceAdd.fois((1000 / distanceMin));
+            forceAdd.fois((10000000 / distanceMin));
             force.plus(forceAdd);
           }
         }

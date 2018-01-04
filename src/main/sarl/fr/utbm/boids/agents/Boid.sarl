@@ -227,23 +227,18 @@ agent Boid {
 		var force : Vector
 		var tmp : Vector
 		var len : double
-		var xelem : double
-		var yelem : double
-		var tmpelem : Vector
 
 		force = new Vector(0, 0)
 		tmp = new Vector(0, 0)
 		 
 		for (elem : boids.entrySet) {
 			if (elem.key != null && elem.value.groupe == this.body.groupe) {			 		
-				tmpelem = new Vector(xelem%envInfos.width, yelem%envInfos.height)
 				tmp.setXY(this.body.position)
-				//tmp.moins(tmpelem)
 				tmp.moins(elem.value.position)
 				len = tmp.length()
 				tmp.fois(1 / (len * len))
 				force.plus(tmp)
-				//force.fois(35)
+				force.fois(35)
 			}
 		}
 	
@@ -276,7 +271,6 @@ agent Boid {
 			force.fois(1/nbTot)
 			force.moins(this.body.position)
 		}
-		//force.fois(0.45)
 		force.fois(25)
 		return force
 	}
@@ -381,7 +375,7 @@ agent Boid {
 				
 				if (edgeRetenue != null) {
 					forceAdd = new Vector(edgeRetenue.normal)
-					forceAdd.fois(1000/distanceMin)
+					forceAdd.fois(10000000/distanceMin)
 					force.plus(forceAdd)
 				}
 				 
