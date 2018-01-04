@@ -1,91 +1,124 @@
 package fr.utbm.boids.environment
 
-import fr.utbm.boids.util.LineTool
 import java.util.List
 import javafx.scene.shape.Polygon
-import fr.utbm.boids.Vector
+import fr.utbm.boids.util.Vector
 import java.util.ArrayList
-
-// import fr.utbm.boids.util.EnvironmentInfos
+import fr.utbm.boids.util.Edge
+import fr.utbm.boids.util.Coordinates
 
 class Obstacle {
 	
-	var lines : List<LineTool>
+	/** Le polygone correpsondant à l'obstacle. */
 	var shape : Polygon
+	/** La liste des arêtes composant le polygone. */
+	var edges : List<Edge>
 	
-	new() {
-		
-	}	
 	
+	/** 
+	 * Création d'un nouvel obstacle
+	 * @param obstacle L'obstacle à copier pour la création de cette classe.
+	 */
 	new(obstacle : Obstacle) {
-		this.lines = obstacle.lines
 		this.shape = obstacle.shape
+		this.edges = new ArrayList<Edge>()
+		
+		var i = 0 
+		
+		for (e : obstacle.edges){
+			edges.add(i,e)
+			i++
+		}
+
 	}
 	
-	new(lines : List<LineTool>, shape : Polygon) {
-		this.lines = lines
+	
+	/** 
+	 * Création d'un nouvel obstacle
+	 * @param shape Le polygone de référence pour la création de mon obstacle.
+	 */
+	new (shape : Polygon){
 		this.shape = shape
+
+		// définition et création des edges composants le polygone
+		edges = new ArrayList<Edge>
+
+		var nombrePoints = this.nbPoints()
+
+		for (var i = 0; i < nombrePoints; i = i + 2) {
+			edges.add(i / 2,
+				new Edge(
+					new Coordinates(this.shape.points.get(i % nombrePoints),
+						this.shape.points.get((i + 1) % nombrePoints)),
+					new Coordinates(this.shape.points.get((i + 2) % nombrePoints),
+						this.shape.points.get((i + 3) % nombrePoints))))
+		}
 	}
 	
-	/*def getInfos() : EnvironmentInfos {
-		return this.infos
-	}
 	
-	def setInfos(infos : EnvironmentInfos) : void {
-		this.infos = infos
-	}*/
-	
-	def getLines() : List<LineTool> {
-		return this.lines
-	}
-	
-	def setLines(lines : List<LineTool>) : void {
-		this.lines = lines
-	}
-	
+	/**
+	 * @return Le polygone de notre obstacle.
+	 */
 	def getPolygon() : Polygon {
 		return this.shape
 	}
 	
+	/**
+	 * @return La liste des arêtes qui composent notre polygone.
+	 */
+	def getEdges() : List<Edge> {
+		return this.edges
+	}
+	
+	/**
+	 * Permet de setter une valeur à la variable polygon
+	 * @param Le polygone à enregistrer.
+	 */
 	def setPolygon(polygon : Polygon) : void {
 		this.polygon = polygon
 	}
 	
+	/**
+	 * Permet de setter une valleur à la variable edges
+	 * @param La liste des arêtes à enregistrer.
+	 */
+	def setEdges(edges : List<Edge>){
+		this.edges = edges
+	}
+	
+	
+	/**
+	 * Permet de calculer le nombre de points qui composent un polygone
+	 * @return Le nombre de sommet du polygone.
+	 */
 	def nbPoints : int {
 		return this.polygon.points.size
 	}
 	
-	def toString() : String {
-		return 'Obstacle: LineTool: ' + this.lines.toString()		
-	}
 	
+	/**
+	 * Permet de calculer le centre d'un polygone
+	 * @return La position du centre du polygone.
+	 */
 	def getCenter() : Vector{
-		/*var center = new Vector(0, 0)
-		var tmp = new Vector(0,0)
-		var nbLines : int
-		
-		this.lines.forEach[a : LineTool |
-			tmp.clear()	
-			tmp.plus(new Vector(a.a.x, a.a.y))
-			center.plus(tmp)
-		]
-		nbLines = this.lines.length
-		center.fois(1/nbLines)*/
-		
 		var centerX : double = 0
 		var centerY : double = 0
 		
-		for (var i = 0; i < this.nbPoints() - 1; i = i + 2) {
+		for (var i = 0; i < this.nbPoints()- 1 ; i = i + 2) {
 	        centerX += polygon.points.get(i)
 	       	centerY += polygon.points.get(i + 1)
 		}
 
-	    centerX = centerX/this.nbPoints();
-	    centerY = centerY/this.nbPoints();
+	    centerX = centerX/(this.nbPoints()/2);
+	    centerY = centerY/(this.nbPoints()/2);
 			
 		return new Vector(centerX, centerY)
 	}
 
+
+	/**
+	 * TODO mettre javadoc par le créateur de la fonction + vérifier son utilisation par le créateur.
+	 */
 	def polygonArea(facteur : double) : Polygon {
 	    var nbPoints = this.nbPoints()
 	    var centreX : double

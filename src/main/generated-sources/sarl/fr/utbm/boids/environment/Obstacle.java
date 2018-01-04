@@ -1,7 +1,8 @@
 package fr.utbm.boids.environment;
 
-import fr.utbm.boids.Vector;
-import fr.utbm.boids.util.LineTool;
+import fr.utbm.boids.util.Coordinates;
+import fr.utbm.boids.util.Edge;
+import fr.utbm.boids.util.Vector;
 import io.sarl.lang.annotation.SarlElementType;
 import io.sarl.lang.annotation.SarlSpecification;
 import io.sarl.lang.annotation.SyntheticMember;
@@ -16,61 +17,99 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(9)
 @SuppressWarnings("all")
 public class Obstacle {
-  private List<LineTool> lines;
-  
+  /**
+   * Le polygone correpsondant à l'obstacle.
+   */
   private Polygon shape;
   
-  public Obstacle() {
-  }
+  /**
+   * La liste des arêtes composant le polygone.
+   */
+  private List<Edge> edges;
   
+  /**
+   * Création d'un nouvel obstacle
+   * @param obstacle L'obstacle à copier pour la création de cette classe.
+   */
   public Obstacle(final Obstacle obstacle) {
-    this.lines = obstacle.lines;
     this.shape = obstacle.shape;
-  }
-  
-  public Obstacle(final List<LineTool> lines, final Polygon shape) {
-    this.lines = lines;
-    this.shape = shape;
+    ArrayList<Edge> _arrayList = new ArrayList<Edge>();
+    this.edges = _arrayList;
+    int i = 0;
+    for (final Edge e : obstacle.edges) {
+      {
+        this.edges.add(i, e);
+        i++;
+      }
+    }
   }
   
   /**
-   * def getInfos() : EnvironmentInfos {
-   * return this.infos
-   * }
-   * 
-   * def setInfos(infos : EnvironmentInfos) : void {
-   * this.infos = infos
-   * }
+   * Création d'un nouvel obstacle
+   * @param shape Le polygone de référence pour la création de mon obstacle.
    */
-  @Pure
-  public List<LineTool> getLines() {
-    return this.lines;
+  public Obstacle(final Polygon shape) {
+    this.shape = shape;
+    ArrayList<Edge> _arrayList = new ArrayList<Edge>();
+    this.edges = _arrayList;
+    int nombrePoints = this.nbPoints();
+    for (int i = 0; (i < nombrePoints); i = (i + 2)) {
+      Double _get = this.shape.getPoints().get((i % nombrePoints));
+      Double _get_1 = this.shape.getPoints().get(((i + 1) % nombrePoints));
+      Coordinates _coordinates = new Coordinates((_get).doubleValue(), (_get_1).doubleValue());
+      Double _get_2 = this.shape.getPoints().get(((i + 2) % nombrePoints));
+      Double _get_3 = this.shape.getPoints().get(((i + 3) % nombrePoints));
+      Coordinates _coordinates_1 = new Coordinates((_get_2).doubleValue(), (_get_3).doubleValue());
+      Edge _edge = new Edge(_coordinates, _coordinates_1);
+      this.edges.add((i / 2), _edge);
+    }
   }
   
-  public void setLines(final List<LineTool> lines) {
-    this.lines = lines;
-  }
-  
+  /**
+   * @return Le polygone de notre obstacle.
+   */
   @Pure
   public Polygon getPolygon() {
     return this.shape;
   }
   
+  /**
+   * @return La liste des arêtes qui composent notre polygone.
+   */
+  @Pure
+  public List<Edge> getEdges() {
+    return this.edges;
+  }
+  
+  /**
+   * Permet de setter une valeur à la variable polygon
+   * @param Le polygone à enregistrer.
+   */
   public void setPolygon(final Polygon polygon) {
     this.setPolygon(polygon);
   }
   
+  /**
+   * Permet de setter une valleur à la variable edges
+   * @param La liste des arêtes à enregistrer.
+   */
+  public void setEdges(final List<Edge> edges) {
+    this.edges = edges;
+  }
+  
+  /**
+   * Permet de calculer le nombre de points qui composent un polygone
+   * @return Le nombre de sommet du polygone.
+   */
   @Pure
   public int nbPoints() {
     return this.getPolygon().getPoints().size();
   }
   
-  @Pure
-  public String toString() {
-    String _string = this.lines.toString();
-    return ("Obstacle: LineTool: " + _string);
-  }
-  
+  /**
+   * Permet de calculer le centre d'un polygone
+   * @return La position du centre du polygone.
+   */
   @Pure
   public Vector getCenter() {
     double centerX = 0;
@@ -86,14 +125,19 @@ public class Obstacle {
       }
     }
     int _nbPoints = this.nbPoints();
-    double _divide = (centerX / _nbPoints);
-    centerX = _divide;
+    int _divide = (_nbPoints / 2);
+    double _divide_1 = (centerX / _divide);
+    centerX = _divide_1;
     int _nbPoints_1 = this.nbPoints();
-    double _divide_1 = (centerY / _nbPoints_1);
-    centerY = _divide_1;
+    int _divide_2 = (_nbPoints_1 / 2);
+    double _divide_3 = (centerY / _divide_2);
+    centerY = _divide_3;
     return new Vector(centerX, centerY);
   }
   
+  /**
+   * TODO mettre javadoc par le créateur de la fonction + vérifier son utilisation par le créateur.
+   */
   @Pure
   public Polygon polygonArea(final double facteur) {
     int nbPoints = this.nbPoints();

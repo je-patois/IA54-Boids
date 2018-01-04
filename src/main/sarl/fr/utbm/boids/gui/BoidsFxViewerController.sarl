@@ -11,12 +11,10 @@ import javafx.scene.layout.Pane
 import javafx.application.Platform
 import javafx.scene.shape.Polygon
 import fr.utbm.boids.util.Coordinates
-import fr.utbm.boids.util.LineTool
-import com.google.common.util.concurrent.AtomicDouble
 import java.util.ArrayList
 import java.util.List
 import fr.utbm.boids.environment.Obstacle
-import fr.utbm.boids.BoidBody
+import fr.utbm.boids.body.BoidBody
 import java.util.Collection
 import javafx.scene.shape.Circle
 import javafx.scene.paint.Color
@@ -42,10 +40,6 @@ import javafx.scene.control.ScrollPane
 import fr.utbm.boids.util.BoidGroupInfos
 import javafx.scene.layout.AnchorPane
 import javafx.scene.input.KeyEvent
-import javafx.scene.input.DragEvent
-import javafx.scene.input.Dragboard
-import javafx.scene.input.TransferMode
-import javafx.scene.input.ClipboardContent
 import fr.utbm.boids.events.PositionModification
 import java.util.Map
 import java.util.HashMap
@@ -329,10 +323,9 @@ class BoidsFxViewerController extends FxViewerController {
 			this.obstacles = new ArrayList()
 			this.polygons.add(new Polygon(250.0, 200.0, 365.0, 250.0, 400.0, 300.0, 325.0, 400.0, 205.0, 225.0))
 			this.polygons.add(new Polygon(605.0, 80.0, 675.0, 65.0, 680.0, 125.0, 650.0, 220.0, 630.0, 250.0, 660.0, 130.0,
-					665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0, 605.0, 80.0))
+					665.0, 75.0, 615.0, 95.0, 560.0, 240.0, 560.0, 205.0))
 			this.polygons.add(new Polygon(450.0, 450.0, 575.0, 500.0, 575.0, 420.0, 700.0, 500.0, 590.0, 450.0, 590.0, 520.0))
 			this.polygons.forEach[p : Polygon |
-				this.polygonsCoordinates.add(this.generateCoordinates(p))
 				p.setFill(Color.GRAY)
 				p.setStroke(Color.TRANSPARENT)
 				p.setStrokeWidth(20)
@@ -344,10 +337,6 @@ class BoidsFxViewerController extends FxViewerController {
 					polygons.forEach [ p : Polygon |
 						obstacle_group.getChildren().add(0, p)
 					]
-					// Test fonction agrandissement polygones
-					/*generateObstacles()
-					var myObstacle = obstacles.get(0).polygonArea(2)
-					obstacle_group.getChildren().add(0, myObstacle)*/
 				}
 			};
 			if (Platform.isFxApplicationThread()) {
@@ -365,11 +354,10 @@ class BoidsFxViewerController extends FxViewerController {
 			this.polygonsCoordinates = new ArrayList()
 			this.obstacles = new ArrayList()
 			this.polygons.add(new Polygon(315.0, 720.0, 315.0, 250.0, 325.0, 250.0, 325.0, 720.0))
-			this.polygons.add(new Polygon(635.0, 0.0, 635.0, 470.0, 645.0, 470.0, 645.0, 0.0))
+			this.polygons.add(new Polygon(635.0, 470.0, 635.0, 0.0, 645.0, 0.0, 645.0, 470.0))
 			this.polygons.add(new Polygon(955.0, 720.0, 955.0, 250.0, 965.0, 250.0, 965.0, 720.0))
 
 			this.polygons.forEach [ p : Polygon |
-				this.polygonsCoordinates.add(this.generateCoordinates(p))
 				p.setFill(Color.GRAY)
 				p.setStroke(Color.TRANSPARENT)
 				p.setStrokeWidth(20)
@@ -394,40 +382,14 @@ class BoidsFxViewerController extends FxViewerController {
 			}
 		}
 	}
-	/** 
-	 * Génère les coordonnées relatives aux polygones
-	 */
-	def generateCoordinates(p : Polygon) : List<Coordinates> {
-		var abscissa : AtomicDouble = new AtomicDouble();
-		var coordinates : List<Coordinates> = new ArrayList()
-		p.getPoints.forEach [ ordered : Double, index : int |
-			if (index % 2 == 0) {
-				abscissa.set(ordered)
-			} else {
-				coordinates.add(new Coordinates(abscissa.get(), ordered.doubleValue()))
-			}
-		]
-		return coordinates
-	}
 	
 	/** 
 	 * Génère les obstacles
 	 */
 	def generateObstacles() : void {
-		this.polygonsCoordinates.forEach [p : List<Coordinates>, currentItem : int |
-			var lines : List<LineTool> = new ArrayList()
-			p.forEach[c : Coordinates, index : int |
-				if(index != 0) {
-					var line : LineTool = new LineTool(p.get(index - 1), c)
-					line.computeLineEquation()
-					lines.add(line)
-				}
-			]
-			var line : LineTool = new LineTool(p.last, p.get(0))
-			line.computeLineEquation()
-			lines.add(line)
-			this.obstacles.add(new Obstacle(lines, this.polygons.get(currentItem)))
-		]
+		 for (p : polygons) {
+			this.obstacles.add(new Obstacle(p))
+		 }
 	}
 	
 	/** 
@@ -441,18 +403,24 @@ class BoidsFxViewerController extends FxViewerController {
 				boids_group.getChildren().clear()
 				perceptions.clear()
 				for (boid : list){
-					var boidElement : Polygon = new Polygon(boid.position.x, getMapHeight - boid.position.y - 7.5, boid.position.x + 5, getMapHeight - boid.position.y + 7.5, boid.position.x - 5, getMapHeight -  boid.position.y + 7.5)
-					var angleRotation = Math.toDegrees(Math.atan(boid.vitesse.x / boid.vitesse.y))
-					if (angleRotation < 0){
-						angleRotation += 180
-					}
-					if (boid.vitesse.x < 0 ){
-						if (boid.vitesse.y < 0 ){
-							angleRotation -= 180
-						}else{
+					var boidElement : Polygon = new Polygon(boid.position.x, boid.position.y - 7.5, boid.position.x + 5,boid.position.y + 7.5, boid.position.x - 5, boid.position.y + 7.5)
+					var angleRotation : double
+					if (boid.vitesse.y != 0 ){
+						angleRotation = Math.toDegrees(Math.atan(boid.vitesse.x / (-boid.vitesse.y)))
+						if (angleRotation < 0) {
 							angleRotation += 180
 						}
-					 }
+						if (boid.vitesse.x <= 0) {
+							if (boid.vitesse.y < 0) {
+								angleRotation += 180
+							} else {
+								angleRotation -= 180
+							}
+						}	
+					}else{
+						angleRotation = 0
+					}
+					
 					
 					boidElement.rotate = angleRotation
 					boidElement.setFill(Configuration::COLOR_FAMILY.get(boid.groupe))
@@ -513,7 +481,7 @@ class BoidsFxViewerController extends FxViewerController {
 							if (valid.get()) {
 								boid.position.x = calculX + (^event.source as Polygon).translateX;
 								boid.position.y = calculY + (^event.source as Polygon).translateY;
-								changePosition(currentBoid, calculX + (^event.source as Polygon).translateX, calculY + (^event.source as Polygon).translateY)
+								changePosition(currentBoid, calculX  + (^event.source as Polygon).translateX,calculY  + (^event.source as Polygon).translateY)
 								updateInfos(boid)
 							} else {
 								(^event.source as Polygon).translateX = 0
@@ -529,7 +497,6 @@ class BoidsFxViewerController extends FxViewerController {
 						if(nightMode) boidElement.stroke = Color.rgb(255, 255, 255, 0.5) else boidElement.stroke = Color.rgb(0, 0, 0, 0.5)
 					}
 					
-					//perceptionManagement(boid, angleRotation, boidElement, boid.position.x, boid.position.y, false)
 				}
 
 				if (boids_infos_pane.visible) {
@@ -550,7 +517,7 @@ class BoidsFxViewerController extends FxViewerController {
 		if (togglePerception) {
 			var perceptionArc = new Arc()
 			perceptionArc.setCenterX(x);
-			if(!erase) perceptionArc.setCenterY(getMapHeight - boid.position.y) else perceptionArc.setCenterY(y - 3) // Sans le -3 c'est décalé, et je vois vraiment pas pourquoi
+			if(!erase) perceptionArc.setCenterY(boid.position.y) else perceptionArc.setCenterY(y - 3) // Sans le -3 c'est décalé, et je vois vraiment pas pourquoi
 			perceptionArc.setRadiusX(boid.distanceVisibilite as double);
 			perceptionArc.setRadiusY(boid.distanceVisibilite as double);
 			perceptionArc.setStartAngle(90 - angleRotation - boid.angleVisibilite)
@@ -623,7 +590,7 @@ class BoidsFxViewerController extends FxViewerController {
 		boid_angle.text = 'Angle: ' + boidBody.angleVisibilite
 		boid_distance.text = 'Distance percep.: ' + boidBody.distanceVisibilite
 		boid_new_vitesse.text = 'Nouvelle vitesse: (' + boidBody.newVitesse.x + ', ' + boidBody.newVitesse.y + ')'
-		boid_position.text = 'Position: (' + String.format("%.3f", boidBody.position.x) + ', ' + String.format("%.3f", mapHeight - boidBody.position.y) + ')'
+		boid_position.text = 'Position: (' + String.format("%.3f", boidBody.position.x) + ', ' + String.format("%.3f", boidBody.position.y) + ')'
 	}
 	
 	

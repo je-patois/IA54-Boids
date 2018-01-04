@@ -10,8 +10,6 @@ import org.eclipse.xtext.xbase.lib.Pure;
 
 /**
  * Initialise les positions intiales des boids
- * @param height - Position du boid en y
- * @param width - Position du boid en x
  * @param obstacles - Liste des obstacles avec les données relatives à leur traitement
  */
 @SarlSpecification("0.6")

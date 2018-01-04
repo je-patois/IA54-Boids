@@ -6,14 +6,14 @@ import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Lifecycle
 import fr.utbm.boids.events.StartingSimulation
 import java.util.UUID
-import fr.utbm.boids.Vector
+import fr.utbm.boids.util.Vector
 import fr.utbm.boids.events.StartPosition
 import fr.utbm.boids.events.ResultatDeplacement
 import io.sarl.util.Scopes
 import fr.utbm.boids.events.ValidationDeplacement
 import java.util.Map
 import java.util.HashMap
-import fr.utbm.boids.BoidBody
+import fr.utbm.boids.body.BoidBody
 import io.sarl.lang.core.Address
 import fr.utbm.boids.events.DemandeDeplacement
 import fr.utbm.boids.gui.fx.EndSimulation
@@ -24,24 +24,37 @@ import fr.utbm.boids.gui.BoidsFxViewerController
 import fr.utbm.boids.events.Cycle
 import fr.utbm.boids.events.BoidInitialized
 import io.sarl.core.Logging
-import fr.utbm.boids.EnvInfos
+import fr.utbm.boids.body.EnvInfos
 import fr.utbm.boids.events.PositionModification
 
 agent Environment {
 	uses Logging, DefaultContextInteractions, Lifecycle, InnerContextAccess, Behaviors
 	
-	var boidsList : Map<UUID,BoidBody>	//liste complète des corps de boids
+	/** Liste des ID des agents boids en correspondance avec leurs corps. */
+	var boidsList : Map<UUID,BoidBody>	
+	/** Liste des positions occupées par les boids avec leur ID. */
 	var boidsGrid : Map<Vector, UUID>
+	/** TODO mettre javadoc*/
 	var boidsAddresses : Map<UUID, Address>
+	/** Compte le nombre de boids mis à jour. */
 	var boidsUpdated : Integer
+	/** Lien vers le controller graphique. */
 	var ctrl : BoidsFxViewerController = null
+	/** Boolean permettant de savoir si on est dans l'initialisation de la position du boids. */
 	var firstTime : boolean
+	/** ID du parent */
 	var spawner : UUID
+	/** Boolean permettant de savoir si l'on est dans un cycle de mise à jour. */
 	var inCycle : Boolean
+	/** Corp de l'environnement */
 	var envInfos : EnvInfos
+	/** Boolean permettant de savoir si l'on sort d'une pause. */
 	var restart : Boolean = false
-	// var superBoid : boolean // TODO Un jour peut-être
 
+	
+	/** 
+	 * Création de l'agent Environment.
+	 */
 	on Initialize {
 		loggingName = "Environment-" + this.ID
 		this.ctrl = occurrence.parameters.get(0) as BoidsFxViewerController
@@ -51,26 +64,29 @@ agent Environment {
 		this.spawner = occurrence.spawner
 		this.inCycle = false
 		this.envInfos = new EnvInfos(this.ctrl.mapWidth, this.ctrl.mapHeight)
-		info("The Environment is started.")
 	}
 	
+	
+	/**
+	 * Evénement permettant le démarrage de la simulation.
+	 */
 	on StartingSimulation {
 
 		this.boidsGrid = new HashMap<Vector, UUID>
 		this.boidsList = new HashMap<UUID, BoidBody>
 		this.boidsAddresses = new HashMap<UUID, Address>
 		
-		info ("ready to start ")
-		info('Boids quantity: ' + this.ctrl.boidsQuantity)
-		info('Population size: ' + this.ctrl.boidsPopulation)
 		for (var i = 0; i < this.ctrl.boidsPopulation; i++) {
 			for (var j = 0 ; j < this.ctrl.boidsQuantity; j++){
 				spawnInContext(typeof(Boid), innerContext, i + 1, ctrl.boidsSettings.get(i).speed, ctrl.boidsSettings.get(i).mass, ctrl.boidsSettings.get(i).angle, ctrl.boidsSettings.get(i).distance, envInfos)
 			}
 		}
-		//info(this.boidsList)
 	}
 
+
+	/**
+	 * Evénement notifiant qu'un boids à été initialisé.
+	 */
 	on BoidInitialized [occurrence.isInInnerDefaultSpace] {
 		if (occurrence.type == "Boid") {
 			boidsAddresses.put(occurrence.source.UUID, occurrence.source)
@@ -79,20 +95,28 @@ agent Environment {
 		}
 	}
 
+	
+	/**
+	 * Evénement notifiant que tous les boids ont été initialisé.
+	 */
 	on BoidsSideReady {
-		info("All boids have been created: " + boidsUpdated)
 		emit(new BoidsReady)
 	}
 	
+	
+	/**
+	 * Evénement norifiant qu'un boids a été déplacé et que ces positions doivent être modifiées.
+	 */
 	on PositionModification [!isFromMe] {
 		restart = true
-		var address = boidsAddresses.get(occurrence.boid)
 		this.boidsList.get(occurrence.boid).position.x = occurrence.x
 		this.boidsList.get(occurrence.boid).position.y = occurrence.y
-		innerContext.defaultSpace.emit(ID, new PositionModification(occurrence.boid, occurrence.x, occurrence.y), Scopes.addresses(address))
 	}
 
-	//TODO Si à l'initialisation deux boids spawn au même endroit, il faut relancer un spawn
+
+	/** 
+	 * Evénement récupérant la nouvelle proposition de position d'un boids.
+	 */
 	on ResultatDeplacement {
 		
 		var accept = false
@@ -108,37 +132,36 @@ agent Environment {
 			}
 		}
 		
-		// pour interdire à un boids d'aller dans un obstacle
-		/*this.obstacles.forEach[o : Obstacle, index : int |
-			if(o.polygon.contains(new Point2D(occurrence.position.x, occurrence.position.y))) {
-				// setter accept à false. Au début on le mettrait à true et on le passerait à false seulement si quelque chose empêche le déplacement
-			}
-		]*/
 			
 		if (accept) {
 			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))	
 		} else {
-			//TODO resolution des problèmes de collision interBoids
-
-			//TODO supprimer acceptation collisions
-			innerContext.defaultSpace.emit(ID, new ValidationDeplacement(occurrence.position), Scopes.addresses(occurrence.source))
+			if (this.firstTime == true) {
+				innerContext.defaultSpace.emit(ID, new StartPosition(this.ctrl.obstacles), Scopes.addresses(occurrence.source))
+			}else{
+				innerContext.defaultSpace.emit(ID, new DemandeDeplacement(this.boidsList, this.ctrl.obstacles),Scopes.addresses(occurrence.source))
+			}
 		}
 		
 		synchronized (boidsUpdated) {
-			boidsUpdated = boidsUpdated + 1
+			if (accept){
+				boidsUpdated = boidsUpdated + 1
+			}
 			if(this.boidsUpdated == this.ctrl.boidsQuantity * this.ctrl.boidsPopulation && this.firstTime == true) {
-				//info('boidsUpdated: ' + this.boidsUpdated + ', boidsTotal: ' + this.ctrl.boidsQuantity * this.ctrl.boidsPopulation)
 				wake(new BoidsSideReady)
 				this.firstTime = false
 			}
 		}
 	}
 	
+	
+	/**
+	 * Evénement récupérant le top du TimeManager.
+	 */
 	on Cycle{
 		if(!inCycle) {
 			if(!restart) {
 				synchronized (boidsUpdated){
-					//info ("demande de rafraichissement : " + this.boidsUpdated)
 					 if(this.boidsUpdated == boidsList.size){	//si le nombre de boids ayant update leur coordonnées est égal au nombre de boids vivants, on peut envoyer au Scheduler
 						inCycle = true
 						// envoi des nouveaux corps des boids
@@ -167,29 +190,40 @@ agent Environment {
 		}
 	}
 
-	def estDansLaCarte(v : Vector) : Vector {	//TODO rajouter tests murs ICI / Rename ?
+
+	/**
+	 * Fonction permettant de vérifier qu'une position est dans la map et la cas échéant la transformer pour qu'elle le soit.
+	 * @param v La position à vérifier.
+	 * @return La position vérifiée et/ou corrigée.
+	 */
+	def estDansLaCarte(v : Vector) : Vector {
 		var positionX = v.getX()
 		var positionY = v.getY()
 		
 		if(positionX > this.ctrl.mapWidth)
-			positionX = 1 // peut-être que 0 marche aussi
+			positionX = 1 
 		if(positionX < 0)
-			positionX = this.ctrl.mapWidth - 1 // peut-être que largeur marche aussi
+			positionX = this.ctrl.mapWidth - 1 
 		if(positionY > this.ctrl.mapHeight)
-			positionY = 1 // peut-être que 0 marche aussi
+			positionY = 1 
 		if(positionY < 0)
-			positionY = this.ctrl.mapHeight - 1 // peut-être que hauteur marche aussi
+			positionY = this.ctrl.mapHeight - 1 
 		
 		var newPosition = new Vector(positionX, positionY)
 		return newPosition
 	}
 
+	/**
+	 * Evénement déclanchant la mort de mon agent.
+	 */
 	on EndSimulation [!hasMemberAgent] {
 		emit(new EndSimulation)
 		killMe
 	}
 	
-	// on EndSimulation [hasMemberAgent && occurrence.source.UUID === this.spawner && !isFromMe] {
+	/**
+	 * Evénement lançant la mort de mes fils.
+	 */
 	on EndSimulation [hasMemberAgent] {
 		innerContext.defaultSpace.emit(ID, new EndSimulation)
 	}

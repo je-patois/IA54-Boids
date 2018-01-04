@@ -2,13 +2,12 @@ package fr.utbm.boids.events
 
 import java.util.Collection
 import fr.utbm.boids.agents.Boid
-import fr.utbm.boids.Vector
+import fr.utbm.boids.util.Vector
 import java.util.UUID
-import fr.utbm.boids.BoidBody
+import fr.utbm.boids.body.BoidBody
 import java.util.Map
 import fr.utbm.boids.environment.Obstacle
 import java.util.List
-import fr.utbm.boids.util.BoidGroupInfos
 
 /**
  * Transfert des paramètres utilisateurs au BootAgent
@@ -76,13 +75,11 @@ event ResultatDeplacement {
 		this.newSpeed = vit
 	}
 
-	/*new (x : int, y : int) {
-		this.position.setXY(x, y)
-	}*/
 }
 
 /**
  * Valide le déplacement d'un boid
+ * @param position - La position du boids après acceptation par l'environment
  */
 event ValidationDeplacement{
 	var position : Vector
@@ -99,8 +96,6 @@ event StartingSimulation
  
 /**
  * Initialise les positions intiales des boids
- * @param height - Position du boid en y
- * @param width - Position du boid en x
  * @param obstacles - Liste des obstacles avec les données relatives à leur traitement
  */
 event StartPosition {
@@ -177,10 +172,13 @@ event Pause
  */
 event Resume
 
-event BtnLaunch
 
-event BtnShutdown
-
+/**
+ * Signalement de la modification de la position d'un boids par drag & drop
+ * @param boid - L'UUID du boids déplacé
+ * @param x - La nouvelle abscisse du boids
+ * @param y - a nouvelle ordonnée du boids
+ */
 event PositionModification {
 	var boid : UUID
 	var x : double

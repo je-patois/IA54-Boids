@@ -6,10 +6,10 @@ import io.sarl.core.DefaultContextInteractions
 import fr.utbm.boids.events.DemandeDeplacement
 import fr.utbm.boids.events.StartPosition
 import fr.utbm.boids.events.ResultatDeplacement
-import fr.utbm.boids.Vector
+import fr.utbm.boids.util.Vector
 import java.util.Random
 import fr.utbm.boids.events.ValidationDeplacement
-import fr.utbm.boids.BoidBody
+import fr.utbm.boids.body.BoidBody
 import fr.utbm.boids.environment.Obstacle
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -19,35 +19,49 @@ import java.util.UUID
 import fr.utbm.boids.gui.fx.EndSimulation
 import java.util.Map
 import fr.utbm.boids.events.BoidInitialized
-import fr.utbm.boids.EnvInfos
+import fr.utbm.boids.body.EnvInfos
 import java.util.HashMap
-import fr.utbm.boids.events.PositionModification
 import java.util.List
+import fr.utbm.boids.util.Sphere
+import fr.utbm.boids.util.Edge
 
 agent Boid {
 	uses Logging, DefaultContextInteractions, Lifecycle
 
+
+	/*
+	 * Liste des variables 
+	 */
+	 
+	 
+	/** Le corps du boids */
 	var body : BoidBody
+	/** L'ID du parent (l'environnement) */
 	var parentAgent : UUID
+	/** Les informations relatives à l'environnement qui doivent être connues par le boids */
 	var envInfos : EnvInfos
-	var visibleBoids : Map<UUID, BoidBody>
-	var closeBoids : Map<UUID, BoidBody>
+	
+	
 	
 	/*
 	 * gestion des évènements
 	 */
-	 
+	
+	/**
+	 * Evénement correspondant à la création du boids
+	 */ 
 	on Initialize {
 		loggingName = "Boid-" + this.ID
-		info("A Boid agent was started.")
 		parentAgent = occurrence.spawner
 		this.body = new BoidBody(this.ID, occurrence.parameters.get(0) as Integer, occurrence.parameters.get(1) as Integer, occurrence.parameters.get(2) as Integer, occurrence.parameters.get(3) as Integer, occurrence.parameters.get(4) as Integer)
 		this.envInfos = occurrence.parameters.get(5) as EnvInfos
-		this.visibleBoids = new HashMap<UUID, BoidBody>
-		this.closeBoids = new HashMap<UUID, BoidBody>
 		emit(new BoidInitialized(this.body, 'Boid'))
 	}
 	
+	
+	/**
+	 * Evénement qui permet aux boids de s'initialiser à un endroit aléatoire de la map avec une vitesse aléatoire. 
+	 */
 	on StartPosition {
 		var validPosition : AtomicBoolean = new AtomicBoolean(true)
 		var maPosition : Vector
@@ -83,74 +97,108 @@ agent Boid {
 		emit(new ResultatDeplacement(maPosition, this.body.newVitesse))
 	}
 
-	// Si le déplacement est validé, on enregistre la nouvelle position du Boids, ainsi que sa nouvelle vitesse
-	on ValidationDeplacement {
-		this.body.position = occurrence.position
-		this.body.vitesse = this.body.newVitesse
-	}
-	
+
+	/** 
+	 * Evénement qui lance le calcul de la future position du boids.
+	 */
 	@SuppressWarnings("equals_with_null")
 	on DemandeDeplacement {
-		
+
 		var boids = occurrence.boids
 		var forceTot : Vector
 
 		forceTot = new Vector(0, 0)
+
+		var visibleBoids : Map<UUID, BoidBody>
+		var closeBoids : Map<UUID, BoidBody>
 
 		closeBoids = perception(boids, 'close')
 		visibleBoids = perception(closeBoids, 'visible')
 		
 		 
 		if (boids != null) {
-			
-			//on applique la séparation 
-			forceTot.plus(separation(visibleBoids))
-			
-			//on applique la cohésion
-			forceTot.plus(cohesion(visibleBoids))				
-			
-			//on applique l'alignement
+
+			// on applique la séparation
+			forceTot.plus(separation(closeBoids))
+
+			// on applique la cohésion
+			forceTot.plus(cohesion(visibleBoids))
+
+			// on applique l'alignement
 			forceTot.plus(alignement(visibleBoids))
 
-			//on applique la répulsion
-			forceTot.plus(repulsion(closeBoids))
-			
+			// on applique la répulsion
+			forceTot.plus(repulsion(visibleBoids))
+
 			// on applique la force résultant de la détection des obstacles
-			forceTot.plus(forceObstacles(occurrence.obstacles, forceTot))
-		 
-			// TODO appliquer force obstacle
+			forceTot.plus(forceObstacles(occurrence.obstacles))
+
 		}
-		
-		//forceTot.fois(100000)
-		//info("force totale " + forceTot)
+
+		forceTot.fois(100000)
 
 		emit(new ResultatDeplacement(appliquerForce(forceTot), this.body.newVitesse))
-	 
 	}
 	
+	
+	/** 
+	 * Evénement qui permet à un boids de mettre à jour ses informations après la validation d'un déplacement par l'environnement. 
+	 * Les valeurs misent à jour sont la position et la vitesse.
+	 */
+	on ValidationDeplacement {
+		this.body.position = occurrence.position
+		this.body.vitesse = this.body.newVitesse
+	}
+	
+	
+	/**
+	 * Evénement signalant la fin de  la simulation, qui aura pour conséquence de détruire notre agent.
+	 */
+	on EndSimulation [isFrom(this.parentAgent)] {
+		emit(new EndSimulation)[it.UUID == this.parentAgent]
+		killMe
+	}
+	
+	
 	/*
-	 * fonction qui permet de déterminer si le boids en question est visible dans notre perception
+	 * Fonctions du boids
 	 */
 	 
+	 
+	 /** 
+	 * Fonction qui permet de déterminer si un boids est dans le cône de vision de notre boids.Basé uniquement sur l'angle de visibilité de la famille de boids.
+	  * @param b Le boids pour lequel on vérifie la présence dans le cône de vision.
+	  * @return true si le boids est dans le cône, false sinon.
+	  */
 	 def visible (b : BoidBody) : boolean{
 	 	
 	 	var tmp : Vector
 	 	var tmp2 : Vector
-	 	
 	 	
 	 	tmp = new Vector(b.position)
 	 	tmp.moins(this.body.position)
 	 	
 	 	tmp2 = new Vector(this.body.vitesse)
 	 	
+	 	// Si l'un des deux vecteurs est nul, on aura une erreur sur le test suivant par défaut, on renvoi false
+	 	if (tmp2.length == 0 || tmp.length == 0){
+	 		return false
+	 	}
+	 	
 	 	// on test si le boids est hors de l'angle de vision : cos(ABC) = vec(AB).vec(AC)/(AB*AC)
-	 	if (Math.abs(Math.toDegrees(Math.acos((tmp2.point(tmp)/(tmp2.length * tmp.length))))) > this.body.angleVisibilite) {
+	 	if (Math.toDegrees(Math.acos((tmp2.point(tmp)/(tmp2.length * tmp.length)))) > this.body.angleVisibilite) {
 	 		return false
 	 	}else{
 	 		return true
 	 	}
 	 }
+	 
 
+	/**
+	 * Fonction qui permet de dire si un boids est dans l'espace de perception de notre boids. Basé sur la distance de visibilité de la famille de boids.
+	 * @param b Le boids pour lequel on vérifie la présence dans le cercle de perception.
+	 * @return true si le boids est dans le cercle, false sinon.
+	 */
 	def proche(b : BoidBody) : boolean {
 		var tmp : Vector
 
@@ -167,6 +215,12 @@ agent Boid {
 	 * Création des fonctions comportementales du Boids
 	 */
 	 
+	 
+	 /**
+	  * Fonction qui permet aux boids d'une même famille de garder une distance minimale entre eux.
+	  * @param boids La liste des boids qui sont dans le champ de perception et qui peuvent exercer une force sur notre propre boids.
+	  * @return La force de séparation résultante des intéractions avec les boids de la même famille.
+	  */
 	@SuppressWarnings("equals_with_null")
 	def separation(boids : Map<UUID, BoidBody>) : Vector {
 
@@ -181,37 +235,7 @@ agent Boid {
 		tmp = new Vector(0, 0)
 		 
 		for (elem : boids.entrySet) {
-			if (elem.key != null && elem.value.groupe == this.body.groupe) {
-				
-				/*if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x - envInfos.width)){
-					if(distance(this.body.position.x, elem.value.position.x) < distance(this.body.position.x, elem.value.position.x + envInfos.width)){
-						xelem = elem.value.position.x
-					} else {
-						xelem = elem.value.position.x + envInfos.width
-					}
-				} else {
-					if(distance(this.body.position.x, elem.value.position.x - envInfos.width) < distance(this.body.position.x, elem.value.position.x + envInfos.width)){
-						xelem = elem.value.position.x - envInfos.width
-					} else {
-						xelem = elem.value.position.x + envInfos.width
-					}
-				}
-				
-				if (distance(this.body.position.y, elem.value.position.y) < distance(this.body.position.y, elem.value.position.y - envInfos.height)) {
-					if (distance(this.body.position.y, elem.value.position.y) < distance(this.body.position.y, elem.value.position.y + envInfos.height)) {
-						yelem = elem.value.position.y
-					} else {
-						yelem = elem.value.position.y + envInfos.height
-					}
-				} else {
-					if (distance(this.body.position.y, elem.value.position.y - envInfos.height) < distance(this.body.position.y, elem.value.position.y + envInfos.height)) {
-						yelem = elem.value.position.y - envInfos.height
-					} else {
-						yelem = elem.value.position.y + envInfos.height
-					}
-				 }*/
-					 
-				
+			if (elem.key != null && elem.value.groupe == this.body.groupe) {			 		
 				tmpelem = new Vector(xelem%envInfos.width, yelem%envInfos.height)
 				tmp.setXY(this.body.position)
 				//tmp.moins(tmpelem)
@@ -226,7 +250,13 @@ agent Boid {
 		return force
 
 	}
-
+	
+	
+	/** 
+	 * Fonction qui permet aux boids d'une même famille de se regrouper.
+	 * @param boids La liste des boids qui sont dans le cône de vision et qui peuvent exercer une force sur notre propre boids.
+	 * @return La force d'attraction résultante des intéractions avec les boids de la même famille.
+	 */
 	@SuppressWarnings("equals_with_null")
 	def cohesion(boids : Map<UUID, BoidBody>) : Vector {
 		
@@ -246,12 +276,17 @@ agent Boid {
 			force.fois(1/nbTot)
 			force.moins(this.body.position)
 		}
-		force.fois(0.45)
+		//force.fois(0.45)
+		force.fois(25)
 		return force
 	}
 	
 	
-
+	/** 
+	 * Fonction qui permet aux boids d'une même famille de s'aligner.
+	 * @param boids La liste des boids qui sont dans le cône de vision et qui peuvent exercer une force sur notre propre boids.
+	 * @return La force d'alignement résultante des intéractions avec les boids de la même famille.
+	 */
 	@SuppressWarnings("equals_with_null")
 	def alignement(boids : Map<UUID, BoidBody>) : Vector {
 		
@@ -278,7 +313,13 @@ agent Boid {
 		return force
 		
 	}
-
+	
+	
+	/** 
+	 * Fonction qui permet aux boids de familles différentes de se repousser. 
+	 * @param boids La liste des boids qui sont dans le cône de vision et qui peuvent exercer une force sur notre propre boids.
+	 * @return La force de répulsion résultante des intéractions avec les boids des autres familles.
+	 */
 	@SuppressWarnings("equals_with_null")
 	def repulsion(boids : Map<UUID, BoidBody>) : Vector {
 		
@@ -303,70 +344,135 @@ agent Boid {
 		return force
 	}
 	
-	def forceObstacles(listeObstacles : List<Obstacle>, force : Vector) : Vector{
+	
+	/** 
+	 * Fonction qui permet aux boids de s'éloigner d'un obstacle. 
+	 * On regarde si la droite d'un obstacle rentre dans notre champs de perception, si c'est le cas, on regarde quelle droite et la plus proche et 
+	 * on choisit sa force normale comme force d'éloignement.
+	 * @param listeObstacles La liste des obstacles présents sur la map.
+	 * @return La force d'éloignement résultante des intéractions avec les obstacles proches.
+	 */
+	@SuppressWarnings("equals_with_null")
+	def forceObstacles(listeObstacles : List<Obstacle>) : Vector{
 		
-		/*var direction = new Vector(0,0)
-		var direction2 = new Vector(0,0)
-		var tmp = new Vector(0,0)
-		var collision : Vector = new Vector(this.body.vitesse)*/
+		var force : Vector
+		force = new Vector(0,0)
+		
+		var sphereBoid = new Sphere(new Vector(this.body.position), this.body.distanceVisibilite.doubleValue)
 		
 		if (listeObstacles !== null) {
-			listeObstacles.forEach [ o : Obstacle, index : int |
-				/*if (obstacleVisible(o)) {
-					direction.plus(o.getCenter())
-					direction2.plus(new Vector(this.body.position.x, this.body.position.y))
-					direction.moins(direction2)
-					tmp.plus(direction)
-					tmp.normaliser
-					force.moins(tmp)
-				}*/
-				 
-				// Si le boid vient de droite, répulsion vers la droite, si il vient de la gauche, répulsion vers la gauche, si il vient du haut, répulsion vers le haut, si il vient du bas, répulsion vers le bas.
-				// --> Diviser la bouding box(carré) en 4 parties haut bas gauche droite pour discerner ces cas
-				// Appliquer une force dans pour faire partir le boids dans la direction inverse
-				/*if(this.body.position.y <= o.polygon.boundsInLocal.maxY - 50) {
-					if (o.polygon.boundsInLocal.contains(this.body.position.x, this.body.position.y)) {
-						force.plus(o.center)
-						force.normaliser()
-					} 
-				} else if(this.body.position.y >= o.polygon.boundsInLocal.minY + 50) {
-					if (o.polygon.boundsInLocal.contains(this.body.position.x, this.body.position.y)) {
-						force.moins(o.center)
-						force.normaliser()
-					}
-				}*/
+			for (o : listeObstacles) {
+				var forceAdd : Vector
+				var distanceMin : double
+				distanceMin = 10000
+				var edgeRetenue : Edge 
+				edgeRetenue = null
 				
-			]
+				for (e : o.edges) {
+					if (intersectRaySphere(e,sphereBoid)){
+						
+						// Si on interphère on calcul la distance entre la droite et le point et on garde le plus proche
+							if (calculateDistancePointRay(e,this.body.position) < distanceMin){
+								edgeRetenue = e
+								distanceMin = calculateDistancePointRay(e, this.body.position)
+							}
+					}
+				}
+				
+				if (edgeRetenue != null) {
+					forceAdd = new Vector(edgeRetenue.normal)
+					forceAdd.fois(1000/distanceMin)
+					force.plus(forceAdd)
+				}
+				 
+			}
+			
 		}
+		
 		return force
+		
+		
 	}
 	
-	def obstacleVisible (obstacle : Obstacle) : boolean {
-		var tmp : Vector
-		tmp = obstacle.getCenter()
-		tmp.moins(this.body.position)
-		if(tmp.length < this.body.distanceVisibilite*2){
-			return true
-		} else {
+	
+	/**
+	 * Fonction permettant de définir la distance entre un point et une droite
+	 * D'après wikipédia : distance d'un point à une droite / Dans l'espace
+	 * @param edge La droite pour laquelle on doit mesurer la distance avec le point.
+	 * @param point Le point pour lequel on doit mesurer la distance avec la droite.
+	 * @return La distance entre le point et la droite passés en paramètre. 
+	 */
+	def calculateDistancePointRay (edge : Edge, point : Vector) : double {
+		var distance : double 
+		// B point sur la droite : edge.pointDepart  A point considéré : point 
+		var vecteurBA = new Vector (point.x - edge.pointDepart.x, point.y - edge.pointDepart.y)
+		distance = vecteurBA.produitVectoriel(edge.direction).length
+		distance = distance / (edge.direction.length)
+		return distance
+	}
+	
+
+	/**
+	 * Fonction permettant de savoir si une droite rentre en intersection avec une sphere.
+	 * D'après le pdf de Christer Ericson : Real Time Detection Collision.
+	 * @param edge La droite pour laquelle on test l'intersection avec la sphere.
+	 * @param s La sphere pour laquelle on test l'intersection avec la droite.
+	 * @return true si la droite rentre en collision avec la sphere, false sinon.
+	 */
+	def intersectRaySphere(edge : Edge, s : Sphere) : boolean {
+		var m : Vector
+		var directionNormalise : Vector
+
+		m = new Vector(edge.pointDepart.x, edge.pointDepart.y)
+
+		m.moins(s.center)
+
+		directionNormalise = new Vector(edge.direction)
+		directionNormalise.normaliser
+
+		var b = m.point(directionNormalise)
+		var c = m.point(m) - s.radius * s.radius
+		if (c > 0.0f && b> 0.0f) {
 			return false
 		}
+
+		var discr = b * b - c
+
+		if (discr < 0.0f) {
+			return false
+		}
+		
+		var t = -b - Math.sqrt(discr)
+
+		if (Math.abs(t) > edge.direction.length) {
+			return false
+		}
+
+		return true	
 	}
-	
-	// retourne la position du boid après l'application de la force, stoque en mémoire la nouvelle vitesse du Boids
+
+
+	/**
+	 * Fonction qui donne la nouvelle position du boids après application d'une force. 
+	 * Stocke en mémoire la nouvelle vitesse du boids.
+	 * @param force La force appliquée sur le boids.
+	 * @return La nouvelle position du boids. 
+	 */
 	def appliquerForce(force : Vector) : Vector {
 
-		// f = ma => a =f/m
+		// f = ma => a = f/m
 
 		var newPosition : Vector		
 		var acceleration : Vector
 
-		if (force.length > 1.7) {
+		// TODO trouver un compromis pour borner mais pas trop bas pour pouvoir utiliser la masse et avoir une force correcte quand même
+		if (force.length > 10) {
 			force.normaliser()
-			force.fois(1.7)
+			force.fois(10)
 		}
-		
+
 		acceleration = new Vector(force)
-		//acceleration.fois(1/this.body.masse)
+		acceleration.fois(1/ this.body.masse.doubleValue)
 		
 		this.body.newVitesse = new Vector(this.body.vitesse)
 		this.body.newVitesse.plus(acceleration)
@@ -383,18 +489,18 @@ agent Boid {
 		return newPosition
 	}
 	
-	def distance(XA : double, XB : double){
-		return Math.abs(XA - XB)
-	}
-	
-	on EndSimulation [isFrom(this.parentAgent)] {
-		emit(new EndSimulation) [it.UUID == this.parentAgent]
-		killMe
-	}
-		
+
+	/**
+	 * Fonction permettant de déterminer la liste des boids présent dans le champ de perception, ainsi que dans le champ de vision de notre boids.
+	 * @param boids La liste de tous les boids pour lesquels on va faire le test de proximité et de visibilité. 
+	 * @param mode Le mode à utiliser : <br/>
+	 * - 'visible' pour faire un test de visibilité <br/>
+	 * - 'close' pour faire un test de proximité
+	 * @return La liste des boids qui répondent aux critères du paramètres (assez proche où dans l'angle de vision).
+	 */		
 	def perception(boids : Map<UUID, BoidBody>, mode : String) : Map<UUID, BoidBody> {
 		if (mode === 'visible') {
-			visibleBoids.clear()
+			var visibleBoids = new HashMap<UUID, BoidBody>
 			for (elem : boids.entrySet) {
 				if (elem.key !== null && visible(elem.value) && elem.key != this.ID) {
 					visibleBoids.put(elem.key, elem.value)
@@ -402,7 +508,7 @@ agent Boid {
 			}
 			return visibleBoids
 		} else if (mode === 'close') {
-			closeBoids.clear()
+			var closeBoids = new HashMap<UUID, BoidBody>
 			for (elem : boids.entrySet) {
 				if (elem.key !== null && proche(elem.value) && elem.key != this.ID) {
 					closeBoids.put(elem.key, elem.value)
@@ -411,11 +517,6 @@ agent Boid {
 			return closeBoids
 		}
 		
-	}
-	
-	on PositionModification {
-		this.body.position.x = occurrence.x
-		this.body.position.y = envInfos.height - occurrence.y
 	}
 	
 }

@@ -9,14 +9,33 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(9)
 @SuppressWarnings("all")
 public class BoidGroupInfos {
+  /**
+   * Masse de la famille de boids
+   */
   private int mass;
   
+  /**
+   * Vitesse max de la famille de boids
+   */
   private int speed;
   
+  /**
+   * Angle de vision de la famille de boids
+   */
   private int angle;
   
+  /**
+   * Distance de vision et de perception de la famille de boids
+   */
   private int distance;
   
+  /**
+   * Création de la classe BoidGroupInfos
+   * @param mass - La masse de la famille
+   * @param speed - La vitesse max de la famille
+   * @param angle - L'angle de vision de la famille
+   * @param distance - La distance de vision et  de  perception de la famille
+   */
   public BoidGroupInfos(final int mass, final int speed, final int angle, final int distance) {
     this.mass = mass;
     this.speed = speed;
@@ -24,38 +43,66 @@ public class BoidGroupInfos {
     this.distance = distance;
   }
   
+  /**
+   * @return La masse de la  famille
+   */
   @Pure
   public int getMass() {
     return this.mass;
   }
   
+  /**
+   * Permet de setter la masse d'une famille.
+   * @param mass - La masseà enregistrer
+   */
   public void setMass(final int mass) {
     this.mass = mass;
   }
   
+  /**
+   * @return La vitesse max de la famille
+   */
   @Pure
   public int getSpeed() {
     return this.speed;
   }
   
+  /**
+   * Permet de setter la vitesse max de la famille
+   * @param speed - La vitesse maxà enregistrer
+   */
   public void setSpeed(final int speed) {
     this.speed = speed;
   }
   
+  /**
+   * @return L'angle de vision de la famille
+   */
   @Pure
   public int getAngle() {
     return this.angle;
   }
   
+  /**
+   * Permet de setter l'angle de vision de la famille
+   * @param angle -L'angle de vision à enregistrer
+   */
   public void setAngle(final int angle) {
     this.angle = angle;
   }
   
+  /**
+   * @return La distance de vision et de perception de la famille
+   */
   @Pure
   public int getDistance() {
     return this.distance;
   }
   
+  /**
+   * Permet de setter la distance de vision et de perception de la famille
+   * @param distance - La distance de vision et de perception à enregistrer
+   */
   public void setDistance(final int distance) {
     this.distance = distance;
   }

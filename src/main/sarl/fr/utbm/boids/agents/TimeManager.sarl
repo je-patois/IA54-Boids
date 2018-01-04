@@ -29,7 +29,6 @@ agent TimeManager {
 	}
 
 	on TimeManagingStart {
-		info("HEY")
 		online = true
 		
 		task('Iterate').every(occurrence.frequency) [

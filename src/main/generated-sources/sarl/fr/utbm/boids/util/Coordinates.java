@@ -9,48 +9,89 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(9)
 @SuppressWarnings("all")
 public class Coordinates {
+  /**
+   * Abscisse de la coordonée
+   */
   private double x;
   
+  /**
+   * Ordonnée de la coordonnée
+   */
   private double y;
   
+  /**
+   * Création de la classe Coordinates.
+   * Par defaut x et y valent 0.
+   */
   public Coordinates() {
     this.x = 0;
     this.y = 0;
   }
   
+  /**
+   * Création de la classe Coordinates.
+   * @param x - Abscisse de la coordonée.
+   * @param y - Ordonnée de la coordonée.
+   */
   public Coordinates(final double x, final double y) {
     this.x = x;
     this.y = y;
   }
   
+  /**
+   * Création de la classe Coordinates par copie d'une instance de classe Coordinates.
+   * @param c - L'instance de classe à copier.
+   */
   public Coordinates(final Coordinates c) {
     this.x = c.x;
     this.y = c.y;
   }
   
+  /**
+   * @return La valeur de l'abscisse.
+   */
   @Pure
   public double getX() {
     return this.x;
   }
   
+  /**
+   * Permet de setter la valeur de l'abscisse.
+   * @param x - La valeur de l'abscisse à enregistrer.
+   */
   public void setX(final double x) {
     this.x = x;
   }
   
+  /**
+   * @return La  valeur de l'ordonnée.
+   */
   @Pure
   public double getY() {
     return this.y;
   }
   
+  /**
+   * Permet de setter la valeur de l'ordonnée.
+   * @param y - La valeur de l'ordonnée à enregistrer.
+   */
   public void setY(final double y) {
     this.y = y;
   }
   
+  /**
+   * Permet de setter les coordinées en une fois
+   * @param c - Les coordonées sous forme de classe Coordinates.
+   */
   public void setCoordinates(final Coordinates c) {
     this.x = c.x;
     this.y = c.y;
   }
   
+  /**
+   * Permet de transformer la classe Coordinates en une chaîne de caractères.
+   * @return La chaîne de caractères correspondant à l'instance de la classe.
+   */
   @Pure
   public String toString() {
     return (((("(" + Double.valueOf(this.x)) + ", ") + Double.valueOf(this.y)) + ")");
