@@ -62,7 +62,7 @@ public class Environment extends Agent {
   private Map<Vector, UUID> boidsGrid;
   
   /**
-   * TODO mettre javadoc
+   * Liaison entre l'ID des Boids et leurs adresses
    */
   private Map<UUID, Address> boidsAddresses;
   

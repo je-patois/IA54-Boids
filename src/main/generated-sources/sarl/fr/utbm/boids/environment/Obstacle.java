@@ -136,7 +136,10 @@ public class Obstacle {
   }
   
   /**
-   * TODO mettre javadoc par le créateur de la fonction + vérifier son utilisation par le créateur.
+   * Permet de créer une copie plus grande ou petite d'un polygone. Le polygone résultant est centré sur le précédent et ses nouvelles dimensions sont
+   * induites par le facteur donné en paramètres
+   * @param facteur Facteur de grossissement
+   * @return Le polygone agrandit/rapetissé
    */
   @Pure
   public Polygon polygonArea(final double facteur) {

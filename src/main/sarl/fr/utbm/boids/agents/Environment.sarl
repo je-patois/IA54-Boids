@@ -34,7 +34,7 @@ agent Environment {
 	var boidsList : Map<UUID,BoidBody>	
 	/** Liste des positions occupées par les boids avec leur ID. */
 	var boidsGrid : Map<Vector, UUID>
-	/** TODO mettre javadoc*/
+	/** Liaison entre l'ID des Boids et leurs adresses */
 	var boidsAddresses : Map<UUID, Address>
 	/** Compte le nombre de boids mis à jour. */
 	var boidsUpdated : Integer
